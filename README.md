@@ -10,3 +10,4 @@ Origo from Github master, image based on huggla/sam-lighttpd2. Listens on port 8
 
 ## Capabilities
 Can drop all but SETPCAP, SETGID and SETUID.
+x
