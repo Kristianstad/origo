@@ -41,7 +41,8 @@ ARG LINUXUSEROWNED="/origo /origo/origo-cities1.json"
 ARG FINALCMDS=\
 "   cp -a /tmp/origo/* /origo/ "\
 "&& cd /usr/local "\
-"&& rm -rf share "\
+"&& ls -la lib "\
+"&& rm -rf share lib "\
 "&& ln -s ../lib ../share ./ "\
 "&& cd bin "\
 "&& find ../../libexec/postgresql14 ! -type l ! -name postgres ! -name ../../libexec/postgresql14 -maxdepth 1 -exec ln -s {} ./ + "\
