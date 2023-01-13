@@ -18,6 +18,8 @@ ARG DOWNLOADS="https://github.com/origo-map/origo/archive/refs/tags/v$ORIGO_VERS
 ARG BUILDDEPS="python3"
 ARG BUILDCMDS=\
 "   cd origo-$ORIGO_VERSION "\
+"&& npm i -g npm "\
+"&& npm cache verify "\
 "&& npm install "\
 #"&& npm --depth 8 update "\
 "&& npm run prebuild-sass "\
