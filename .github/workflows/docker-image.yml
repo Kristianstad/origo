@@ -40,7 +40,7 @@ jobs:
         uses: docker/metadata-action@v4
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          tags: type=raw,value=with_php
+          tags: type=raw,value=with_php_test
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
