@@ -41,7 +41,6 @@ ARG LINUXUSEROWNED="/origo /origo/origo-cities1.json"
 ARG FINALCMDS=\
 "   cp -a /tmp/origo/* /origo/ "\
 "&& cd /usr/local "\
-"&& ls -la lib "\
 "&& rm -rf share lib "\
 "&& ln -s ../lib ../share ./ "\
 "&& cd bin "\
