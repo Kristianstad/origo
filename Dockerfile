@@ -4,7 +4,6 @@
 # ARGs (can be passed to Build/Final) <BEGIN>
 ARG SaM_REPO=${SaM_REPO:-ghcr.io/kristianstad/secure_and_minimal}
 ARG ALPINE_VERSION=${ALPINE_VERSION:-3.17}
-ARG SaM_VERSION="2.0.6-3.16"
 ARG IMAGETYPE="application"
 ARG ORIGO_VERSION="2.6.0"
 ARG LIGHTTPD2_VERSION=$ALPINE_VERSION
