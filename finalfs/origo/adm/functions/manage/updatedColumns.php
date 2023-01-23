@@ -99,6 +99,8 @@
 				'attribution'			=> $updatePosts['updateAttribution'],
 				'layertype'				=> $updatePosts['updateLayertype'],
 				'swiper'				=> $updatePosts['updateSwiper'],
+				'geometryname'			=> $updatePosts['updateGeometryname'],
+				'geometrytype'			=> $updatePosts['updateGeometrytype'],
 				'categories'			=> '{'.$updatePosts['updateCategories'].'}',
 				'layers'				=> '{'.$updatePosts['updateLayers'].'}',
 				'adusers'				=> '{'.$updatePosts['updateAdusers'].'}',
