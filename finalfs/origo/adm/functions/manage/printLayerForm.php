@@ -15,6 +15,8 @@
 				{
 					printTextarea($layer, 'allowededitoperations', 'textareaMedium', 'Redigeringsalt.:');
 					echo '<br>';
+					printTextarea($layer, 'geometryname', 'textareaMedium', 'Geometrinamn:');
+					printTextarea($layer, 'geometrytype', 'textareaMedium', 'Geometrityp:');
 				}
 			}
 			elseif ($layer['layer']['type'] == 'WMS')
