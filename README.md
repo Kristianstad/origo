@@ -1,7 +1,7 @@
 # origo
 https://github.com/Kristianstad/origo/pkgs/container/origo
 
-Origo from Github master, image based on https://github.com/Kristianstad/lighttpd2/pkgs/container/lighttpd2. Listens on port 8080 internally. Files and directories in the Origo config directory are added to the Origo web directory at startup. There is also an optional management tool for Origo included in a separate tag (path to manage tool: adm/manage.php).
+Origo from Github master, image based on https://github.com/Kristianstad/lighttpd2/pkgs/container/lighttpd2 (check out for webserver settings). Listens on port 8080 internally. Files and directories in the Origo config directory are added to the Origo web directory at startup. There is also an optional management tool for Origo included in a separate tag (path to manage tool: adm/manage.php). Source code for the management tool is available in the with_php branch.
 
 ## Docker run examples
 ### If you just need Origo
