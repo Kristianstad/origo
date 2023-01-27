@@ -5,7 +5,7 @@
 ARG SaM_REPO=${SaM_REPO:-ghcr.io/kristianstad/secure_and_minimal}
 ARG ALPINE_VERSION=${ALPINE_VERSION:-3.17}
 ARG IMAGETYPE="application"
-ARG ORIGO_VERSION="2.6.0"
+ARG ORIGO_VERSION="fix-for-getfeatureinfo-on-grouplayer"
 ARG LIGHTTPD2_VERSION="230118"
 ARG CONTENTIMAGE1="node:alpine$ALPINE_VERSION"
 ARG CONTENTDESTINATION1="/"
@@ -14,7 +14,8 @@ ARG BASEIMAGE="ghcr.io/kristianstad/lighttpd2:$LIGHTTPD2_VERSION"
 ARG DOWNLOADS="https://github.com/origo-map/origo/archive/refs/heads/fix-for-getfeatureinfo-on-grouplayer.zip"
 ARG BUILDDEPS="python3"
 ARG BUILDCMDS=\
-"   cd origo-$ORIGO_VERSION "\
+"ls -la "\
+"&&   cd origo-$ORIGO_VERSION "\
 "&& rm -rf node_modules package-lock.json "\
 "&& npm install "\
 #"&& npm --depth 8 update "\
