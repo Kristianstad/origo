@@ -4,11 +4,11 @@
 	include_once("./functions/pgArrayToPhp.php");
 	include_once("./functions/array_column_search.php");
 	include_once("./functions/all_from_table.php");
-	$functionFiles = array_diff(scandir('./functions/writeConfig'), array('.', '..'));
-	foreach ($functionFiles as $functionFile)
-	{
-		include_once("./functions/writeConfig/$functionFile");
-	}
+	include_once("./functions/tableNamesFromSchema.php");
+	include_once("./functions/configTables.php");
+	include_once("./functions/includeDirectory.php");
+	includeDirectory("./functions/writeConfig");
+
 	$mapId = $_GET['map'];
 	$mapIdArray = explode('#', $mapId, 2);
 	$mapName = trim($mapIdArray[0]);
@@ -24,21 +24,8 @@
 	ignore_user_abort(true);
 	$dbh=dbh(CONNECTION_STRING);
 	$configSchema='map_configs';
-	$conftables = array(
-		"maps",
-		"controls",
-		"footers",
-		"proj4defs",
-		"sources",
-		"services",
-		"groups",
-		"layers",
-		"tilegrids"
-	);
-	foreach ($conftables as $table)
-	{
-		eval("\$$table=get_conftable(\$dbh, '$table');"); // Skapar variabel med samma namn som tabellen ($maps, $controls, osv).
-	}
+	$configTables=configTables($dbh, $configSchema);
+	extract($configTables);
 	$map = array_column_search($mapId, 'map_id', $maps);
 	$json = '{ ';
 	addControlsToJson();
