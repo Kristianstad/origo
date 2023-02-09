@@ -24,6 +24,7 @@
 				{
 					$json = $json.', ';
 				}
+				$type = array_column_search($source['service'], 'service_id', $services, 'type');
 				$url = array_column_search($source['service'], 'service_id', $services, 'base_url');
 				$sourceProject = trim(explode('#', $source['source_id'], 2)[0]);
 				if (strpos($sourceId, '@wfs') !== false)
@@ -63,6 +64,10 @@
 				if ($wfsSource)
 				{
 					$json = $json.', "workspace": "qgs"';
+				}
+				if (!empty($type))
+				{
+					$json = $json.', "type": "'.$type.'"';
 				}
 				if (!empty($source['tilegrid']))
 				{
