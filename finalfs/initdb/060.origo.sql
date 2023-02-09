@@ -132,6 +132,7 @@ CREATE TABLE map_configs.services
     service_id character varying COLLATE pg_catalog."default" NOT NULL,
     base_url character varying COLLATE pg_catalog."default",
     alias character varying COLLATE pg_catalog."default",
+    type character varying COLLATE pg_catalog."default",
     info character varying COLLATE pg_catalog."default",
     CONSTRAINT services_pkey PRIMARY KEY (service_id)
 );
