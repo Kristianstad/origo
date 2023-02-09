@@ -4,6 +4,7 @@
 		echo '<div><div style="float:left;"><form method="post" style="line-height:2">';
 		printTextarea($service, 'service_id', 'textareaMedium', 'Id:');
 		printTextarea($service, 'base_url', 'textareaLarge', 'Huvudurl:');
+		printTextarea($service, 'type', 'textareaMedium', 'Typ:');
 		echo '</br>';
 		printTextarea($service, 'info', 'textareaLarge', 'Info:');
 		printHiddenInputs($inheritPosts);
