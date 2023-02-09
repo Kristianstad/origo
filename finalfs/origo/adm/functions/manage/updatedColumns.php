@@ -59,7 +59,8 @@
 		elseif ($table == 'services')
 		{
 			$tableColumns=array(
-				'base_url'				=> $updatePosts['updateBase_url']
+				'base_url'				=> $updatePosts['updateBase_url'],
+				'type'					=> $updatePosts['updateType']
 			);
 		}
 		elseif ($table == 'sources')
