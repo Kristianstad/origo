@@ -83,6 +83,7 @@ CREATE TABLE map_configs.layers
     allowededitoperations character varying COLLATE pg_catalog."default",
     geometryname character varying COLLATE pg_catalog."default",
     geometrytype character varying COLLATE pg_catalog."default",
+    exports character varying[] COLLATE pg_catalog."default",
     CONSTRAINT layers_pkey PRIMARY KEY (layer_id)
 );
 
