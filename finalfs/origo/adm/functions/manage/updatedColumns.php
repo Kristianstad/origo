@@ -105,7 +105,8 @@
 				'categories'			=> '{'.$updatePosts['updateCategories'].'}',
 				'layers'				=> '{'.$updatePosts['updateLayers'].'}',
 				'adusers'				=> '{'.$updatePosts['updateAdusers'].'}',
-				'adgroups'				=> '{'.$updatePosts['updateAdgroups'].'}'
+				'adgroups'				=> '{'.$updatePosts['updateAdgroups'].'}',
+				'exports'				=> '{'.$updatePosts['updateExports'].'}'
 			);
 		}
 		return array_merge($commonColumns, $tableColumns);
