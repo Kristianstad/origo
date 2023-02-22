@@ -57,6 +57,7 @@
 		printTextarea($layer, 'maxscale', 'textareaSmall', 'Maxskala:');
 		printTextarea($layer, 'minscale', 'textareaSmall', 'Minskala:');
 		printUpdateSelect($layer, array('swiper'=>array("f", "t", "under")), 'miniSelect', 'Swiper-lager:');
+		printTextarea($layer, 'exports', 'textareaMedium', 'Exportlager:');
 		if (isset($layer['layer']['type']))
 		{
 			if ($layer['layer']['type'] == 'GROUP')
@@ -68,8 +69,8 @@
 				printTextarea($layer, 'layertype', 'textareaMedium', 'WFS-typ:');
 				if (isset($layer['layer']['layertype']) && $layer['layer']['layertype'] == 'cluster')
 				{
-					printTextarea($layer, 'clusterstyle', 'textareaLarge', 'Klusterstil:');
 					echo '<br>';
+					printTextarea($layer, 'clusterstyle', 'textareaLarge', 'Klusterstil:');
 					printTextarea($layer, 'clusteroptions', 'textareaLarge', 'Klusteralternativ:');
 				}
 			}
