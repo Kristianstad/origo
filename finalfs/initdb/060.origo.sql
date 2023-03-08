@@ -86,7 +86,7 @@ CREATE TABLE map_configs.layers
     exports character varying[] COLLATE pg_catalog."default",
     resources character varying COLLATE pg_catalog."default",
     contact character varying COLLATE pg_catalog."default",
-    updated character varying COLLATE pg_catalog."default",
+    updated date,
     web character varying COLLATE pg_catalog."default",
     CONSTRAINT layers_pkey PRIMARY KEY (layer_id)
 );
