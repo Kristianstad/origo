@@ -84,6 +84,10 @@ CREATE TABLE map_configs.layers
     geometryname character varying COLLATE pg_catalog."default",
     geometrytype character varying COLLATE pg_catalog."default",
     exports character varying[] COLLATE pg_catalog."default",
+    resources character varying COLLATE pg_catalog."default",
+    contact character varying COLLATE pg_catalog."default",
+    updated character varying COLLATE pg_catalog."default",
+    web character varying COLLATE pg_catalog."default",
     CONSTRAINT layers_pkey PRIMARY KEY (layer_id)
 );
 
@@ -112,6 +116,7 @@ CREATE TABLE map_configs.maps
     footer character varying COLLATE pg_catalog."default",
     info character varying COLLATE pg_catalog."default",
     tilegrid character varying COLLATE pg_catalog."default",
+    show_meta boolean,
     CONSTRAINT map_pk PRIMARY KEY (map_id)
 );
 
