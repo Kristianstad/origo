@@ -165,3 +165,22 @@ CREATE TABLE map_configs.tilegrids
     tilesize integer,
     CONSTRAINT tilegrids_pkey PRIMARY KEY (tilegrid_id)
 );
+
+CREATE TABLE map_configs.contacts
+(
+    contact_id character varying COLLATE pg_catalog."default" NOT NULL,
+    name character varying COLLATE pg_catalog."default",
+    info character varying COLLATE pg_catalog."default",
+    email character varying COLLATE pg_catalog."default",
+    web character varying COLLATE pg_catalog."default",
+    CONSTRAINT contacts_pkey PRIMARY KEY (contact_id)
+);
+
+CREATE TABLE map_configs.exports
+(
+    export_id character varying COLLATE pg_catalog."default" NOT NULL,
+    resource character varying COLLATE pg_catalog."default",
+    style character varying COLLATE pg_catalog."default",
+    info character varying COLLATE pg_catalog."default",
+    CONSTRAINT exports_pkey PRIMARY KEY (export_id)
+);
