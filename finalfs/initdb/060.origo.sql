@@ -88,6 +88,8 @@ CREATE TABLE map_configs.layers
     contact character varying COLLATE pg_catalog."default",
     updated date,
     web character varying COLLATE pg_catalog."default",
+    update character varying COLLATE pg_catalog."default",
+    origin character varying COLLATE pg_catalog."default",
     CONSTRAINT layers_pkey PRIMARY KEY (layer_id)
 );
 
@@ -183,4 +185,24 @@ CREATE TABLE map_configs.exports
     style character varying COLLATE pg_catalog."default",
     info character varying COLLATE pg_catalog."default",
     CONSTRAINT exports_pkey PRIMARY KEY (export_id)
+);
+
+CREATE TABLE map_configs.origins
+(
+    origin_id character varying COLLATE pg_catalog."default" NOT NULL,
+    name character varying COLLATE pg_catalog."default",
+    email character varying COLLATE pg_catalog."default",
+    web character varying COLLATE pg_catalog."default",
+    info character varying COLLATE pg_catalog."default",
+    CONSTRAINT origins_pkey PRIMARY KEY (origin_id)
+);
+
+CREATE TABLE map_configs.updates
+(
+    update_id character varying COLLATE pg_catalog."default" NOT NULL,
+    "interval" character varying COLLATE pg_catalog."default",
+    method character varying COLLATE pg_catalog."default",
+    info character varying COLLATE pg_catalog."default",
+    name character varying COLLATE pg_catalog."default",
+    CONSTRAINT updates_pkey PRIMARY KEY (update_id)
 );
