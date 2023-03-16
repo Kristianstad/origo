@@ -16,6 +16,7 @@
 	include_once("./functions/all_from_table.php");
 	include_once("./functions/findParents.php");
 	include_once("./functions/pkColumnOfTable.php");
+	include_once("./functions/toSwedish.php");
 	include_once("./functions/includeDirectory.php");
 	includeDirectory("./functions/info");
 	
@@ -23,21 +24,23 @@
 	$configSchema='map_configs';
 	$childType=$_GET['type'];
 	$childId=$_GET['id'];
-	if     ($childType == 'map') { $childTypeSv='karta'; }
-	elseif ($childType == 'control') { $childTypeSv='kontroll'; }
-	elseif ($childType == 'group') { $childTypeSv='grupp'; }
-	elseif ($childType == 'layer') { $childTypeSv='lager'; }
-	elseif ($childType == 'footer') { $childTypeSv='sidfot'; }
-	elseif ($childType == 'source') { $childTypeSv='källa'; }
-	elseif ($childType == 'service') { $childTypeSv='tjänst'; }
-	else { $childTypeSv=$childType; }
-
+	$childTypeSv=toSwedish($childType);
 	if (!empty($childId))
 	{
 		echo "<div style='float:left'>";
 		echo "<h2>$childId</h2> ($childTypeSv)</br>";
 		$allOfChildType=all_from_table($dbh, $configSchema, $childType.'s');
 		$child=array($childType=>$childId);
+		$name=array_column_search($childId, pkColumnOfTable($childType.'s'), $allOfChildType)['name'];
+		if (!empty($name))
+		{
+			echo "<b>Namn: </b>$name</br>";
+		}
+		$alias=array_column_search($childId, pkColumnOfTable($childType.'s'), $allOfChildType)['alias'];
+		if (!empty($alias))
+		{
+			echo "<b>Alias: </b>$alias</br>";
+		}
 		$info=array_column_search($childId, pkColumnOfTable($childType.'s'), $allOfChildType)['info'];
 		if (!empty($info))
 		{
@@ -57,7 +60,7 @@
 			{
 				printParents(array('maps'=>all_from_table($dbh, $configSchema, 'maps')), $child);
 			}
-			elseif ($childType == 'source')
+			elseif ($childType == 'source' || $childType == 'contact' || $childType == 'export' || $childType == 'update' || $childType == 'origin')
 			{
 				printParents(array('layers'=>all_from_table($dbh, $configSchema, 'layers')), $child);
 			}
