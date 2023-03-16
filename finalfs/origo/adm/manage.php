@@ -11,6 +11,7 @@
 	include_once("./functions/pkColumnOfTable.php");
 	include_once("./functions/tableNamesFromSchema.php");
 	include_once("./functions/configTables.php");
+	include_once("./functions/toSwedish.php");
 	include_once("./functions/includeDirectory.php");
 	includeDirectory("./functions/manage");
 	$post=$_POST;
@@ -148,6 +149,8 @@
 <html style="width:100%;height:100%;font-size:0.9vw;line-height:2">
 <head>
 	<meta charset="utf-8"/>
+	<title>Administrationsverktyg för Origo</title>
+	<link rel="shortcut icon" href="../img/png/logo.png">
 	<script>
 		var topFrame="";
 		<?php
@@ -165,94 +168,19 @@
 		<?php include("./styles/manage.css"); ?>
 	</style>
 </head>
-<body>
+<body onresize="Array.from(document.getElementsByClassName('resizeimg')).forEach(function(element) { element.onerror(); });">
 	<form action="read_json.php">
 		<input class="topInput" type="submit" value="Importera JSON" />
 	</form>
 	<form action="help.php" target="topFrame">
 		<input class="topInput" onclick="toggleTopFrame('help');" type="submit" value="Hjälp" />
 	</form>
-	<iframe id="topFrame" name="topFrame" style="display:none"></iframe>
+	<iframe id="topFrame" name="topFrame" style="display:none" onload="javascript:(function(o){o.style.height=o.contentWindow.document.body.parentElement.scrollHeight+'px';}(this));"></iframe>
 	<iframe id="hiddenFrame" name="hiddenFrame" style="display:none"></iframe>
-	<div style="width:calc( 100vw - 15px ); overflow-x:auto; margin-bottom: 5px">
+	<div style="width:calc( 100vw - 2rem ); overflow-x:auto; margin-bottom: 5px">
 		<table style="border-bottom:dashed 1px lightgray; margin-bottom: 2px; border-top:dashed 1px lightgray;">
 			<tr>
-
-<!--  REDIGERA KARTA  -->
-				<th class="thLeft">
-					<h3 class="<?php if ($focusTable == 'maps') {echo 'h3Focus';} else {echo 'h3NoFocus';} ?>">
-						Redigera karta
-					</h3>
-					<?php headForm(array('maps'=>$configTables['maps']), $inheritPosts); ?>
-				</th>
-<!--  REDIGERA KONTROLLER  -->
-				<th class="thMiddle">
-					<h3 class="<?php if ($focusTable == 'controls') {echo 'h3Focus';} else {echo 'h3NoFocus';} ?>">
-						Redigera kontroll
-					</h3>
-					<?php headForm(array('controls'=>$configTables['controls']), $inheritPosts); ?>
-					<?php printMultiselectButton('controls'); ?>
-				</th>
-
-<!--  REDIGERA GRUPP  -->
-				<th class="thMiddle">
-					<h3 class="<?php if ($focusTable == 'groups') {echo 'h3Focus';} else {echo 'h3NoFocus';} ?>">
-						Redigera grupp
-					</h3>
-					<?php headForm(array('groups'=>$configTables['groups']), $inheritPosts); ?>
-					<?php printMultiselectButton('groups'); ?>
-				</th>
-
-<!--  REDIGERA LAGER  -->
-				<th class="thMiddle">
-					<h3 class="<?php if ($focusTable == 'layers') {echo 'h3Focus';} else {echo 'h3NoFocus';} ?>">
-						Redigera lager
-					</h3>
-					<?php headForm(array('layers'=>$configTables['layers']), $inheritPosts); ?>
-					<?php printMultiselectButton('layers'); ?>
-				</th>
-
-<!--  REDIGERA KÄLLOR  -->
-				<th class="thMiddle">
-					<h3 class="<?php if ($focusTable == 'sources') {echo 'h3Focus';} else {echo 'h3NoFocus';} ?>">
-						Redigera källa
-					</h3>
-					<?php headForm(array('sources'=>$configTables['sources']), $inheritPosts); ?>
-				</th>
-
-<!--  REDIGERA SIDFÖTTER  -->
-				<th class="thMiddle">
-					<h3 class="<?php if ($focusTable == 'footers') {echo 'h3Focus';} else {echo 'h3NoFocus';} ?>">
-						Redigera sidfot
-					</h3>
-					<?php headForm(array('footers'=>$configTables['footers']), $inheritPosts); ?>
-				</th>
-
-<!--  REDIGERA TJÄNSTER  -->
-				<th class="thMiddle">
-					<h3 class="<?php if ($focusTable == 'services') {echo 'h3Focus';} else {echo 'h3NoFocus';} ?>">
-						Redigera tjänst
-					</h3>
-					<?php headForm(array('services'=>$configTables['services']), $inheritPosts); ?>
-				</th>
-
-<!--  REDIGERA TILEGRIDS  -->
-				<th class="thMiddle">
-					<h3 class="<?php if ($focusTable == 'tilegrids') {echo 'h3Focus';} else {echo 'h3NoFocus';} ?>">
-						Redigera tilegrid
-					</h3>
-					<?php headForm(array('tilegrids'=>$configTables['tilegrids']), $inheritPosts); ?>
-				</th>
-
-<!--  REDIGERA PROJ4DEFS  -->
-				<th class="thRight">
-					<h3 class="<?php if ($focusTable == 'proj4defs') {echo 'h3Focus';} else {echo 'h3NoFocus';} ?>">
-						Redigera proj4defs
-					</h3>
-					<?php headForm(array('proj4defs'=>$configTables['proj4defs']), $inheritPosts); ?>
-					<?php printMultiselectButton('proj4defs'); ?>
-				</th>
-
+				<?php printHeadForms($configTables, $focusTable, $inheritPosts); ?>
 			</tr>
 		</table>
 	</div>
@@ -291,18 +219,7 @@
 			echo '</tr></table><hr>';
 			unset($selectables, $thClass);
 		}
-		unset($map);
-	}
-
-	//  Om kontroll vald
-	if (isset($post['controlId']))
-	{
-		$control=array('control'=>array_column_search($post['controlId'], 'control_id', $configTables['controls']));
-		if (!empty(current($control)))
-		{
-			printControlForm($control, array('maps'=>$configTables['maps']), $inheritPosts);
-		}
-		unset($control);
+		unset($map, $idPosts['mapId']);
 	}
 
 	//  Om grupp vald
@@ -328,84 +245,59 @@
 		}
 		unset($group);
 	}
-	unset($tmpGroupIds, $parent, $groupLevel, $groupId, $thClass);
+	unset($tmpGroupIds, $parent, $groupLevel, $groupId, $thClass, $idPosts['groupId']);
 
-	//  Om sidfot vald
-	if (isset($post['footerId']))
+	if (!empty($idPosts))
 	{
-		$footer=array('footer'=>array_column_search($post['footerId'], 'footer_id', $configTables['footers']));
-		if (!empty(current($footer)))
+		$target=substr(key($idPosts), 0, -2);
+		$table=$target.'s';
+		$child=array($target=>array_column_search(current($idPosts), pkColumnOfTable($table), $configTables[$table]));
+		$printFormFunction='print'.ucfirst($target).'Form';
+		
+		//  Om lager vald
+		if ($target == 'layer')
 		{
-			printFooterForm($footer, $inheritPosts);
-		}
-		unset($footer);
-	}
-
-	//  Om lager vald
-	if (isset($post['layerId']))
-	{
-		$layer=array('layer'=>array_column_search($post['layerId'], 'layer_id', $configTables['layers']));
-		if (!empty(current($layer)))
-		{
-			if (isset($layer['layer']['source']))
+			$selectables=array(
+				'contacts'=>array_combine(array_column($configTables['contacts'], 'contact_id'), array_column($configTables['contacts'], 'name')),
+				'origins'=>array_combine(array_column($configTables['origins'], 'origin_id'), array_column($configTables['origins'], 'name')),
+				'updates'=>array_column($configTables['updates'], 'update_id')
+			);
+			if (isset($child['layer']['source']))
 			{
-				$layerSource=array_column_search($layer['layer']['source'], 'source_id', $configTables['sources']);
+				$layerSource=array_column_search($child['layer']['source'], 'source_id', $configTables['sources']);
 				if (!empty($layerSource) && isset($layerSource['service']))
 				{
-					$layer['layer']['service']=$layerSource['service'];
+					$child['layer']['service']=$layerSource['service'];
 				}
 				unset($layerSource);
 			}
-			printLayerForm($layer, array('maps'=>$configTables['maps'], 'groups'=>$configTables['groups']), array_column($configTables['sources'], 'source_id'), $inheritPosts);
-		}
-		unset($layer);
-	}
-
-	//  Om källa vald
-	if (isset($post['sourceId']))
-	{
-		$source=array('source'=>array_column_search($post['sourceId'], 'source_id', $configTables['sources']));
-		if (!empty(current($source)))
-		{
-			$selectables=array('services'=>array_column($configTables['services'], 'service_id'), 'tilegrids'=>array_column($configTables['tilegrids'], 'tilegrid_id'));
-			printSourceForm($source, $selectables, $inheritPosts);
+			eval($printFormFunction.'($child, $selectables, array("maps"=>$configTables["maps"], "groups"=>$configTables["groups"]), array_column($configTables["sources"], "source_id"), $inheritPosts);');
 			unset($selectables);
 		}
-		unset($source);
-	}
-
-	//  Om tjänst vald
-	if (isset($post['serviceId']))
-	{
-		$service=array('service'=>array_column_search($post['serviceId'], 'service_id', $configTables['services']));
-		if (!empty(current($service)))
+		
+		//  Om källa vald
+		elseif ($target == 'source')
 		{
-			printServiceForm($service, $inheritPosts);
+			$selectables=array('services'=>array_column($configTables['services'], 'service_id'), 'tilegrids'=>array_column($configTables['tilegrids'], 'tilegrid_id'));
+			eval($printFormFunction.'($child, $selectables, $inheritPosts);');
+			unset($selectables);
 		}
-		unset($service);
-	}
-
-	//  Om tilegrid vald
-	if (isset($post['tilegridId']))
-	{
-		$tilegrid=array('tilegrid'=>array_column_search($post['tilegridId'], 'tilegrid_id', $configTables['tilegrids']));
-		if (!empty(current($tilegrid)))
+		
+		//  Om kontroll vald
+		elseif ($target == 'control')
 		{
-			printTilegridForm($tilegrid, $inheritPosts);
+			eval($printFormFunction.'($child, array("maps"=>$configTables["maps"]), $inheritPosts);');
 		}
-		unset($tilegrid);
-	}
-
-	//  Om proj4def vald
-	if (isset($post['proj4defId']))
-	{
-		$proj4def=array('proj4def'=>array_column_search($post['proj4defId'], 'code', $configTables['proj4defs']));
-		if (!empty(current($proj4def)))
+		
+		// Om något annat valts
+		else
 		{
-			printProj4defForm($proj4def, $inheritPosts);
+			eval($printFormFunction.'($child, $inheritPosts);');
 		}
-		unset($proj4def);
+		unset($target, $table, $child, $printFormFunction);
 	}
+	unset($idPosts);
+
 ?>
 </body>
 </html>
