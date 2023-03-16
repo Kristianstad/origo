@@ -1,4 +1,5 @@
 <?php
+
 	function printUpdateSelect($target, $column, $class, $label, $options=null)
 	{
 		$targetId=current($target)[pkColumnOfTable(key($target).'s')];
@@ -14,4 +15,5 @@
 		printSelectOptions($options, $selected);
 		echo "</select>&nbsp;";
 	}
+	
 ?>
