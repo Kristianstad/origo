@@ -1,4 +1,5 @@
 <?php
+
 	function printTilegridForm($tilegrid, $inheritPosts)
 	{
 		echo '<div><div style="float:left;"><form method="post" style="line-height:2">';
@@ -13,7 +14,8 @@
 		printInfoButton($tilegrid);
 		echo '</div></form></div>';
 		$deleteConfirmStr="Är du säker att du vill radera tilegriden ".$tilegrid['tilegrid']."? Referenser till tilegriden hanteras separat.";
-		printDeleteButton($tilegrid, $deleteConfirmStr, 'deleteButton2');
+		printDeleteButton($tilegrid, $deleteConfirmStr);
 		echo '</div>';
 	}
+	
 ?>
