@@ -1,8 +1,9 @@
 <?php
+
 	function updatedColumns($table, $updatePosts)
 	{
 		$commonColumns=array(
-			pkColumnOfTable($table)	=> $updatePosts['update'.ucfirst(pkColumnOfTable($table))],
+			pkColumnOfTable($table)		=> $updatePosts['update'.ucfirst(pkColumnOfTable($table))],
 			'info'						=> $updatePosts['updateInfo']
 		);
 		if ($table == 'maps')
@@ -13,6 +14,7 @@
 				'zoom'					=> $updatePosts['updateZoom'],
 				'footer'				=> $updatePosts['updateFooter'],
 				'tilegrid'				=> $updatePosts['updateTilegrid'],
+				'show_meta'				=> $updatePosts['updateShow_meta'],
 				'layers'				=> '{'.$updatePosts['updateLayers'].'}',
 				'groups'				=> '{'.$updatePosts['updateGroups'].'}',
 				'controls'				=> '{'.$updatePosts['updateControls'].'}',
@@ -47,6 +49,37 @@
 		{
 			$tableColumns=array(
 				'tilesize'				=> $updatePosts['updateTilesize']
+			);
+		}
+		elseif ($table == 'contacts')
+		{
+			$tableColumns=array(
+				'name'					=> $updatePosts['updateName'],
+				'email'					=> $updatePosts['updateEmail'],
+				'web'					=> $updatePosts['updateWeb']
+			);
+		}
+		elseif ($table == 'origins')
+		{
+			$tableColumns=array(
+				'name'					=> $updatePosts['updateName'],
+				'email'					=> $updatePosts['updateEmail'],
+				'web'					=> $updatePosts['updateWeb']
+			);
+		}
+		elseif ($table == 'updates')
+		{
+			$tableColumns=array(
+				'interval'				=> $updatePosts['updateInterval'],
+				'method'				=> $updatePosts['updateMethod'],
+				'name'					=> $updatePosts['updateName']
+			);
+		}
+		elseif ($table == 'exports')
+		{
+			$tableColumns=array(
+				'resource'				=> $updatePosts['updateResource'],
+				'style'					=> $updatePosts['updateStyle']
 			);
 		}
 		elseif ($table == 'proj4defs')
@@ -93,7 +126,8 @@
 				'visible'				=> $updatePosts['updateVisible'],
 				'icon'					=> $updatePosts['updateIcon'],
 				'icon_extended'			=> $updatePosts['updateIcon_extended'],
-				'style_filter'			=> $updatePosts['updateStylefilter'],
+				'style_filter'			=> $updatePosts['updateStyle_filter'],
+				'style_layer'			=> $updatePosts['updateStyle_layer'],
 				'opacity'				=> $updatePosts['updateOpacity'],
 				'featureinfolayer'		=> $updatePosts['updateFeatureinfolayer'],
 				'format'				=> $updatePosts['updateFormat'],
@@ -102,6 +136,12 @@
 				'swiper'				=> $updatePosts['updateSwiper'],
 				'geometryname'			=> $updatePosts['updateGeometryname'],
 				'geometrytype'			=> $updatePosts['updateGeometrytype'],
+				'resources'				=> $updatePosts['updateResources'],
+				'contact'				=> $updatePosts['updateContact'],
+				'origin'				=> $updatePosts['updateOrigin'],
+				'updated'				=> $updatePosts['updateUpdated'],
+				'update'				=> $updatePosts['updateUpdate'],
+				'web'					=> $updatePosts['updateWeb'],
 				'categories'			=> '{'.$updatePosts['updateCategories'].'}',
 				'layers'				=> '{'.$updatePosts['updateLayers'].'}',
 				'adusers'				=> '{'.$updatePosts['updateAdusers'].'}',
@@ -111,4 +151,5 @@
 		}
 		return array_merge($commonColumns, $tableColumns);
 	}
+	
 ?>
