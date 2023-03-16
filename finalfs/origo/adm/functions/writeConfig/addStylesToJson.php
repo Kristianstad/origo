@@ -29,8 +29,6 @@
 				}
 				if (!empty($style['icon']))
 				{
-
-
 					if (substr($style['layer_id'], -strlen('-bg'))==='-bg' || (empty($style['icon_extended']) && $style['type'] != 'WFS'))
 					{
 						$json = $json.'"image": { "src": "'.$style['icon'].'" }';
@@ -45,7 +43,7 @@
 					$json = $json.', "filter": "'.$style['style_filter'].'"';
 				}
 				$json = $json.' }';
-				if (!empty($style['icon_extended']))
+				if (substr($style['layer_id'], -strlen('-bg'))!=='-bg' && !empty($style['icon_extended']))
 				{
 					$json = $json.',{ "icon": { "src": "'.$style['icon_extended'].'" }, "extendedLegend": true }';
 				}
