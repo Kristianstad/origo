@@ -1,8 +1,13 @@
 <?php
 	function printSelectOptions($optionValues, $selectedValue=null)
 	{
-		foreach ($optionValues as $value)
+		$isAssociativeArray=hasStringKeys($optionValues);
+		foreach ($optionValues as $value => $label)
 		{
+			if (!$isAssociativeArray)
+			{
+				$value=$label;
+			}
 			$selectOption="<option value='$value'";
 			if (isset($selectedValue))
 			{
@@ -11,7 +16,7 @@
 					$selectOption="$selectOption selected";
 				}
 			}
-			$selectOption="$selectOption>".ltrim(substr($value, strrpos($value,',')), ',')."</option>";
+			$selectOption="$selectOption>".ltrim(substr($label, strrpos($label,',')), ',')."</option>";
 			echo $selectOption;
 		}
 	}
