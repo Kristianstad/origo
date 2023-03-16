@@ -1,4 +1,5 @@
 <?php
+
 	function printMapForm($map, $selectables, $inheritPosts)
 	{
 		echo '<div><div style="float:left;"><form method="post" style="line-height:2">';
@@ -15,6 +16,8 @@
 		printTextarea($map, 'zoom', 'textareaXSmall', 'Zoom:');
 		printUpdateSelect($map, array('tilegrid'=>$selectables['tilegrids']), 'bodySelect', 'Tilegrid:');
 		printTextarea($map, 'info', 'textareaLarge', 'Info:');
+		echo '<br>';
+		printUpdateSelect($map, array('show_meta'=>array("f", "t")), 'miniSelect', 'Visa metadata:');
 		$map['map']=$map['map']['map_id'];
 		printHiddenInputs($inheritPosts);
 		echo '<div class="buttonDiv">';
@@ -25,7 +28,8 @@
 		printExportJsonButton($map['map']);
 		echo '</form></div>';
 		$deleteConfirmStr="Är du säker på att du vill radera kartan ".$map['map']."? Ingående kontroller, grupper och lager påverkas ej.";
-		printDeleteButton($map, $deleteConfirmStr, 'deleteButton3b');
+		printDeleteButton($map, $deleteConfirmStr);
 		echo '</div>';
 	}
+	
 ?>
