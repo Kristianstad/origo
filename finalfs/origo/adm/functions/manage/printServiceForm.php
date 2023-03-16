@@ -1,4 +1,5 @@
 <?php
+
 	function printServiceForm($service, $inheritPosts)
 	{
 		echo '<div><div style="float:left;"><form method="post" style="line-height:2">';
@@ -14,7 +15,8 @@
 		printInfoButton($service);
 		echo '</div></form></div>';
 		$deleteConfirmStr="Är du säker att du vill radera tjänsten ".$service['service']."? Referenser till tjänsten hanteras separat.";
-		printDeleteButton($service, $deleteConfirmStr, 'deleteButton2');
+		printDeleteButton($service, $deleteConfirmStr);
 		echo '</div>';
 	}
+	
 ?>
