@@ -2,7 +2,7 @@
 
 	function addLayersToJson($mapLayers, $groupLayer=false)
 	{
-		GLOBAL $layers, $json, $mapStyles, $mapSources, $sources, $services, $mapStyleLayers;
+		GLOBAL $map, $layers, $json, $mapStyles, $mapSources, $sources, $services, $mapStyleLayers, $contacts, $origins;
 		$json = $json. '"layers": [ ';
 		$firstLayer = true;
 		if (!isset($mapSources))
@@ -152,12 +152,59 @@
 							{
 								$json = $json.', "allowedEditOperations": "'.$layer['allowededitoperations'].'"';
 							}
+							if (!empty($layer['geometryname']))
+							{
+								$json = $json.', "geometryName": "'.$layer['geometryname'].'"';
+							}
+							if (!empty($layer['geometrytype']))
+							{
+								$json = $json.', "geometryType": "'.$layer['geometrytype'].'"';
+							}
 						}
 					}
 				}
-				if (!empty($layer['abstract']))
+				if ($map['show_meta'] == 't' || !empty($layer['abstract']))
 				{
-					$json = $json.', "abstract": "'.$layer['abstract'].'"';
+					//eval('$beskr="'.$layer['abstract'].'";');
+					$beskr=$layer['abstract'];
+					if (!empty($layer['web']))
+					{
+						$beskr=$beskr." <a href='".$layer['web']."' target='_blank'>Mer info.</a>";
+					}
+					if ($map['show_meta'] == 't')
+					{
+						$layerContact = array_column_search($layer['contact'], 'contact_id', $contacts);
+						if (!empty($layerContact['web']))
+						{
+							$contactStr="<a href='".$layerContact['web']."' target='_blank'>".$layerContact['name']."</a>";
+						}
+						elseif (!empty($layerContact['email']))
+						{
+							$contactStr="<a href='mailto:".$layerContact['email']."'>".$layerContact['name']."</a>";
+						}
+						else
+						{
+							$contactStr=$layerContact['name'];
+						}
+						$layerOrigin = array_column_search($layer['origin'], 'origin_id', $origins);
+						if (!empty($layerOrigin['web']))
+						{
+							$originStr="<a href='".$layerOrigin['web']."' target='_blank'>".$layerOrigin['name']."</a>";
+						}
+						elseif (!empty($layerOrigin['email']))
+						{
+							$originStr="<a href='mailto:".$layerOrigin['email']."'>".$layerOrigin['name']."</a>";
+						}
+						else
+						{
+							$originStr=$layerOrigin['name'];
+						}
+						$json = $json.', "abstract": "<b>Beskrivning: </b>'.$beskr.'<br><b>Resurser: </b>'.$layer['resources'].'<br><b>Kontakt: </b>'.$contactStr.'<br><b>Källa: </b>'.$originStr.'<br><b>Uppdaterad: </b>'.$layer['updated'].'"';
+					}
+					else
+					{
+						$json = $json.', "abstract": "'.$beskr.'"';
+					}
 				}
 				if (!empty($layer['attributes']) && $layer['type'] !== 'GROUP')
 				{
