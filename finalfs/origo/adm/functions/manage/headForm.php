@@ -1,4 +1,5 @@
 <?php
+
 	function headForm($table, $inheritPosts)
 	{
 		echo '<form class="headForm" method="post">';
@@ -23,7 +24,6 @@
 			}
 			if ($target == 'map' || $target == 'group')
 			{
-				//echo '<input type="hidden" name="groupLevels" value="1">';
 				if ($target == 'group')
 				{
 					if (isset($inheritPosts['mapId']) || isset($inheritPosts['groupId']))
@@ -42,8 +42,13 @@
 			}
 		}
 		echo   "<select $sId onchange=\"this.form.submit()\" class=\"headSelect\" name=\"$sName\">";
-		//selectOptions2($target.'s', $configTables[$table], $selected);
-		printSelectOptions(array_merge(array(""),array_column(current($table), pkColumnOfTable(key($table)))), $selected);
+		$optionValues=array_merge(array(""),array_column(current($table), pkColumnOfTable(key($table))));
+		if ($target == 'contact' || $target == 'origin')
+		{
+			$optionLabels=array_merge(array(""),array_column(current($table), 'name'));
+			$optionValues=array_combine($optionValues, $optionLabels);
+		}
+		printSelectOptions($optionValues, $selected);
 		echo   '</select>';
 		echo   '<button type="submit" class="headButton" name="'.$target.'Button" value="get">';
 		echo     'Hämta';
