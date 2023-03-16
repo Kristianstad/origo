@@ -1,17 +1,15 @@
 <?php
+
 	function printParents($potentialParents, $child)
 	{
 		$parents=findParents($potentialParents, $child);
-		$parentType=rtrim(key($potentialParents), 's');
+		$parentsTable=key($potentialParents);
+		$parentsTableSv=toSwedish($parentsTable);
 		if (!empty($parents))
 		{
-			if     ($parentType == 'map') { $parentsTypeSv='kartor'; }
-			elseif ($parentType == 'group') { $parentsTypeSv='grupper'; }
-			elseif ($parentType == 'layer') { $parentsTypeSv='lager'; }
-			elseif ($parentType == 'source') { $parentsTypeSv='källor'; }
-			else { $parentsTypeSv=$parentType; }
-			echo "<b>$parentsTypeSv: </b>";
+			echo "<b>$parentsTableSv: </b>";
 			$first=true;
+			$parentType=rtrim($parentsTable, 's');
 			foreach ($parents as $parent)
 			{
 				if (!$first)
@@ -31,4 +29,5 @@
 			return false;
 		}
 	}
+
 ?>
