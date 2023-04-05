@@ -1,12 +1,11 @@
 <?php
-	include_once("./constants/CONNECTION_STRING.php");
-	include_once("./functions/dbh.php");
-	include_once("./functions/pgArrayToPhp.php");
-	include_once("./functions/array_column_search.php");
-	include_once("./functions/all_from_table.php");
-	include_once("./functions/tableNamesFromSchema.php");
-	include_once("./functions/configTables.php");
-	include_once("./functions/includeDirectory.php");
+	require_once("./functions/dbh.php");
+	require_once("./functions/pgArrayToPhp.php");
+	require_once("./functions/array_column_search.php");
+	require_once("./functions/all_from_table.php");
+	require_once("./functions/tableNamesFromSchema.php");
+	require_once("./functions/configTables.php");
+	require_once("./functions/includeDirectory.php");
 	includeDirectory("./functions/writeConfig");
 
 	$mapId = $_GET['map'];
@@ -22,9 +21,8 @@
 	}
 	$configfile = "/origo/$mapName/index$mapNumber.json";
 	ignore_user_abort(true);
-	$dbh=dbh(CONNECTION_STRING);
-	$configSchema='map_configs';
-	$configTables=configTables($dbh, $configSchema);
+	$dbh=dbh();
+	$configTables=configTables($dbh);
 	extract($configTables);
 	$map = array_column_search($mapId, 'map_id', $maps);
 	$json = '{ ';
@@ -104,8 +102,10 @@
 	else
 	{
 		file_put_contents($configfile, $json);
+		require("./constants/configSchema.php");
 		$layers=all_from_table($dbh, $configSchema, 'layers');
 		$sources=all_from_table($dbh, $configSchema, 'sources');
+		unset($configSchema);
 		$restrictedLayers=array();
 		foreach ($layers as $layer)
 		{
