@@ -42,17 +42,15 @@
 		exit;
 	}
 
-	include_once("./constants/CONNECTION_STRING.php");
-	include_once("./functions/dbh.php");
-	include_once("./functions/pgArrayToPhp.php");
-	include_once("./functions/all_from_table.php");
-	include_once("./functions/configTables.php");
-	include_once("./functions/includeDirectory.php");
+	require_once("./functions/dbh.php");
+	require_once("./functions/pgArrayToPhp.php");
+	require_once("./functions/all_from_table.php");
+	require_once("./functions/configTables.php");
+	require_once("./functions/includeDirectory.php");
 	includeDirectory("./functions/read_json");
 
-	$dbh=dbh(CONNECTION_STRING);
-	$configSchema='map_configs';
-	$configTables=configTables($dbh, $configSchema);
+	$dbh=dbh();
+	$configTables=configTables($dbh);
 /*
  *************************
  *  DATABAS-OPERATIONER  *
