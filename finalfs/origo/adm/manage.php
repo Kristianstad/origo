@@ -1,21 +1,20 @@
 <!DOCTYPE html>
 <?php
 	header("Cache-Control: must-revalidate, max-age=0, s-maxage=0, no-cache, no-store");
-	include_once("./constants/CONNECTION_STRING.php");
-	include_once("./functions/dbh.php");
-	include_once("./functions/pgArrayToPhp.php");
-	include_once("./functions/array_column_search.php");
-	include_once("./functions/all_from_table.php");
-	include_once("./functions/findParents.php");
-	include_once("./functions/layerCategories.php");
-	include_once("./functions/pkColumnOfTable.php");
-	include_once("./functions/tableNamesFromSchema.php");
-	include_once("./functions/configTables.php");
-	include_once("./functions/toSwedish.php");
-	include_once("./functions/includeDirectory.php");
+	require_once("./functions/dbh.php");
+	require_once("./functions/array_column_search.php");
+	require_once("./functions/layerCategories.php");
+	require_once("./functions/pkColumnOfTable.php");
+	require_once("./functions/configTables.php");
+	require_once("./functions/includeDirectory.php");
 	includeDirectory("./functions/manage");
 	$post=$_POST;
-	unset($_POST);
+	$view=null;
+	if (isset($_GET['view']))
+	{
+		$view=$_GET['view'];
+	}
+	unset($_POST, $_GET);
 	if (isset($post['groupIds']))
 	{
 		$groupIdsArray=explode(',', $post['groupIds']);
@@ -35,11 +34,10 @@
 	}
 	//var_dump($post);
 	$idPosts=array_filter($post, function($key) {return (substr($key, -2) == 'Id');}, ARRAY_FILTER_USE_KEY);
-	unset($idPosts['fromMapId'], $idPosts['toMapId']);
+	unset($idPosts['fromMapId'], $idPosts['toMapId'], $idPosts['fromGroupId'], $idPosts['toGroupId']);
 	$focusTable=focusTable($idPosts);
-	$dbh=dbh(CONNECTION_STRING);
-	$configSchema='map_configs';
-	$configTables=configTables($dbh, $configSchema);
+	$dbh=dbh();
+	$configTables=configTables($dbh);
 	$layerCategories=layerCategories($configTables['layers']);
 	$pressedButton=array_keys(array_filter($post, function($key) {return (substr($key, -6) == 'Button');}, ARRAY_FILTER_USE_KEY));
 	if (isset($pressedButton[0]))
@@ -61,7 +59,9 @@
 			$targetPkColumn=pkColumnOfTable($targetTable);
 			if (!in_array(current($target), array_column($configTables[$targetTable], $targetPkColumn)))
 			{
+				require("./constants/configSchema.php");
 				$sql="INSERT INTO $configSchema.$targetTable($targetPkColumn) VALUES ('".current($target)."')";
+				unset($configSchema);
 			}
 			unset($targetTable, $targetPkColumn);
 		}
@@ -72,7 +72,9 @@
 			$targetPkColumn=pkColumnOfTable($targetTable);
 			if (in_array(current($target), array_column($configTables[$targetTable], $targetPkColumn)))
 			{
+				require("./constants/configSchema.php");
 				$sql="DELETE FROM $configSchema.$targetTable WHERE $targetPkColumn = '".current($target)."'";
+				unset($configSchema);
 			}
 			unset($targetTable, $targetPkColumn);
 		}
@@ -82,7 +84,7 @@
 			if ($command == 'update')
 			{
 				$updatePosts=array_filter($post, function($key) {return (substr($key, 0, 6) == 'update');}, ARRAY_FILTER_USE_KEY);
-				$sql=sqlForUpdate($target, $configSchema, $updatePosts);
+				$sql=sqlForUpdate($target, $updatePosts);
 				unset($updatePosts);
 			}
 			elseif ($command == 'operation')
@@ -113,7 +115,7 @@
 						$parentOperationColumnKey=key($target).'s';
 						$parentOperationColumnValue=array_column_search($parentPkColumnValue, $parentPkColumnKey, $configTables[$parentKey.'s'])[$parentOperationColumnKey];
 						$operationParent=array($parentKey.'s'=>array($parentPkColumnKey=>$parentPkColumnValue, $parentOperationColumnKey=>$parentOperationColumnValue));
-						$sql=sqlForOperation($operation, $target, $operationParent, $configSchema);
+						$sql=sqlForOperation($operation, $target, $operationParent);
 						unset($operation, $parentPkColumnValue, $parentPkColumnKey, $parentOperationColumnKey, $parentOperationColumnValue, $operationParent);
 					}
 					unset($parentKey);
@@ -128,7 +130,7 @@
 				die("Error in SQL query: " . pg_last_error());
 			}
 			unset($result);
-			$configTables=configTables($dbh, $configSchema);
+			$configTables=configTables($dbh);
 			if ($command != 'operation' && key($target) == 'layer')
 			{
 				$layerCategories=layerCategories($configTables['layers']);
@@ -146,7 +148,7 @@
 		$inheritPosts['layerCategory']=$post['layerCategory'];
 	}
 ?>
-<html style="width:100%;height:100%;font-size:0.9vw;line-height:2">
+<html style="width:100%;height:100%;font-size:clamp(7px, 0.9vw, 12px);line-height:2">
 <head>
 	<meta charset="utf-8"/>
 	<title>Administrationsverktyg för Origo</title>
@@ -165,7 +167,7 @@
 		?>
 	</script>
 	<style>
-		<?php include("./styles/manage.css"); ?>
+		<?php require("./styles/manage.css"); ?>
 	</style>
 </head>
 <body onresize="Array.from(document.getElementsByClassName('resizeimg')).forEach(function(element) { element.onerror(); });">
@@ -175,15 +177,10 @@
 	<form action="help.php" target="topFrame">
 		<input class="topInput" onclick="toggleTopFrame('help');" type="submit" value="Hjälp" />
 	</form>
+	<?php printViewSwitcher($view); ?>
 	<iframe id="topFrame" name="topFrame" style="display:none" onload="javascript:(function(o){o.style.height=o.contentWindow.document.body.parentElement.scrollHeight+'px';}(this));"></iframe>
 	<iframe id="hiddenFrame" name="hiddenFrame" style="display:none"></iframe>
-	<div style="width:calc( 100vw - 2rem ); overflow-x:auto; margin-bottom: 5px">
-		<table style="border-bottom:dashed 1px lightgray; margin-bottom: 2px; border-top:dashed 1px lightgray;">
-			<tr>
-				<?php printHeadForms($configTables, $focusTable, $inheritPosts); ?>
-			</tr>
-		</table>
-	</div>
+	<?php printHeadForms($view, $configTables, $focusTable, $inheritPosts); ?>
 	<script>
 		updateSelect("layerCategories", categories);
 		<?php
@@ -213,18 +210,70 @@
 			printMapForm($map, $selectables, $inheritPosts);
 			echo '<table><tr>';
 			$thClass='thFirst';
-			printChildSelect($map, 'groups', $thClass, 'Redigera grupp', $inheritPosts);
-			printChildSelect($map, 'layers', $thClass, 'Redigera lager', $inheritPosts);
-			printChildSelect($map, 'controls', $thClass, 'Redigera kontroll', $inheritPosts);
+			if (isset($inheritPosts['layerId']))
+			{
+				printChildSelect($map, 'layers', $thClass, 'Lager', $inheritPosts);
+				printChildSelect($map, 'groups', $thClass, 'Grupp', $inheritPosts);
+				printChildSelect($map, 'controls', $thClass, 'Kontroll', $inheritPosts);
+			}
+			elseif (isset($inheritPosts['controlId']))
+			{
+				printChildSelect($map, 'controls', $thClass, 'Kontroll', $inheritPosts);
+				printChildSelect($map, 'groups', $thClass, 'Grupp', $inheritPosts);
+				printChildSelect($map, 'layers', $thClass, 'Lager', $inheritPosts);
+			}
+			else
+			{
+				printChildSelect($map, 'groups', $thClass, 'Grupp', $inheritPosts);
+				printChildSelect($map, 'layers', $thClass, 'Lager', $inheritPosts);
+				printChildSelect($map, 'controls', $thClass, 'Kontroll', $inheritPosts);
+			}
 			echo '</tr></table><hr>';
 			unset($selectables, $thClass);
 		}
 		unset($map, $idPosts['mapId']);
 	}
+	
+	// Om databas vald
+	elseif (isset($post['databaseId']))
+	{
+		$database=array('database'=>array_column_search($post['databaseId'], 'database_id', $configTables['databases']));
+		if (!empty(current($database)))
+		{
+			printDatabaseForm($database, $inheritPosts);
+			$databaseSchemas =preg_grep("/^".$post['databaseId']."[.]/", array_column($configTables['schemas'], 'schema_id'));
+			$database['database']['schemas']='{'.implode(',', $databaseSchemas).'}';
+			echo '<table><tr>';
+			$thClass='thFirst';
+			printChildSelect($database, 'schemas', $thClass, 'Schema', $inheritPosts);
+			echo '</tr></table><hr>';
+			unset($databaseSchemas, $thClass);
+		}
+		unset($database, $idPosts['databaseId']);
+	}
+	
+	// Om schema vald
+	if (isset($post['schemaId']))
+	{
+		$schema=array('schema'=>array_column_search($post['schemaId'], 'schema_id', $configTables['schemas']));
+		if (!empty(current($schema)))
+		{
+			printSchemaForm($schema, $inheritPosts);
+			$schemaTables =preg_grep("/^".$post['schemaId']."[.]/", array_column($configTables['tables'], 'table_id'));
+			$schema['schema']['tables']='{'.implode(',', $schemaTables).'}';
+			echo '<table><tr>';
+			$thClass='thFirst';
+			printChildSelect($schema, 'tables', $thClass, 'Tabell', $inheritPosts);
+			echo '</tr></table><hr>';
+			unset($schemaTables, $thClass);
+		}
+		unset($schema, $idPosts['schemaId']);
+	}
 
 	//  Om grupp vald
 	$tmpGroupIds=$groupIdsArray;
 	$parent=array_shift($tmpGroupIds);
+	$totGroupLevels=count($groupIdsArray);
 	$groupLevel=1;
 	foreach ($groupIdsArray as $groupId)
 	{
@@ -238,14 +287,22 @@
 			printGroupForm($group, array('maps'=>$configTables['maps'], 'groups'=>$configTables['groups']), $inheritPosts);
 			echo '<table><tr>';
 			$thClass='thFirst';
-			printChildSelect($group, 'groups', $thClass, 'Redigera grupp', $inheritPosts, $groupLevel, $parent);
-			printChildSelect($group, 'layers', $thClass, 'Redigera lager', $inheritPosts, $groupLevel);
+			if ($groupLevel == $totGroupLevels && isset($inheritPosts['layerId']))
+			{
+				printChildSelect($group, 'layers', $thClass, 'Lager', $inheritPosts, $groupLevel);
+				printChildSelect($group, 'groups', $thClass, 'Grupp', $inheritPosts, $groupLevel, $parent);
+			}
+			else
+			{
+				printChildSelect($group, 'groups', $thClass, 'Grupp', $inheritPosts, $groupLevel, $parent);
+				printChildSelect($group, 'layers', $thClass, 'Lager', $inheritPosts, $groupLevel);
+			}
 			echo '</tr></table><hr>';
 			$groupLevel++;
 		}
 		unset($group);
 	}
-	unset($tmpGroupIds, $parent, $groupLevel, $groupId, $thClass, $idPosts['groupId']);
+	unset($tmpGroupIds, $parent, $groupLevel, $groupId, $thClass, $idPosts['groupId'], $totGroupLevels);
 
 	if (!empty($idPosts))
 	{
