@@ -206,3 +206,25 @@ CREATE TABLE map_configs.updates
     name character varying COLLATE pg_catalog."default",
     CONSTRAINT updates_pkey PRIMARY KEY (update_id)
 );
+
+CREATE TABLE map_configs.databases
+(
+    database_id character varying COLLATE pg_catalog."default" NOT NULL,
+    connectionstring character varying COLLATE pg_catalog."default",
+    info character varying COLLATE pg_catalog."default",
+    CONSTRAINT database_pkey PRIMARY KEY (database_id)
+);
+
+CREATE TABLE map_configs.schemas
+(
+    schema_id character varying COLLATE pg_catalog."default" NOT NULL,
+    info character varying COLLATE pg_catalog."default",
+    CONSTRAINT schemas_pkey PRIMARY KEY (schema_id)
+);
+
+CREATE TABLE map_configs.tables
+(
+    table_id character varying COLLATE pg_catalog."default" NOT NULL,
+    info character varying COLLATE pg_catalog."default",
+    CONSTRAINT tables_pkey PRIMARY KEY (table_id)
+);
