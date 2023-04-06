@@ -2,26 +2,25 @@
 <html style="width:100%;height:100%">
 <head>
 	<style>
-		<?php include("./styles/info.css"); ?>
+		<?php require("./styles/info.css"); ?>
 	</style>
 </head>
 <body>
 <?php
 	header("Cache-Control: must-revalidate, max-age=0, s-maxage=0, no-cache, no-store");
 
-	include_once("./constants/CONNECTION_STRING.php");
-	include_once("./functions/dbh.php");
-	include_once("./functions/pgArrayToPhp.php");
-	include_once("./functions/array_column_search.php");
-	include_once("./functions/all_from_table.php");
-	include_once("./functions/findParents.php");
-	include_once("./functions/pkColumnOfTable.php");
-	include_once("./functions/toSwedish.php");
-	include_once("./functions/includeDirectory.php");
+	require_once("./functions/dbh.php");
+	require_once("./functions/pgArrayToPhp.php");
+	require_once("./functions/array_column_search.php");
+	require_once("./functions/all_from_table.php");
+	require_once("./functions/findParents.php");
+	require_once("./functions/pkColumnOfTable.php");
+	require_once("./functions/toSwedish.php");
+	require_once("./functions/includeDirectory.php");
 	includeDirectory("./functions/info");
-	
-	$dbh=dbh(CONNECTION_STRING);
-	$configSchema='map_configs';
+	require("./constants/configSchema.php");
+	$dbh=dbh();
+
 	$childType=$_GET['type'];
 	$childId=$_GET['id'];
 	$childTypeSv=toSwedish($childType);
