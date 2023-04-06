@@ -1,5 +1,15 @@
 <?php
 
+	require_once("./functions/manage/printTextarea.php");
+	require_once("./functions/manage/printSourceList.php");
+	require_once("./functions/manage/printUpdateSelect.php");
+	require_once("./functions/manage/printHiddenInputs.php");
+	require_once("./functions/manage/printUpdateButton.php");
+	require_once("./functions/manage/printInfoButton.php");
+	require_once("./functions/manage/printDeleteButton.php");
+	require_once("./functions/manage/printAddOperation.php");
+	require_once("./functions/manage/printRemoveOperation.php");
+
 	function printLayerForm($layer, $selectables, $operationTables, $sources, $inheritPosts)
 	{
 		echo '<div><div style="float:left;"><form method="post" style="line-height:2">';
@@ -93,7 +103,7 @@
 		printInfoButton($layer);
 		echo '</div></form></div>';
 		$deleteConfirmStr="Är du säker att du vill radera lagret ".$layer['layer']."? Referenser till lagret hanteras separat.";
-		printDeleteButton($layer, $deleteConfirmStr);
+		printDeleteButton($layer, $deleteConfirmStr, $inheritPosts);
 		echo '</div><div style="clear:both; margin-bottom:3rem">';
 		printAddOperation($layer, array('maps'=>array_column($operationTables['maps'], 'map_id')), 'Lägg till i karta', $inheritPosts);
 		printRemoveOperation($layer, array('maps'=>$operationTables['maps']), 'Ta bort från karta', $inheritPosts);
