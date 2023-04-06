@@ -1,5 +1,12 @@
 <?php
 
+	require_once("./functions/manage/printTextarea.php");
+	require_once("./functions/manage/printUpdateSelect.php");
+	require_once("./functions/manage/printHiddenInputs.php");
+	require_once("./functions/manage/printUpdateButton.php");
+	require_once("./functions/manage/printInfoButton.php");
+	require_once("./functions/manage/printDeleteButton.php");
+
 	function printSourceForm($source, $selectables, $inheritPosts)
 	{
 		echo '<div><div style="float:left;"><form method="post" style="line-height:2">';
@@ -18,7 +25,7 @@
 		printInfoButton($source);
 		echo '</div></form></div>';
 		$deleteConfirmStr="Är du säker att du vill radera källan ".$source['source']."? Referenser till källan hanteras separat.";
-		printDeleteButton($source, $deleteConfirmStr);
+		printDeleteButton($source, $deleteConfirmStr, $inheritPosts);
 		echo '</div>';
 	}
 	
