@@ -1,22 +1,21 @@
 <?php
-	function dbh($connection_string)
+
+	function dbh($dbhConnectionString=null)
 	{
-		if (!isset($dbh))
+		if (!isset($dbhConnectionString))
 		{
-			$dbh = pg_connect($connection_string);
-			if (!$dbh)
-			{
-				echo '{"save_status":"Error in connection"}';
-				die();
-			}
-			else
-			{
-				return $dbh;
-			}
+			require_once("./constants/dbhConnectionString.php");
+		}
+		$dbh = pg_connect($dbhConnectionString);
+		if (!$dbh)
+		{
+			echo '{"save_status":"Error in connection"}';
+			die();
 		}
 		else
 		{
 			return $dbh;
 		}
  	 }
+ 	 
 ?>
