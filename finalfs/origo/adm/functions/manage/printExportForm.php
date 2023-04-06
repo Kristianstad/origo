@@ -1,5 +1,11 @@
 <?php
 
+	require_once("./functions/manage/printTextarea.php");
+	require_once("./functions/manage/printHiddenInputs.php");
+	require_once("./functions/manage/printUpdateButton.php");
+	require_once("./functions/manage/printInfoButton.php");
+	require_once("./functions/manage/printDeleteButton.php");
+
 	function printExportForm($export, $inheritPosts)
 	{
 		echo '<div><div style="float:left;"><form method="post" style="line-height:2">';
@@ -15,7 +21,7 @@
 		printInfoButton($export);
 		echo '</div></form></div>';
 		$deleteConfirmStr="Är du säker att du vill radera exportinställningen ".$export['export']."? Referenser till exportinställningen hanteras separat.";
-		printDeleteButton($export, $deleteConfirmStr);
+		printDeleteButton($export, $deleteConfirmStr, $inheritPosts);
 		echo '</div>';
 	}
 	
