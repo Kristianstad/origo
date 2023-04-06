@@ -11,8 +11,7 @@ function updateSelect(id, array)
 				select.options[i] = null;
 			}
 		}
-		array.forEach(function(item)
-		{
+		array.forEach(function(item) {
 			var newOption = document.createElement("option");
 			newOption.text = item.toString();
 			select.add(newOption);
