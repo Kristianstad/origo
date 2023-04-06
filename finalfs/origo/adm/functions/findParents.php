@@ -1,5 +1,8 @@
 <?php
 
+	require_once("./functions/pgArrayToPhp.php");
+	require_once("./functions/pkColumnOfTable.php");
+
 	function findParents($potentialParents, $child)
 	{
 		$parents=array();
