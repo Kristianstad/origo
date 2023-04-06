@@ -1,6 +1,12 @@
 <?php
-	function sqlForUpdate($target, $configSchema, $updatePosts)
+
+	require_once("./functions/pkColumnOfTable.php");
+	require_once("./functions/manage/updatedColumns.php");
+	require_once("./functions/manage/appendUpdatedColumnsToSql.php");
+
+	function sqlForUpdate($target, $updatePosts)
 	{
+		require("./constants/configSchema.php");
 		$targetTable=key($target).'s';
 		$targetPkColumn=pkColumnOfTable($targetTable);
 		$updatedColumns=updatedColumns($targetTable, $updatePosts);
@@ -9,4 +15,5 @@
 		$sql=$sql." WHERE $targetPkColumn = '".current($target)."'";
 		return $sql;
 	}
+	
 ?>
