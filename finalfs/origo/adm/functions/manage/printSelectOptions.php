@@ -1,4 +1,7 @@
 <?php
+
+	require_once("./functions/manage/hasStringKeys.php");
+
 	function printSelectOptions($optionValues, $selectedValue=null)
 	{
 		$isAssociativeArray=hasStringKeys($optionValues);
@@ -20,4 +23,5 @@
 			echo $selectOption;
 		}
 	}
+	
 ?>
