@@ -1,4 +1,5 @@
 <?php
+
 	function appendUpdatedColumnsToSql($dbColumns, $sql)
 	{
 		$first=true;
@@ -24,4 +25,5 @@
 		}
 		return $sql;
 	}
+	
 ?>
