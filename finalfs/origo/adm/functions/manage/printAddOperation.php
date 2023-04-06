@@ -1,4 +1,8 @@
 <?php
+
+	require_once("./functions/manage/printSelectOptions.php");
+	require_once("./functions/manage/printHiddenInputs.php");
+
 	function printAddOperation($target, $addToTable, $buttontext, $inheritPosts)
 	{
 		$str=rtrim(ucfirst(key($addToTable)), 's');
@@ -10,4 +14,5 @@
 		echo '<button type="submit" name="'.key($target).'Button" value="operation">'.$buttontext.'</button>';
 		echo '</form>';
 	}
+	
 ?>
