@@ -1,39 +1,39 @@
 		body		{ font-family:OpenSans,"Droid Sans",Verdana,"DejaVu Sans","Bitstream Vera Sans",sans-serif;width:fit-content;background-color:#7fb1b3 }
-		button		{ font-family:OpenSans,"Droid Sans",Verdana,"DejaVu Sans","Bitstream Vera Sans",sans-serif;padding:0.12vw; font-size:0.9vw; border-width:1px; border-style:solid; line-height:1.2; margin-left:0.1vw; white-space:nowrap;background-color:powderblue }
+		button		{ font-family:OpenSans,"Droid Sans",Verdana,"DejaVu Sans","Bitstream Vera Sans",sans-serif;padding:0.12vw; font-size:clamp(7px, 0.9vw, 12px); border-width:1px; border-style:solid; line-height:1.2; margin-left:2px; white-space:nowrap;background-color:powderblue }
 		.buttonDiv	{ display:flex; position:absolute; right:6rem; line-height:1.2 }
-		.exportButtonDiv { position:absolute; right:0; margin-top:2rem; margin-right:2rem }
+		.exportButtonDiv { position:absolute; right:0; margin-top:2.4rem; margin-right:2rem }
 		.deleteButtonDiv { white-space:nowrap; position:absolute; right:2rem }
-		.headButton	{ width:3.3vw }
-		.topInput	{ font-family:OpenSans,"Droid Sans",Verdana,"DejaVu Sans","Bitstream Vera Sans",sans-serif;padding:0.12vw; font-size:0.9vw; border-width:1px; border-style:solid; line-height:1.2; margin-left:0.1vw; margin-right:0.5vw;margin-bottom:0.3vw;white-space:nowrap;background-color:powderblue;float:left }
+		.headButton	{ width:4em }
+		.topInput	{ font-family:OpenSans,"Droid Sans",Verdana,"DejaVu Sans","Bitstream Vera Sans",sans-serif;padding:0.12vw; font-size:clamp(7px, 0.9vw, 12px); border-width:1px; border-style:solid; line-height:1.2; margin-left:0.1vw; margin-right:0.5vw;margin-bottom:0.3vw;white-space:nowrap;background-color:powderblue;float:left }
 		.updateButton	{ margin-right:0.5vw }
 		.exportButton	{  }
-		.deleteButton	{ visibility:hidden; color:red; float:right }
+		.deleteButton	{ visibility:hidden; color:red; float:right; margin-bottom:1rem }
 		hr		{ margin-right:0.2vw; margin-left:0.3vw }
-		table		{ border-spacing:0; clear:left; font-size:0.9vw }
+		table		{ border-spacing:0; clear:left; font-size:clamp(7px, 0.9vw, 12px); min-height:2em }
 		th		{ text-align:left; vertical-align:top }
-		.thLeft		{ min-width:13vw; padding-right:0.3vw; border-right:dashed 1px lightgray }
-		.thMiddle	{ min-width:13vw; padding-left:0.3vw; padding-right:0.3vw; border-right:dashed 1px lightgray }
-		.thRight	{ min-width:13vw; padding-left:0.3vw }
-		.thFirst	{ padding-right:0.3vw }
-		.thNext		{ padding-right:0.3vw; border-left:dashed 1px lightgray; padding-left:0.3vw }
-		h3		{ margin-block-start:0.6em; margin-block-end:0.5em; font-size:0.9vw }
+		.thLeft		{ min-width:16em; padding-right:0.3vw; border-right:dashed 1px lightgray }
+		.thMiddle	{ min-width:16em; padding-left:0.3vw; padding-right:0.3vw; border-right:dashed 1px lightgray }
+		.thRight	{ min-width:16em; padding-left:0.3vw }
+		.thFirst	{ width:16em; white-space:nowrap }
+		.thNext		{ width:16em; white-space:nowrap; border-left:dashed 1px lightgray; padding-left:0.3vw }
+		h3		{ margin-block-start:0.6em; margin-block-end:0.5em; font-size:clamp(7px, 0.9vw, 12px) }
 		.h3NoFocus	{ color:lightgray; margin-block-start:0 }
 		.h3Focus	{ margin-block-start:0 }
 		.h3Lightgray	{ color:lightgray }
 		.h3Black	{ color:black }
-		select		{ font-family:OpenSans,"Droid Sans",Verdana,"DejaVu Sans","Bitstream Vera Sans",sans-serif;font-size:0.9vw; padding:0.1vw; position:relative }
-		.headSelect	{ max-width:9.2vw; min-width:9.2vw }
+		select		{ font-family:OpenSans,"Droid Sans",Verdana,"DejaVu Sans","Bitstream Vera Sans",sans-serif; font-size:clamp(7px, 0.9vw, 12px); padding:0.1vw; position:relative }
+		.headSelect	{ width:calc(100% - 4.5em); max-width:12em }
 		.bodySelect	{ position:relative; top:-0.3vw; max-width: 200px }
 		.miniSelect	{ top:-0.3vw; font-family:monospace }
 		label		{ vertical-align: text-bottom }
-		input		{ font-family:OpenSans,"Droid Sans",Verdana,"DejaVu Sans","Bitstream Vera Sans",sans-serif;font-size: 0.9vw; line-height:1.5; border-width:1px; padding:0 0.3vw; border-style:solid }
-		.headInput	{ width: 8.5vw; margin-bottom:0.1vw }
+		input		{ font-family:OpenSans,"Droid Sans",Verdana,"DejaVu Sans","Bitstream Vera Sans",sans-serif; font-size:clamp(7px, 0.9vw, 12px); line-height:1.5; border-width:1px; border-style:solid }
+		.headInput	{ width:calc(100% - 5em); margin-bottom:0.1vw }
 		form		{ margin:0; margin-block-end:0 }
-		.headForm	{ display:inline; min-width:12.9vw; padding:0.1vw }
+		.headForm	{ display:inline; width:100% }
 		.bodyForm	{ width:100vw }
 		.addForm	{ display:flex; padding:0.1vw; float:left; margin-right:0.5vw; margin-bottom:0.4vw }
 		.operationForm	{ display:flex; padding:0.1vw; float:left; margin-right:0.5vw; margin-bottom:0.4vw }
-		textarea	{ font-family:OpenSans,"Droid Sans",Verdana,"DejaVu Sans","Bitstream Vera Sans",sans-serif;vertical-align:text-bottom; padding:0.2vw 0.3vw 0.2vw 0.3vw; font-size:0.9vw; line-height:1; height:1em }
+		textarea	{ font-family:OpenSans,"Droid Sans",Verdana,"DejaVu Sans","Bitstream Vera Sans",sans-serif;vertical-align:text-bottom; font-size:clamp(7px, 0.9vw, 12px); line-height:1; height:1em }
 		.textareaXLarge	{ width:66vw }
 		.textareaLarge	{ width:33vw }
 		.textareaMedium	{ width:13vw }
