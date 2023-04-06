@@ -1,4 +1,5 @@
 <?php
+
 	function printInfoButton($target)
 	{
 		$type=key($target);
@@ -13,4 +14,5 @@
 			</form>
 		HERE;
 	}
+	
 ?>
