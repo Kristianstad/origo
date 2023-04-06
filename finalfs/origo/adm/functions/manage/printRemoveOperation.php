@@ -1,4 +1,9 @@
 <?php
+
+	require_once("./functions/findParents.php");
+	require_once("./functions/manage/printSelectOptions.php");
+	require_once("./functions/manage/printHiddenInputs.php");
+
 	function printRemoveOperation($targetToRemove, $tableToRemoveFrom, $buttontext, $inheritPosts)
 	{
 		$parents=findParents($tableToRemoveFrom, $targetToRemove);
@@ -13,4 +18,5 @@
 			echo '</form>';
 		}
 	}
+	
 ?>
