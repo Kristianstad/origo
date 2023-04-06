@@ -1,4 +1,5 @@
 <?php
+
 	function printHiddenInputs($inheritPosts)
 	{
 		$hiddenInputs="";
@@ -14,4 +15,5 @@
 			echo $hiddenInputs;
 		}
 	}
+	
 ?>
