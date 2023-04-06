@@ -1,5 +1,8 @@
 <?php
 
+	require_once("./functions/findParents.php");
+	require_once("./functions/toSwedish.php");
+
 	function printParents($potentialParents, $child)
 	{
 		$parents=findParents($potentialParents, $child);
