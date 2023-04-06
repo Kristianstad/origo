@@ -1,5 +1,13 @@
 <?php
 
+	require_once("./functions/manage/printTextarea.php");
+	require_once("./functions/manage/printHiddenInputs.php");
+	require_once("./functions/manage/printUpdateButton.php");
+	require_once("./functions/manage/printInfoButton.php");
+	require_once("./functions/manage/printDeleteButton.php");
+	require_once("./functions/manage/printAddOperation.php");
+	require_once("./functions/manage/printRemoveOperation.php");
+
 	function printControlForm($control, $maps, $inheritPosts)
 	{
 		echo '<div><div style="float:left;"><form method="post" style="line-height:2">';
@@ -14,7 +22,7 @@
 		printInfoButton($control);
 		echo '</div></form></div>';
 		$deleteConfirmStr="Är du säker att du vill radera kontrollen ".$control['control']."? Referenser till kontrollen hanteras separat.";
-		printDeleteButton($control, $deleteConfirmStr);
+		printDeleteButton($control, $deleteConfirmStr, $inheritPosts);
 		echo '</div><div style="clear:both">';
 		printAddOperation($control, array('maps'=>array_column($maps['maps'], 'map_id')), 'Lägg till i karta', $inheritPosts);
 		printRemoveOperation($control, $maps, 'Ta bort från karta', $inheritPosts);
