@@ -1,4 +1,5 @@
 <?php
+
 	function printWriteConfigButton($mapId)
 	{
 		$confirmStr="Är du säker att du vill skriva över den befintliga konfigurationen för $mapId?";
@@ -10,4 +11,5 @@
 			</form>
 		HERE;
 	}
+	
 ?>
