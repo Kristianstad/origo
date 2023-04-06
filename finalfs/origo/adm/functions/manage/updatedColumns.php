@@ -1,5 +1,7 @@
 <?php
 
+	require_once("./functions/pkColumnOfTable.php");
+
 	function updatedColumns($table, $updatePosts)
 	{
 		$commonColumns=array(
@@ -96,6 +98,12 @@
 				'type'					=> $updatePosts['updateType']
 			);
 		}
+		elseif ($table == 'databases')
+		{
+			$tableColumns=array(
+				'connectionstring'					=> $updatePosts['updateConnectionstring']
+			);
+		}
 		elseif ($table == 'sources')
 		{
 			$tableColumns=array(
@@ -148,6 +156,10 @@
 				'adgroups'				=> '{'.$updatePosts['updateAdgroups'].'}',
 				'exports'				=> '{'.$updatePosts['updateExports'].'}'
 			);
+		}
+		else
+		{
+			$tableColumns=array();
 		}
 		return array_merge($commonColumns, $tableColumns);
 	}
