@@ -1,4 +1,7 @@
 <?php
+
+	require_once("./functions/manage/printSelectOptions.php");
+
 	function printSourceList($layer, $sources)
 	{
 		$layerId=current($layer)['layer_id'];
@@ -11,4 +14,5 @@
 		printSelectOptions(array_merge(array(""), $sources), $layerSource);
 		echo '</datalist>&nbsp;';
 	}
+	
 ?>
