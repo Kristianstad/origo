@@ -1,4 +1,7 @@
 <?php
+
+	require_once("./functions/pgArrayToPhp.php");
+
 	function layerCategories($layers)
 	{
 		$layerCategories=array("Alla" => array_column($layers, 'layer_id'));
@@ -15,4 +18,5 @@
 		}
 		return $layerCategories;
 	}
+	
 ?>
