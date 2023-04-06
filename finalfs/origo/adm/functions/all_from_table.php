@@ -1,4 +1,5 @@
 <?php
+
 	function all_from_table($dbh, $schema, $table)
 	{
 		$tableWithSchema=$schema.'.'.$table;
@@ -9,4 +10,5 @@
 		}
 		return pg_fetch_all($result);
 	}
+	
 ?>
