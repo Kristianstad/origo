@@ -1,4 +1,5 @@
 <?php
+
 	function printExportJsonButton($mapId)
 	{
 		echo <<<HERE
@@ -12,4 +13,5 @@
 			</div>
 		HERE;
 	}
+	
 ?>
