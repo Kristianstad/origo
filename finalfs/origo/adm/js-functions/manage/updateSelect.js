@@ -1,18 +1,21 @@
 function updateSelect(id, array)
 {
 	var select = document.getElementById(id);
-	if (select.options != null)
+	if (select != null)
 	{
-		var length = select.options.length;
-		for (i = length-1; i >= 0; i--)
+		if (select.options != null)
 		{
-			select.options[i] = null;
+			var length = select.options.length;
+			for (i = length-1; i >= 0; i--)
+			{
+				select.options[i] = null;
+			}
 		}
+		array.forEach(function(item)
+		{
+			var newOption = document.createElement("option");
+			newOption.text = item.toString();
+			select.add(newOption);
+		});
 	}
-	array.forEach(function(item)
-	{
-		var newOption = document.createElement("option");
-		newOption.text = item.toString();
-		select.add(newOption);
-	});
 }
