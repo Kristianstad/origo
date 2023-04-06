@@ -1,5 +1,11 @@
 <?php
 
+	require_once("./functions/manage/printTextarea.php");
+	require_once("./functions/manage/printHiddenInputs.php");
+	require_once("./functions/manage/printUpdateButton.php");
+	require_once("./functions/manage/printInfoButton.php");
+	require_once("./functions/manage/printDeleteButton.php");
+
 	function printTilegridForm($tilegrid, $inheritPosts)
 	{
 		echo '<div><div style="float:left;"><form method="post" style="line-height:2">';
@@ -14,7 +20,7 @@
 		printInfoButton($tilegrid);
 		echo '</div></form></div>';
 		$deleteConfirmStr="Är du säker att du vill radera tilegriden ".$tilegrid['tilegrid']."? Referenser till tilegriden hanteras separat.";
-		printDeleteButton($tilegrid, $deleteConfirmStr);
+		printDeleteButton($tilegrid, $deleteConfirmStr, $inheritPosts);
 		echo '</div>';
 	}
 	
