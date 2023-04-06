@@ -1,8 +1,12 @@
 <?php
 
+	require_once("./functions/pkColumnOfTable.php");
+	require_once("./functions/manage/printSelectOptions.php");
+	require_once("./functions/manage/printHiddenInputs.php");
+
 	function headForm($table, $inheritPosts)
 	{
-		echo '<form class="headForm" method="post">';
+		echo '<form id="'.key($table).'HeadForm" class="headForm" method="post"><div style="width:100%;white-space:nowrap;display:inline-block">';
 		$sId='';
 		$target=rtrim(key($table), 's');
 		$sName=$target.'Id';
@@ -53,13 +57,14 @@
 		echo   '<button type="submit" class="headButton" name="'.$target.'Button" value="get">';
 		echo     'Hämta';
 		echo   '</button>';
-		echo '</form><br>';
-		echo '<form class="headForm" method="post">';
+		echo '</div></form><br>';
+		echo '<form class="headForm" method="post"><div style="width:100%;white-space:nowrap;display:inline-block;margin-top:2px">';
 		echo   '<input class="headInput" type="text" name="'.$target.'IdNew">';
 		printHiddenInputs($inheritPosts);
 		echo   '<button type="submit" class="headButton" name="'.$target.'Button" value="create">';
 		echo     'Skapa';
 		echo   '</button>';
-		echo '</form>';
+		echo '</div></form>';
 	}
+	
 ?>
