@@ -1,4 +1,5 @@
 <?php
+
 	function array_column_search($search, $column, $array, $return=false)
 	{
 		$columnValues = array_column($array, $column);
@@ -19,4 +20,5 @@
 			return array();
 		}
 	}
+	
 ?>
