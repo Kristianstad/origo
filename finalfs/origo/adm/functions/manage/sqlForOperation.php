@@ -1,6 +1,11 @@
 <?php
-	function sqlForOperation($operation, $child, $parent, $configSchema)
+
+	require_once("./functions/pgArrayToPhp.php");
+	require_once("./functions/pkColumnOfTable.php");
+
+	function sqlForOperation($operation, $child, $parent)
 	{
+		require("./constants/configSchema.php");
 		$sql="";
 		$parentColumn=key($child).'s';
 		$parentColumnArray=pgArrayToPhp(current($parent)[$parentColumn]);
@@ -23,4 +28,5 @@
 		$sql="UPDATE $configSchema.$parentTable SET $parentColumn = '$parentColumnNewValue' WHERE $parentPkColumn = '$parentId'";
 		return $sql;
 	}
+	
 ?>
