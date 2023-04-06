@@ -1,4 +1,7 @@
 <?php
+
+	require_once("./functions/pkColumnOfTable.php");
+
 	function printTextarea($target, $column, $class, $label)
 	{
 		$targetId=current($target)[pkColumnOfTable(key($target).'s')];
@@ -13,4 +16,5 @@
 			<textarea rows="1" class="{$class}" id="{$targetId}{$ucColumn}" name="update{$ucColumn}">{$columnValue}</textarea>&nbsp;
 		HERE;
 	}
+	
 ?>
