@@ -1,5 +1,11 @@
 <?php
 
+	require_once("./functions/manage/printTextarea.php");
+	require_once("./functions/manage/printHiddenInputs.php");
+	require_once("./functions/manage/printUpdateButton.php");
+	require_once("./functions/manage/printInfoButton.php");
+	require_once("./functions/manage/printDeleteButton.php");
+
 	function printServiceForm($service, $inheritPosts)
 	{
 		echo '<div><div style="float:left;"><form method="post" style="line-height:2">';
@@ -15,7 +21,7 @@
 		printInfoButton($service);
 		echo '</div></form></div>';
 		$deleteConfirmStr="Är du säker att du vill radera tjänsten ".$service['service']."? Referenser till tjänsten hanteras separat.";
-		printDeleteButton($service, $deleteConfirmStr);
+		printDeleteButton($service, $deleteConfirmStr, $inheritPosts);
 		echo '</div>';
 	}
 	
