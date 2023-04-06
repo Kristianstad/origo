@@ -1,4 +1,5 @@
 <?php
+
 	function printMultiselectButton($table)
 	{
 		echo <<<HERE
@@ -9,4 +10,5 @@
 			</form>
 		HERE;
 	}
+
 ?>
