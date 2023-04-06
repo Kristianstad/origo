@@ -1,5 +1,11 @@
 <?php
 
+	require_once("./functions/manage/printTextarea.php");
+	require_once("./functions/manage/printHiddenInputs.php");
+	require_once("./functions/manage/printUpdateButton.php");
+	require_once("./functions/manage/printInfoButton.php");
+	require_once("./functions/manage/printDeleteButton.php");
+
 	function printFooterForm($footer, $inheritPosts)
 	{
 		echo '<div><div style="float:left;"><form method="post" style="line-height:2">';
@@ -16,7 +22,7 @@
 		printInfoButton($footer);
 		echo '</div></form></div>';
 		$deleteConfirmStr="Är du säker att du vill radera sidfoten ".$footer['footer']."? Referenser till sidfoten hanteras separat.";
-		printDeleteButton($footer, $deleteConfirmStr);
+		printDeleteButton($footer, $deleteConfirmStr, $inheritPosts);
 		echo '</div>';
 	}
 	
