@@ -90,6 +90,7 @@ CREATE TABLE map_configs.layers
     web character varying COLLATE pg_catalog."default",
     update character varying COLLATE pg_catalog."default",
     origin character varying COLLATE pg_catalog."default",
+    tables character varying[] COLLATE pg_catalog."default",
     CONSTRAINT layers_pkey PRIMARY KEY (layer_id)
 );
 
@@ -119,6 +120,7 @@ CREATE TABLE map_configs.maps
     info character varying COLLATE pg_catalog."default",
     tilegrid character varying COLLATE pg_catalog."default",
     show_meta boolean,
+    embedded boolean,
     CONSTRAINT map_pk PRIMARY KEY (map_id)
 );
 
@@ -154,6 +156,9 @@ CREATE TABLE map_configs.sources
     ttl integer,
     info character varying COLLATE pg_catalog."default",
     tilegrid character varying COLLATE pg_catalog."default",
+    contact character varying COLLATE pg_catalog."default",
+    updated date,
+    tables character varying[] COLLATE pg_catalog."default",
     CONSTRAINT sources_pkey PRIMARY KEY (source_id)
 );
 
@@ -219,6 +224,10 @@ CREATE TABLE map_configs.schemas
 (
     schema_id character varying COLLATE pg_catalog."default" NOT NULL,
     info character varying COLLATE pg_catalog."default",
+    contact character varying COLLATE pg_catalog."default",
+    updated date,
+    update character varying COLLATE pg_catalog."default",
+    origin character varying COLLATE pg_catalog."default",
     CONSTRAINT schemas_pkey PRIMARY KEY (schema_id)
 );
 
@@ -226,5 +235,9 @@ CREATE TABLE map_configs.tables
 (
     table_id character varying COLLATE pg_catalog."default" NOT NULL,
     info character varying COLLATE pg_catalog."default",
+    contact character varying COLLATE pg_catalog."default",
+    updated date,
+    update character varying COLLATE pg_catalog."default",
+    origin character varying COLLATE pg_catalog."default",
     CONSTRAINT tables_pkey PRIMARY KEY (table_id)
 );
