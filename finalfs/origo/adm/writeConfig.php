@@ -44,7 +44,12 @@
 		}
 		$json = $json.'"footer": { "img": "'.$footer['img'].'", "url" : "'.$footer['url'].'"'.$footerText.' },';
 	}
-	$json = $json.'"mapGrid": { "visible": '.pgBoolToText($map['mapgrid']).' } },';
+	$json = $json.'"mapGrid": { "visible": '.pgBoolToText($map['mapgrid']).' }';
+	if ($map['embedded'] == 'f')
+	{
+		$json=$json.', "mapInteractions": { "embedded": '.pgBoolToText($map['embedded']).' }';
+	}
+	$json = $json.' },';
 	// PageSettings </end>
 	$json = $json.'"projectionCode": "'.$map['projectioncode'].'", ';
 	$json = $json.'"projectionExtent": ['.pgBoxToText($map['projectionextent']).'], ';
