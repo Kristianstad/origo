@@ -26,4 +26,5 @@
 			unset($result);
 		}
 	}
+	pg_flush($dbh);
 ?>
