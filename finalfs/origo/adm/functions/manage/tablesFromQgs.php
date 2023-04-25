@@ -1,6 +1,6 @@
 <?php
 
-	function tablesFromQgs($qgsFile=null, $tables=array(), $subtree=null)
+	function tablesFromQgs($qgsFile=null, $layerName=null, $tables=array(), $subtree=null)
 	{
 		if (isset($subtree))
 		{
@@ -14,7 +14,7 @@
 		{
 			foreach ( $xml->{'layer-tree-layer'} as $layer)
     		{
-    			if ($layer['providerKey'] == "postgres")
+    			if ((!isset($layerName) && $layer['providerKey'] == "postgres") || (isset($layerName) && $layer['name'] == $layerName))
     			{
     				$source=explode(' ', $layer['source']);
     				$sourceParamArray=array();
@@ -25,13 +25,30 @@
     				}
     				if (!empty($sourceParamArray['dbname']) && !empty($sourceParamArray['table']) && strpos($sourceParamArray['table'], '(') === false)
     				{
-    					$tables[]=trim($sourceParamArray['dbname'],"'").'.'.str_replace('"', "", $sourceParamArray['table']);
+    					$table=trim($sourceParamArray['dbname'],"'").'.'.str_replace('"', "", $sourceParamArray['table']);
+    					$tables[]=$table;
+    					if (isset($layerName))
+    					{
+    						return array_unique($tables);
+    					}
     				}
     			}
     		}
     		foreach ($xml->{'layer-tree-group'} as $group)
     		{
-    			$tables=tablesFromQgs($null, $tables, $group);
+    			if (isset($layerName) && $group['name'] == $layerName)
+    			{
+    				$tables=tablesFromQgs($null, null, $tables, $group);
+    				return array_unique($tables);
+    			}
+    			else
+    			{
+    				$tables=tablesFromQgs($null, $layerName, $tables, $group);
+    				if (isset($layerName) && !empty($tables))
+    				{
+    					return array_unique($tables);
+    				}
+    			}
     		}
     	}
     	return array_unique($tables);
