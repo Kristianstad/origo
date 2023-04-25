@@ -1,7 +1,7 @@
 <?php
 
 	require_once("./functions/pkColumnOfTable.php");
-	require_once("./functions/manage/updatedColumns.php");
+	require_once("./functions/manage/updatedTarget.php");
 	require_once("./functions/manage/appendUpdatedColumnsToSql.php");
 
 	function sqlForUpdate($target, $updatePosts)
@@ -9,10 +9,11 @@
 		require("./constants/configSchema.php");
 		$targetTable=key($target).'s';
 		$targetPkColumn=pkColumnOfTable($targetTable);
-		$updatedColumns=updatedColumns($targetTable, $updatePosts);
+		$targetPk=current($target)[$targetPkColumn];
+		$target=updatedTarget($target, $updatePosts);
 		$sql="UPDATE $configSchema.$targetTable SET";
-		$sql=appendUpdatedColumnsToSql($updatedColumns, $sql);
-		$sql=$sql." WHERE $targetPkColumn = '".current($target)."'";
+		$sql=appendUpdatedColumnsToSql(current($target), $sql);
+		$sql=$sql." WHERE $targetPkColumn = '".$targetPk."'";
 		return $sql;
 	}
 	
