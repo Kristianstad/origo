@@ -6,11 +6,16 @@
 	require_once("./functions/manage/printInfoButton.php");
 	require_once("./functions/manage/printDeleteButton.php");
 
-	function printTableForm($table, $inheritPosts)
+	function printTableForm($table, $selectables, $inheritPosts)
 	{
 		echo '<div><div style="float:left;"><form method="post" style="line-height:2">';
 		printTextarea($table, 'table_id', 'textareaMedium', 'Id:');
 		printTextarea($table, 'info', 'textareaLarge', 'Info:');
+		printUpdateSelect($table, array('contact'=>$selectables['contacts']), 'bodySelect', 'Kontakt:');
+		echo '<br>';
+		printUpdateSelect($table, array('origin'=>$selectables['origins']), 'bodySelect', 'Ursprungskälla:');
+		printTextarea($table, 'updated', 'textareaMedium', 'Uppdaterad (åååå-mm-dd):');
+		printUpdateSelect($table, array('update'=>$selectables['updates']), 'bodySelect', 'Uppdatering:');
 		printHiddenInputs($inheritPosts);
 		echo '<div class="buttonDiv">';
 		printUpdateButton('table');
