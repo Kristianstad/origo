@@ -18,6 +18,13 @@
 		printUpdateSelect($source, array('tilegrid'=>$selectables['tilegrids']), 'bodySelect', 'Tilegrid:');
 		echo '</br>';
 		printTextarea($source, 'info', 'textareaLarge', 'Info:');
+		printUpdateSelect($source, array('contact'=>$selectables['contacts']), 'bodySelect', 'Kontakt:');
+		printTextarea($source, 'updated', 'textareaMedium', 'Uppdaterad (åååå-mm-dd):');
+		if (isset(current($source)['tables']) && !empty(trim(current($source)['tables'], '{}')))
+		{
+			echo '<br>';
+			printTextarea($source, 'tables', 'textareaLarge', 'Tabeller:', 'yes');
+		}
 		printHiddenInputs($inheritPosts);
 		echo '<div class="buttonDiv">';
 		printUpdateButton('source');
