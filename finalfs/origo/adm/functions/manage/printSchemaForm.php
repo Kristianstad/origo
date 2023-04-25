@@ -7,11 +7,16 @@
 	require_once("./functions/manage/printReadSchemaTablesButton.php");
 	require_once("./functions/manage/printDeleteButton.php");
 
-	function printSchemaForm($schema, $inheritPosts)
+	function printSchemaForm($schema, $selectables, $inheritPosts)
 	{
 		echo '<div><div style="float:left;"><form method="post" style="line-height:2">';
 		printTextarea($schema, 'schema_id', 'textareaMedium', 'Id:');
 		printTextarea($schema, 'info', 'textareaLarge', 'Info:');
+		printUpdateSelect($schema, array('contact'=>$selectables['contacts']), 'bodySelect', 'Kontakt:');
+		echo '<br>';
+		printUpdateSelect($schema, array('origin'=>$selectables['origins']), 'bodySelect', 'Ursprungskälla:');
+		printTextarea($schema, 'updated', 'textareaMedium', 'Uppdaterad (åååå-mm-dd):');
+		printUpdateSelect($schema, array('update'=>$selectables['updates']), 'bodySelect', 'Uppdatering:');
 		printHiddenInputs($inheritPosts);
 		echo '<div class="buttonDiv">';
 		printUpdateButton('schema');
