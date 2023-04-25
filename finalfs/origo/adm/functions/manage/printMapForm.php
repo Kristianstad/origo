@@ -27,6 +27,7 @@
 		printTextarea($map, 'info', 'textareaLarge', 'Info:');
 		echo '<br>';
 		printUpdateSelect($map, array('show_meta'=>array("f", "t")), 'miniSelect', 'Visa metadata:');
+		printUpdateSelect($map, array('embedded'=>array("f", "t")), 'miniSelect', 'Inbäddad:');
 		$map['map']=$map['map']['map_id'];
 		printHiddenInputs($inheritPosts);
 		echo '<div class="buttonDiv">';
