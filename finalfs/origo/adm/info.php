@@ -48,26 +48,24 @@
 		if ($childType != 'map')
 		{
  			echo "<h3>Används av</h3></br>";
-			echo "&nbsp;&nbsp;&nbsp;";
+ 			if ($childType == 'group' || $childType == 'layer' || $childType == 'control')
+			{
+				printParents(array('maps'=>all_from_table($dbh, $configSchema, 'maps')), $child);
+			}	
 			if ($childType == 'group' || $childType == 'layer')
 			{
-				printParents(array('maps'=>all_from_table($dbh, $configSchema, 'maps')), $child);
-				echo "&nbsp;&nbsp;&nbsp;";
 				printParents(array('groups'=>all_from_table($dbh, $configSchema, 'groups')), $child);
 			}
-			elseif ($childType == 'control' || $childType == 'footer' || $childType == 'proj4def')
-			{
-				printParents(array('maps'=>all_from_table($dbh, $configSchema, 'maps')), $child);
-			}
-			elseif ($childType == 'source' || $childType == 'contact' || $childType == 'export' || $childType == 'update' || $childType == 'origin')
+			if ($childType == 'source' || $childType == 'contact' || $childType == 'export' || $childType == 'update' || $childType == 'origin' || $childType == 'table')
 			{
 				printParents(array('layers'=>all_from_table($dbh, $configSchema, 'layers')), $child);
 			}
-			elseif ($childType == 'service')
+			if ($childType == 'contact')
 			{
-				printParents(array('sources'=>all_from_table($dbh, $configSchema, 'sources')), $child);
+				printParents(array('schemas'=>all_from_table($dbh, $configSchema, 'schemas')), $child);
+				printParents(array('tables'=>all_from_table($dbh, $configSchema, 'tables')), $child);
 			}
-			elseif ($childType == 'tilegrid')
+			if ($childType == 'contact' || $childType == 'service' || $childType == 'tilegrid' || $childType == 'table')
 			{
 				printParents(array('sources'=>all_from_table($dbh, $configSchema, 'sources')), $child);
 			}
