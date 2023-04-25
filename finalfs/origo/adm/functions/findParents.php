@@ -5,17 +5,11 @@
 
 	function findParents($potentialParents, $child)
 	{
+		require("./constants/arrayColumns.php");
 		$parents=array();
 		foreach (current($potentialParents) as $potentialParent)
 		{
-			if ((key($child) == 'control' || key($child) == 'group' || key($child) == 'layer' || key($child) == 'proj4def') && (key($potentialParents) == 'maps' || key($potentialParents) == 'groups'))
-			{
-				if (in_array(current($child), pgArrayToPhp($potentialParent[key($child).'s'])))
-				{
-					$parents[]=$potentialParent[pkColumnOfTable(key($potentialParents))];
-				}
-			}
-			elseif (key($child) == 'export' && key($potentialParents) == 'layers')
+			if (in_array(key($child).'s', $arrayColumns))
 			{
 				if (in_array(current($child), pgArrayToPhp($potentialParent[key($child).'s'])))
 				{
