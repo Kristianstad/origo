@@ -8,7 +8,8 @@
 	require_once("./functions/configTables.php");
 	require_once("./functions/includeDirectory.php");
 	includeDirectory("./functions/manage");
-	$post=$_POST;
+	$post=array_filter($_POST, function($value) {return (!empty($value));});
+
 	$view=null;
 	if (isset($_GET['view']))
 	{
@@ -50,42 +51,64 @@
 	}
 	if (isset($pressedButton))
 	{
+		$targetType=substr($pressedButton, 0, -6);
+		$targetTable=$targetType.'s';
+		$targetPkColumn=pkColumnOfTable($targetTable);
 		$command=$post[$pressedButton];
 		$sql="";
-		if ($command == 'create' && !empty($post[substr($pressedButton, 0, -6).'IdNew']))
+		if ($command == 'create' && !empty($post[$targetType.'IdNew']))
 		{
-			$target=array(substr($pressedButton, 0, -6) => $post[substr($pressedButton, 0, -6).'IdNew']);
-			$targetTable=key($target).'s';
-			$targetPkColumn=pkColumnOfTable($targetTable);
-			if (!in_array(current($target), array_column($configTables[$targetTable], $targetPkColumn)))
+			$targetId=$post[$targetType.'IdNew'];
+			if (!in_array($targetId, array_column($configTables[$targetTable], $targetPkColumn)))
 			{
 				require("./constants/configSchema.php");
-				$sql="INSERT INTO $configSchema.$targetTable($targetPkColumn) VALUES ('".current($target)."')";
+				$sql="INSERT INTO $configSchema.$targetTable($targetPkColumn) VALUES ('".$targetId."')";
 				unset($configSchema);
 			}
-			unset($targetTable, $targetPkColumn);
 		}
-		elseif ($command == 'delete' && !empty($post[substr($pressedButton, 0, -6).'IdDel']))
+		elseif ($command == 'delete' && !empty($post[$targetType.'IdDel']))
 		{
-			$target=array(substr($pressedButton, 0, -6) => $post[substr($pressedButton, 0, -6).'IdDel']);
-			$targetTable=key($target).'s';
-			$targetPkColumn=pkColumnOfTable($targetTable);
-			if (in_array(current($target), array_column($configTables[$targetTable], $targetPkColumn)))
+			$targetId=$post[$targetType.'IdDel'];
+			if (in_array($targetId, array_column($configTables[$targetTable], $targetPkColumn)))
 			{
 				require("./constants/configSchema.php");
-				$sql="DELETE FROM $configSchema.$targetTable WHERE $targetPkColumn = '".current($target)."'";
+				$sql="DELETE FROM $configSchema.$targetTable WHERE $targetPkColumn = '".$targetId."'";
 				unset($configSchema);
 			}
-			unset($targetTable, $targetPkColumn);
 		}
-		elseif (isset($post[substr($pressedButton, 0, -6).'Id']))
+		elseif (isset($post[$targetType.'Id']))
 		{
-			$target=array(substr($pressedButton, 0, -6) => $post[substr($pressedButton, 0, -6).'Id']);
+			$targetId=$post[$targetType.'Id'];
 			if ($command == 'update')
 			{
+				$target=array_column_search($targetId, $targetPkColumn, $configTables[$targetTable]);
+				if ($targetType == 'layer' || $targetType == 'source')
+				{
+					if ($targetType == 'layer')
+					{
+						$layerName=explode('#', $targetId)[0];
+						$source=array_column_search($target['source'], 'source_id', $configTables['sources']);
+					}
+					else
+					{
+						$layerName=null;
+						$source=$target;
+					}
+					$serviceType=array_column_search($source['service'], 'service_id', $configTables['services'])['type'];
+					if (strtolower($serviceType) == 'qgis')
+					{
+						$tables=tablesFromQgs('/services/'.$source['service'].'/'.explode('#', $source['source_id'])[0].'.qgs', $layerName);
+						if (!empty($tables))
+						{
+							$post['updateTables']=implode(',', $tables);
+						}
+						unset($tables);
+					}
+					unset($layerName, $source, $serviceType);
+				}
 				$updatePosts=array_filter($post, function($key) {return (substr($key, 0, 6) == 'update');}, ARRAY_FILTER_USE_KEY);
-				$sql=sqlForUpdate($target, $updatePosts);
-				unset($updatePosts);
+				$sql=sqlForUpdate(array($targetType => $target), $updatePosts);
+				unset($target, $updatePosts);
 			}
 			elseif ($command == 'operation')
 			{
@@ -112,10 +135,10 @@
 					if (isset($operation))
 					{
 						$parentPkColumnKey=pkColumnOfTable($parentKey.'s');
-						$parentOperationColumnKey=key($target).'s';
+						$parentOperationColumnKey=$targetType.'s';
 						$parentOperationColumnValue=array_column_search($parentPkColumnValue, $parentPkColumnKey, $configTables[$parentKey.'s'])[$parentOperationColumnKey];
 						$operationParent=array($parentKey.'s'=>array($parentPkColumnKey=>$parentPkColumnValue, $parentOperationColumnKey=>$parentOperationColumnValue));
-						$sql=sqlForOperation($operation, $target, $operationParent);
+						$sql=sqlForOperation($operation, array($targetType => $targetId), $operationParent);
 						unset($operation, $parentPkColumnValue, $parentPkColumnKey, $parentOperationColumnKey, $parentOperationColumnValue, $operationParent);
 					}
 					unset($parentKey);
@@ -131,12 +154,12 @@
 			}
 			unset($result);
 			$configTables=configTables($dbh);
-			if ($command != 'operation' && key($target) == 'layer')
+			if ($command != 'operation' && $targetType == 'layer')
 			{
 				$layerCategories=layerCategories($configTables['layers']);
 			}
 		}
-		unset($target, $command, $sql);
+		unset($targetId, $targetType, $targetTable, $targetPkColumn, $command, $sql);
 	}
 	$inheritPosts=$idPosts;
 	if (isset($post['groupIds']))
@@ -258,7 +281,12 @@
 		$schema=array('schema'=>array_column_search($post['schemaId'], 'schema_id', $configTables['schemas']));
 		if (!empty(current($schema)))
 		{
-			printSchemaForm($schema, $inheritPosts);
+			$selectables=array(
+				'contacts'=>array_combine(array_column($configTables['contacts'], 'contact_id'), array_column($configTables['contacts'], 'name')),
+				'origins'=>array_combine(array_column($configTables['origins'], 'origin_id'), array_column($configTables['origins'], 'name')),
+				'updates'=>array_column($configTables['updates'], 'update_id')
+			);
+			printSchemaForm($schema, $selectables, $inheritPosts);
 			$schemaTables =preg_grep("/^".$post['schemaId']."[.]/", array_column($configTables['tables'], 'table_id'));
 			$schema['schema']['tables']='{'.implode(',', $schemaTables).'}';
 			echo '<table><tr>';
@@ -335,7 +363,19 @@
 		//  Om källa vald
 		elseif ($target == 'source')
 		{
-			$selectables=array('services'=>array_column($configTables['services'], 'service_id'), 'tilegrids'=>array_column($configTables['tilegrids'], 'tilegrid_id'));
+			$selectables=array('services'=>array_column($configTables['services'], 'service_id'), 'tilegrids'=>array_column($configTables['tilegrids'], 'tilegrid_id'), 'contacts'=>array_combine(array_column($configTables['contacts'], 'contact_id'), array_column($configTables['contacts'], 'name')));
+			eval($printFormFunction.'($child, $selectables, $inheritPosts);');
+			unset($selectables);
+		}
+		
+		// Om tabell vald
+		elseif ($target == 'table')
+		{
+			$selectables=array(
+				'contacts'=>array_combine(array_column($configTables['contacts'], 'contact_id'), array_column($configTables['contacts'], 'name')),
+				'origins'=>array_combine(array_column($configTables['origins'], 'origin_id'), array_column($configTables['origins'], 'name')),
+				'updates'=>array_column($configTables['updates'], 'update_id')
+			);
 			eval($printFormFunction.'($child, $selectables, $inheritPosts);');
 			unset($selectables);
 		}
