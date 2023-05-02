@@ -163,49 +163,47 @@
 						}
 					}
 				}
-				if ($map['show_meta'] == 't' || !empty($layer['abstract']))
+				$beskr=$layer['abstract'];
+				if (!empty($layer['web']))
 				{
-					//eval('$beskr="'.$layer['abstract'].'";');
-					$beskr=$layer['abstract'];
-					if (!empty($layer['web']))
+					$beskr=$beskr." <a href='".$layer['web']."' target='_blank'>Mer info.</a>";
+				}
+				if ($map['show_meta'] == 't')
+				{
+					$layerContact = array_column_search($layer['contact'], 'contact_id', $contacts);
+					if (!empty($layerContact['web']))
 					{
-						$beskr=$beskr." <a href='".$layer['web']."' target='_blank'>Mer info.</a>";
+						$contactStr="<a href='".$layerContact['web']."' target='_blank'>".$layerContact['name']."</a>";
 					}
-					if ($map['show_meta'] == 't')
+					elseif (!empty($layerContact['email']))
 					{
-						$layerContact = array_column_search($layer['contact'], 'contact_id', $contacts);
-						if (!empty($layerContact['web']))
-						{
-							$contactStr="<a href='".$layerContact['web']."' target='_blank'>".$layerContact['name']."</a>";
-						}
-						elseif (!empty($layerContact['email']))
-						{
-							$contactStr="<a href='mailto:".$layerContact['email']."'>".$layerContact['name']."</a>";
-						}
-						else
-						{
-							$contactStr=$layerContact['name'];
-						}
-						$layerOrigin = array_column_search($layer['origin'], 'origin_id', $origins);
-						if (!empty($layerOrigin['web']))
-						{
-							$originStr="<a href='".$layerOrigin['web']."' target='_blank'>".$layerOrigin['name']."</a>";
-						}
-						elseif (!empty($layerOrigin['email']))
-						{
-							$originStr="<a href='mailto:".$layerOrigin['email']."'>".$layerOrigin['name']."</a>";
-						}
-						else
-						{
-							$originStr=$layerOrigin['name'];
-						}
-						$json = $json.', "abstract": "<b>Beskrivning: </b>'.$beskr.'<br><b>Resurser: </b>'.$layer['resources'].'<br><b>Kontakt: </b>'.$contactStr.'<br><b>Källa: </b>'.$originStr.'<br><b>Uppdaterad: </b>'.$layer['updated'].'"';
+						$contactStr="<a href='mailto:".$layerContact['email']."'>".$layerContact['name']."</a>";
 					}
 					else
 					{
-						$json = $json.', "abstract": "'.$beskr.'"';
+						$contactStr=$layerContact['name'];
 					}
+					$layerOrigin = array_column_search($layer['origin'], 'origin_id', $origins);
+					if (!empty($layerOrigin['web']))
+					{
+						$originStr="<a href='".$layerOrigin['web']."' target='_blank'>".$layerOrigin['name']."</a>";
+					}
+					elseif (!empty($layerOrigin['email']))
+					{
+						$originStr="<a href='mailto:".$layerOrigin['email']."'>".$layerOrigin['name']."</a>";
+					}
+					else
+					{
+						$originStr=$layerOrigin['name'];
+					}
+					$json = $json.', "abstract": "<b>Beskrivning: </b>'.$beskr.'<br><b>Resurser: </b>'.$layer['resources'].'<br><b>Kontakt: </b>'.$contactStr.'<br><b>Källa: </b>'.$originStr.'<br><b>Uppdaterad: </b>'.$layer['updated'];
 				}
+				else
+				{
+					$json = $json.', "abstract": "'.$beskr;
+				}
+				$adminForm="<form action='../php/adm/manage.php?view=Origo' method='post' target='_blank'><button type='submit' name='layerId' value='".$layer['layer_id']."' style='float:right; color:blue'>Administrera</button></form>";
+				$json = $json.'<br>'.$adminForm.'"';
 				if (!empty($layer['attributes']) && $layer['type'] !== 'GROUP')
 				{
 					$json = $json.', "attributes": '.$layer['attributes'];
