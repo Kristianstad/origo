@@ -20,9 +20,10 @@
 		printTextarea($source, 'info', 'textareaLarge', 'Info:');
 		printUpdateSelect($source, array('contact'=>$selectables['contacts']), 'bodySelect', 'Kontakt:');
 		printTextarea($source, 'updated', 'textareaMedium', 'Uppdaterad (åååå-mm-dd):');
+		echo '<br>';
+		printTextarea($source, 'history', 'textareaLarge', 'Tillkomsthistorik:');
 		if (isset(current($source)['tables']) && !empty(trim(current($source)['tables'], '{}')))
 		{
-			echo '<br>';
 			printTextarea($source, 'tables', 'textareaLarge', 'Tabeller:', 'yes');
 		}
 		printHiddenInputs($inheritPosts);
