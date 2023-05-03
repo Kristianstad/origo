@@ -11,7 +11,7 @@ ARG CONTENTIMAGE1="node:alpine$ALPINE_VERSION"
 ARG CONTENTDESTINATION1="/"
 ARG BASEIMAGE="ghcr.io/kristianstad/lighttpd2:$LIGHTTPD2_VERSION"
 #ARG CLONEGITS="https://github.com/filleg/origo.git -b wfs-qgis"
-ARG DOWNLOADS="https://github.com/origo-map/origo/archive/refs/tags/v$ORIGO_VERSION.zip"
+ARG DOWNLOADS="https://github.com/origo-map/origo/archive/refs/tags/$ORIGO_VERSION.zip"
 ARG BUILDDEPS="python3"
 ARG BUILDCMDS=\
 "   cd origo-$ORIGO_VERSION "\
