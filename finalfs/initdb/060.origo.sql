@@ -91,6 +91,7 @@ CREATE TABLE map_configs.layers
     update character varying COLLATE pg_catalog."default",
     origin character varying COLLATE pg_catalog."default",
     tables character varying[] COLLATE pg_catalog."default",
+    history character varying COLLATE pg_catalog."default",
     CONSTRAINT layers_pkey PRIMARY KEY (layer_id)
 );
 
@@ -159,6 +160,7 @@ CREATE TABLE map_configs.sources
     contact character varying COLLATE pg_catalog."default",
     updated date,
     tables character varying[] COLLATE pg_catalog."default",
+    history character varying COLLATE pg_catalog."default",
     CONSTRAINT sources_pkey PRIMARY KEY (source_id)
 );
 
@@ -239,5 +241,6 @@ CREATE TABLE map_configs.tables
     updated date,
     update character varying COLLATE pg_catalog."default",
     origin character varying COLLATE pg_catalog."default",
+    history character varying COLLATE pg_catalog."default",
     CONSTRAINT tables_pkey PRIMARY KEY (table_id)
 );
