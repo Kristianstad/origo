@@ -75,9 +75,10 @@
 		printTextarea($layer, 'updated', 'textareaMedium', 'Uppdaterad (åååå-mm-dd):');
 		printUpdateSelect($layer, array('update'=>$selectables['updates']), 'bodySelect', 'Uppdatering:');
 		printTextarea($layer, 'web', 'textareaMedium', 'Webbsida:');
+		echo '<br>';
+		printTextarea($layer, 'history', 'textareaLarge', 'Tillkomsthistorik:');
 		if (isset(current($layer)['tables']) && !empty(trim(current($layer)['tables'], '{}')))
 		{
-			echo '<br>';
 			printTextarea($layer, 'tables', 'textareaMedium', 'Tabeller:', 'yes');
 		}
 		echo '<hr style="border-style:dashed;border-width:1px 0 0 0;border-color:lightgray">';
@@ -118,3 +119,4 @@
 	}
 	
 ?>
+
