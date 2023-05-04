@@ -16,6 +16,7 @@
 		printTextarea($source, 'fi_point_tolerance', 'textareaSmall', 'Fi_point_tolerance:');
 		printTextarea($source, 'ttl', 'textareaSmall', 'Ttl:');
 		printUpdateSelect($source, array('tilegrid'=>$selectables['tilegrids']), 'bodySelect', 'Tilegrid:');
+		printTextarea($source, 'softversion', 'textareaSmall', 'Programversion:');
 		echo '</br>';
 		printTextarea($source, 'info', 'textareaLarge', 'Info:');
 		printUpdateSelect($source, array('contact'=>$selectables['contacts']), 'bodySelect', 'Kontakt:');
