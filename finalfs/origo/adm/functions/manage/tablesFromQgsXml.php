@@ -38,12 +38,12 @@
     		{
     			if (isset($layerName) && $group['name'] == $layerName)
     			{
-    				$tables=tablesFromQgsXml($null, null, $tables, $group);
+    				$tables=tablesFromQgsXml(null, null, $tables, $group);
     				return array_unique($tables);
     			}
     			else
     			{
-    				$tables=tablesFromQgsXml($null, $layerName, $tables, $group);
+    				$tables=tablesFromQgsXml(null, $layerName, $tables, $group);
     				if (isset($layerName) && !empty($tables))
     				{
     					return array_unique($tables);
