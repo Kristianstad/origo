@@ -161,6 +161,7 @@ CREATE TABLE map_configs.sources
     updated date,
     tables character varying[] COLLATE pg_catalog."default",
     history character varying COLLATE pg_catalog."default",
+    softversion character varying COLLATE pg_catalog."default",
     CONSTRAINT sources_pkey PRIMARY KEY (source_id)
 );
 
