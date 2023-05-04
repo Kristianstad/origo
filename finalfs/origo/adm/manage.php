@@ -97,12 +97,26 @@
 					$serviceType=array_column_search($source['service'], 'service_id', $configTables['services'])['type'];
 					if (strtolower($serviceType) == 'qgis')
 					{
-						$tables=tablesFromQgs('/services/'.$source['service'].'/'.explode('#', $source['source_id'])[0].'.qgs', $layerName);
-						if (!empty($tables))
+						$qgsXml = simplexml_load_file('/services/'.$source['service'].'/'.explode('#', $source['source_id'])[0].'.qgs');
+						if (!empty($qgsXml))
 						{
-							$post['updateTables']=implode(',', $tables);
+							if ($targetType == 'source')
+							{
+								if (!empty($fromQgs=substr($qgsXml['saveDateTime'], 0 ,10)))
+								{
+									$post['updateUpdated']=$fromQgs;
+								}
+								if (!empty($fromQgs=strstr($qgsXml['version'], '-', true)))
+								{
+									$post['updateSoftversion']=$fromQgs;
+								}
+							}
+							if (!empty($fromQgs=tablesFromQgsXml($qgsXml, $layerName)))
+							{
+								$post['updateTables']=implode(',', $fromQgs);
+							}
 						}
-						unset($tables);
+						unset($qgsXml, $fromQgs);
 					}
 					unset($layerName, $source, $serviceType);
 				}
