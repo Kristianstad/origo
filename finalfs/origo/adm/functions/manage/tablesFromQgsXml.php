@@ -1,14 +1,14 @@
 <?php
 
-	function tablesFromQgs($qgsFile=null, $layerName=null, $tables=array(), $subtree=null)
+	function tablesFromQgsXml($qgsXml=null, $layerName=null, $tables=array(), $subtree=null)
 	{
 		if (isset($subtree))
 		{
 			$xml = $subtree;
 		}
-		elseif (isset($qgsFile))
+		elseif (isset($qgsXml))
 		{
-			$xml = simplexml_load_file($qgsFile);
+			$xml = $qgsXml;
 		}
 		if (isset($xml))
 		{
@@ -38,12 +38,12 @@
     		{
     			if (isset($layerName) && $group['name'] == $layerName)
     			{
-    				$tables=tablesFromQgs($null, null, $tables, $group);
+    				$tables=tablesFromQgsXml($null, null, $tables, $group);
     				return array_unique($tables);
     			}
     			else
     			{
-    				$tables=tablesFromQgs($null, $layerName, $tables, $group);
+    				$tables=tablesFromQgsXml($null, $layerName, $tables, $group);
     				if (isset($layerName) && !empty($tables))
     				{
     					return array_unique($tables);
