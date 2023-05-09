@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html style="width:100%;height:100%">
+<html style="width:100%;height:100%;font-size:clamp(7px, 0.9vw, 12px);line-height:1.4">
 <head>
 	<style>
 		<?php require("./styles/info.css"); ?>
