@@ -46,6 +46,20 @@
 		{
 			echo "$info</br>";
 		}
+		if ($childType == 'source')
+		{
+			$services=all_from_table($dbh, $configSchema, 'services');
+			$serviceType=array_column_search($childFull['service'], pkColumnOfTable('services'), $services)['type'];
+			if (strtolower($serviceType) == 'qgis')
+			{
+				$qgsXml = simplexml_load_file('/services/'.$childFull['service'].'/'.explode('#', $childId)[0].'.qgs');
+				if (!empty($qgsXml))
+				{
+					echo "<b>Qgis-version: </b>".$qgsXml['version']."<br>";
+					echo "<b>Senast uppdaterad: </b>".$qgsXml['saveDateTime'].", ".$qgsXml['saveUserFull']."<br>";
+				}
+			}
+		}
 		if ($childType != 'map')
 		{
  			echo "<h3>Används av</h3></br>";
@@ -69,20 +83,6 @@
 			if ($childType == 'contact' || $childType == 'service' || $childType == 'tilegrid' || $childType == 'table')
 			{
 				printParents(array('sources'=>all_from_table($dbh, $configSchema, 'sources')), $child);
-			}
-			if ($childType == 'source')
-			{
-				$services=all_from_table($dbh, $configSchema, 'services');
-				$serviceType=array_column_search($childFull['service'], pkColumnOfTable('services'), $services)['type'];
-				if (strtolower($serviceType) == 'qgis')
-				{
-					$qgsXml = simplexml_load_file('/services/'.$childFull['service'].'/'.explode('#', $childId)[0].'.qgs');
-					if (!empty($qgsXml))
-					{
-						echo "<h3>Qgis-version:&nbsp</h3>".$qgsXml['version']."<br>";
-						echo "<h3>Senast uppdaterad:&nbsp</h3>".$qgsXml['saveDateTime'].", ".$qgsXml['saveUserFull'];
-					}
-				}
 			}
 		}
 		echo '</div>';
