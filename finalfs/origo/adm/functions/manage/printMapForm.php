@@ -23,6 +23,7 @@
 		echo '<br>';
 		printTextarea($map, 'center', 'textareaMedium', 'Mittpunkt:');
 		printTextarea($map, 'zoom', 'textareaXSmall', 'Zoom:');
+		printUpdateSelect($map, array('mapgrid'=>array("f", "t")), 'miniSelect', 'Visa rutnät:');
 		printUpdateSelect($map, array('tilegrid'=>$selectables['tilegrids']), 'bodySelect', 'Tilegrid:');
 		printTextarea($map, 'info', 'textareaLarge', 'Info:');
 		echo '<br>';
