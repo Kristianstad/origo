@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <?php require_once("./functions/includeDirectory.php"); ?>
-<html style="width:100%;height:100%">
+<html>
 <head>
 	<script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
 	<script>
@@ -25,7 +25,7 @@
 	require_once("./functions/all_from_table.php");
 	$dbh=dbh();
 	$values=all_from_table($dbh, 'map_configs', $_GET['table']);
-	echo '<select onChange="update(this);" data-sorted-values="" multiple style="float:left;height:100%;margin-right:5px">';
+	echo '<select onChange="update(this);" data-sorted-values="" multiple>';
 	if ($_GET['table'] == 'proj4defs')
 	{
 		$idColumn='code';
@@ -58,7 +58,7 @@
 		$header=ucfirst($_GET['table']);
 	}
 	echo '<h3>'.$header.'</h3>';
-	echo '<textarea readonly id="selection" style="display:flex;overflow:auto;width:-webkit-fill-available"></textarea>';
+	echo '<textarea readonly id="selection"></textarea>';
 	echo '<button onClick="window.location.reload();">Töm</button>&nbsp;';
 	echo '<button onclick="copyTextById('."'selection');".'">Kopiera text</button>';
 ?>
