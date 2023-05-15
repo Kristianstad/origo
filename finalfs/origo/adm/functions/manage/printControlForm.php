@@ -10,12 +10,13 @@
 
 	function printControlForm($control, $maps, $inheritPosts)
 	{
-		echo '<div><div style="float:left;"><form method="post" style="line-height:2">';
+		echo '<div><div class="printXFormDiv"><form method="post">';
 		printTextarea($control, 'control_id', 'textareaMedium', 'Id:');
 		printTextarea($control, 'options', 'textareaLarge', 'Inställningar:');
 		echo '<br>';
 		printTextarea($control, 'info', 'textareaLarge', 'Info:');
 		printHiddenInputs($inheritPosts);
+		echo '<hr class="dashedHr">';
 		echo '<div class="buttonDiv">';
 		printUpdateButton('control');
 		$control['control']=$control['control']['control_id'];
@@ -23,7 +24,7 @@
 		echo '</div></form></div>';
 		$deleteConfirmStr="Är du säker att du vill radera kontrollen ".$control['control']."? Referenser till kontrollen hanteras separat.";
 		printDeleteButton($control, $deleteConfirmStr, $inheritPosts);
-		echo '</div><div style="clear:both">';
+		echo '</div><div class="addRemoveDiv">';
 		printAddOperation($control, array('maps'=>array_column($maps['maps'], 'map_id')), 'Lägg till i karta', $inheritPosts);
 		printRemoveOperation($control, $maps, 'Ta bort från karta', $inheritPosts);
 		echo '</div>';
