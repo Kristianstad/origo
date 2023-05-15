@@ -12,7 +12,7 @@
 
 	function printLayerForm($layer, $selectables, $operationTables, $sources, $inheritPosts)
 	{
-		echo '<div><div style="float:left;"><form method="post" style="line-height:2">';
+		echo '<div><div class="printXFormDiv"><form method="post">';
 		printTextarea($layer, 'layer_id', 'textareaMedium', 'Id:');
 		printTextarea($layer, 'title', 'textareaMedium', 'Titel:');
 		printSourceList($layer, $sources);
@@ -66,7 +66,7 @@
 		printTextarea($layer, 'exports', 'textareaMedium', 'Exportlager:');
 		echo '<br>';
 		printTextarea($layer, 'attribution', 'textareaLarge', 'Tillskrivning:');
-		echo '<hr style="border-style:dashed;border-width:1px 0 0 0;border-color:lightgray">';
+		echo '<hr class="dashedHr">';
 		printTextarea($layer, 'abstract', 'textareaLarge', 'Beskrivning:');
 		printTextarea($layer, 'resources', 'textareaMedium', 'Resurser:');
 		printUpdateSelect($layer, array('contact'=>$selectables['contacts']), 'bodySelect', 'Kontakt:');
@@ -81,7 +81,7 @@
 		{
 			printTextarea($layer, 'tables', 'textareaMedium', 'Tabeller:', 'yes');
 		}
-		echo '<hr style="border-style:dashed;border-width:1px 0 0 0;border-color:lightgray">';
+		echo '<hr class="dashedHr">';
 		printTextarea($layer, 'categories', 'textareaLarge', 'Kategorier:');
 		printTextarea($layer, 'info', 'textareaLarge', 'Info:');
 		if (isset($layer['layer']['type']))
@@ -102,15 +102,15 @@
 			}
 		}
 		printHiddenInputs($inheritPosts);
-		echo '<hr style="border-style:dashed;border-width:1px 0 0 0;border-color:lightgray">';
-		echo '<div class="buttonDiv" style="">';
+		echo '<hr class="dashedHr">';
+		echo '<div class="buttonDiv">';
 		printUpdateButton('layer');
 		$layer['layer']=$layer['layer']['layer_id'];
 		printInfoButton($layer);
 		echo '</div></form></div>';
 		$deleteConfirmStr="Är du säker att du vill radera lagret ".$layer['layer']."? Referenser till lagret hanteras separat.";
 		printDeleteButton($layer, $deleteConfirmStr, $inheritPosts);
-		echo '</div><div style="clear:both; margin-bottom:3rem">';
+		echo '</div><div class="addRemoveDiv">';
 		printAddOperation($layer, array('maps'=>array_column($operationTables['maps'], 'map_id')), 'Lägg till i karta', $inheritPosts);
 		printRemoveOperation($layer, array('maps'=>$operationTables['maps']), 'Ta bort från karta', $inheritPosts);
 		printAddOperation($layer, array('groups'=>array_column($operationTables['groups'], 'group_id')), 'Lägg till i grupp', $inheritPosts);
