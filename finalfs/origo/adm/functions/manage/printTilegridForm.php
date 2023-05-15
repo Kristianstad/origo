@@ -8,7 +8,7 @@
 
 	function printTilegridForm($tilegrid, $inheritPosts)
 	{
-		echo '<div><div style="float:left;"><form method="post" style="line-height:2">';
+		echo '<div><div class="printXFormDiv"><form method="post">';
 		printTextarea($tilegrid, 'tilegrid_id', 'textareaMedium', 'Id:');
 		printTextarea($tilegrid, 'tilesize', 'textareaSmall', 'Tile-storlek:');
 		echo '</br>';
