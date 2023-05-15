@@ -8,7 +8,7 @@
 
 	function printTableForm($table, $selectables, $inheritPosts)
 	{
-		echo '<div><div style="float:left;"><form method="post" style="line-height:2">';
+		echo '<div><div class="printXFormDiv"><form method="post">';
 		printTextarea($table, 'table_id', 'textareaMedium', 'Id:');
 		printTextarea($table, 'info', 'textareaLarge', 'Info:');
 		printUpdateSelect($table, array('contact'=>$selectables['contacts']), 'bodySelect', 'Kontakt:');
