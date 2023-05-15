@@ -8,7 +8,7 @@
 
 	function printFooterForm($footer, $inheritPosts)
 	{
-		echo '<div><div style="float:left;"><form method="post" style="line-height:2">';
+		echo '<div><div class="printXFormDiv"><form method="post">';
 		printTextarea($footer, 'footer_id', 'textareaMedium', 'Id:');
 		printTextarea($footer, 'img', 'textareaLarge', 'Logotyp:');
 		printTextarea($footer, 'url', 'textareaLarge', 'Url:');
