@@ -7,9 +7,9 @@
 	{
 		$str=rtrim(ucfirst(key($addToTable)), 's');
 		echo '<form class="addForm" method="post">';
-		echo '<select class="headSelect" name="to'.$str.'Id">';
+		echo '<select class="addSelect" name="to'.$str.'Id">';
 		printSelectOptions(array_merge(array(""),current($addToTable)));
-		echo '</select>';
+		echo '</select>&nbsp;';
 		printHiddenInputs($inheritPosts);
 		echo '<button type="submit" name="'.key($target).'Button" value="operation">'.$buttontext.'</button>';
 		echo '</form>';
