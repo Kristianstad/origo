@@ -4,11 +4,16 @@
 	require_once("./functions/manage/printSelectOptions.php");
 	require_once("./functions/manage/printHiddenInputs.php");
 
-	function headForm($table, $inheritPosts)
+	function printHeadForm($table, $inheritPosts)
 	{
-		echo '<form id="'.key($table).'HeadForm" class="headForm" method="post"><div style="width:100%;white-space:nowrap;display:inline-block">';
+		$tableName=key($table);
+		echo <<<HERE
+			<div class="headFormDiv1">
+				<form id="{$tableName}HeadForm" class="headForm" method="post">
+					<div class="headFormDiv2">
+		HERE;
 		$sId='';
-		$target=rtrim(key($table), 's');
+		$target=rtrim($tableName, 's');
 		$sName=$target.'Id';
 		$selected=null;
 		if (isset($inheritPosts[$target.'Id']))
@@ -45,26 +50,30 @@
 				}
 			}
 		}
-		echo   "<select $sId onchange=\"this.form.submit()\" class=\"headSelect\" name=\"$sName\">";
-		$optionValues=array_merge(array(""),array_column(current($table), pkColumnOfTable(key($table))));
+		$optionValues=array_merge(array(""),array_column(current($table), pkColumnOfTable($tableName)));
 		if ($target == 'contact' || $target == 'origin')
 		{
 			$optionLabels=array_merge(array(""),array_column(current($table), 'name'));
 			$optionValues=array_combine($optionValues, $optionLabels);
 		}
+		echo "<select $sId onchange='this.form.submit();' class='headSelect' name='$sName'>";
 		printSelectOptions($optionValues, $selected);
-		echo   '</select>';
-		echo   '<button type="submit" class="headButton" name="'.$target.'Button" value="get">';
-		echo     'Hämta';
-		echo   '</button>';
-		echo '</div></form><br>';
-		echo '<form class="headForm" method="post"><div style="width:100%;white-space:nowrap;display:inline-block;margin-top:2px">';
-		echo   '<input class="headInput" type="text" name="'.$target.'IdNew">';
+		echo <<<HERE
+						</select>
+						<button type="submit" class="headButton" name="{$target}Button" value="get">Hämta</button>
+					</div>
+				</form><br>
+				<form class="headForm" method="post">
+					<div class="headFormDiv3">
+						<input class="headInput" type="text" name="{$target}IdNew">
+		HERE;
 		printHiddenInputs($inheritPosts);
-		echo   '<button type="submit" class="headButton" name="'.$target.'Button" value="create">';
-		echo     'Skapa';
-		echo   '</button>';
-		echo '</div></form>';
+		echo <<<HERE
+						<button type="submit" class="headButton" name="{$target}Button" value="create">Skapa</button>
+					</div>
+				</form>
+			</div>
+		HERE;
 	}
 	
 ?>
