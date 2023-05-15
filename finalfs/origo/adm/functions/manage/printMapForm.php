@@ -11,7 +11,7 @@
 
 	function printMapForm($map, $selectables, $inheritPosts)
 	{
-		echo '<div><div style="float:left;"><form method="post" style="line-height:2">';
+		echo '<div><div class="printXFormDiv"><form method="post">';
 		printTextarea($map, 'map_id', 'textareaMedium', 'Id:');
 		printTextarea($map, 'layers', 'textareaLarge', 'Lager:');
 		printTextarea($map, 'groups', 'textareaLarge', 'Grupper:');
