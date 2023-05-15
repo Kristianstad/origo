@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html style="width:100%;height:100%;font-size:clamp(7px, 0.9vw, 12px);line-height:1.4">
+<html>
 <head>
 	<style>
 		<?php require("./styles/info.css"); ?>
@@ -26,7 +26,7 @@
 	$childTypeSv=toSwedish($childType);
 	if (!empty($childId))
 	{
-		echo "<div style='float:left'>";
+		echo "<div>";
 		echo "<h2>$childId</h2> ($childTypeSv)</br>";
 		$allOfChildType=all_from_table($dbh, $configSchema, $childType.'s');
 		$child=array($childType=>$childId);
