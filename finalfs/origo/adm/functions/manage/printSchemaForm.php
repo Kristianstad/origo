@@ -9,7 +9,7 @@
 
 	function printSchemaForm($schema, $selectables, $inheritPosts)
 	{
-		echo '<div><div style="float:left;"><form method="post" style="line-height:2">';
+		echo '<div><div class="printXFormDiv"><form method="post">';
 		printTextarea($schema, 'schema_id', 'textareaMedium', 'Id:');
 		printTextarea($schema, 'info', 'textareaLarge', 'Info:');
 		printUpdateSelect($schema, array('contact'=>$selectables['contacts']), 'bodySelect', 'Kontakt:');
