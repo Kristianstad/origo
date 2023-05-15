@@ -9,7 +9,7 @@
 
 	function printSourceForm($source, $selectables, $inheritPosts)
 	{
-		echo '<div><div style="float:left;"><form method="post" style="line-height:2">';
+		echo '<div><div class="printXFormDiv"><form method="post">';
 		printTextarea($source, 'source_id', 'textareaMedium', 'Id:');
 		printUpdateSelect($source, array('service'=>$selectables['services']), 'bodySelect', 'Tjänst:');
 		printUpdateSelect($source, array('with_geometry'=>array("f", "t")), 'miniSelect', 'With_geometry:');
