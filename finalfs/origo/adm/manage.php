@@ -185,7 +185,7 @@
 		$inheritPosts['layerCategory']=$post['layerCategory'];
 	}
 ?>
-<html style="width:100%;height:100%;font-size:clamp(7px, 0.9vw, 12px);line-height:2">
+<html>
 <head>
 	<meta charset="utf-8"/>
 	<title>Administrationsverktyg för Origo</title>
