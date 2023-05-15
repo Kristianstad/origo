@@ -8,7 +8,7 @@
 
 	function printUpdateForm($update, $inheritPosts)
 	{
-		echo '<div><div style="float:left;"><form method="post" style="line-height:2">';
+		echo '<div><div class="printXFormDiv"><form method="post">';
 		printTextarea($update, 'update_id', 'textareaMedium', 'Id:');
 		printTextarea($update, 'name', 'textareaMedium', 'Name:');
 		printTextarea($update, 'interval', 'textareaMedium', 'Intervall:');
