@@ -8,7 +8,7 @@
 
 	function printProj4defForm($proj4def, $inheritPosts)
 	{
-		echo '<div><div style="float:left;"><form method="post" style="line-height:2">';
+		echo '<div><div class="printXFormDiv"><form method="post">';
 		printTextarea($proj4def, 'code', 'textareaMedium', 'Kod:');
 		printTextarea($proj4def, 'projection', 'textareaLarge', 'Projektion:');
 		printTextarea($proj4def, 'alias', 'textareaMedium', 'Alias:');
