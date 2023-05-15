@@ -8,7 +8,7 @@
 
 	function printContactForm($contact, $inheritPosts)
 	{
-		echo '<div><div style="float:left;"><form method="post" style="line-height:2">';
+		echo '<div><div class="printXFormDiv"><form method="post">';
 		printTextarea($contact, 'contact_id', 'textareaMedium', 'Id:');
 		printTextarea($contact, 'name', 'textareaMedium', 'Namn:');
 		printTextarea($contact, 'web', 'textareaMedium', 'Webbsida:');
