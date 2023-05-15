@@ -8,7 +8,7 @@
 
 	function printExportForm($export, $inheritPosts)
 	{
-		echo '<div><div style="float:left;"><form method="post" style="line-height:2">';
+		echo '<div><div class="printXFormDiv"><form method="post">';
 		printTextarea($export, 'export_id', 'textareaMedium', 'Id:');
 		printTextarea($export, 'resource', 'textareaMedium', 'Resurs:');
 		printTextarea($export, 'style', 'textareaMedium', 'Stil:');
