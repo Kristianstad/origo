@@ -1,7 +1,7 @@
 <?php
 
 	require_once("./functions/toSwedish.php");
-	require_once("./functions/manage/headForm.php");
+	require_once("./functions/manage/printHeadForm.php");
 	require_once("./functions/manage/printMultiselectButton.php");
 
 	function printHeadForms($view, $configTables, $focusTable, $inheritPosts)
@@ -31,8 +31,8 @@
 		}
 		unset($configTables);
 		echo <<<HERE
-			<div style="width:calc( 100vw - 2rem ); overflow-x:auto; margin-bottom: 5px">
-				<table style="border-bottom:dashed 1px lightgray; margin-bottom: 2px; border-top:dashed 1px lightgray;">
+			<div class="headFormsDiv">
+				<table class="headFormsTable">
 					<tr style="height:7rem">
 		HERE;
 		$i=1;
@@ -56,6 +56,7 @@
 				}
 				$i++;
 			}
+			$tableType=rtrim($tableName, 's');
 			if ($focusTable == $tableName)
 			{
 				$focusClass='h3Focus';
@@ -63,10 +64,10 @@
 			else
 			{
 				$focusClass='h3NoFocus';
-				unset($tmpInheritPosts[rtrim($tableName, 's').'Id']);
+				unset($tmpInheritPosts[$tableType.'Id']);
 			}
-			echo "<h3 class='$focusClass'>".ucfirst(toSwedish($tableName))."</h3><div style='width:16em;white-space:nowrap;display:inline-block'>";
-			headForm(array($tableName=>$table), $tmpInheritPosts);
+			echo "<h3 class='$focusClass'>".ucfirst(toSwedish($tableType))."</h3>";
+			printHeadForm(array($tableName=>$table), $tmpInheritPosts);
 			echo "</div>";
 			if (in_array($tableName, $multiselectables))
 			{
