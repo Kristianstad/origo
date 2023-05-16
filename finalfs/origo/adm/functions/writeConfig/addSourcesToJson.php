@@ -3,6 +3,7 @@
 	function addSourcesToJson()
 	{
 		GLOBAL $json, $mapSources, $map, $sources, $services, $tilegrids;
+		require("./constants/sourcesQueryColumns.php");
 		$json = $json.'"source": { ';
 		if (!is_array($mapSources))
 		{
@@ -42,7 +43,7 @@
 				{
 					foreach ($sourceColumns as $column)
 					{
-						if ($column != 'source_id' && $column != 'info' && $column != 'tilegrid' && $column != 'base_url' && $column != 'service' && $column != 'project' && !empty($source[$column]))
+						if (in_array($column, $sourcesQueryColumns) && !empty($source[$column]))
 						{
 							$queryColumns[] = $column;
 						}
