@@ -213,6 +213,7 @@ CREATE TABLE map_configs.updates
     method character varying COLLATE pg_catalog."default",
     info character varying COLLATE pg_catalog."default",
     name character varying COLLATE pg_catalog."default",
+    abstract character varying COLLATE pg_catalog."default",
     CONSTRAINT updates_pkey PRIMARY KEY (update_id)
 );
 
