@@ -122,6 +122,7 @@ CREATE TABLE map_configs.maps
     tilegrid character varying COLLATE pg_catalog."default",
     show_meta boolean,
     embedded boolean,
+    abstract character varying COLLATE pg_catalog."default",
     CONSTRAINT map_pk PRIMARY KEY (map_id)
 );
 
