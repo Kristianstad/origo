@@ -11,12 +11,14 @@
 	{
 		echo '<div><div class="printXFormDiv"><form method="post">';
 		printTextarea($schema, 'schema_id', 'textareaMedium', 'Id:');
-		printTextarea($schema, 'info', 'textareaLarge', 'Info:');
+		printTextarea($schema, 'abstract', 'textareaLarge', 'Beskrivning:');
 		printUpdateSelect($schema, array('contact'=>$selectables['contacts']), 'bodySelect', 'Kontakt:');
 		echo '<br>';
 		printUpdateSelect($schema, array('origin'=>$selectables['origins']), 'bodySelect', 'Ursprungskälla:');
 		printTextarea($schema, 'updated', 'textareaMedium', 'Uppdaterad (åååå-mm-dd):');
 		printUpdateSelect($schema, array('update'=>$selectables['updates']), 'bodySelect', 'Uppdatering:');
+		echo '<br>';
+		printTextarea($schema, 'info', 'textareaLarge', 'Info:');
 		printHiddenInputs($inheritPosts);
 		echo '<div class="buttonDiv">';
 		printUpdateButton('schema');
