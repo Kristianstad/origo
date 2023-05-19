@@ -14,6 +14,8 @@
 		printTextarea($footer, 'url', 'textareaLarge', 'Url:');
 		echo '<br>';
 		printTextarea($footer, 'text', 'textareaMedium', 'Text:');
+		printTextarea($footer, 'abstract', 'textareaLarge', 'Beskrivning:');
+		echo '<br>';
 		printTextarea($footer, 'info', 'textareaLarge', 'Info:');
 		printHiddenInputs($inheritPosts);
 		echo '<div class="buttonDiv">';
