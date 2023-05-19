@@ -14,6 +14,7 @@
 		printTextarea($origin, 'web', 'textareaMedium', 'Webbsida:');
 		printTextarea($origin, 'email', 'textareaMedium', 'E-mail:');
 		echo '</br>';
+		printTextarea($origin, 'abstract', 'textareaLarge', 'Beskrivning:');
 		printTextarea($origin, 'info', 'textareaLarge', 'Info:');
 		printHiddenInputs($inheritPosts);
 		echo '<div class="buttonDiv">';
