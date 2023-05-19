@@ -9,16 +9,16 @@ CREATE TABLE map_configs.controls
     CONSTRAINT controls_pkey PRIMARY KEY (control_id)
 );
 
-INSERT INTO map_configs.controls(control_id,options,info) VALUES ('home#1','{ "zoomOnStart": true }','Ställer in kartans utbredning till den som angivits i alternativen för kontrollen.');
-INSERT INTO map_configs.controls(control_id,options,info) VALUES ('mapmenu#1','{ "isActive": false }','Skapar en meny uppe till höger för kontroller.');
-INSERT INTO map_configs.controls(control_id,info) VALUES ('sharemap#1','Skapar en delbar länk till kartan. Aktuell utbredning och zoom, synliga lager och kartnålen (om tillämpligt) kommer att delas. Om ett objekt på kartan väljs, kommer objektets ID att finnas i länken som gör att kartan zoomar in på den när den laddas. Detta gäller för WFS, Geojson, Topojson och AGS Feature lager. Sharemap-kontrollen kommer också med möjlighet att spara karttillstånd på servern (kräver Origo Server). Ett sparat karttillstånd hämtas med ett ID istället för en URL.');
-INSERT INTO map_configs.controls(control_id,info) VALUES ('geoposition#1','Lägger till en knapp som när du klickar på den centrerar och zoomar kartan till den aktuella positionen. Genom att klicka på knappen en andra gång aktiveras spårningsläget (om enableTracking har satts till true).');
-INSERT INTO map_configs.controls(control_id,info) VALUES ('print#1','Lägger till en utskriftskontroll.');
-INSERT INTO map_configs.controls(control_id,options,info) VALUES ('about#1','{ "buttonText": "Om Origo", "title": "Om Origo", "content": "<p>Origo är ett ramverk för webbkartor. Ramverket bygger på JavaScript-biblioteket OpenLayers. Du kan använda Origo för att skapa egna webbaserade kartapplikationer.</p><br><p>Projektet drivs och underhålls av ett antal svenska kommuner. Besök gärna <a href=\"https://github.com/origo-map/origo\" target=\"_blank\">Origo på GitHub</a> för mer information.</p>" }','Lägger till en om-kartkontroll. En knapp läggs till i menyn. När du klickar på knappen kommer ett popup-fönster att visa allmän information om kartan. OBS - kräver mapmenu-kontrollen.');
-INSERT INTO map_configs.controls(control_id,options,info) VALUES ('link#1','{ "title": "Origo", "url": "https://github.com/origo-map/origo" }','Lägger till en knapp på kartmenyn som när den klickas öppnar en ny webbläsarflik med den angivna webbadressen.');
-INSERT INTO map_configs.controls(control_id,options,info) VALUES ('legend#1','{ "labelOpacitySlider": "Opacity", "useGroupIndication" : true }','Lägger till en legend i menyn och som en kartförklaring till kartan.');
-INSERT INTO map_configs.controls(control_id,options,info) VALUES ('position#1','{ "title": "Web Mercator", "projections": { "EPSG:4326": "WGS84", "EPSG:3006": "Sweref99 TM" } }','Kontroll för att visa koordinater. Musens position och mittposition på kartan kan växlas. Koordinater kan sökas på i mittpositionsläget.');
-INSERT INTO map_configs.controls(control_id,info) VALUES ('measure#1','Lägger till en mätningskontroll. Mät längd, area eller höjd (kräver tillgång till extern höjddatawebbtjänst) i kartan.');
+INSERT INTO map_configs.controls(control_id,options,abstract) VALUES ('home#1','{ "zoomOnStart": true }','Ställer in kartans utbredning till den som angivits i alternativen för kontrollen.');
+INSERT INTO map_configs.controls(control_id,options,abstract) VALUES ('mapmenu#1','{ "isActive": false }','Skapar en meny uppe till höger för kontroller.');
+INSERT INTO map_configs.controls(control_id,abstract) VALUES ('sharemap#1','Skapar en delbar länk till kartan. Aktuell utbredning och zoom, synliga lager och kartnålen (om tillämpligt) kommer att delas. Om ett objekt på kartan väljs, kommer objektets ID att finnas i länken som gör att kartan zoomar in på den när den laddas. Detta gäller för WFS, Geojson, Topojson och AGS Feature lager. Sharemap-kontrollen kommer också med möjlighet att spara karttillstånd på servern (kräver Origo Server). Ett sparat karttillstånd hämtas med ett ID istället för en URL.');
+INSERT INTO map_configs.controls(control_id,abstract) VALUES ('geoposition#1','Lägger till en knapp som när du klickar på den centrerar och zoomar kartan till den aktuella positionen. Genom att klicka på knappen en andra gång aktiveras spårningsläget (om enableTracking har satts till true).');
+INSERT INTO map_configs.controls(control_id,abstract) VALUES ('print#1','Lägger till en utskriftskontroll.');
+INSERT INTO map_configs.controls(control_id,options,abstract) VALUES ('about#1','{ "buttonText": "Om Origo", "title": "Om Origo", "content": "<p>Origo är ett ramverk för webbkartor. Ramverket bygger på JavaScript-biblioteket OpenLayers. Du kan använda Origo för att skapa egna webbaserade kartapplikationer.</p><br><p>Projektet drivs och underhålls av ett antal svenska kommuner. Besök gärna <a href=\"https://github.com/origo-map/origo\" target=\"_blank\">Origo på GitHub</a> för mer information.</p>" }','Lägger till en om-kartkontroll. En knapp läggs till i menyn. När du klickar på knappen kommer ett popup-fönster att visa allmän information om kartan. OBS - kräver mapmenu-kontrollen.');
+INSERT INTO map_configs.controls(control_id,options,abstract) VALUES ('link#1','{ "title": "Origo", "url": "https://github.com/origo-map/origo" }','Lägger till en knapp på kartmenyn som när den klickas öppnar en ny webbläsarflik med den angivna webbadressen.');
+INSERT INTO map_configs.controls(control_id,options,abstract) VALUES ('legend#1','{ "labelOpacitySlider": "Opacity", "useGroupIndication" : true }','Lägger till en legend i menyn och som en kartförklaring till kartan.');
+INSERT INTO map_configs.controls(control_id,options,abstract) VALUES ('position#1','{ "title": "Web Mercator", "projections": { "EPSG:4326": "WGS84", "EPSG:3006": "Sweref99 TM" } }','Kontroll för att visa koordinater. Musens position och mittposition på kartan kan växlas. Koordinater kan sökas på i mittpositionsläget.');
+INSERT INTO map_configs.controls(control_id,abstract) VALUES ('measure#1','Lägger till en mätningskontroll. Mät längd, area eller höjd (kräver tillgång till extern höjddatawebbtjänst) i kartan.');
 
 CREATE TABLE map_configs.footers
 (
@@ -27,10 +27,11 @@ CREATE TABLE map_configs.footers
     url character varying COLLATE pg_catalog."default",
     text character varying COLLATE pg_catalog."default",
     info character varying COLLATE pg_catalog."default",
+    abstract character varying COLLATE pg_catalog."default",
     CONSTRAINT footers_pkey PRIMARY KEY (footer_id)
 );
 
-INSERT INTO map_configs.footers(footer_id,img,url,text,info) VALUES ('origo#1','img/png/logo.png','https://github.com/origo-map/origo','Origo','En sidfot som vid klick öppnar Origoprojektets Github-sida i en ny flik.');
+INSERT INTO map_configs.footers(footer_id,img,url,text,abstract) VALUES ('origo#1','img/png/logo.png','https://github.com/origo-map/origo','Origo','En sidfot som vid klick öppnar Origoprojektets Github-sida i en ny flik.');
 
 CREATE TABLE map_configs.groups
 (
@@ -44,8 +45,8 @@ CREATE TABLE map_configs.groups
     CONSTRAINT groups_pkey PRIMARY KEY (group_id)
 );
 
-INSERT INTO map_configs.groups(group_id,title,expanded,layers,info) VALUES ('background#1','Bakgrundskartor',true,'{osm#1}','Grupp som innehåller alla bakgrundslager.');
-INSERT INTO map_configs.groups(group_id,layers,info) VALUES ('none#1','{origo-mask#1}','Grupp som inte visas i lagerträdet.');
+INSERT INTO map_configs.groups(group_id,title,expanded,layers,abstract) VALUES ('background#1','Bakgrundskartor',true,'{osm#1}','Grupp som innehåller alla bakgrundslager.');
+INSERT INTO map_configs.groups(group_id,layers,abstract) VALUES ('none#1','{origo-mask#1}','Grupp som inte visas i lagerträdet.');
 
 CREATE TABLE map_configs.layers
 (
@@ -96,9 +97,9 @@ CREATE TABLE map_configs.layers
     CONSTRAINT layers_pkey PRIMARY KEY (layer_id)
 );
 
-INSERT INTO map_configs.layers(layer_id,title,type,attributes,visible,style_config,source,info) VALUES ('origo-cities#1','Origokommuner','GEOJSON','[ { "name": "name" } ]',true,'[ [ { "label": "Origokommuner", "circle": { "radius": 10, "stroke": { "color": "rgba(0,0,0,1)", "width": 2.5 }, "fill": { "color": "rgba(255,255,255,0.9)" } } }, { "circle": { "radius": 2.5, "stroke": { "color": "rgba(0,0,0,0)", "width": 1 }, "fill": { "color": "rgba(37,129,196,1)" } } } ] ]','data/origo-cities-3857.geojson','Lager som visar kommuner delaktiga i Origoprojektet.');
-INSERT INTO map_configs.layers(layer_id,title,type,visible,style_config,source,queryable,opacity,info) VALUES ('origo-mask#1','Origo-mask','GEOJSON',true,'[ [ { "stroke": { "color": "rgba(0,0,0,1.0)" }, "fill": { "color": "rgba(0,0,0,1.0)" } } ] ]','data/origo-mask-3857.geojson',false,0.25,'Lager som tonar ner de delar av kartan som inte utgör del av en Origokommun.');
-INSERT INTO map_configs.layers(layer_id,title,type,visible,icon,queryable,info) VALUES ('osm#1','OpenStreetMap','OSM',true,'img/png/osm.png',false,'Bakgrundslager från OpenStreetMap.');
+INSERT INTO map_configs.layers(layer_id,title,type,attributes,visible,style_config,source,abstract) VALUES ('origo-cities#1','Origokommuner','GEOJSON','[ { "name": "name" } ]',true,'[ [ { "label": "Origokommuner", "circle": { "radius": 10, "stroke": { "color": "rgba(0,0,0,1)", "width": 2.5 }, "fill": { "color": "rgba(255,255,255,0.9)" } } }, { "circle": { "radius": 2.5, "stroke": { "color": "rgba(0,0,0,0)", "width": 1 }, "fill": { "color": "rgba(37,129,196,1)" } } } ] ]','data/origo-cities-3857.geojson','Lager som visar kommuner delaktiga i Origoprojektet.');
+INSERT INTO map_configs.layers(layer_id,title,type,visible,style_config,source,queryable,opacity,abstract) VALUES ('origo-mask#1','Origo-mask','GEOJSON',true,'[ [ { "stroke": { "color": "rgba(0,0,0,1.0)" }, "fill": { "color": "rgba(0,0,0,1.0)" } } ] ]','data/origo-mask-3857.geojson',false,0.25,'Lager som tonar ner de delar av kartan som inte utgör del av en Origokommun.');
+INSERT INTO map_configs.layers(layer_id,title,type,visible,icon,queryable,abstract) VALUES ('osm#1','OpenStreetMap','OSM',true,'img/png/osm.png',false,'Bakgrundslager från OpenStreetMap.');
 
 CREATE TABLE map_configs.maps
 (
@@ -127,7 +128,7 @@ CREATE TABLE map_configs.maps
     CONSTRAINT map_pk PRIMARY KEY (map_id)
 );
 
-INSERT INTO map_configs.maps(map_id,footer,layers,groups,info) VALUES ('origo-cities#1','origo#1','{origo-cities#1}','{none#1,background#1}','En demokarta som visar kommuner delaktiga i Origoprojektet.');
+INSERT INTO map_configs.maps(map_id,footer,layers,groups,abstract) VALUES ('origo-cities#1','origo#1','{origo-cities#1}','{none#1,background#1}','En demokarta som visar kommuner delaktiga i Origoprojektet.');
 
 CREATE TABLE map_configs.proj4defs
 (
@@ -135,6 +136,7 @@ CREATE TABLE map_configs.proj4defs
     projection character varying COLLATE pg_catalog."default" NOT NULL,
     alias character varying COLLATE pg_catalog."default",
     info character varying COLLATE pg_catalog."default",
+    abstract character varying COLLATE pg_catalog."default",
     CONSTRAINT proj4defs_pkey PRIMARY KEY (code)
 );
 
@@ -147,6 +149,7 @@ CREATE TABLE map_configs.services
     alias character varying COLLATE pg_catalog."default",
     type character varying COLLATE pg_catalog."default",
     info character varying COLLATE pg_catalog."default",
+    abstract character varying COLLATE pg_catalog."default",
     CONSTRAINT services_pkey PRIMARY KEY (service_id)
 );
 
@@ -176,6 +179,7 @@ CREATE TABLE map_configs.tilegrids
     minzoom integer,
     resolutions numeric[],
     tilesize integer,
+    abstract character varying COLLATE pg_catalog."default",
     CONSTRAINT tilegrids_pkey PRIMARY KEY (tilegrid_id)
 );
 
@@ -186,6 +190,7 @@ CREATE TABLE map_configs.contacts
     info character varying COLLATE pg_catalog."default",
     email character varying COLLATE pg_catalog."default",
     web character varying COLLATE pg_catalog."default",
+    abstract character varying COLLATE pg_catalog."default",
     CONSTRAINT contacts_pkey PRIMARY KEY (contact_id)
 );
 
@@ -195,6 +200,7 @@ CREATE TABLE map_configs.exports
     resource character varying COLLATE pg_catalog."default",
     style character varying COLLATE pg_catalog."default",
     info character varying COLLATE pg_catalog."default",
+    abstract character varying COLLATE pg_catalog."default",
     CONSTRAINT exports_pkey PRIMARY KEY (export_id)
 );
 
@@ -205,6 +211,7 @@ CREATE TABLE map_configs.origins
     email character varying COLLATE pg_catalog."default",
     web character varying COLLATE pg_catalog."default",
     info character varying COLLATE pg_catalog."default",
+    abstract character varying COLLATE pg_catalog."default",
     CONSTRAINT origins_pkey PRIMARY KEY (origin_id)
 );
 
