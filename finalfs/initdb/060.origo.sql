@@ -162,6 +162,7 @@ CREATE TABLE map_configs.sources
     tables character varying[] COLLATE pg_catalog."default",
     history character varying COLLATE pg_catalog."default",
     softversion character varying COLLATE pg_catalog."default",
+    abstract character varying COLLATE pg_catalog."default",
     CONSTRAINT sources_pkey PRIMARY KEY (source_id)
 );
 
@@ -220,6 +221,7 @@ CREATE TABLE map_configs.databases
     database_id character varying COLLATE pg_catalog."default" NOT NULL,
     connectionstring character varying COLLATE pg_catalog."default",
     info character varying COLLATE pg_catalog."default",
+    abstract character varying COLLATE pg_catalog."default",
     CONSTRAINT database_pkey PRIMARY KEY (database_id)
 );
 
@@ -231,6 +233,7 @@ CREATE TABLE map_configs.schemas
     updated date,
     update character varying COLLATE pg_catalog."default",
     origin character varying COLLATE pg_catalog."default",
+    abstract character varying COLLATE pg_catalog."default",
     CONSTRAINT schemas_pkey PRIMARY KEY (schema_id)
 );
 
@@ -243,5 +246,6 @@ CREATE TABLE map_configs.tables
     update character varying COLLATE pg_catalog."default",
     origin character varying COLLATE pg_catalog."default",
     history character varying COLLATE pg_catalog."default",
+    abstract character varying COLLATE pg_catalog."default",
     CONSTRAINT tables_pkey PRIMARY KEY (table_id)
 );
