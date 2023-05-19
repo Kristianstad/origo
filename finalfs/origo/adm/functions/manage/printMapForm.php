@@ -25,10 +25,11 @@
 		printTextarea($map, 'zoom', 'textareaXSmall', 'Zoom:');
 		printUpdateSelect($map, array('mapgrid'=>array("f", "t")), 'miniSelect', 'Visa rutnät:');
 		printUpdateSelect($map, array('tilegrid'=>$selectables['tilegrids']), 'bodySelect', 'Tilegrid:');
-		printTextarea($map, 'info', 'textareaLarge', 'Info:');
+		printTextarea($map, 'abstract', 'textareaLarge', 'Beskrivning:');
 		echo '<br>';
 		printUpdateSelect($map, array('show_meta'=>array("f", "t")), 'miniSelect', 'Visa metadata:');
 		printUpdateSelect($map, array('embedded'=>array("f", "t")), 'miniSelect', 'Inbäddad:');
+		printTextarea($map, 'info', 'textareaLarge', 'Info:');
 		$map['map']=$map['map']['map_id'];
 		printHiddenInputs($inheritPosts);
 		echo '<div class="buttonDiv">';
