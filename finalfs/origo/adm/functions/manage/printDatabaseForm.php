@@ -13,6 +13,7 @@
 		printTextarea($database, 'database_id', 'textareaMedium', 'Id:');
 		printTextarea($database, 'connectionstring', 'textareaLarge', 'Anslutningssträng:');
 		echo '<br>';
+		printTextarea($database, 'abstract', 'textareaLarge', 'Beskrivning:');
 		printTextarea($database, 'info', 'textareaLarge', 'Info:');
 		printHiddenInputs($inheritPosts);
 		echo '<div class="buttonDiv">';
