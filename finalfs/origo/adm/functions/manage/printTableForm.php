@@ -10,7 +10,7 @@
 	{
 		echo '<div><div class="printXFormDiv"><form method="post">';
 		printTextarea($table, 'table_id', 'textareaMedium', 'Id:');
-		printTextarea($table, 'info', 'textareaLarge', 'Info:');
+		printTextarea($table, 'abstract', 'textareaLarge', 'Beskrivning:');
 		printUpdateSelect($table, array('contact'=>$selectables['contacts']), 'bodySelect', 'Kontakt:');
 		echo '<br>';
 		printUpdateSelect($table, array('origin'=>$selectables['origins']), 'bodySelect', 'Ursprungskälla:');
@@ -18,6 +18,7 @@
 		printUpdateSelect($table, array('update'=>$selectables['updates']), 'bodySelect', 'Uppdatering:');
 		echo '<br>';
 		printTextarea($table, 'history', 'textareaLarge', 'Tillkomsthistorik:');
+		printTextarea($table, 'info', 'textareaLarge', 'Info:');
 		printHiddenInputs($inheritPosts);
 		echo '<div class="buttonDiv">';
 		printUpdateButton('table');
