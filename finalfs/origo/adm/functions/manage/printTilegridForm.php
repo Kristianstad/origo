@@ -12,6 +12,7 @@
 		printTextarea($tilegrid, 'tilegrid_id', 'textareaMedium', 'Id:');
 		printTextarea($tilegrid, 'tilesize', 'textareaSmall', 'Tile-storlek:');
 		echo '</br>';
+		printTextarea($tilegrid, 'abstract', 'textareaLarge', 'Beskrivning:');
 		printTextarea($tilegrid, 'info', 'textareaLarge', 'Info:');
 		printHiddenInputs($inheritPosts);
 		echo '<div class="buttonDiv">';
