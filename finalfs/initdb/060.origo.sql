@@ -5,6 +5,7 @@ CREATE TABLE map_configs.controls
     control_id character varying COLLATE pg_catalog."default" NOT NULL,
     options json,
     info character varying COLLATE pg_catalog."default",
+    abstract character varying COLLATE pg_catalog."default",
     CONSTRAINT controls_pkey PRIMARY KEY (control_id)
 );
 
