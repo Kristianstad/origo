@@ -14,6 +14,7 @@
 		printTextarea($update, 'interval', 'textareaMedium', 'Intervall:');
 		printTextarea($update, 'method', 'textareaMedium', 'Metod:');
 		echo '</br>';
+		printTextarea($update, 'abstract', 'textareaLarge', 'Beskrivning:');
 		printTextarea($update, 'info', 'textareaLarge', 'Info:');
 		printHiddenInputs($inheritPosts);
 		echo '<div class="buttonDiv">';
