@@ -12,7 +12,6 @@
 		printTextarea($proj4def, 'code', 'textareaMedium', 'Kod:');
 		printTextarea($proj4def, 'projection', 'textareaLarge', 'Projektion:');
 		printTextarea($proj4def, 'alias', 'textareaMedium', 'Alias:');
-		echo '</br>';
 		printTextarea($proj4def, 'abstract', 'textareaLarge', 'Beskrivning:');
 		printTextarea($proj4def, 'info', 'textareaLarge', 'Info:');
 		printHiddenInputs($inheritPosts);
