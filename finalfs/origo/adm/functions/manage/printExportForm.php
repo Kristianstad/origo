@@ -12,7 +12,6 @@
 		printTextarea($export, 'export_id', 'textareaMedium', 'Id:');
 		printTextarea($export, 'resource', 'textareaMedium', 'Resurs:');
 		printTextarea($export, 'style', 'textareaMedium', 'Stil:');
-		echo '</br>';
 		printTextarea($export, 'abstract', 'textareaLarge', 'Beskrivning:');
 		printTextarea($export, 'info', 'textareaLarge', 'Info:');
 		printHiddenInputs($inheritPosts);
