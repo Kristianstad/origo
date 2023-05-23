@@ -25,7 +25,6 @@
 				if (current($layer)['editable'] == "t")
 				{
 					printTextarea($layer, 'allowededitoperations', 'textareaMedium', 'Redigeringsalt.:');
-					echo '<br>';
 					printTextarea($layer, 'geometryname', 'textareaMedium', 'Geometrinamn:');
 					printTextarea($layer, 'geometrytype', 'textareaMedium', 'Geometrityp:');
 				}
@@ -38,44 +37,38 @@
 		printUpdateSelect($layer, array('queryable'=>array("f", "t")), 'miniSelect', 'Klickbar:');
 		printUpdateSelect($layer, array('visible'=>array("f", "t")), 'miniSelect', 'Synlig:');
 		printTextarea($layer, 'opacity', 'textareaSmall', 'Opacitet:');
-		echo '<br>';
 		if (isset($layer['layer']['service']) && $layer['layer']['service'] == 'restricted')
 		{
-			echo "<img src='../img/png/lock_yellow.png' alt='Skyddat lager' title='Skyddat lager'>&nbsp;";
+			echo "<span><img class='yellowLock' src='../img/png/lock_yellow.png' alt='Skyddat lager' title='Skyddat lager'>";
 			printTextarea($layer, 'adusers', 'textareaLarge', 'Användare:');
+			echo "</span><wbr><span><img class='yellowLock' src='../img/png/lock_yellow.png' alt='Skyddat lager' title='Skyddat lager'>";
 			printTextarea($layer, 'adgroups', 'textareaLarge', 'Grupper:');
-			echo "<img src='../img/png/lock_yellow.png' alt='Skyddat lager' title='Skyddat lager'><br>";
+			echo "</span><wbr>";
 		}
 		printTextarea($layer, 'icon', 'textareaLarge', 'Ikon:');
 		printTextarea($layer, 'icon_extended', 'textareaLarge', 'Utfälld ikon:');
 		printUpdateSelect($layer, array('swiper'=>array("f", "t", "under")), 'miniSelect', 'Swiper-lager:');
-		echo '<br>';
 		if (isset($layer['layer']['type']) && $layer['layer']['type'] == 'WMS')
 		{
 			printTextarea($layer, 'format', 'textareaMedium', 'Format:');
 			printTextarea($layer, 'featureinfolayer', 'textareaMedium', 'FeatureInfo-lager:');
 		}
 		printTextarea($layer, 'attributes', 'textareaLarge', 'Attribut:');
-		echo '<br>';
 		printTextarea($layer, 'style_config', 'textareaLarge', 'Stilkonfiguration:');
 		printTextarea($layer, 'style_filter', 'textareaLarge', 'Stilfilter:');
-		echo '<br>';
 		printTextarea($layer, 'style_layer', 'textareaMedium', 'Stillager:');
 		printTextarea($layer, 'maxscale', 'textareaSmall', 'Maxskala:');
 		printTextarea($layer, 'minscale', 'textareaSmall', 'Minskala:');
 		printTextarea($layer, 'exports', 'textareaMedium', 'Exportlager:');
-		echo '<br>';
 		printTextarea($layer, 'attribution', 'textareaLarge', 'Tillskrivning:');
 		echo '<hr class="dashedHr">';
 		printTextarea($layer, 'abstract', 'textareaLarge', 'Beskrivning:');
 		printTextarea($layer, 'resources', 'textareaMedium', 'Resurser:');
 		printUpdateSelect($layer, array('contact'=>$selectables['contacts']), 'bodySelect', 'Kontakt:');
-		echo '<br>';
 		printUpdateSelect($layer, array('origin'=>$selectables['origins']), 'bodySelect', 'Ursprungskälla:');
 		printTextarea($layer, 'updated', 'textareaMedium', 'Uppdaterad (åååå-mm-dd):');
 		printUpdateSelect($layer, array('update'=>$selectables['updates']), 'bodySelect', 'Uppdatering:');
 		printTextarea($layer, 'web', 'textareaMedium', 'Webbsida:');
-		echo '<br>';
 		printTextarea($layer, 'history', 'textareaLarge', 'Tillkomsthistorik:');
 		if (isset(current($layer)['tables']) && !empty(trim(current($layer)['tables'], '{}')))
 		{
@@ -95,7 +88,6 @@
 				printTextarea($layer, 'layertype', 'textareaMedium', 'WFS-typ:');
 				if (isset($layer['layer']['layertype']) && $layer['layer']['layertype'] == 'cluster')
 				{
-					echo '<br>';
 					printTextarea($layer, 'clusterstyle', 'textareaLarge', 'Klusterstil:');
 					printTextarea($layer, 'clusteroptions', 'textareaLarge', 'Klusteralternativ:');
 				}
