@@ -20,8 +20,10 @@
 			$readonly='';
 		}
 		echo <<<HERE
-			<label for="{$targetId}{$ucColumn}">{$label}</label>
-			<textarea {$readonly}rows="1" class="{$class}" id="{$targetId}{$ucColumn}" name="update{$ucColumn}">{$columnValue}</textarea>&nbsp;
+			<span>
+				<label for="{$targetId}{$ucColumn}">{$label}</label>
+				<textarea {$readonly}rows="1" class="{$class}" id="{$targetId}{$ucColumn}" name="update{$ucColumn}">{$columnValue}</textarea>
+			</span><wbr>
 		HERE;
 	}
 	
