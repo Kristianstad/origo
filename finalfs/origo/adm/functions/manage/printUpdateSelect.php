@@ -9,14 +9,20 @@
 		$ucColumn=ucfirst(key($column));
 		$sName='update'.$ucColumn;
 		$selected=current($target)[rtrim(key($column), 's')];
-		echo "<label for='{$targetId}{$ucColumn}'>{$label}</label>";
-		echo "<select class='{$class}' id='{$targetId}{$ucColumn}' name='{$sName}'>";
+		echo <<<HERE
+			<span>
+				<label for='{$targetId}{$ucColumn}'>{$label}</label>
+				<select class='{$class}' id='{$targetId}{$ucColumn}' name='{$sName}'>
+		HERE;
 		if (!isset($options))
 		{
 				$options=array_merge(array(""), current($column));
 		}
 		printSelectOptions($options, $selected);
-		echo "</select>&nbsp;";
+		echo <<<HERE
+				</select>
+			</span><wbr>
+		HERE;
 	}
 	
 ?>
