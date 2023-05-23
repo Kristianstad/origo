@@ -15,18 +15,15 @@
 		printTextarea($map, 'map_id', 'textareaMedium', 'Id:');
 		printTextarea($map, 'layers', 'textareaLarge', 'Lager:');
 		printTextarea($map, 'groups', 'textareaLarge', 'Grupper:');
-		echo '<br>';
 		printUpdateSelect($map, array('footer'=>$selectables['footers']), 'bodySelect', 'Sidfot:');
 		printTextarea($map, 'controls', 'textareaLarge', 'Kontroller:');
 		printTextarea($map, 'proj4defs', 'textareaMedium', 'Proj4defs:');
 		printTextarea($map, 'featureinfooptions', 'textareaMedium', 'FeatureInfoOptions:');
-		echo '<br>';
 		printTextarea($map, 'center', 'textareaMedium', 'Mittpunkt:');
 		printTextarea($map, 'zoom', 'textareaXSmall', 'Zoom:');
 		printUpdateSelect($map, array('mapgrid'=>array("f", "t")), 'miniSelect', 'Visa rutnät:');
 		printUpdateSelect($map, array('tilegrid'=>$selectables['tilegrids']), 'bodySelect', 'Tilegrid:');
 		printTextarea($map, 'abstract', 'textareaLarge', 'Beskrivning:');
-		echo '<br>';
 		printUpdateSelect($map, array('show_meta'=>array("f", "t")), 'miniSelect', 'Visa metadata:');
 		printUpdateSelect($map, array('embedded'=>array("f", "t")), 'miniSelect', 'Inbäddad:');
 		printTextarea($map, 'info', 'textareaLarge', 'Info:');
