@@ -1,6 +1,6 @@
 		html			{ width:100%; height:100%; font-family:OpenSans,"Droid Sans",Verdana,"DejaVu Sans","Bitstream Vera Sans",sans-serif; font-size:clamp(7px, 0.9vw, 12px); line-height:2; overflow-x:hidden }
 		body			{ background-color:#7fb1b3 }
-		button			{ height: 1.7em; font-family:inherit; font-size:inherit; box-sizing:border-box; border-width:1px; border-style:solid; padding:0.1em; position:relative; top:-0.5em; margin-left:2px; white-space:nowrap; background-color:powderblue; border-radius:0.5em }
+		button			{ height: 1.7em; font-family:inherit; font-size:inherit; box-sizing:border-box; border-width:1px; border-style:solid; padding:0.1em; position:relative; top:-0.4em; margin-left:2px; white-space:nowrap; background-color:powderblue; border-radius:0.5em }
 		.buttonDiv		{ display:flex; position:absolute; right:6rem; line-height:1.5 }
 		.exportButtonDiv { position:absolute; right:0; margin-top:2.4rem; margin-right:2rem }
 		.deleteButtonDiv { white-space:nowrap; position:absolute; right:2rem }
@@ -15,19 +15,19 @@
 		.thLeft			{ padding-bottom:0; padding-right:0.3em; border-right:dashed 1px lightgray }
 		.thMiddle		{ padding-bottom:0; padding-left:0.3em; padding-right:0.3em; border-right:dashed 1px lightgray }
 		.thRight		{ padding-bottom:0; padding-left:0.3em }
-		.thFirst		{ white-space:nowrap }
-		.thNext			{ white-space:nowrap; border-left:dashed 1px lightgray; padding-left:0.3em }
+		.thFirst		{ white-space:nowrap; padding-right: 0.3em }
+		.thNext			{ white-space:nowrap; padding-right: 0.3em; border-left:dashed 1px lightgray; padding-left:0.3em }
 		h3				{ margin-block-start:0.6em; margin-block-end:0.5em; font-size:clamp(9px, 1vw, 14px) }
 		.h3NoFocus		{ color:lightgray; margin-block-start:0 }
 		.h3Focus		{ margin-block-start:0 }
 		.h3Lightgray	{ color:lightgray }
 		.h3Black		{ color:black }
-		select			{ font-family:inherit; font-size:inherit; box-sizing:border-box; padding:0.1em; position:relative; top:-0.5em; border-radius:0.5em; height:1.8rem }
+		select			{ font-family:inherit; font-size:inherit; box-sizing:border-box; padding:0.1em; position:relative; top:-0.4em; border-radius:0.5em; height:1.8rem }
 		.headSelect		{ width:100%; max-width:calc(100% - 4.5em) }
 		.addSelect		{ width:12em }
 		.bodySelect		{ position:relative; max-width: 200px }
 		label			{ vertical-align: text-bottom }
-		input			{ font-family:inherit; font-size:inherit; box-sizing:border-box; padding:0.1em; position:relative; line-height:1.4; border-width:1px; border-style:solid; top:-0.5em; vertical-align:middle; border-radius:0.5em }
+		input			{ font-family:inherit; font-size:inherit; box-sizing:border-box; padding:0.1em; position:relative; line-height:1.4; border-width:1px; border-style:solid; top:-0.4em; vertical-align:middle; border-radius:0.5em }
 		.headInput		{ width:100%; max-width:calc(100% - 4.5em); margin-bottom:0.2em }
 		form			{ margin:0; margin-block-end:0 }
 		.headForm		{ display:inline-block; width:100% }
@@ -48,3 +48,5 @@
 		.headFormDiv2	{ width:100%; white-space:nowrap; display:inline-block }
 		.headFormDiv3	{ width:100%; white-space:nowrap; display:inline-block; margin-top:2px }
 		.addRemoveDiv	{ clear:both; padding-top:0.5em; padding-bottom:0; max-width:calc(100% - 16em) }
+		span			{ white-space:nowrap }
+		.yellowLock		{ margin-right:-0.4em }
