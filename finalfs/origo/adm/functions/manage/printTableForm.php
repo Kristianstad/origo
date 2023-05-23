@@ -12,11 +12,9 @@
 		printTextarea($table, 'table_id', 'textareaMedium', 'Id:');
 		printTextarea($table, 'abstract', 'textareaLarge', 'Beskrivning:');
 		printUpdateSelect($table, array('contact'=>$selectables['contacts']), 'bodySelect', 'Kontakt:');
-		echo '<br>';
 		printUpdateSelect($table, array('origin'=>$selectables['origins']), 'bodySelect', 'Ursprungskälla:');
 		printTextarea($table, 'updated', 'textareaMedium', 'Uppdaterad (åååå-mm-dd):');
 		printUpdateSelect($table, array('update'=>$selectables['updates']), 'bodySelect', 'Uppdatering:');
-		echo '<br>';
 		printTextarea($table, 'history', 'textareaLarge', 'Tillkomsthistorik:');
 		printTextarea($table, 'info', 'textareaLarge', 'Info:');
 		printHiddenInputs($inheritPosts);
