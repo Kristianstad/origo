@@ -12,7 +12,6 @@
 		printTextarea($service, 'service_id', 'textareaMedium', 'Id:');
 		printTextarea($service, 'base_url', 'textareaLarge', 'Huvudurl:');
 		printTextarea($service, 'type', 'textareaMedium', 'Typ:');
-		echo '</br>';
 		printTextarea($service, 'abstract', 'textareaLarge', 'Beskrivning:');
 		printTextarea($service, 'info', 'textareaLarge', 'Info:');
 		printHiddenInputs($inheritPosts);
