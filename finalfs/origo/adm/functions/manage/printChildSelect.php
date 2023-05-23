@@ -87,17 +87,17 @@
 			echo <<<HERE
 				<th class="{$thClass}">
 					<h3 class="{$edith3Class}">{$heading}</h3>
-					<div style="display:flex">
+					<div class="headFormDiv1">
 						<form id="{$formId}" class="headForm" method="post">
-							<select onchange='this.form.submit();' class='headSelect' id='{$targetId}{$ucColumn}' name='{$sName}'>
+							<div class="headFormDiv2">
+								<select onchange='this.form.submit();' class='headSelect' id='{$targetId}{$ucColumn}' name='{$sName}'>
 			HERE;
 			printSelectOptions($options, $selectedValue);
-			echo           "</select>&nbsp;";
+			echo				"</select>";
 			printHiddenInputs($hiddenInputs);
 			echo <<<HERE
-							<button type="submit" class="headButton" name="{$columnType}Button" value="get" style="margin-left:-0.5em">
-								Hämta
-							</button>
+								<button type="submit" class="headButton" name="{$columnType}Button" value="get">Hämta</button>
+							</div>
 						</form>
 					</div>
 				</th>
