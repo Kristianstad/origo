@@ -13,7 +13,6 @@
 		printTextarea($contact, 'name', 'textareaMedium', 'Namn:');
 		printTextarea($contact, 'web', 'textareaMedium', 'Webbsida:');
 		printTextarea($contact, 'email', 'textareaMedium', 'E-mail:');
-		echo '</br>';
 		printTextarea($contact, 'abstract', 'textareaLarge', 'Beskrivning:');
 		printTextarea($contact, 'info', 'textareaLarge', 'Info:');
 		printHiddenInputs($inheritPosts);
