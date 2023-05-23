@@ -13,7 +13,6 @@
 		echo '<div><div class="printXFormDiv"><form method="post">';
 		printTextarea($control, 'control_id', 'textareaMedium', 'Id:');
 		printTextarea($control, 'abstract', 'textareaLarge', 'Beskrivning:');
-		echo '<br>';
 		printTextarea($control, 'options', 'textareaLarge', 'Inställningar:');
 		printTextarea($control, 'info', 'textareaLarge', 'Info:');
 		printHiddenInputs($inheritPosts);
