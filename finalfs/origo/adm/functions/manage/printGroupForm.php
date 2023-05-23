@@ -15,7 +15,6 @@
 		printTextarea($group, 'group_id', 'textareaMedium', 'Id:');
 		printTextarea($group, 'layers', 'textareaLarge', 'Lager:');
 		printTextarea($group, 'groups', 'textareaLarge', 'Grupper:');
-		echo '<br>';
 		printTextarea($group, 'title', 'textareaMedium', 'Titel:');
 		printUpdateSelect($group, array('expanded'=>array("f", "t")), 'miniSelect', 'Expanderad:');
 		printTextarea($group, 'abstract', 'textareaMedium', 'Beskrivning:');
