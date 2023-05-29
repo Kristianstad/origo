@@ -94,6 +94,7 @@ CREATE TABLE map_configs.layers
     origin character varying COLLATE pg_catalog."default",
     tables character varying[] COLLATE pg_catalog."default",
     history character varying COLLATE pg_catalog."default",
+    show_meta boolean,
     CONSTRAINT layers_pkey PRIMARY KEY (layer_id)
 );
 
