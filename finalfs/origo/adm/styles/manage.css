@@ -12,11 +12,11 @@
 		.dashedHr		{ border-style:dashed; border-width:1px 0 0 0; border-color:lightgray }
 		table			{ border-spacing:0; clear:left; min-height:2em }
 		th				{ width:16em; text-align:left; vertical-align:top }
-		.thLeft			{ padding-bottom:0; padding-right:0.3em; border-right:dashed 1px lightgray }
-		.thMiddle		{ padding-bottom:0; padding-left:0.3em; padding-right:0.3em; border-right:dashed 1px lightgray }
-		.thRight		{ padding-bottom:0; padding-left:0.3em }
-		.thFirst		{ white-space:nowrap; padding-right: 0.3em }
-		.thNext			{ white-space:nowrap; padding-right: 0.3em; border-left:dashed 1px lightgray; padding-left:0.3em }
+		.thLeft			{ padding-bottom:0; padding-right:0.5em; border-right:dashed 1px lightgray }
+		.thMiddle		{ padding-bottom:0; padding-left:0.5em; padding-right:0.5em; border-right:dashed 1px lightgray }
+		.thRight		{ padding-bottom:0; padding-left:0.5em }
+		.thFirst		{ white-space:nowrap; padding-right:0.5em }
+		.thNext			{ white-space:nowrap; padding-left:0.5em; padding-right:0.5em; border-left:dashed 1px lightgray }
 		h3				{ margin-block-start:0.6em; margin-block-end:0.5em; font-size:clamp(9px, 1vw, 14px) }
 		.h3NoFocus		{ color:lightgray; margin-block-start:0 }
 		.h3Focus		{ margin-block-start:0 }
