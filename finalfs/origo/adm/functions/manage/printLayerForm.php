@@ -62,6 +62,7 @@
 		printTextarea($layer, 'exports', 'textareaMedium', 'Exportlager:');
 		printTextarea($layer, 'attribution', 'textareaLarge', 'Tillskrivning:');
 		echo '<hr class="dashedHr">';
+		printUpdateSelect($layer, array('show_meta'=>array("f", "t")), 'miniSelect', 'Visa metadata:');
 		printTextarea($layer, 'abstract', 'textareaLarge', 'Beskrivning:');
 		printTextarea($layer, 'resources', 'textareaMedium', 'Resurser:');
 		printUpdateSelect($layer, array('contact'=>$selectables['contacts']), 'bodySelect', 'Kontakt:');
