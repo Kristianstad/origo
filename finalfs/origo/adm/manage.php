@@ -320,6 +320,7 @@
 	foreach ($groupIdsArray as $groupId)
 	{
 		$group=array('group'=>array_column_search($groupId, 'group_id', $configTables['groups']));
+		$inheritPosts['groupId']=$groupId;
 		if (!empty(current($group)))
 		{
 			if (count($tmpGroupIds) > 0)
