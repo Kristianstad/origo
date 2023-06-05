@@ -17,6 +17,7 @@
 		printTextarea($group, 'groups', 'textareaLarge', 'Grupper:');
 		printTextarea($group, 'title', 'textareaMedium', 'Titel:');
 		printUpdateSelect($group, array('expanded'=>array("f", "t")), 'miniSelect', 'Expanderad:');
+		printUpdateSelect($group, array('show_meta'=>array("f", "t")), 'miniSelect', 'Visa metadata:');
 		printTextarea($group, 'abstract', 'textareaMedium', 'Beskrivning:');
 		printTextarea($group, 'info', 'textareaLarge', 'Info:');
 		printHiddenInputs($inheritPosts);
@@ -35,5 +36,5 @@
 		printRemoveOperation($group, array('groups'=>$operationTables['groups']),'Ta bort från grupp', $inheritPosts);
 		echo '</div>';
 	}
-	
+
 ?>
