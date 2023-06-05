@@ -42,6 +42,7 @@ CREATE TABLE map_configs.groups
     groups character varying[] COLLATE pg_catalog."default",
     layers character varying[] COLLATE pg_catalog."default",
     info character varying COLLATE pg_catalog."default",
+    show_meta boolean,
     CONSTRAINT groups_pkey PRIMARY KEY (group_id)
 );
 
