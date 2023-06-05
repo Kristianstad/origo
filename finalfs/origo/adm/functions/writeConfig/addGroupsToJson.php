@@ -28,7 +28,7 @@
 					{
 						$json = $json.', "expanded": true';
 					}
-					if (!empty($group['abstract']))
+					if ($group['show_meta'] != 'f' && !empty($group['abstract']))
 					{
 						$json = $json.', "abstract": "'.$group['abstract'].'"';
 					}
