@@ -19,7 +19,12 @@
 	{
 		$mapNumber = '';
 	}
-	$configfile = "/origo/$mapName/index$mapNumber.json";
+	$configDir="/origo/$mapName";
+	if (!file_exists("$configDir"))
+	{
+		mkdir("$configDir", 0770);
+	}
+	$configFile = "$configDir/index$mapNumber.json";
 	ignore_user_abort(true);
 	$dbh=dbh();
 	$configTables=configTables($dbh);
@@ -106,7 +111,12 @@
 	}
 	else
 	{
-		file_put_contents($configfile, $json);
+		file_put_contents($configFile, $json);
+		$configSymlink="/origo/$mapId";
+		if (!file_exists("$configSymlink") && !is_link("$configSymlink"))
+		{
+			symlink("$configFile", "$configSymlink");
+		}
 		require("./constants/configSchema.php");
 		$layers=all_from_table($dbh, $configSchema, 'layers');
 		$sources=all_from_table($dbh, $configSchema, 'sources');
