@@ -36,7 +36,7 @@
 		echo       'Importera';
 		echo     '</button>';
 		echo   '</form>';
-		echo   '<form action="manage.php">';
+		echo   '<form action="manage.php?view=Origo">';
 		echo     '<input type="submit" value="Till konfigurationsverktyget" />';
 		echo   '</form>';
 		exit;
@@ -521,7 +521,7 @@ if ($_POST['map'] == 'yes')
 if ($result)
 {
 	echo "Import lyckades!";
-	echo '<form action="manage.php">';
+	echo '<form action="manage.php?view=Origo">';
 	echo   '<input type="submit" value="Till konfigurationsverktyget" />';
 	echo '</form>';
 }
