@@ -506,7 +506,7 @@ if ($_POST['map'] == 'yes')
 		$mapColumns=$mapColumns.', center';
 		$mapValues=$mapValues.", '(".$jsonCenter[0].",".$jsonCenter[1].")'";
 	}
-	if (!empty($jsonZoom))
+	if (isset($jsonZoom))
 	{
 		$mapColumns=$mapColumns.', zoom';
 		$mapValues=$mapValues.", '$jsonZoom'";
