@@ -209,7 +209,7 @@
 				{
 					$json = $json.', "abstract": "';
 				}
-				$adminForm="<form action='https://rancherproxy.kristianstad.se/origo/php/adm/manage.php?view=Origo' method='post' target='_blank'><button type='submit' name='layerId' value='".$layer['layer_id']."' style='float:right; color:blue'>Administrera</button></form>";
+				$adminForm="<form action='".$_SERVER["HTTP_REFERER"]."?view=Origo' method='post' target='_blank'><button type='submit' name='layerId' value='".$layer['layer_id']."' style='float:right; color:blue'>Administrera</button></form>";
 				$json = $json.'<br>'.$adminForm.'"';
 				if (!empty($layer['attributes']) && $layer['type'] !== 'GROUP')
 				{
