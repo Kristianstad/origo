@@ -22,7 +22,8 @@
 	$configDir="/origo/$mapName";
 	if (!file_exists("$configDir"))
 	{
-		mkdir("$configDir", 0770);
+		mkdir("$configDir");
+		chmod("$configDir", 0770);
 	}
 	$configFile = "$configDir/index$mapNumber.json";
 	ignore_user_abort(true);
@@ -112,7 +113,7 @@
 	else
 	{
 		file_put_contents($configFile, $json);
-		$configSymlink="/origo/$mapId";
+		$configSymlink="/origo/$mapId.json";
 		if (!file_exists("$configSymlink") && !is_link("$configSymlink"))
 		{
 			symlink("$configFile", "$configSymlink");
