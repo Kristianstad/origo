@@ -147,8 +147,9 @@ foreach ($jsonSource as $sourceId => $source)
 	if (strpos($source['url'], "?") !== false)
 	{
 		parse_str(substr($source['url'], strpos($source['url'], "?") + 1), $urlQuery);
-		$source['url']=substr($source['url'], 0, strpos($source['url'], "?"));
+		//$source['url']=substr($source['url'], 0, strpos($source['url'], "?"));
 	}
+	$source['url']=dirname($source['url']);
 	if ($_POST['services'] == 'yes')
 	{
 		if (!in_array($source['url'], $jsonServices))
