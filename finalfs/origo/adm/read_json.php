@@ -381,6 +381,10 @@ if ($_POST['layers'] == 'yes')
 			$layerLayers='{}';
 			$layerSource=$layer['source']."#$importId";
 		}
+		if (!empty($layer['abstract']))
+		{
+			$layer['abstract']=preg_replace("|<form action='[^']*' method='post' target='_blank'><button type='submit' name='layerId' value='[^']*' style='[^']*'>Administrera</button></form>|i", '', $layer['abstract']);
+		}
 		$layersColumns='layer_id, title, format, type, attributes, abstract, queryable, featureinfolayer, opacity, visible, source, style_config, icon, style_filter, icon_extended, layers, layertype, clusterstyle, attribution';
 		$layersValues="'".$layer['name']."$importId', '".$layer['title']."', '".$layer['format']."', '".$layer['type']."', ".pg_escape_literal(json_encode($layer['attributes'], JSON_PRETTY_PRINT)).", ".pg_escape_literal(str_replace(array('"'), '\"', str_replace(array("\r\n", "\r", "\n"), "<br />", $layer['abstract']))).", '$layerQueryable', '".$layer['featureinfoLayer']."', '".$layer['opacity']."', '$layerVisible', '$layerSource', ".pg_escape_literal($layerStyleConfig).", '$layerIcon', ".pg_escape_literal($layerStyleFilter).", '$layerExtendedIcon', '$layerLayers', '".$layer['layerType']."', '$layerClusterStyle', '".$layer['attribution']."'";
 		if (!empty($layer['maxScale']))
