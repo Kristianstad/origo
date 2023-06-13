@@ -198,11 +198,15 @@
 						{
 							$originStr=$layerOrigin['name'];
 						}
-						$json = $json.', "abstract": "<b>Beskrivning: </b>'.$beskr.'<br><b>Resurser: </b>'.$layer['resources'].'<br><b>Kontakt: </b>'.$contactStr.'<br><b>Källa: </b>'.$originStr.'<br><b>Uppdaterad: </b>'.$layer['updated'];
+						$json = $json.', "abstract": "<b>Beskrivning: </b>'.$beskr.'<br><b>Resurser: </b>'.$layer['resources'].'<br><b>Kontakt: </b>'.$contactStr.'<br><b>Källa: </b>'.$originStr.'<br><b>Uppdaterad: </b>'.$layer['updated'].'<br>';
 					}
 					else
 					{
-						$json = $json.', "abstract": "'.$beskr;
+						$json = $json.', "abstract": "';
+						if (!empty($beskr))
+						{
+							$json = $json.$beskr.'<br>';
+						}
 					}
 				}
 				else
@@ -210,7 +214,7 @@
 					$json = $json.', "abstract": "';
 				}
 				$adminForm="<form action='".$_SERVER["HTTP_REFERER"]."' method='post' target='_blank'><button type='submit' name='layerId' value='".$layer['layer_id']."' style='float:right; color:blue'>Administrera</button></form>";
-				$json = $json.'<br>'.$adminForm.'"';
+				$json = $json.$adminForm.'"';
 				if (!empty($layer['attributes']) && $layer['type'] !== 'GROUP')
 				{
 					$json = $json.', "attributes": '.$layer['attributes'];
