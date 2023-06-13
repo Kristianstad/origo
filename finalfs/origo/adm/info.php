@@ -89,6 +89,7 @@
 		if (strpos($_SERVER['HTTP_REFERER'], 'manage') === false)
 		{
 			echo '<button onclick="history.back()">Tillbaks</button>';
+			echo "<form action='".dirname($_SERVER["HTTP_REFERER"])."/manage.php' method='post' target='_blank' style='display:inline'><button type='submit' name='".$childType."Id' value='".$childId."'>Administrera</button></form>";
 		}
 	}
 ?>
