@@ -261,6 +261,10 @@
 			}
 			else
 			{
+				if (!empty($groupIdsArray))
+				{
+					$inheritPosts['groupId']=$groupIdsArray[0];
+				}
 				printChildSelect($map, 'groups', $thClass, 'Grupp', $inheritPosts);
 				printChildSelect($map, 'layers', $thClass, 'Lager', $inheritPosts);
 				printChildSelect($map, 'controls', $thClass, 'Kontroll', $inheritPosts);
