@@ -120,7 +120,6 @@ CREATE TABLE map_configs.maps
     featureinfooptions json DEFAULT '{ "infowindow": "overlay" }'::json,
     groups character varying[] COLLATE pg_catalog."default",
     layers character varying[] COLLATE pg_catalog."default",
-    styles character varying[] COLLATE pg_catalog."default",
     footer character varying COLLATE pg_catalog."default",
     info character varying COLLATE pg_catalog."default",
     tilegrid character varying COLLATE pg_catalog."default",
