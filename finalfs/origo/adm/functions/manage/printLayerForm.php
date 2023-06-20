@@ -45,8 +45,6 @@
 			printTextarea($layer, 'adgroups', 'textareaLarge', 'Grupper:');
 			echo "</span><wbr>";
 		}
-		printTextarea($layer, 'icon', 'textareaLarge', 'Ikon:');
-		printTextarea($layer, 'icon_extended', 'textareaLarge', 'Utfälld ikon:');
 		printUpdateSelect($layer, array('swiper'=>array("f", "t", "under")), 'miniSelect', 'Swiper-lager:');
 		if (isset($layer['layer']['type']) && $layer['layer']['type'] == 'WMS')
 		{
@@ -54,9 +52,34 @@
 			printTextarea($layer, 'featureinfolayer', 'textareaMedium', 'FeatureInfo-lager:');
 		}
 		printTextarea($layer, 'attributes', 'textareaLarge', 'Attribut:');
-		printTextarea($layer, 'style_config', 'textareaLarge', 'Stilkonfiguration:');
-		printTextarea($layer, 'style_filter', 'textareaLarge', 'Stilfilter:');
 		printTextarea($layer, 'style_layer', 'textareaMedium', 'Stillager:');
+		if (!isset($layer['layer']['style_layer']) || empty(trim($layer['layer']['style_layer'])))
+		{
+			printTextarea($layer, 'style_config', 'textareaLarge', 'Stilkonfiguration:');
+			if (!isset($layer['layer']['style_config']) || empty(trim($layer['layer']['style_config'], " []{}\n\r\t")) || $layer['layer']['style_config'] == 'null')
+			{
+				printTextarea($layer, 'icon', 'textareaLarge', 'Ikon:');
+				printTextarea($layer, 'icon_extended', 'textareaLarge', 'Utfälld ikon:');
+				printTextarea($layer, 'style_filter', 'textareaLarge', 'Stilfilter:');
+			}
+			else
+			{
+				printHiddenInputs(array(
+					'updateIcon' => $layer['layer']['icon'],
+					'updateIcon_extended' => $layer['layer']['icon_extended'],
+					'updateStyle_filter' => $layer['layer']['style_filter']
+				));
+			}
+		}
+		else
+		{
+			printHiddenInputs(array(
+				'updateStyle_config' => $layer['layer']['style_config'],
+				'updateIcon' => $layer['layer']['icon'],
+				'updateIcon_extended' => $layer['layer']['icon_extended'],
+				'updateStyle_filter' => $layer['layer']['style_filter']
+			));
+		}
 		printTextarea($layer, 'maxscale', 'textareaSmall', 'Maxskala:');
 		printTextarea($layer, 'minscale', 'textareaSmall', 'Minskala:');
 		printTextarea($layer, 'exports', 'textareaMedium', 'Exportlager:');
