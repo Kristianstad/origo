@@ -58,16 +58,27 @@
 			printTextarea($layer, 'style_config', 'textareaLarge', 'Stilkonfiguration:');
 			if (!isset($layer['layer']['style_config']) || empty(trim($layer['layer']['style_config'], " []{}\n\r\t")) || $layer['layer']['style_config'] == 'null')
 			{
-				printTextarea($layer, 'icon', 'textareaLarge', 'Ikon:');
-				printTextarea($layer, 'icon_extended', 'textareaLarge', 'Utfälld ikon:');
 				printTextarea($layer, 'style_filter', 'textareaLarge', 'Stilfilter:');
+				printUpdateSelect($layer, array('show_icon'=>array("f", "t")), 'miniSelect', 'Visa ikon:');
+				if (isset($layer['layer']['show_icon']) && $layer['layer']['show_icon'] == 't')
+				{
+					printTextarea($layer, 'icon', 'textareaLarge', 'Ikon:');
+				}
+				else
+				{
+					printHiddenInputs(array(
+						'updateIcon' => $layer['layer']['icon']
+					));
+				}
+				printTextarea($layer, 'icon_extended', 'textareaLarge', 'Utfälld ikon:');
 			}
 			else
 			{
 				printHiddenInputs(array(
 					'updateIcon' => $layer['layer']['icon'],
 					'updateIcon_extended' => $layer['layer']['icon_extended'],
-					'updateStyle_filter' => $layer['layer']['style_filter']
+					'updateStyle_filter' => $layer['layer']['style_filter'],
+					'updateShow_icon' => $layer['layer']['show_icon']
 				));
 			}
 		}
@@ -77,7 +88,8 @@
 				'updateStyle_config' => $layer['layer']['style_config'],
 				'updateIcon' => $layer['layer']['icon'],
 				'updateIcon_extended' => $layer['layer']['icon_extended'],
-				'updateStyle_filter' => $layer['layer']['style_filter']
+				'updateStyle_filter' => $layer['layer']['style_filter'],
+				'updateShow_icon' => $layer['layer']['show_icon']
 			));
 		}
 		printTextarea($layer, 'maxscale', 'textareaSmall', 'Maxskala:');
