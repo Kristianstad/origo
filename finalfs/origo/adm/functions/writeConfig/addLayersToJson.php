@@ -277,7 +277,7 @@
 							{
 								$paramSeparator='&';
 							}
-							if (empty($styleLayer['icon']))
+							if (isset($styleLayer['show_icon']) && $styleLayer['show_icon'] == 't' && empty($styleLayer['icon']))
 							{
 								$styleLayer['icon'] = $styleService['base_url'].'/'.$styleSourceProject.$paramSeparator.'SERVICE=WMS&REQUEST=GetLegendGraphic&DPI=96&FORMAT=image/png&ICONLABELSPACE=0&LAYERTITLE=TRUE&RULELABEL=FALSE&ITEMFONTSIZE=1&TRANSPARENT=TRUE&BOXSPACE=1.8&SYMBOLWIDTH=6&SYMBOLHEIGHT=6&LAYERSPACE=5&LAYERTITLESPACE=-6&LAYERFONTSIZE=0.5&LAYERFONTCOLOR=%23FFFFFF&LAYERS='.$styleLayerName;
 							}
@@ -290,7 +290,7 @@
 						{
 							$styleLayer['label'] = $styleLayer['title'];
 						}
-						if (!empty($styleLayer['icon']))
+						if (isset($styleLayer['show_icon']) && $styleLayer['show_icon'] == 't' && !empty($styleLayer['icon']))
 						{
 							if (strpos($styleLayer['icon'], '?') === false)
 							{
@@ -301,6 +301,10 @@
 								$styleLayer['icon'] = $styleLayer['icon'].'&';
 							}
 							$styleLayer['icon'] = $styleLayer['icon'].'ttl=36000';
+						}
+						else
+						{
+							unset($styleLayer['icon']);
 						}
 						if (!empty($styleLayer['icon_extended']))
 						{
