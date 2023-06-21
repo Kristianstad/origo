@@ -247,6 +247,10 @@
 			printMapForm($map, $selectables, $inheritPosts);
 			echo '<table><tr>';
 			$thClass='thFirst';
+			if (!empty($groupIdsArray))
+			{
+				$inheritPosts['groupId']=$groupIdsArray[0];
+			}
 			if (isset($inheritPosts['layerId']))
 			{
 				printChildSelect($map, 'layers', $thClass, 'Lager', $inheritPosts);
@@ -261,10 +265,6 @@
 			}
 			else
 			{
-				if (!empty($groupIdsArray))
-				{
-					$inheritPosts['groupId']=$groupIdsArray[0];
-				}
 				printChildSelect($map, 'groups', $thClass, 'Grupp', $inheritPosts);
 				printChildSelect($map, 'layers', $thClass, 'Lager', $inheritPosts);
 				printChildSelect($map, 'controls', $thClass, 'Kontroll', $inheritPosts);
