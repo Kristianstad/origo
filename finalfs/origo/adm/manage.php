@@ -8,8 +8,7 @@
 	require_once("./functions/configTables.php");
 	require_once("./functions/includeDirectory.php");
 	includeDirectory("./functions/manage");
-	$post=array_filter($_POST, function($value) {return (!empty($value));});
-
+	$post=array_filter($_POST, function($value) {return (!empty($value) || $value === "0");});
 	$view=null;
 	if (isset($_GET['view']))
 	{
