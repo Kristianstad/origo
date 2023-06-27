@@ -198,7 +198,16 @@
 						{
 							$originStr=$layerOrigin['name'];
 						}
-						$json = $json.', "abstract": "<b>Beskrivning: </b>'.$beskr.'<br><b>Resurser: </b>'.$layer['resources'].'<br><b>Kontakt: </b>'.$contactStr.'<br><b>Källa: </b>'.$originStr.'<br><b>Uppdaterad: </b>'.$layer['updated'].'<br>';
+						$json = $json.', "abstract": "<b>Beskrivning: </b>'.$beskr.'<br><b>Resurser: </b>';
+						if (empty($layer['resources']))
+						{
+							$json = $json.trim($layer['tables'], '{}');
+						}
+						else
+						{
+							$json = $json.$layer['resources'];
+						}
+						$json = $json.'<br><b>Kontakt: </b>'.$contactStr.'<br><b>Källa: </b>'.$originStr.'<br><b>Uppdaterad: </b>'.$layer['updated'].'<br>';
 					}
 					else
 					{
@@ -227,7 +236,6 @@
 				{
 					$json = $json.', "minScale": '.$layer['minscale'];
 				}
-
 				if (!empty($layer['layertype']))
 				{
 					$json = $json.', "layerType": "'.$layer['layertype'].'"';
@@ -240,7 +248,6 @@
 						}
 					}
 				}
-
 				if ($layer['type'] === 'GROUP')
 				{
 					$json = $json.', ';
