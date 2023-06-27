@@ -21,6 +21,12 @@
 		{
 			if ($layer['layer']['type'] == 'WFS')
 			{
+				printTextarea($layer, 'layertype', 'textareaMedium', 'WFS-typ:');
+				if (isset($layer['layer']['layertype']) && $layer['layer']['layertype'] == 'cluster')
+				{
+					printTextarea($layer, 'clusterstyle', 'textareaLarge', 'Klusterstil:');
+					printTextarea($layer, 'clusteroptions', 'textareaLarge', 'Klusteralternativ:');
+				}
 				printUpdateSelect($layer, array('editable'=>array("f", "t")), 'miniSelect', 'Redigerbar:');
 				if (current($layer)['editable'] == "t")
 				{
@@ -32,6 +38,10 @@
 			elseif ($layer['layer']['type'] == 'WMS')
 			{
 				printUpdateSelect($layer, array('tiled'=>array("f", "t")), 'miniSelect', 'Tiled:');
+			}
+			elseif ($layer['layer']['type'] == 'GROUP')
+			{
+				printTextarea($layer, 'layers', 'textareaMedium', 'Lager:');
 			}
 		}
 		printUpdateSelect($layer, array('queryable'=>array("f", "t")), 'miniSelect', 'Klickbar:');
@@ -113,22 +123,6 @@
 		echo '<hr class="dashedHr">';
 		printTextarea($layer, 'categories', 'textareaLarge', 'Kategorier:');
 		printTextarea($layer, 'info', 'textareaLarge', 'Info:');
-		if (isset($layer['layer']['type']))
-		{
-			if ($layer['layer']['type'] == 'GROUP')
-			{
-				printTextarea($layer, 'layers', 'textareaMedium', 'Lager:');
-			}
-			elseif ($layer['layer']['type'] == 'WFS')
-			{
-				printTextarea($layer, 'layertype', 'textareaMedium', 'WFS-typ:');
-				if (isset($layer['layer']['layertype']) && $layer['layer']['layertype'] == 'cluster')
-				{
-					printTextarea($layer, 'clusterstyle', 'textareaLarge', 'Klusterstil:');
-					printTextarea($layer, 'clusteroptions', 'textareaLarge', 'Klusteralternativ:');
-				}
-			}
-		}
 		printHiddenInputs($inheritPosts);
 		echo '<hr class="dashedHr">';
 		echo '<div class="buttonDiv">';
@@ -145,6 +139,5 @@
 		printRemoveOperation($layer, array('groups'=>$operationTables['groups']),'Ta bort från grupp', $inheritPosts);
 		echo '</div>';
 	}
-	
-?>
 
+?>
