@@ -21,7 +21,7 @@
 		{
 			if ($layer['layer']['type'] == 'WFS')
 			{
-				printTextarea($layer, 'layertype', 'textareaMedium', 'WFS-typ:');
+				printUpdateSelect($layer, array('layertype'=>array("vector", "cluster", "image")), 'miniSelect', 'WFS-typ:');
 				if (isset($layer['layer']['layertype']) && $layer['layer']['layertype'] == 'cluster')
 				{
 					printTextarea($layer, 'clusterstyle', 'textareaLarge', 'Klusterstil:');
