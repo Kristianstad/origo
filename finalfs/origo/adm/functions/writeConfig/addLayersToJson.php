@@ -236,7 +236,7 @@
 				{
 					$json = $json.', "minScale": '.$layer['minscale'];
 				}
-				if (!empty($layer['layertype']))
+				if (!empty($layer['layertype']) && $layer['layertype'] !== 'vector')
 				{
 					$json = $json.', "layerType": "'.$layer['layertype'].'"';
 					if ($layer['layertype'] == 'cluster')
