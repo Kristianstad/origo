@@ -12,7 +12,7 @@
 		printTextarea($update, 'update_id', 'textareaMedium', 'Id:');
 		printTextarea($update, 'name', 'textareaMedium', 'Name:');
 		printUpdateSelect($update, array('interval'=>array("+1 day", "+1 week", "+1 month", "+1 year")), 'miniSelect', 'Intervall:');
-		printUpdateSelect($update, array('method'=>array("manuellt", "schemalagd")), 'miniSelect', 'Metod:');
+		printUpdateSelect($update, array('method'=>array("manuellt", "schema")), 'miniSelect', 'Metod:');
 		printTextarea($update, 'abstract', 'textareaLarge', 'Beskrivning:');
 		printTextarea($update, 'info', 'textareaLarge', 'Info:');
 		printHiddenInputs($inheritPosts);
