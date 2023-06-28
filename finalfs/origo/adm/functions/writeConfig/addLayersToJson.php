@@ -201,7 +201,7 @@
 						$json = $json.', "abstract": "<b>Beskrivning: </b>'.$beskr.'<br><b>Resurser: </b>';
 						if (empty($layer['resources']))
 						{
-							$json = $json.trim($layer['tables'], '{}');
+							$json = $json.str_replace(',', ', ', trim($layer['tables'], '{}'));
 						}
 						else
 						{
