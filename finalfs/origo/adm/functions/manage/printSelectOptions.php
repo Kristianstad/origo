@@ -5,6 +5,10 @@
 	function printSelectOptions($optionValues, $selectedValue=null)
 	{
 		$isAssociativeArray=hasStringKeys($optionValues);
+		if ($isAssociativeArray)
+		{
+			sort($optionValues);
+		}
 		foreach ($optionValues as $value => $label)
 		{
 			if (!$isAssociativeArray)
@@ -23,5 +27,5 @@
 			echo $selectOption;
 		}
 	}
-	
+
 ?>
