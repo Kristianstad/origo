@@ -7,7 +7,7 @@
 		$isAssociativeArray=hasStringKeys($optionValues);
 		if ($isAssociativeArray)
 		{
-			sort($optionValues);
+			asort($optionValues);
 		}
 		foreach ($optionValues as $value => $label)
 		{
