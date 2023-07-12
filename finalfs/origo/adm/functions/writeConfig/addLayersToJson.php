@@ -2,7 +2,7 @@
 
 	function addLayersToJson($mapLayers, $groupLayer=false)
 	{
-		GLOBAL $map, $layers, $json, $mapStyles, $mapSources, $sources, $services, $mapStyleLayers, $contacts, $origins;
+		GLOBAL $map, $layers, $json, $mapStyles, $mapSources, $sources, $services, $mapStyleLayers, $contacts, $origins, $tables;
 		$json = $json. '"layers": [ ';
 		$firstLayer = true;
 		if (!isset($mapSources))
@@ -163,7 +163,26 @@
 						}
 					}
 				}
-				$beskr=$layer['abstract'];
+				if (empty($layer['abstract']) && empty($layer['resources']))
+				{
+					$beskr='';
+					foreach (pgArrayToPhp($layer['tables']) as $tableId)
+					{
+						$table = array_column_search($tableId, 'table_id', $tables);
+						if (empty($beskr))
+						{
+							$beskr=$table['abstract'];
+						}
+						else
+						{
+							$beskr=$beskr.' '.$table['abstract'];
+						}
+					}
+				}
+				else
+				{
+					$beskr=$layer['abstract'];
+				}
 				if (!empty($layer['web']))
 				{
 					$beskr=$beskr." <a href='".$layer['web']."' target='_blank'>Mer info.</a>";
