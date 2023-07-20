@@ -12,6 +12,7 @@
 		echo '<div><div class="printXFormDiv"><form method="post">';
 		printTextarea($schema, 'schema_id', 'textareaMedium', 'Id:');
 		printTextarea($schema, 'abstract', 'textareaLarge', 'Beskrivning:');
+		printTextarea($schema, 'keywords', 'textareaLarge', 'Nyckelord:');
 		printUpdateSelect($schema, array('contact'=>$selectables['contacts']), 'bodySelect', 'Kontakt:');
 		printUpdateSelect($schema, array('origin'=>$selectables['origins']), 'bodySelect', 'Ursprungskälla:');
 		printTextarea($schema, 'updated', 'textareaMedium', 'Uppdaterad (åååå-mm-dd):');
@@ -28,5 +29,5 @@
 		printDeleteButton($schema, $deleteConfirmStr, $inheritPosts);
 		echo '</div>';
 	}
-	
+
 ?>
