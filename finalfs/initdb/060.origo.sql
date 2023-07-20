@@ -43,6 +43,7 @@ CREATE TABLE map_configs.groups
     layers character varying[] COLLATE pg_catalog."default",
     info character varying COLLATE pg_catalog."default",
     show_meta boolean,
+    keywords character varying[] COLLATE pg_catalog."default",
     CONSTRAINT groups_pkey PRIMARY KEY (group_id)
 );
 
@@ -97,6 +98,7 @@ CREATE TABLE map_configs.layers
     history character varying COLLATE pg_catalog."default",
     show_meta boolean,
     show_icon boolean DEFAULT false,
+    keywords character varying[] COLLATE pg_catalog."default",
     CONSTRAINT layers_pkey PRIMARY KEY (layer_id)
 );
 
@@ -127,6 +129,7 @@ CREATE TABLE map_configs.maps
     show_meta boolean,
     embedded boolean,
     abstract character varying COLLATE pg_catalog."default",
+    keywords character varying[] COLLATE pg_catalog."default",
     CONSTRAINT map_pk PRIMARY KEY (map_id)
 );
 
@@ -246,6 +249,7 @@ CREATE TABLE map_configs.schemas
     update character varying COLLATE pg_catalog."default",
     origin character varying COLLATE pg_catalog."default",
     abstract character varying COLLATE pg_catalog."default",
+    keywords character varying[] COLLATE pg_catalog."default",
     CONSTRAINT schemas_pkey PRIMARY KEY (schema_id)
 );
 
@@ -259,5 +263,14 @@ CREATE TABLE map_configs.tables
     origin character varying COLLATE pg_catalog."default",
     history character varying COLLATE pg_catalog."default",
     abstract character varying COLLATE pg_catalog."default",
+    keywords character varying[] COLLATE pg_catalog."default",
     CONSTRAINT tables_pkey PRIMARY KEY (table_id)
+);
+
+CREATE TABLE map_configs.keywords
+(
+    keyword_id character varying COLLATE pg_catalog."default" NOT NULL,
+    abstract character varying COLLATE pg_catalog."default",
+    info character varying COLLATE pg_catalog."default",
+    CONSTRAINT keywords_pkey PRIMARY KEY (keyword_id)
 );
