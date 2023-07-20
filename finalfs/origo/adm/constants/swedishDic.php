@@ -27,7 +27,9 @@
 		'table'		=>'tabell',
 		'tables'	=>'tabeller',
 		'database'	=>'databas',
-		'databases'	=>'databaser'
+		'databases'	=>'databaser',
+		'keyword'	=>'nyckelord',
+		'keywords'	=>'nyckelord'
 	);
-	
+
 ?>
