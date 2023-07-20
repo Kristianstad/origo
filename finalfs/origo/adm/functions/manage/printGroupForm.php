@@ -19,6 +19,7 @@
 		printUpdateSelect($group, array('expanded'=>array("f", "t")), 'miniSelect', 'Expanderad:');
 		printUpdateSelect($group, array('show_meta'=>array("f", "t")), 'miniSelect', 'Visa metadata:');
 		printTextarea($group, 'abstract', 'textareaMedium', 'Beskrivning:');
+		printTextarea($group, 'keywords', 'textareaLarge', 'Nyckelord:');
 		printTextarea($group, 'info', 'textareaLarge', 'Info:');
 		printHiddenInputs($inheritPosts);
 		echo '<hr class="dashedHr">';
