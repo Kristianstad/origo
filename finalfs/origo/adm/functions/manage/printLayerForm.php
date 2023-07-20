@@ -109,6 +109,7 @@
 		echo '<hr class="dashedHr">';
 		printUpdateSelect($layer, array('show_meta'=>array("f", "t")), 'miniSelect', 'Visa metadata:');
 		printTextarea($layer, 'abstract', 'textareaLarge', 'Beskrivning:');
+		printTextarea($layer, 'keywords', 'textareaLarge', 'Nyckelord:');
 		printTextarea($layer, 'resources', 'textareaMedium', 'Resurser:');
 		printUpdateSelect($layer, array('contact'=>$selectables['contacts']), 'bodySelect', 'Kontakt:');
 		printUpdateSelect($layer, array('origin'=>$selectables['origins']), 'bodySelect', 'Ursprungskälla:');
