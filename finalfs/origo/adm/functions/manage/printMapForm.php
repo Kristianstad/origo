@@ -32,6 +32,7 @@
 		printUpdateSelect($map, array('tilegrid'=>$selectables['tilegrids']), 'bodySelect', 'Tilegrid:');
 		printUpdateSelect($map, array('show_meta'=>array("f", "t")), 'miniSelect', 'Visa metadata:');
 		printTextarea($map, 'abstract', 'textareaLarge', 'Beskrivning:');
+		printTextarea($map, 'keywords', 'textareaLarge', 'Nyckelord:');
 		printTextarea($map, 'info', 'textareaLarge', 'Info:');
 		$map['map']=$map['map']['map_id'];
 		printHiddenInputs($inheritPosts);
@@ -46,5 +47,5 @@
 		printDeleteButton($map, $deleteConfirmStr, $inheritPosts);
 		echo '</div>';
 	}
-	
+
 ?>
