@@ -84,6 +84,14 @@
 			{
 				printParents(array('sources'=>all_from_table($dbh, $configSchema, 'sources')), $child);
 			}
+			if ($childType == 'keyword')
+			{
+				printParents(array('maps'=>all_from_table($dbh, $configSchema, 'maps')), $child);
+				printParents(array('groups'=>all_from_table($dbh, $configSchema, 'groups')), $child);
+				printParents(array('layers'=>all_from_table($dbh, $configSchema, 'layers')), $child);
+				printParents(array('schemas'=>all_from_table($dbh, $configSchema, 'schemas')), $child);
+				printParents(array('tables'=>all_from_table($dbh, $configSchema, 'tables')), $child);
+			}
 		}
 		echo '</div>';
 		if (strpos($_SERVER['HTTP_REFERER'], 'manage') === false)
