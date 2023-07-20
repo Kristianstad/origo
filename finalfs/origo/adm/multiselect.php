@@ -1,5 +1,8 @@
 <!DOCTYPE html>
-<?php require_once("./functions/includeDirectory.php"); ?>
+<?php 
+	require_once("./functions/includeDirectory.php");
+	require_once("./functions/toSwedish.php");
+?>
 <html>
 <head>
 	<script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
@@ -41,22 +44,7 @@
 		echo $options;
 	}
 	echo '</select>';
-	if ($_GET['table'] == 'controls')
-	{
-		$header='Kontroller';
-	}
-	elseif ($_GET['table'] == 'groups')
-	{
-		$header='Grupper';
-	}
-	elseif ($_GET['table'] == 'layers')
-	{
-		$header='Lager';
-	}
-	else
-	{
-		$header=ucfirst($_GET['table']);
-	}
+	$header=ucfirst(toSwedish($_GET['table']));
 	echo '<h3>'.$header.'</h3>';
 	echo '<textarea readonly id="selection"></textarea>';
 	echo '<button onClick="window.location.reload();">Töm</button>&nbsp;';
