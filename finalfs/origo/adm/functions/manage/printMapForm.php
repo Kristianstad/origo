@@ -8,9 +8,11 @@
 	require_once("./functions/manage/printWriteConfigButton.php");
 	require_once("./functions/manage/printExportJsonButton.php");
 	require_once("./functions/manage/printDeleteButton.php");
+	require_once("./functions/manage/printMultiselectButton2.php");
 
 	function printMapForm($map, $selectables, $inheritPosts)
 	{
+		echo '<form id="'.$map.'MultiselectForm" action="multiselect.php" method="get" target="topFrame"></form>';
 		echo '<div><div class="printXFormDiv"><form method="post">';
 		printTextarea($map, 'map_id', 'textareaMedium', 'Id:');
 		printTextarea($map, 'layers', 'textareaLarge', 'Lager:');
@@ -33,6 +35,7 @@
 		printUpdateSelect($map, array('show_meta'=>array("f", "t")), 'miniSelect', 'Visa metadata:');
 		printTextarea($map, 'abstract', 'textareaLarge', 'Beskrivning:');
 		printTextarea($map, 'keywords', 'textareaLarge', 'Nyckelord:');
+		printMultiselectButton2($map, 'keywords');
 		printTextarea($map, 'info', 'textareaLarge', 'Info:');
 		$map['map']=$map['map']['map_id'];
 		printHiddenInputs($inheritPosts);
