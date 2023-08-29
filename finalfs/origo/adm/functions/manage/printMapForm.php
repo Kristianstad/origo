@@ -8,7 +8,7 @@
 	require_once("./functions/manage/printWriteConfigButton.php");
 	require_once("./functions/manage/printExportJsonButton.php");
 	require_once("./functions/manage/printDeleteButton.php");
-	require_once("./functions/manage/printMultiselectButton2.php");
+	require_once("./functions/manage/printMultiselectButton.php");
 
 	function printMapForm($map, $selectables, $inheritPosts)
 	{
