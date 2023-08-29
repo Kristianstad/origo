@@ -5,7 +5,8 @@
 ?>
 <html>
 <head>
-	<script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
+	<!--<script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>-->
+	<script src="/origo/jquery/jquery-1.11.0.min.js?ttl=36000"></script>
 	<script>
 		<?php includeDirectory("./js-functions/multiselect"); ?>
 		if (parseInt(navigator.appVersion)>3)
@@ -27,15 +28,27 @@
 	require_once("./functions/dbh.php");
 	require_once("./functions/all_from_table.php");
 	$dbh=dbh();
-	$values=all_from_table($dbh, 'map_configs', $_GET['table']);
-	echo '<select onChange="update(this);" data-sorted-values="" multiple>';
-	if ($_GET['table'] == 'proj4defs')
+	$submitValue=explode(':', $_GET['table']);
+	$table=$submitValue[0];
+	if (empty($submitValue[1]))
+	{
+		$currentValue='';
+		$dataSortedValues='';
+	}
+	else
+	{
+		$currentValue=$submitValue[1];
+		$dataSortedValues=$currentValue.',';
+	}
+	$values=all_from_table($dbh, 'map_configs', $table);
+	echo "<select onChange='update(this);' data-sorted-values='$dataSortedValues' multiple>";
+	if ($table == 'proj4defs')
 	{
 		$idColumn='code';
 	}
 	else
 	{
-		$idColumn=rtrim($_GET['table'], 's').'_id';
+		$idColumn=rtrim($table, 's').'_id';
 	}
 	foreach (array_column($values, $idColumn) as $option)
 	{
@@ -44,10 +57,11 @@
 		echo $options;
 	}
 	echo '</select>';
-	$header=ucfirst(toSwedish($_GET['table']));
+	$header=ucfirst(toSwedish($table));
 	echo '<h3>'.$header.'</h3>';
-	echo '<textarea readonly id="selection"></textarea>';
-	echo '<button onClick="window.location.reload();">Töm</button>&nbsp;';
+	echo "<textarea readonly id='selection'>$currentValue</textarea>";
+	echo '<button onClick="window.location.reload();">Återställ</button>&nbsp;';
+	echo "<button onClick='document.querySelector(\"#selection\").innerHTML=null;document.querySelector(\"#selection\").value=null;'>Töm</button>&nbsp;";
 	echo '<button onclick="copyTextById('."'selection');".'">Kopiera text</button>';
 ?>
 </body>
