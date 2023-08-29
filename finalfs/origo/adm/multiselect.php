@@ -5,8 +5,8 @@
 ?>
 <html>
 <head>
-	<!--<script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>-->
-	<script src="/origo/jquery/jquery-1.11.0.min.js?ttl=36000"></script>
+	<script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
+	<!--<script src="/origo/jquery/jquery-1.11.0.min.js?ttl=36000"></script>-->
 	<script>
 		<?php includeDirectory("./js-functions/multiselect"); ?>
 		if (parseInt(navigator.appVersion)>3)
@@ -60,7 +60,10 @@
 	$header=ucfirst(toSwedish($table));
 	echo '<h3>'.$header.'</h3>';
 	echo "<textarea readonly id='selection'>$currentValue</textarea>";
-	echo '<button onClick="window.location.reload();">Återställ</button>&nbsp;';
+	if (!empty($currentValue))
+	{
+		echo '<button onClick="window.location.reload();">Återställ</button>&nbsp;';
+	}
 	echo "<button onClick='document.querySelector(\"#selection\").innerHTML=null;document.querySelector(\"#selection\").value=null;'>Töm</button>&nbsp;";
 	echo '<button onclick="copyTextById('."'selection');".'">Kopiera text</button>';
 ?>
