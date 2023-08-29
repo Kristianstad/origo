@@ -1,13 +1,16 @@
 <?php
 
-	function printMultiselectButton($table)
+	function printMultiselectButton($table, $value=null, $buttonText='Flervalsverktyg', $buttonStyle='')
 	{
+		$buttonValue=$table;
+		if (!empty($value))
+		{
+			$buttonValue=$buttonValue.":$value";
+		}
 		echo <<<HERE
-			<form action="multiselect.php" method="get" target="topFrame">
-				<button onclick="toggleTopFrame('{$table}');" type="submit" name="table" value="{$table}">
-					Flervalsverktyg
-				</button>
-			</form>
+			<button form="multiselectForm" onclick="toggleTopFrame('{$table}');" type="submit" name="table" value="{$buttonValue}" style="{$buttonStyle}">
+				{$buttonText}
+			</button>
 		HERE;
 	}
 
