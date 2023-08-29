@@ -216,6 +216,7 @@
 	<?php printViewSwitcher($view); ?>
 	<iframe id="topFrame" name="topFrame" style="display:none" onload="javascript:(function(o){o.style.height=o.contentWindow.document.body.parentElement.scrollHeight+'px';}(this));"></iframe>
 	<iframe id="hiddenFrame" name="hiddenFrame" style="display:none"></iframe>
+	<form id="multiselectForm" action="multiselect.php" method="get" target="topFrame"></form>
 	<?php printHeadForms($view, $configTables, $focusTable, $inheritPosts); ?>
 	<script>
 		updateSelect("layerCategories", categories);
