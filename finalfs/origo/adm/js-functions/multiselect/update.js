@@ -1,5 +1,6 @@
 function update(menu)
 {
+	let selection = document.querySelector("#selection");
 	var last_action = '';
 	var qty = 0;
 
@@ -45,4 +46,5 @@ function update(menu)
 	}
 	$(menu).attr('data-sorted-values', $(menu).attr('data-sorted-values').replace(' ', ','));
 	$('#selection').html($(menu).attr('data-sorted-values').slice(0, -1));
+	selection.value=$(menu).attr('data-sorted-values').slice(0, -1);
 }
