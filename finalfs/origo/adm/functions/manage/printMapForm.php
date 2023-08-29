@@ -12,7 +12,6 @@
 
 	function printMapForm($map, $selectables, $inheritPosts)
 	{
-		echo '<form id="'.$map.'MultiselectForm" action="multiselect.php" method="get" target="topFrame"></form>';
 		echo '<div><div class="printXFormDiv"><form method="post">';
 		printTextarea($map, 'map_id', 'textareaMedium', 'Id:');
 		printTextarea($map, 'layers', 'textareaLarge', 'Lager:');
@@ -35,7 +34,7 @@
 		printUpdateSelect($map, array('show_meta'=>array("f", "t")), 'miniSelect', 'Visa metadata:');
 		printTextarea($map, 'abstract', 'textareaLarge', 'Beskrivning:');
 		printTextarea($map, 'keywords', 'textareaLarge', 'Nyckelord:');
-		printMultiselectButton2($map, 'keywords');
+		printMultiselectButton('keywords', trim(current($map)['keywords'], '{}'), '+', 'margin-left:-0.5em');
 		printTextarea($map, 'info', 'textareaLarge', 'Info:');
 		$map['map']=$map['map']['map_id'];
 		printHiddenInputs($inheritPosts);
