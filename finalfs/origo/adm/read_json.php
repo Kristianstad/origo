@@ -44,7 +44,6 @@
 	}
 
 	require_once("./functions/dbh.php");
-	require_once("./functions/all_from_table.php");
 	require_once("./functions/configTables.php");
 	require_once("./functions/includeDirectory.php");
 	includeDirectory("./functions/read_json");
