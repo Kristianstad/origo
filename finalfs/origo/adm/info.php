@@ -10,13 +10,17 @@
 	header("Cache-Control: must-revalidate, max-age=0, s-maxage=0, no-cache, no-store");
 
 	require_once("./functions/dbh.php");
-	require_once("./functions/pgArrayToPhp.php");
 	require_once("./functions/array_column_search.php");
 	require_once("./functions/all_from_table.php");
-	require_once("./functions/findParents.php");
 	require_once("./functions/pkColumnOfTable.php");
 	require_once("./functions/toSwedish.php");
 	require_once("./functions/includeDirectory.php");
+	
+	/* Required by child functions:
+	   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		require_once("./functions/findParents.php");
+	*/
+	
 	includeDirectory("./functions/info");
 	require("./constants/configSchema.php");
 	$dbh=dbh();
