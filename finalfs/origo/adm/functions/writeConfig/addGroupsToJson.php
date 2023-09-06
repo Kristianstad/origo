@@ -1,5 +1,8 @@
 <?php
 
+	require_once("./functions/pgArrayToPhp.php");
+	require_once("./functions/array_column_search.php");
+
 	function addGroupsToJson($mapGroups)
 	{
 		GLOBAL $groups, $json, $mapLayers;
