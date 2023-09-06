@@ -1,5 +1,10 @@
 <?php
 
+	require_once("./functions/pgArrayToPhp.php");
+	require_once("./functions/array_column_search.php");
+	require_once("./functions/writeConfig/addSourcesToJson.php");
+	require_once("./functions/writeConfig/addStylesToJson.php");
+
 	function addLayersToJson($mapLayers, $groupLayer=false)
 	{
 		GLOBAL $map, $layers, $json, $mapStyles, $mapSources, $sources, $services, $mapStyleLayers, $contacts, $origins, $tables;
