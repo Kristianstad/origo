@@ -1,19 +1,19 @@
 <?php
 
-function pgBoolToText($pgBool)
-{
-	if ($pgBool == 't')
+	function pgBoolToText($pgBool)
 	{
-		return "true";
+		if ($pgBool == 't')
+		{
+			return "true";
+		}
+		elseif ($pgBool == 'f')
+		{
+			return "false";
+		}
+		else
+		{
+			return $pgBool;
+		}
 	}
-	elseif ($pgBool == 'f')
-	{
-		return "false";
-	}
-	else
-	{
-		return $pgBool;
-	}
-}
 
 ?>
