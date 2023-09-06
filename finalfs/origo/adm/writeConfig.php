@@ -3,7 +3,6 @@
 	require_once("./functions/pgArrayToPhp.php");
 	require_once("./functions/array_column_search.php");
 	require_once("./functions/all_from_table.php");
-	require_once("./functions/tableNamesFromSchema.php");
 	require_once("./functions/configTables.php");
 	require_once("./functions/includeDirectory.php");
 	includeDirectory("./functions/writeConfig");
