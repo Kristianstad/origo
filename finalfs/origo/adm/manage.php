@@ -3,7 +3,6 @@
 	header("Cache-Control: must-revalidate, max-age=0, s-maxage=0, no-cache, no-store");
 	require_once("./functions/dbh.php");
 	require_once("./functions/array_column_search.php");
-	require_once("./functions/layerCategories.php");
 	require_once("./functions/pkColumnOfTable.php");
 	require_once("./functions/configTables.php");
 	require_once("./functions/includeDirectory.php");
@@ -33,73 +32,64 @@
 		$groupIdsArray=array();
 	}
 	//var_dump($post);
-	$idPosts=array_filter($post, function($key) {return (substr($key, -2) == 'Id');}, ARRAY_FILTER_USE_KEY);
-	unset($idPosts['fromMapId'], $idPosts['toMapId'], $idPosts['fromGroupId'], $idPosts['toGroupId']);
+	$idPosts=idPosts($post);
 	$focusTable=focusTable($idPosts);
 	$dbh=dbh();
 	$configTables=configTables($dbh);
 	$layerCategories=layerCategories($configTables['layers']);
-	$pressedButton=array_keys(array_filter($post, function($key) {return (substr($key, -6) == 'Button');}, ARRAY_FILTER_USE_KEY));
-	if (isset($pressedButton[0]))
+	$postButton=postButton($post);
+	if (isset($postButton))
 	{
-		$pressedButton=$pressedButton[0];
-	}
-	else
-	{
-		unset($pressedButton);
-	}
-	if (isset($pressedButton))
-	{
-		$targetType=substr($pressedButton, 0, -6);
-		$targetTable=$targetType.'s';
-		$targetPkColumn=pkColumnOfTable($targetTable);
-		$command=$post[$pressedButton];
+		$type=substr($postButton, 0, -6);
+		$typeTable=typeTable($type);
+		$typeTablePkColumn=pkColumnOfTable($typeTable);
+		$command=$post[$postButton];
 		$sql="";
-		if ($command == 'create' && !empty($post[$targetType.'IdNew']))
+		if ($command == 'create' && !empty($post[$type.'IdNew']))
 		{
-			$targetId=$post[$targetType.'IdNew'];
-			if (!in_array($targetId, array_column($configTables[$targetTable], $targetPkColumn)))
+			$id=$post[$type.'IdNew'];
+			if (!in_array($id, array_column($configTables[$typeTable], $typeTablePkColumn)))
 			{
 				require("./constants/configSchema.php");
-				$sql="INSERT INTO $configSchema.$targetTable($targetPkColumn) VALUES ('".$targetId."')";
+				$sql="INSERT INTO $configSchema.$typeTable($typeTablePkColumn) VALUES ('".$id."')";
 				unset($configSchema);
 			}
 		}
-		elseif ($command == 'delete' && !empty($post[$targetType.'IdDel']))
+		elseif ($command == 'delete' && !empty($post[$type.'IdDel']))
 		{
-			$targetId=$post[$targetType.'IdDel'];
-			if (in_array($targetId, array_column($configTables[$targetTable], $targetPkColumn)))
+			$id=$post[$type.'IdDel'];
+			if (in_array($id, array_column($configTables[$typeTable], $typeTablePkColumn)))
 			{
 				require("./constants/configSchema.php");
-				$sql="DELETE FROM $configSchema.$targetTable WHERE $targetPkColumn = '".$targetId."'";
+				$sql="DELETE FROM $configSchema.$typeTable WHERE $typeTablePkColumn = '".$id."'";
 				unset($configSchema);
 			}
 		}
-		elseif (isset($post[$targetType.'Id']))
+		elseif (isset($post[$type.'Id']))
 		{
-			$targetId=$post[$targetType.'Id'];
+			$id=$post[$type.'Id'];
 			if ($command == 'update')
 			{
-				$target=array_column_search($targetId, $targetPkColumn, $configTables[$targetTable]);
-				if ($targetType == 'layer' || $targetType == 'source')
+				$config=array_column_search($id, $typeTablePkColumn, $configTables[$typeTable]);
+				if ($type == 'layer' || $type == 'source')
 				{
-					if ($targetType == 'layer')
+					if ($type == 'layer')
 					{
-						$layerName=explode('#', $targetId)[0];
-						$source=array_column_search($target['source'], 'source_id', $configTables['sources']);
+						$layerName=explode('#', $id)[0];
+						$sourceConfig=array_column_search($config['source'], 'source_id', $configTables['sources']);
 					}
 					else
 					{
 						$layerName=null;
-						$source=$target;
+						$sourceConfig=$config;
 					}
-					$serviceType=array_column_search($source['service'], 'service_id', $configTables['services'])['type'];
+					$serviceType=array_column_search($sourceConfig['service'], 'service_id', $configTables['services'])['type'];
 					if (strtolower($serviceType) == 'qgis')
 					{
-						$qgsXml = simplexml_load_file('/services/'.$source['service'].'/'.explode('#', $source['source_id'])[0].'.qgs');
+						$qgsXml = simplexml_load_file('/services/'.$sourceConfig['service'].'/'.explode('#', $sourceConfig['source_id'])[0].'.qgs');
 						if (!empty($qgsXml))
 						{
-							if ($targetType == 'source')
+							if ($type == 'source')
 							{
 								if (!empty($fromQgs=substr($qgsXml['saveDateTime'], 0 ,10)))
 								{
@@ -117,11 +107,10 @@
 						}
 						unset($qgsXml, $fromQgs);
 					}
-					unset($layerName, $source, $serviceType);
+					unset($layerName, $sourceConfig, $serviceType);
 				}
-				$updatePosts=array_filter($post, function($key) {return (substr($key, 0, 6) == 'update');}, ARRAY_FILTER_USE_KEY);
-				$sql=sqlForUpdate(array($targetType => $target), $updatePosts);
-				unset($target, $updatePosts);
+				$sql=sqlForUpdate(makeFullTarget($type, $config), updatePosts($post));
+				unset($config);
 			}
 			elseif ($command == 'operation')
 			{
@@ -148,10 +137,10 @@
 					if (isset($operation))
 					{
 						$parentPkColumnKey=pkColumnOfTable($parentKey.'s');
-						$parentOperationColumnKey=$targetType.'s';
+						$parentOperationColumnKey=$type.'s';
 						$parentOperationColumnValue=array_column_search($parentPkColumnValue, $parentPkColumnKey, $configTables[$parentKey.'s'])[$parentOperationColumnKey];
 						$operationParent=array($parentKey.'s'=>array($parentPkColumnKey=>$parentPkColumnValue, $parentOperationColumnKey=>$parentOperationColumnValue));
-						$sql=sqlForOperation($operation, array($targetType => $targetId), $operationParent);
+						$sql=sqlForOperation($operation, makeBasicTarget($type, $id), $operationParent);
 						unset($operation, $parentPkColumnValue, $parentPkColumnKey, $parentOperationColumnKey, $parentOperationColumnValue, $operationParent);
 					}
 					unset($parentKey);
@@ -167,12 +156,12 @@
 			}
 			unset($result);
 			$configTables=configTables($dbh);
-			if ($command != 'operation' && $targetType == 'layer')
+			if ($command != 'operation' && $type == 'layer')
 			{
 				$layerCategories=layerCategories($configTables['layers']);
 			}
 		}
-		unset($targetId, $targetType, $targetTable, $targetPkColumn, $command, $sql);
+		unset($id, $type, $typeTable, $typeTablePkColumn, $command, $sql);
 	}
 	$inheritPosts=$idPosts;
 	if (isset($post['groupIds']))
@@ -353,64 +342,63 @@
 
 	if (!empty($idPosts))
 	{
-		$target=substr(key($idPosts), 0, -2);
-		$table=$target.'s';
-		$child=array($target=>array_column_search(current($idPosts), pkColumnOfTable($table), $configTables[$table]));
-		$printFormFunction='print'.ucfirst($target).'Form';
-		
+		$childFullTarget=makeTargetFull(makeBasicTarget(substr(key($idPosts), 0, -2), current($idPosts)), $configTables);
+		$childType=targetType($childFullTarget);
+		$printFormFunction='print'.ucfirst($childType).'Form';
+
 		//  Om lager vald
-		if ($target == 'layer')
+		if ($childType == 'layer')
 		{
 			$selectables=array(
 				'contacts'=>array_combine(array_column($configTables['contacts'], 'contact_id'), array_column($configTables['contacts'], 'name')),
 				'origins'=>array_combine(array_column($configTables['origins'], 'origin_id'), array_column($configTables['origins'], 'name')),
 				'updates'=>array_column($configTables['updates'], 'update_id')
 			);
-			if (isset($child['layer']['source']))
+			if (!empty(targetConfigParam($childFullTarget, 'source')))
 			{
-				$layerSource=array_column_search($child['layer']['source'], 'source_id', $configTables['sources']);
+				$layerSource=array_column_search(targetConfigParam($childFullTarget, 'source'), 'source_id', $configTables['sources']);
 				if (!empty($layerSource) && isset($layerSource['service']))
 				{
-					$child['layer']['service']=$layerSource['service'];
+					setTargetConfigParam($childFullTarget, 'service', $layerSource['service']);
 				}
 				unset($layerSource);
 			}
-			eval($printFormFunction.'($child, $selectables, array("maps"=>$configTables["maps"], "groups"=>$configTables["groups"]), array_column($configTables["sources"], "source_id"), $inheritPosts);');
+			eval($printFormFunction.'($childFullTarget, $selectables, array("maps"=>$configTables["maps"], "groups"=>$configTables["groups"]), array_column($configTables["sources"], "source_id"), $inheritPosts);');
 			unset($selectables);
 		}
 		
 		//  Om källa vald
-		elseif ($target == 'source')
+		elseif ($childType == 'source')
 		{
 			$selectables=array('services'=>array_column($configTables['services'], 'service_id'), 'tilegrids'=>array_column($configTables['tilegrids'], 'tilegrid_id'), 'contacts'=>array_combine(array_column($configTables['contacts'], 'contact_id'), array_column($configTables['contacts'], 'name')));
-			eval($printFormFunction.'($child, $selectables, $inheritPosts);');
+			eval($printFormFunction.'($childFullTarget, $selectables, $inheritPosts);');
 			unset($selectables);
 		}
 		
 		// Om tabell vald
-		elseif ($target == 'table')
+		elseif ($childType == 'table')
 		{
 			$selectables=array(
 				'contacts'=>array_combine(array_column($configTables['contacts'], 'contact_id'), array_column($configTables['contacts'], 'name')),
 				'origins'=>array_combine(array_column($configTables['origins'], 'origin_id'), array_column($configTables['origins'], 'name')),
 				'updates'=>array_column($configTables['updates'], 'update_id')
 			);
-			eval($printFormFunction.'($child, $selectables, $inheritPosts);');
+			eval($printFormFunction.'($childFullTarget, $selectables, $inheritPosts);');
 			unset($selectables);
 		}
 		
 		//  Om kontroll vald
-		elseif ($target == 'control')
+		elseif ($childType == 'control')
 		{
-			eval($printFormFunction.'($child, array("maps"=>$configTables["maps"]), $inheritPosts);');
+			eval($printFormFunction.'($childFullTarget, array("maps"=>$configTables["maps"]), $inheritPosts);');
 		}
 		
 		// Om något annat valts
 		else
 		{
-			eval($printFormFunction.'($child, $inheritPosts);');
+			eval($printFormFunction.'($childFullTarget, $inheritPosts);');
 		}
-		unset($target, $table, $child, $printFormFunction);
+		unset($childFullTarget, $printFormFunction, $childType);
 	}
 	unset($idPosts);
 
