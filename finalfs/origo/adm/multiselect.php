@@ -5,8 +5,6 @@
 ?>
 <html>
 <head>
-	<script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
-	<!--<script src="/origo/jquery/jquery-1.11.0.min.js?ttl=36000"></script>-->
 	<script>
 		<?php includeDirectory("./js-functions/multiselect"); ?>
 		if (parseInt(navigator.appVersion)>3)
