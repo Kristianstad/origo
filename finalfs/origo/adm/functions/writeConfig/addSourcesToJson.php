@@ -1,5 +1,11 @@
 <?php
 
+	require_once("./functions/pgArrayToPhp.php");
+	require_once("./functions/array_column_search.php");
+	require_once("./functions/writeConfig/pgBoolToText.php");
+	require_once("./functions/writeConfig/pgArrayToText.php");
+	require_once("./functions/writeConfig/pgBoxToText.php");
+
 	function addSourcesToJson()
 	{
 		GLOBAL $json, $mapSources, $map, $sources, $services, $tilegrids;
