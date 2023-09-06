@@ -1,4 +1,5 @@
 <?php
+
 	function defineFileConstant($key, $value)
 	{
 		file_put_contents("/origo/php/constants/$key.php", "<?php\ndefine('$key', ".var_export($value, true).');');
@@ -9,4 +10,5 @@
 	{
 		include "/origo/php/constants/$key.php";
 	}
+
 ?>
