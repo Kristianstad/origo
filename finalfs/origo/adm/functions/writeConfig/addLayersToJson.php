@@ -59,7 +59,7 @@
 				{
 					$layer['type'] = 'WMS';
 				}
-				if (empty($layer['style_layer']) && ($layer['type'] == 'WMS' || (!empty($layer['icon']) || !empty($layer['style_config']))))
+				if (empty($layer['style_layer']) && ($layer['type'] == 'WMS' || $layer['type'] == 'GROUP' || (!empty($layer['icon']) || !empty($layer['style_config']))))
 				{
 					$layer['style_layer'] = $layer['layer_id'];
 				}
