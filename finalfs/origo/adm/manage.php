@@ -179,7 +179,7 @@
 	<title>Administrationsverktyg för Origo</title>
 	<link rel="shortcut icon" href="../img/png/logo.png">
 	<script>
-		var topFrame="";
+		let topFrame="";
 		<?php
 			includeDirectory("./js-functions/manage");
 			echo "var categories = ".json_encode(array_keys($layerCategories)).";\n";
@@ -199,7 +199,7 @@
 	<form action="read_json.php">
 		<input class="topInput" type="submit" value="Importera JSON" />
 	</form>
-	<form action="help.php" target="topFrame">
+	<form id="helpForm" action="help.php" target="topFrame">
 		<input class="topInput" onclick="toggleTopFrame('help');" type="submit" value="Hjälp" />
 	</form>
 	<?php printViewSwitcher($view); ?>
@@ -226,6 +226,8 @@
  *  DYNAMISKT INNEHÅLL  *
  ************************
 */
+	$helps=array_column($configTables["helps"], "help_id");
+
 	// Om karta vald
 	if (isset($post['mapId']))
 	{
@@ -233,7 +235,7 @@
 		if (!empty(current($map)))
 		{
 			$selectables=array('footers'=>array_column($configTables['footers'], 'footer_id'), 'tilegrids'=>array_column($configTables['tilegrids'], 'tilegrid_id'));
-			printMapForm($map, $selectables, $inheritPosts);
+			printMapForm($map, $selectables, $inheritPosts, typeHelps("map", $helps));
 			echo '<table><tr>';
 			$thClass='thFirst';
 			if (!empty($groupIdsArray))
@@ -270,7 +272,7 @@
 		$database=array('database'=>array_column_search($post['databaseId'], 'database_id', $configTables['databases']));
 		if (!empty(current($database)))
 		{
-			printDatabaseForm($database, $inheritPosts);
+			printDatabaseForm($database, $inheritPosts, typeHelps("database", $helps));
 			$databaseSchemas =preg_grep("/^".$post['databaseId']."[.]/", array_column($configTables['schemas'], 'schema_id'));
 			$database['database']['schemas']='{'.implode(',', $databaseSchemas).'}';
 			echo '<table><tr>';
@@ -293,7 +295,7 @@
 				'origins'=>array_combine(array_column($configTables['origins'], 'origin_id'), array_column($configTables['origins'], 'name')),
 				'updates'=>array_column($configTables['updates'], 'update_id')
 			);
-			printSchemaForm($schema, $selectables, $inheritPosts);
+			printSchemaForm($schema, $selectables, $inheritPosts, typeHelps("schema", $helps));
 			$schemaTables =preg_grep("/^".$post['schemaId']."[.]/", array_column($configTables['tables'], 'table_id'));
 			$schema['schema']['tables']='{'.implode(',', $schemaTables).'}';
 			echo '<table><tr>';
@@ -320,7 +322,7 @@
 			{
 				$parent="$parent,".array_shift($tmpGroupIds);
 			}
-			printGroupForm($group, array('maps'=>$configTables['maps'], 'groups'=>$configTables['groups']), $inheritPosts);
+			printGroupForm($group, array('maps'=>$configTables['maps'], 'groups'=>$configTables['groups']), $inheritPosts, typeHelps("group", $helps));
 			echo '<table><tr>';
 			$thClass='thFirst';
 			if ($groupLevel == $totGroupLevels && isset($inheritPosts['layerId']))
@@ -344,7 +346,7 @@
 	{
 		$childFullTarget=makeTargetFull(makeBasicTarget(substr(key($idPosts), 0, -2), current($idPosts)), $configTables);
 		$childType=targetType($childFullTarget);
-		$printFormFunction='print'.ucfirst($childType).'Form';
+		$typeHelps=typeHelps($childType, $helps);
 
 		//  Om lager vald
 		if ($childType == 'layer')
@@ -363,7 +365,7 @@
 				}
 				unset($layerSource);
 			}
-			eval($printFormFunction.'($childFullTarget, $selectables, array("maps"=>$configTables["maps"], "groups"=>$configTables["groups"]), array_column($configTables["sources"], "source_id"), $inheritPosts);');
+			printLayerForm($childFullTarget, $selectables, array("maps"=>$configTables["maps"], "groups"=>$configTables["groups"]), array_column($configTables["sources"], "source_id"), $inheritPosts, $typeHelps);
 			unset($selectables);
 		}
 		
@@ -371,7 +373,7 @@
 		elseif ($childType == 'source')
 		{
 			$selectables=array('services'=>array_column($configTables['services'], 'service_id'), 'tilegrids'=>array_column($configTables['tilegrids'], 'tilegrid_id'), 'contacts'=>array_combine(array_column($configTables['contacts'], 'contact_id'), array_column($configTables['contacts'], 'name')));
-			eval($printFormFunction.'($childFullTarget, $selectables, $inheritPosts);');
+			printSourceForm($childFullTarget, $selectables, $inheritPosts, $typeHelps);
 			unset($selectables);
 		}
 		
@@ -383,24 +385,24 @@
 				'origins'=>array_combine(array_column($configTables['origins'], 'origin_id'), array_column($configTables['origins'], 'name')),
 				'updates'=>array_column($configTables['updates'], 'update_id')
 			);
-			eval($printFormFunction.'($childFullTarget, $selectables, $inheritPosts);');
+			printTableForm($childFullTarget, $selectables, $inheritPosts, $typeHelps);
 			unset($selectables);
 		}
 		
 		//  Om kontroll vald
 		elseif ($childType == 'control')
 		{
-			eval($printFormFunction.'($childFullTarget, array("maps"=>$configTables["maps"]), $inheritPosts);');
+			printControlForm($childFullTarget, array("maps"=>$configTables["maps"]), $inheritPosts, $typeHelps);
 		}
 		
 		// Om något annat valts
 		else
 		{
-			eval($printFormFunction.'($childFullTarget, $inheritPosts);');
+			eval('print'.ucfirst($childType).'Form($childFullTarget, $inheritPosts, $typeHelps);');
 		}
-		unset($childFullTarget, $printFormFunction, $childType);
+		unset($childFullTarget, $childType, $typeHelps);
 	}
-	unset($idPosts);
+	unset($helps, $idPosts);
 
 ?>
 </body>
