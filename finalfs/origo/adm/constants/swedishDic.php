@@ -29,7 +29,9 @@
 		'database'	=>'databas',
 		'databases'	=>'databaser',
 		'keyword'	=>'nyckelord',
-		'keywords'	=>'nyckelord'
+		'keywords'	=>'nyckelord',
+		'help'		=>'hjälp',
+		'helps'		=>'hjälp'
 	);
 
 ?>
