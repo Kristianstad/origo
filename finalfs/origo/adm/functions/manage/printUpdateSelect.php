@@ -1,28 +1,38 @@
 <?php
 
-	require_once("./functions/pkColumnOfTable.php");
+	require_once("./functions/manage/isFullTarget.php");
+	require_once("./functions/manage/targetId.php");
 	require_once("./functions/manage/printSelectOptions.php");
+	require_once("./functions/manage/targetType.php");
 
-	function printUpdateSelect($target, $column, $class, $label, $options=null)
+	function printUpdateSelect($fullTarget, $configParamValues, $class, $label, $help=false, $options=null)
 	{
-		$targetId=current($target)[pkColumnOfTable(key($target).'s')];
-		$ucColumn=ucfirst(key($column));
-		$sName='update'.$ucColumn;
-		$selected=current($target)[rtrim(key($column), 's')];
+		if (!isFullTarget($fullTarget))
+		{
+			die("printUpdateSelect($fullTarget, $configParamValues, $class, $label, $options=null) failed!");
+		}
+		$targetId=targetId($fullTarget);
+		$targetType=targetType($fullTarget);
+		$configParam=key($configParamValues);
+		$ucConfigParam=ucfirst($configParam);
+		$sName='update'.$ucConfigParam;
+		$selected=current($fullTarget)[rtrim(key($configParamValues), 's')];
 		echo <<<HERE
 			<span>
-				<label for='{$targetId}{$ucColumn}'>{$label}</label>
-				<select class='{$class}' id='{$targetId}{$ucColumn}' name='{$sName}'>
+				<label title="{$targetType}:{$configParam}" for='{$targetId}{$ucConfigParam}'>{$label}</label>
+				<select class='{$class}' id='{$targetId}{$ucConfigParam}' name='{$sName}'>
 		HERE;
 		if (!isset($options))
 		{
-				$options=array_merge(array(""), current($column));
+				$options=array_merge(array(""), current($configParamValues));
 		}
 		printSelectOptions($options, $selected);
-		echo <<<HERE
-				</select>
-			</span><wbr>
-		HERE;
+		echo '</select>';
+		if ($help)
+		{
+			printHelpButton($targetType, $configParam);
+		}
+		echo '</span><wbr>';
 	}
-	
+
 ?>
