@@ -274,3 +274,14 @@ CREATE TABLE map_configs.keywords
     info character varying COLLATE pg_catalog."default",
     CONSTRAINT keywords_pkey PRIMARY KEY (keyword_id)
 );
+
+CREATE TABLE map_configs.helps
+(
+    help_id character varying COLLATE pg_catalog."default" NOT NULL,
+    abstract character varying COLLATE pg_catalog."default",
+    info character varying COLLATE pg_catalog."default",
+    CONSTRAINT helps_pkey PRIMARY KEY (help_id)
+);
+
+INSERT INTO map_configs.helps(help_id,abstract) VALUES ('help:help_id','Det fulla namnet för det verktygsfält som ska tilldelas en hjälptext (för muspekaren över namnet på ett verktygsfält för att få upp det fulla namnet).');
+INSERT INTO map_configs.helps(help_id,abstract) VALUES ('help:abstract','Meningsfull hjälptext (html) som visas när användaren klickar på<button class="smallHelpButton">?</button> till höger om det aktuella verktygsfältet.');
