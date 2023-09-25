@@ -1,14 +1,16 @@
 		html			{ width:100%; height:100%; font-family:OpenSans,"Droid Sans",Verdana,"DejaVu Sans","Bitstream Vera Sans",sans-serif; font-size:clamp(7px, 0.9vw, 12px); line-height:2; overflow-x:hidden }
 		body			{ background-color:#7fb1b3 }
 		button			{ height: 1.7em; font-family:inherit; font-size:inherit; box-sizing:border-box; border-width:1px; border-style:solid; padding:0.1em; position:relative; top:-0.4em; margin-left:2px; white-space:nowrap; background-color:powderblue; border-radius:0.5em }
-		.buttonDiv		{ display:flex; position:absolute; right:6rem; line-height:1.5 }
+		.buttonDiv		{ display:flex; position:absolute; right:1em; line-height:1.5; margin-top:0.5em }
 		.exportButtonDiv { position:absolute; right:0; margin-top:2.4rem; margin-right:2rem }
-		.deleteButtonDiv { white-space:nowrap; position:absolute; right:2rem }
 		.headButton		{ width:4em }
 		.topInput		{ border-width:1px; border-style:solid; line-height:1.3; margin-left:0.1em; margin-right:0.5em; margin-bottom:0.3em; margin-top:0.5em; white-space:nowrap; background-color:powderblue; float:left }
-		.updateButton	{ margin-right:0.5em }
-		.deleteButton	{ visibility:hidden; color:red; float:right; margin-bottom:1rem }
-		hr				{ margin-right:0.2em; margin-left:0.3em; margin-bottom: 1em; }
+		.updateButton	{ margin-right:0.2em }
+		.deleteButton	{ margin-right:0.2em; color:red }
+		.largeMultiselectButton { }
+		.smallMultiselectButton { margin-left:-0.3em; margin-right:0.1em; height:unset; border-style:none; padding:0.1em 0.2em; vertical-align:middle }
+		.smallHelpButton { margin-left:-0.3em; padding:0.1em 0.3em; height:unset; border-style:none; vertical-align:middle }
+		hr				{ margin-right:0.5em; margin-bottom: 1em; }
 		.dashedHr		{ border-style:dashed; border-width:1px 0 0 0; border-color:lightgray }
 		table			{ border-spacing:0; clear:left; min-height:2em }
 		th				{ width:16em; text-align:left; vertical-align:top }
@@ -25,8 +27,8 @@
 		select			{ font-family:inherit; font-size:inherit; box-sizing:border-box; padding:0.1em; position:relative; top:-0.4em; border-radius:0.5em; height:1.8rem }
 		.headSelect		{ width:100%; max-width:calc(100% - 4.5em) }
 		.addSelect		{ width:12em }
-		.bodySelect		{ position:relative; max-width: 200px }
-		label			{ vertical-align: text-bottom }
+		.bodySelect		{ position:relative; max-width:200px }
+		label			{ vertical-align: text-bottom; margin-right:-0.2em; margin-left:0.4em }
 		input			{ font-family:inherit; font-size:inherit; box-sizing:border-box; padding:0.1em; position:relative; line-height:1.4; border-width:1px; border-style:solid; top:-0.4em; vertical-align:middle; border-radius:0.5em }
 		.headInput		{ width:100%; max-width:calc(100% - 4.5em); margin-bottom:0.2em }
 		form			{ margin:0; margin-block-end:0 }
@@ -40,10 +42,10 @@
 		.textareaMedium	{ width:13em }
 		.textareaSmall	{ width:4em }
 		.textareaXSmall	{ width:2em; resize:none }
-		iframe			{ width:100%; height:50px; max-height:20vh; border-style:dashed none none none; border-width:1px; border-color:lightgray; padding-bottom:0.3em; padding-top:0.3em; margin-bottom:0.5rem }
+		iframe			{ width:calc(100% - 0.5em); height:50px; max-height:20vh; border-style:dashed none none none; border-width:1px; border-color:lightgray; padding-bottom:0.3em; padding-top:0.3em; margin-bottom:0.5rem }
 		.printXFormDiv	{ float:left; line-height:2 }
-		.headFormsDiv	{ width:calc( 100vw - 2rem ); overflow-x:auto; margin-bottom:0.8em }
-		.headFormsTable	{ border-bottom:dashed 1px lightgray; margin-bottom: 2px; border-top:dashed 1px lightgray }
+		.headFormsDiv	{ width:calc( 100vw - 2rem ); overflow-x:auto; margin-bottom:0.8em; border-bottom:dashed 1px lightgray; border-top:dashed 1px lightgray }
+		.headFormsTable	{ margin-bottom: 2px }
 		.headFormDiv1	{ width:16em; white-space:nowrap; display:inline-block }
 		.headFormDiv2	{ width:100%; white-space:nowrap; display:inline-block }
 		.headFormDiv3	{ width:100%; white-space:nowrap; display:inline-block; margin-top:2px }
