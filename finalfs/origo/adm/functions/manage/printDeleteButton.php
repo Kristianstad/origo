@@ -33,13 +33,12 @@
 			}
 		}
 		echo <<<HERE
-			<div class="deleteButtonDiv">
-				<form method='post' onsubmit='confirmStr="{$deleteConfirmStr}"; return confirm(confirmStr);' style='line-height:2'>
+				<form method='post' onsubmit='confirmStr="{$deleteConfirmStr}"; return confirm(confirmStr);'>
 					<input type="hidden" name="{$targetType}IdDel" value="{$targetId}">
-					<button class='deleteButton' type='submit' name='{$targetType}Button' value='delete'><img class="resizeimg" src onerror="this.parentNode.style.marginTop=this.parentNode.parentNode.parentNode.previousElementSibling.offsetHeight+'px'; this.parentNode.style.visibility='visible';">Radera</button>
+					<button class='deleteButton' type='submit' name='{$targetType}Button' value='delete'>Radera</button>
 		HERE;
 		printHiddenInputs($inheritPosts);
-		echo '</form></div>';
+		echo '</form>';
 	}
-	
+
 ?>
