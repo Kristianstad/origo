@@ -1,14 +1,14 @@
 <?php
 
-	function printMultiselectButton($table, $value=null, $buttonText='Flervalsverktyg', $buttonStyle='')
+	function printMultiselectButton($configParam, $value=null, $buttonText='Flervalsverktyg', $buttonClass='largeMultiselectButton')
 	{
-		$buttonValue=$table;
+		$buttonValue=$configParam;
 		if (!empty($value))
 		{
 			$buttonValue=$buttonValue.":$value";
 		}
 		echo <<<HERE
-			<button form="multiselectForm" onclick="toggleTopFrame('{$table}');" type="submit" name="table" value="{$buttonValue}" style="{$buttonStyle}">
+			<button form="multiselectForm" onclick="toggleTopFrame('{$buttonValue}');" type="submit" name="table" value="{$buttonValue}" class="{$buttonClass}">
 				{$buttonText}
 			</button>
 		HERE;
