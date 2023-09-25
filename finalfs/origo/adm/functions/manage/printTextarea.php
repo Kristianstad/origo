@@ -1,34 +1,47 @@
 <?php
 
-	require_once("./functions/pkColumnOfTable.php");
+	require_once("./functions/manage/isFullTarget.php");
+	require_once("./functions/manage/targetConfigParam.php");
+	require_once("./functions/manage/targetType.php");
+	require_once("./functions/manage/targetId.php");
 	require_once("./functions/manage/printMultiselectButton.php");
+	require_once("./functions/manage/printHelpButton.php");
 
-	function printTextarea($target, $column, $class, $label, $readonly='no')
+	function printTextarea($fullTarget, $configParam, $class, $label, $help=false, $readonly=false)
 	{
-		require("./constants/multiselectables.php");
-		$targetId=current($target)[pkColumnOfTable(key($target).'s')];
-		$columnValue=current($target)[$column];
-		if (preg_match('/^\{([^"\{\[]*("[^:])?)*\}$/', $columnValue))
-		{ 
-			$columnValue=trim($columnValue, '{}');
-		}
-		$ucColumn=ucfirst($column);
-		if ($readonly == 'yes')
+		if (!isFullTarget($fullTarget))
 		{
-			$readonly='readonly ';
+			die("printTextarea($fullTarget, $configParam, $class, $label, $help=false, $readonly=false) failed!");
+		}
+		require("./constants/multiselectables.php");
+		$configParamValue=targetConfigParam($fullTarget, $configParam);
+		if (preg_match('/^\{([^"\{\[]*("[^:])?)*\}$/', $configParamValue))
+		{ 
+			$configParamValue=trim($configParamValue, '{}');
+		}
+		$ucConfigParam=ucfirst($configParam);
+		if ($readonly)
+		{
+			$ro='readonly ';
 		}
 		else
 		{
-			$readonly='';
+			$ro='';
 		}
+		$targetId=targetId($fullTarget);
+		$targetType=targetType($fullTarget);
 		echo <<<HERE
 			<span>
-				<label for="{$targetId}{$ucColumn}">{$label}</label>
-				<textarea {$readonly}rows="1" class="{$class}" id="{$targetId}{$ucColumn}" name="update{$ucColumn}">{$columnValue}</textarea>
+				<label title="{$targetType}:{$configParam}" for="{$targetId}{$ucConfigParam}">{$label}</label>
+				<textarea {$ro}rows="1" class="{$class}" id="{$targetId}{$ucConfigParam}" name="update{$ucConfigParam}">{$configParamValue}</textarea>
 		HERE;
-		if (in_array($column, $multiselectables))
+		if (in_array($configParam, $multiselectables))
 		{
-			printMultiselectButton($column, trim(current($target)[$column], '{}'), '+', 'margin-left:-0.5em');
+			printMultiselectButton($configParam, $configParamValue, '+', 'smallMultiselectButton');
+		}
+		if ($help)
+		{
+			printHelpButton($targetType, $configParam);
 		}
 		echo '</span><wbr>';
 	}
