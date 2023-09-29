@@ -72,7 +72,6 @@ CREATE TABLE map_configs.layers
     opacity numeric(3,2) NOT NULL DEFAULT 1,
     featureinfolayer character varying COLLATE pg_catalog."default",
     info character varying COLLATE pg_catalog."default",
-    categories character varying[] COLLATE pg_catalog."default",
     format character varying COLLATE pg_catalog."default" DEFAULT 'image/png'::character varying,
     adusers character varying[] COLLATE pg_catalog."default",
     adgroups character varying[] COLLATE pg_catalog."default",
