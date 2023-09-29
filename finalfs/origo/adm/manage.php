@@ -33,10 +33,17 @@
 	}
 	//var_dump($post);
 	$idPosts=idPosts($post);
+	$categoryPosts=categoryPosts($post);
 	$focusTable=focusTable($idPosts);
 	$dbh=dbh();
 	$configTables=configTables($dbh);
-	$layerCategories=layerCategories($configTables['layers']);
+	$keywordCategorized=viewKeywordCategorized($view);
+	$categoryConfigs=array_intersect_key($configTables, array_flip($keywordCategorized));
+	foreach ($categoryConfigs as $table=>$config)
+	{
+		$catParam=pkColumnOfTable($table);
+		eval("\${$table}Categories=categories(\$config, \$catParam);");
+	}
 	$postButton=postButton($post);
 	if (isset($postButton))
 	{
@@ -156,9 +163,9 @@
 			}
 			unset($result);
 			$configTables=configTables($dbh);
-			if ($command != 'operation' && $type == 'layer')
+			if ($command != 'operation' && in_array($typeTable, $keywordCategorized))
 			{
-				$layerCategories=layerCategories($configTables['layers']);
+				eval("\${$typeTable}Categories=categories(\$configTables[\$typeTable], \$typeTablePkColumn);");
 			}
 		}
 		unset($id, $type, $typeTable, $typeTablePkColumn, $command, $sql);
@@ -168,9 +175,9 @@
 	{
 		$inheritPosts['groupIds']=$post['groupIds'];
 	}
-	if (isset($post['layerCategory']))
+	foreach ($categoryPosts as $postName=>$category)
 	{
-		$inheritPosts['layerCategory']=$post['layerCategory'];
+		$inheritPosts[$postName]=$category;
 	}
 ?>
 <html>
@@ -182,12 +189,18 @@
 		let topFrame="";
 		<?php
 			includeDirectory("./js-functions/manage");
-			echo "var categories = ".json_encode(array_keys($layerCategories)).";\n";
-			foreach ($layerCategories as $category => $catLayers)
+			$updateSelects="";
+			foreach ($keywordCategorized as $categorized)
 			{
-				$catLayers=array_merge(array(""), $catLayers);
-				echo "var $category = ".json_encode($catLayers).";\n";
-				unset($category, $catLayers);
+				eval("\$categories=\${$categorized}Categories;");
+				echo "var {$categorized}Categories = ".json_encode(array_keys($categories)).";\n";
+				$updateSelects=$updateSelects."updateSelect('{$categorized}Categories', {$categorized}Categories);";
+				foreach ($categories as $category => $member)
+				{
+					$member=array_merge(array(""), $member);
+					echo "var {$categorized}$category = ".json_encode($member).";\n";
+					unset($category, $member);
+				}
 			}
 		?>
 	</script>
@@ -208,16 +221,22 @@
 	<form id="multiselectForm" action="multiselect.php" method="get" target="topFrame"></form>
 	<?php printHeadForms($view, $configTables, $focusTable, $inheritPosts); ?>
 	<script>
-		updateSelect("layerCategories", categories);
 		<?php
-			if (isset($post['layerCategory']))
+			echo $updateSelects;
+			unset($updateSelects);
+			foreach ($categoryPosts as $postName=>$category)
 			{
+				$table=substr($postName, 0, -8);
+				$type=tableType($table);
+				$id=$idPosts[$type.'Id'];
 				echo <<<HERE
-					document.getElementById("layerCategories").value="{$post['layerCategory']}";
-					updateSelect("layerSelect", {$post['layerCategory']});
-					document.getElementById("layerSelect").value="{$post['layerId']}";
+					document.getElementById("{$table}Categories").value="{$category}";
+					updateSelect("{$type}Select", {$table}{$category});
+					document.getElementById("{$type}Select").value="{$id}";
 				HERE;
+				unset($table, $type, $id);
 			}
+			unset($categoryPosts, $postName, $category);
 		?>
 	</script>
 <?php
