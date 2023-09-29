@@ -4,36 +4,37 @@
 	require_once("./functions/manage/printSelectOptions.php");
 	require_once("./functions/manage/printHiddenInputs.php");
 
-	function printHeadForm($table, $inheritPosts)
+	function printHeadForm($tableConfig, $inheritPosts)
 	{
-		$tableName=key($table);
+		require("./constants/keywordCategorized.php");
+		$tableName=key($tableConfig);
 		echo <<<HERE
 			<div class="headFormDiv1">
 				<form id="{$tableName}HeadForm" class="headForm" method="post">
 					<div class="headFormDiv2">
 		HERE;
 		$sId='';
-		$target=rtrim($tableName, 's');
-		$sName=$target.'Id';
+		$type=rtrim($tableName, 's');
+		$sName=$type.'Id';
 		$selected=null;
-		if (isset($inheritPosts[$target.'Id']))
+		if (isset($inheritPosts[$type.'Id']))
 		{
-			$selected=$inheritPosts[$target.'Id'];
+			$selected=$inheritPosts[$type.'Id'];
 		}
-		if ($target == 'layer')
+		if (in_array($tableName, $keywordCategorized))
 		{
-			echo "<select class=\"headSelect\" id=\"layerCategories\" name=\"layerCategory\" onchange='updateSelect(\"layerSelect\", window[this.value]);'></select><br>";
-			$sId='id="layerSelect"';
+			echo "<select class=\"headSelect\" id=\"{$tableName}Categories\" name=\"{$tableName}Category\" onchange='updateSelect(\"{$type}Select\", window[\"{$tableName}\"+this.value]);'></select><br>";
+			$sId='id="'.$type.'Select"';
 		}
 		else
 		{
-			if (isset($inheritPosts['layerCategory']))
+			if (isset($inheritPosts['layersCategory']))
 			{
-				echo '<input type="hidden" name="layerCategory" value="'.$inheritPosts['layerCategory'].'">';
+				echo '<input type="hidden" name="layersCategory" value="'.$inheritPosts['layersCategory'].'">';
 			}
-			if ($target == 'map' || $target == 'group')
+			if ($type == 'map' || $type == 'group')
 			{
-				if ($target == 'group')
+				if ($type == 'group')
 				{
 					if (isset($inheritPosts['mapId']) || isset($inheritPosts['groupId']))
 					{
@@ -50,30 +51,30 @@
 				}
 			}
 		}
-		$optionValues=array_merge(array(""),array_column(current($table), pkColumnOfTable($tableName)));
-		if ($target == 'contact' || $target == 'origin')
+		$optionValues=array_merge(array(""),array_column(current($tableConfig), pkColumnOfTable($tableName)));
+		if ($type == 'contact' || $type == 'origin')
 		{
-			$optionLabels=array_merge(array(""),array_column(current($table), 'name'));
+			$optionLabels=array_merge(array(""),array_column(current($tableConfig), 'name'));
 			$optionValues=array_combine($optionValues, $optionLabels);
 		}
 		echo "<select $sId onchange='this.form.submit();' class='headSelect' name='$sName'>";
 		printSelectOptions($optionValues, $selected);
 		echo <<<HERE
 						</select>
-						<button type="submit" class="headButton" name="{$target}Button" value="get">Hämta</button>
+						<button type="submit" class="headButton" name="{$type}Button" value="get">Hämta</button>
 					</div>
 				</form><br>
 				<form class="headForm" method="post">
 					<div class="headFormDiv3">
-						<input class="headInput" type="text" name="{$target}IdNew">
+						<input class="headInput" type="text" name="{$type}IdNew">
 		HERE;
 		printHiddenInputs($inheritPosts);
 		echo <<<HERE
-						<button type="submit" class="headButton" name="{$target}Button" value="create">Skapa</button>
+						<button type="submit" class="headButton" name="{$type}Button" value="create">Skapa</button>
 					</div>
 				</form>
 			</div>
 		HERE;
 	}
-	
+
 ?>
