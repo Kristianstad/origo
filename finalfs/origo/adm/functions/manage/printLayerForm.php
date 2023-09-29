@@ -127,7 +127,6 @@
 			printTextarea($layer, 'tables', 'textareaMedium', 'Tabeller:', in_array('tables', $helps), true);
 		}
 		echo '<hr class="dashedHr">';
-		printTextarea($layer, 'categories', 'textareaLarge', 'Kategorier:', in_array('categories', $helps));
 		printTextarea($layer, 'info', 'textareaLarge', 'Info:', in_array('info', $helps));
 		printHiddenInputs($inheritPosts);
 		echo '<hr class="dashedHr">';
