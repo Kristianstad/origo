@@ -15,9 +15,9 @@
 		}
 		require("./constants/multiselectables.php");
 		$configParamValue=targetConfigParam($fullTarget, $configParam);
-		if (preg_match('/^\{([^"\{\[]*("[^:])?)*\}$/', $configParamValue))
-		{ 
-			$configParamValue=trim($configParamValue, '{}');
+		if (preg_match('/^\{(("[[:alnum:]\-#_\:\.]+([[:space:]][[:alnum:]\-#_\:\.]+)*"|[[:alnum:]\-#_\:\.]*),?)*\}$/', $configParamValue))
+		{
+			$configParamValue=str_replace('"', '', trim($configParamValue, '{}'));
 		}
 		$ucConfigParam=ucfirst($configParam);
 		if ($readonly)
