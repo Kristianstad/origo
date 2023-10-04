@@ -193,14 +193,22 @@
 			foreach ($keywordCategorized as $categorized)
 			{
 				eval("\$categories=\${$categorized}Categories;");
-				echo "var {$categorized}Categories = ".json_encode(array_keys($categories)).";\n";
-				$updateSelects=$updateSelects."updateSelect('{$categorized}Categories', {$categorized}Categories);";
+				$categories2=array();
 				foreach ($categories as $category => $member)
+				{
+					$category=str_replace(' ', '_', $category);
+					$categories2[$category]=$member;
+					unset($category, $member);
+				}
+				echo "var {$categorized}Categories = ".json_encode(array_keys($categories2)).";\n";
+				$updateSelects=$updateSelects."updateSelect('{$categorized}Categories', {$categorized}Categories);";
+				foreach ($categories2 as $category => $member)
 				{
 					$member=array_merge(array(""), $member);
 					echo "var {$categorized}$category = ".json_encode($member).";\n";
 					unset($category, $member);
 				}
+				unset($categorized, $categories, $categories2);
 			}
 		?>
 	</script>
