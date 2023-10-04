@@ -1,6 +1,8 @@
 function updateSelect(id, array)
 {
-	var select = document.getElementById(id);
+	let pattern = /Categories$/;
+	let isCategories = pattern.test(id);
+	let select = document.getElementById(id);
 	if (select != null)
 	{
 		if (select.options != null)
@@ -13,7 +15,15 @@ function updateSelect(id, array)
 		}
 		array.forEach(function(item) {
 			var newOption = document.createElement("option");
-			newOption.text = item.toString();
+			if (isCategories)
+			{
+				newOption.value = item.toString();
+				newOption.text = newOption.value.replace('_', ' ');
+			}
+			else
+			{
+				newOption.text = item.toString();
+			}
 			select.add(newOption);
 		});
 	}
