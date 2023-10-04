@@ -5,7 +5,7 @@
 	function categories($config, $catParam)
 	{
 		$categories=array("Alla" => array_column($config, $catParam));
-		foreach (array_filter(array_column($config, 'keywords', $catParam)) as $id => $pgarray)
+		foreach (str_replace('"', '', array_filter(array_column($config, 'keywords', $catParam))) as $id => $pgarray)
 		{
 			foreach (pgArrayToPhp($pgarray) as $category)
 			{
