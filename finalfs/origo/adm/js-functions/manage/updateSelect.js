@@ -18,7 +18,7 @@ function updateSelect(id, array)
 			if (isCategories)
 			{
 				newOption.value = item.toString();
-				newOption.text = newOption.value.replace('_', ' ');
+				newOption.text = newOption.value.replaceAll('_', ' ');
 			}
 			else
 			{
