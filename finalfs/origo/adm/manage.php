@@ -196,7 +196,7 @@
 				$categories2=array();
 				foreach ($categories as $category => $member)
 				{
-					$category=str_replace(' ', '_', $category);
+					$category=str_replace(array('-', '+', '/'), '', str_replace(' ', '_', $category));
 					$categories2[$category]=$member;
 					unset($category, $member);
 				}
