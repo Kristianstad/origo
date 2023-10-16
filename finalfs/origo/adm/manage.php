@@ -78,6 +78,10 @@
 			if ($command == 'update')
 			{
 				$config=array_column_search($id, $typeTablePkColumn, $configTables[$typeTable]);
+				if (($type == 'layer' || $type == 'group') && isset($post['updateAbstract']))
+				{
+					$post['updateAbstract'] = str_replace(["\r\n", "\r", "\n"], "<br>", $post['updateAbstract']);
+				}
 				if ($type == 'layer' || $type == 'source')
 				{
 					if ($type == 'layer')
