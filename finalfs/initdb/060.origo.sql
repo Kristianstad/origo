@@ -139,6 +139,7 @@ CREATE TABLE map_configs.maps
 );
 
 INSERT INTO map_configs.maps(map_id,footer,layers,groups,abstract) VALUES ('origo-cities#1','origo#1','{origo-cities#1}','{none#1,background#1}','En demokarta som visar kommuner delaktiga i Origoprojektet.');
+INSERT INTO map_configs.maps(map_id,footer,groups,abstract) VALUES ('preview','origo#1','{background#1}','En karta som används för att visa förhandsgranskningar i administrationsverktyget.');
 
 CREATE TABLE map_configs.proj4defs
 (
