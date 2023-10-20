@@ -3,10 +3,13 @@
 	require_once("./functions/pgArrayToPhp.php");
 	require_once("./functions/array_column_search.php");
 
-	function addControlsToJson()
+	function addControlsToJson($mapControls=null)
 	{
 		GLOBAL $json, $map, $controls;
-		$mapControls = pgArrayToPhp($map['controls']);
+		if (!isset($mapControls))
+		{
+			$mapControls = pgArrayToPhp($map['controls']);
+		}
 		$json = $json.'"controls": [';
 		$firstControl = true;
 		foreach ($mapControls as $control)
