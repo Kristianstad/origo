@@ -32,6 +32,7 @@
 		printUpdateButton('group');
 		$group['group']=$group['group']['group_id'];
 		printInfoButton($group);
+		printConfigPreviewButton('preview', $group['group']);
 		$deleteConfirmStr="Är du säker på att du vill radera gruppen ".$group['group']."? Ingående lager påverkas ej och referenser till gruppen hanteras separat.";
 		printDeleteButton($group, $deleteConfirmStr, $inheritPosts);
 		echo '</div></form></div></div><div class="addRemoveDiv">';
