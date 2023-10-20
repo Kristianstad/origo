@@ -105,8 +105,11 @@
 	$json = json_format($json);
 	if ($_GET['getJson'] == 'y')
 	{
-		header('Content-Type: application/octet-stream');
-		header("Content-Disposition: attachment;filename=$mapId.json");
+		if ($_GET['download'] == 'y')
+		{
+			header('Content-Type: application/octet-stream');
+			header("Content-Disposition: attachment;filename=$mapId.json");
+		}
 		echo "$json";
 	}
 	else
