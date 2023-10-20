@@ -134,6 +134,7 @@
 		printUpdateButton('layer');
 		$layer['layer']=$layer['layer']['layer_id'];
 		printInfoButton($layer);
+		printConfigPreviewButton('preview', null, $layer['layer']);
 		$deleteConfirmStr="Är du säker att du vill radera lagret ".$layer['layer']."? Referenser till lagret hanteras separat.";
 		printDeleteButton($layer, $deleteConfirmStr, $inheritPosts);
 		echo '</div></form></div></div><div class="addRemoveDiv">';
