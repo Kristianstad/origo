@@ -129,6 +129,12 @@ CREATE TABLE map_configs.maps
     embedded boolean,
     abstract character varying COLLATE pg_catalog."default",
     keywords character varying[] COLLATE pg_catalog."default",
+    css character varying COLLATE pg_catalog."default",
+    title character varying COLLATE pg_catalog."default",
+    icon character varying COLLATE pg_catalog."default" DEFAULT '../img/png/logo.png'::character varying,
+    css_files character varying[] COLLATE pg_catalog."default" DEFAULT '{css/style.css}'::character varying[],
+    js character varying COLLATE pg_catalog."default",
+    js_files character varying[] COLLATE pg_catalog."default" DEFAULT '{js/origo.min.js}'::character varying[],
     CONSTRAINT map_pk PRIMARY KEY (map_id)
 );
 
