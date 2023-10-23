@@ -1,0 +1,2 @@
+wget -O - 'http://localhost:8080/adm/writeConfig.php?map=preview'
+wget -O - 'http://localhost:8080/adm/writeConfig.php?map=origo-cities#1'
