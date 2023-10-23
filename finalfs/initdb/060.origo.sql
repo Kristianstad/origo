@@ -103,7 +103,7 @@ CREATE TABLE map_configs.layers
 
 INSERT INTO map_configs.layers(layer_id,title,type,attributes,visible,style_config,source,abstract) VALUES ('origo-cities#1','Origokommuner','GEOJSON','[ { "name": "name" } ]',true,'[ [ { "label": "Origokommuner", "circle": { "radius": 10, "stroke": { "color": "rgba(0,0,0,1)", "width": 2.5 }, "fill": { "color": "rgba(255,255,255,0.9)" } } }, { "circle": { "radius": 2.5, "stroke": { "color": "rgba(0,0,0,0)", "width": 1 }, "fill": { "color": "rgba(37,129,196,1)" } } } ] ]','data/origo-cities-3857.geojson','Lager som visar kommuner delaktiga i Origoprojektet.');
 INSERT INTO map_configs.layers(layer_id,title,type,visible,style_config,source,queryable,opacity,abstract) VALUES ('origo-mask#1','Origo-mask','GEOJSON',true,'[ [ { "stroke": { "color": "rgba(0,0,0,1.0)" }, "fill": { "color": "rgba(0,0,0,1.0)" } } ] ]','data/origo-mask-3857.geojson',false,0.25,'Lager som tonar ner de delar av kartan som inte utgör del av en Origokommun.');
-INSERT INTO map_configs.layers(layer_id,title,type,visible,icon,queryable,abstract) VALUES ('osm#1','OpenStreetMap','OSM',true,'img/png/osm.png',false,'Bakgrundslager från OpenStreetMap.');
+INSERT INTO map_configs.layers(layer_id,title,type,visible,show_icon,icon,queryable,abstract) VALUES ('osm#1','OpenStreetMap','OSM',true,true,'img/png/osm.png',false,'Bakgrundslager från OpenStreetMap.');
 
 CREATE TABLE map_configs.maps
 (
