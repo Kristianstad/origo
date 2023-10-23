@@ -42,7 +42,9 @@ ARG FINALCMDS=\
 "&& cd bin "\
 "&& find ../../libexec/postgresql14 ! -type l ! -name postgres ! -name ../../libexec/postgresql14 -maxdepth 1 -exec ln -s {} ./ + "\
 "&& chmod g+X /usr/bin/* "\
-"&& sed -i 's/index.json/origo-cities1.json/' /origo/index.html"
+"&& ln -s /origo/origo-cities/index1.json /origo/origo-cities#1.json "\
+"&& ln -s /origo/preview/index.json /origo/preview.json "\
+"&& sed -i 's/index.json/origo-cities#1.json/' /origo/index.html"
 # ARGs (can be passed to Build/Final) </END>
 
 # Generic template (don't edit) <BEGIN>
