@@ -128,8 +128,6 @@
 	}
 	addGroupsToJson($map['groups']);
 	$json = $json.', ';
-	
-	
 	addLayersToJson($mapLayers);
 	$json = $json.' }';
 	$json = json_format($json);
@@ -144,11 +142,12 @@
 	}
 	else
 	{
+		require("./constants/previewBase.php");
 		$html = <<<HERE
 			<!DOCTYPE html>
 			<html lang="sv">
 				<head>
-					<base href="/origo/{$mapId}/">
+					<base href="{$previewBase}">
 					<meta charset="utf-8">
 					<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 					<meta http-equiv="X-UA-Compatible" content="IE=Edge;chrome=1">
