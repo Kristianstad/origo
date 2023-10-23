@@ -1,0 +1,154 @@
+{
+        "controls": [
+                {
+                        "name": "home",
+                        "options": {
+                                "zoomOnStart": true
+                        }
+                },
+                {
+                        "name": "mapmenu",
+                        "options": {
+                                "isActive": false
+                        }
+                },
+                {
+                        "name": "sharemap"
+                },
+                {
+                        "name": "geoposition"
+                },
+                {
+                        "name": "print"
+                },
+                {
+                        "name": "about",
+                        "options": {
+                                "buttonText": "Om Origo",
+                                "title": "Om Origo",
+                                "content": "<p>Origo är ett ramverk för webbkartor. Ramverket bygger på JavaScript-biblioteket OpenLayers. Du kan använda Origo för att skapa egna webbaserade kartapplikationer.</p><br><p>Projektet drivs och underhålls av ett antal svenska kommuner. Besök gärna <a href=\"https://github.com/origo-map/origo\" target=\"_blank\">Origo på GitHub</a> för mer information.</p>"
+                        }
+                },
+                {
+                        "name": "link",
+                        "options": {
+                                "title": "Origo",
+                                "url": "https://github.com/origo-map/origo"
+                        }
+                },
+                {
+                        "name": "legend",
+                        "options": {
+                                "labelOpacitySlider": "Opacity",
+                                "useGroupIndication": true
+                        }
+                },
+                {
+                        "name": "position",
+                        "options": {
+                                "title": "Web Mercator",
+                                "projections": {
+                                        "EPSG:4326": "WGS84",
+                                        "EPSG:3006": "Sweref99 TM"
+                                }
+                        }
+                },
+                {
+                        "name": "measure"
+                }
+        ],
+        "pageSettings": {
+                "footer": {
+                        "img": "img/png/logo.png",
+                        "url": "https://github.com/origo-map/origo",
+                        "text": "Origo"
+                },
+                "mapGrid": {
+                        "visible": true
+                }
+        },
+        "projectionCode": "EPSG:3857",
+        "projectionExtent": [
+                -20026376.39,
+                -20048966.1,
+                20026376.39,
+                20048966.1
+        ],
+        "featureinfoOptions": {
+                "infowindow": "overlay"
+        },
+        "proj4Defs": [
+                {
+                        "code": "EPSG:3006",
+                        "projection": "+proj=utm +zone=33 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs"
+                }
+        ],
+        "extent": [
+                -20026376.39,
+                -20048966.1,
+                20026376.39,
+                20048966.1
+        ],
+        "center": [
+                1770000,
+                8770000
+        ],
+        "zoom": 7,
+        "enableRotation": true,
+        "constrainResolution": true,
+        "resolutions": [
+                156543.03,
+                78271.52,
+                39135.76,
+                19567.88,
+                9783.94,
+                4891.97,
+                2445.98,
+                1222.99,
+                611.50,
+                305.75,
+                152.87,
+                76.437,
+                38.219,
+                19.109,
+                9.5546,
+                4.7773,
+                2.3887,
+                1.1943,
+                0.5972
+        ],
+        "groups": [
+                {
+                        "name": "background",
+                        "title": "Bakgrundskartor",
+                        "expanded": true,
+                        "abstract": "Grupp som innehåller alla bakgrundslager."
+                }
+        ],
+        "layers": [
+                {
+                        "name": "osm",
+                        "title": "OpenStreetMap",
+                        "type": "OSM",
+                        "group": "background",
+                        "style": "osm#1-bg",
+                        "queryable": false,
+                        "visible": true,
+                        "abstract": "Bakgrundslager från OpenStreetMap.<br><form action='' method='post' target='_blank'><button type='submit' name='layerId' value='osm#1'style='float:right; color:blue'>Administrera</button></form>"
+                }
+        ],
+        "source": {
+
+        },
+        "styles": {
+                "osm#1-bg": [
+                        [
+                                {
+                                        "image": {
+                                                "src": "img/png/osm.png?ttl=36000"
+                                        }
+                                }
+                        ]
+                ]
+        }
+}
