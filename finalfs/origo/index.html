@@ -18,7 +18,7 @@
                 const map = urlParams.get('map');
                 if (map != null)
 			          {
-                        const origo = Origo(map + '.json');
+                        const origo = Origo(map.replace('#', '%23') + '.json');
                 }
                 else
                 {
