@@ -33,7 +33,7 @@ ARG MAKEDIRS="/etc/php81/conf.d /etc/php81/php-fpm.d"
 ARG REMOVEDIRS="/origo/origo-documentation /origo/examples /usr/include"
 ARG REMOVEFILES="/etc/php81/php-fpm.d/www.conf /origo/index.json"
 ARG STARTUPEXECUTABLES="/usr/sbin/php-fpm81 /usr/libexec/postgresql14/postgres"
-ARG LINUXUSEROWNED="/origo /origo/origo-cities1.json"
+ARG LINUXUSEROWNED="/origo /origo/origo-cities /origo/origo-cities/index1.json /origo/preview /origo/preview/index.json"
 ARG FINALCMDS=\
 "   cp -a /tmp/origo/* /origo/ "\
 "&& cd /usr/local "\
