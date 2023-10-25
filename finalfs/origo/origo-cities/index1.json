@@ -119,25 +119,22 @@
         ],
         "groups": [
                 {
-                        "name": "none",
-                        "title": "",
-                        "expanded": false
-                },
-                {
                         "name": "background",
                         "title": "Bakgrundskartor",
-                        "expanded": true
+                        "expanded": true,
+                        "abstract": "Grupp som innehåller alla bakgrundslager."
                 }
         ],
         "layers": [
                 {
                         "name": "origo-cities",
                         "title": "Origokommuner",
-                        "group": "root",
                         "type": "GEOJSON",
+                        "group": "root",
                         "style": "origo-cities#1",
                         "visible": true,
                         "source": "data/origo-cities-3857.geojson",
+                        "abstract": "<b>Beskrivning: </b>Lager som visar kommuner delaktiga i Origoprojektet.<br><b>Resurser: </b><br><b>Kontakt: </b><br><b>Källa: </b><a href='https://github.com/origo-map/origo' target='_blank'>Origo</a><br><b>Uppdaterad: </b><br><form action='https://rancherproxy.kristianstad.se/origo/demo/adm/manage.php' method='post' target='_blank'><button type='submit' name='layerId' value='origo-cities#1' style='float:right; color:blue'>Administrera</button></form>",
                         "attributes": [
                                 {
                                         "name": "name"
@@ -147,22 +144,24 @@
                 {
                         "name": "origo-mask",
                         "title": "Origo-mask",
-                        "group": "none",
                         "type": "GEOJSON",
+                        "group": "none",
                         "style": "origo-mask#1",
                         "queryable": false,
                         "visible": true,
                         "opacity": 0.25,
-                        "source": "data/origo-mask-3857.geojson"
+                        "source": "data/origo-mask-3857.geojson",
+                        "abstract": "<form action='https://rancherproxy.kristianstad.se/origo/demo/adm/manage.php' method='post' target='_blank'><button type='submit' name='layerId' value='origo-mask#1' style='float:right; color:blue'>Administrera</button></form>"
                 },
                 {
                         "name": "osm",
                         "title": "OpenStreetMap",
-                        "group": "background",
                         "type": "OSM",
+                        "group": "background",
                         "style": "osm#1-bg",
                         "queryable": false,
-                        "visible": true
+                        "visible": true,
+                        "abstract": "<b>Beskrivning: </b>Bakgrundslager från OpenStreetMap.<br><b>Resurser: </b><br><b>Kontakt: </b><br><b>Källa: </b><a href='https://www.openstreetmap.org/' target='_blank'>OpenStreetMap</a><br><b>Uppdaterad: </b><br><form action='https://rancherproxy.kristianstad.se/origo/demo/adm/manage.php' method='post' target='_blank'><button type='submit' name='layerId' value='osm#1' style='float:right; color:blue'>Administrera</button></form>"
                 }
         ],
         "source": {
