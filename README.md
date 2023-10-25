@@ -6,7 +6,7 @@ Docker image of Origo (https://github.com/origo-map). The image is built on http
 ## Docker run examples
 ### If you just need Origo
 docker run --name origo -d -p 8080:8080 ghcr.io/kristianstad/origo:2.7.0
-### If you also want Kristianstads management tool for Origo
+### If you also want Kristianstads management tool for Origo and metadata
 docker run --name origo -d -p 8080:8080 ghcr.io/kristianstad/origo:with_php
 
 ## Environment variables
