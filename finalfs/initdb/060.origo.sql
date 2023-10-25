@@ -101,9 +101,9 @@ CREATE TABLE map_configs.layers
     CONSTRAINT layers_pkey PRIMARY KEY (layer_id)
 );
 
-INSERT INTO map_configs.layers(layer_id,title,type,attributes,visible,style_config,source,abstract) VALUES ('origo-cities#1','Origokommuner','GEOJSON','[ { "name": "name" } ]',true,'[ [ { "label": "Origokommuner", "circle": { "radius": 10, "stroke": { "color": "rgba(0,0,0,1)", "width": 2.5 }, "fill": { "color": "rgba(255,255,255,0.9)" } } }, { "circle": { "radius": 2.5, "stroke": { "color": "rgba(0,0,0,0)", "width": 1 }, "fill": { "color": "rgba(37,129,196,1)" } } } ] ]','data/origo-cities-3857.geojson','Lager som visar kommuner delaktiga i Origoprojektet.');
-INSERT INTO map_configs.layers(layer_id,title,type,visible,style_config,source,queryable,opacity,abstract) VALUES ('origo-mask#1','Origo-mask','GEOJSON',true,'[ [ { "stroke": { "color": "rgba(0,0,0,1.0)" }, "fill": { "color": "rgba(0,0,0,1.0)" } } ] ]','data/origo-mask-3857.geojson',false,0.25,'Lager som tonar ner de delar av kartan som inte utgör del av en Origokommun.');
-INSERT INTO map_configs.layers(layer_id,title,type,visible,show_icon,icon,queryable,abstract) VALUES ('osm#1','OpenStreetMap','OSM',true,true,'img/png/osm.png',false,'Bakgrundslager från OpenStreetMap.');
+INSERT INTO map_configs.layers(layer_id,title,type,attributes,visible,style_config,source,abstract,show_meta,origin) VALUES ('origo-cities#1','Origokommuner','GEOJSON','[ { "name": "name" } ]',true,'[ [ { "label": "Origokommuner", "circle": { "radius": 10, "stroke": { "color": "rgba(0,0,0,1)", "width": 2.5 }, "fill": { "color": "rgba(255,255,255,0.9)" } } }, { "circle": { "radius": 2.5, "stroke": { "color": "rgba(0,0,0,0)", "width": 1 }, "fill": { "color": "rgba(37,129,196,1)" } } } ] ]','data/origo-cities-3857.geojson','Lager som visar kommuner delaktiga i Origoprojektet.',true,origo);
+INSERT INTO map_configs.layers(layer_id,title,type,visible,style_config,source,queryable,opacity,abstract,show_meta) VALUES ('origo-mask#1','Origo-mask','GEOJSON',true,'[ [ { "stroke": { "color": "rgba(0,0,0,1.0)" }, "fill": { "color": "rgba(0,0,0,1.0)" } } ] ]','data/origo-mask-3857.geojson',false,0.25,'Lager som tonar ner de delar av kartan som inte utgör del av en Origokommun.',false);
+INSERT INTO map_configs.layers(layer_id,title,type,visible,show_icon,icon,queryable,abstract,show_meta,origin) VALUES ('osm#1','OpenStreetMap','OSM',true,true,'img/png/osm.png',false,'Bakgrundslager från OpenStreetMap.',true,'osm');
 
 CREATE TABLE map_configs.maps
 (
@@ -138,8 +138,8 @@ CREATE TABLE map_configs.maps
     CONSTRAINT map_pk PRIMARY KEY (map_id)
 );
 
-INSERT INTO map_configs.maps(map_id,footer,layers,groups,abstract) VALUES ('origo-cities#1','origo#1','{origo-cities#1}','{none#1,background#1}','En demokarta som visar kommuner delaktiga i Origoprojektet.');
-INSERT INTO map_configs.maps(map_id,footer,groups,abstract) VALUES ('preview','origo#1','{background#1}','En karta som används för att visa förhandsgranskningar i administrationsverktyget.');
+INSERT INTO map_configs.maps(map_id,footer,layers,groups,abstract,show_meta) VALUES ('origo-cities#1','origo#1','{origo-cities#1}','{none#1,background#1}','En demokarta som visar kommuner delaktiga i Origoprojektet.',true);
+INSERT INTO map_configs.maps(map_id,footer,groups,abstract,show_meta) VALUES ('preview','origo#1','{background#1}','En karta som används för att visa förhandsgranskningar i administrationsverktyget.',true);
 
 CREATE TABLE map_configs.proj4defs
 (
@@ -225,6 +225,9 @@ CREATE TABLE map_configs.origins
     abstract character varying COLLATE pg_catalog."default",
     CONSTRAINT origins_pkey PRIMARY KEY (origin_id)
 );
+
+INSERT INTO map_configs.origins(origin_id,name,web,abstract) VALUES ('origo','Origo','https://github.com/origo-map/origo','Origo är ett ramverk för webbkartor. Ramverket bygger på JavaScript-biblioteket OpenLayers. Du kan använda Origo för att skapa egna webbaserade kartapplikationer. Projektet drivs och underhålls av ett antal svenska kommuner.');
+INSERT INTO map_configs.origins(origin_id,name,web,abstract) VALUES ('osm','OpenStreetMap','https://www.openstreetmap.org/','OpenStreetMap är en karta över världen, skapad av människor som du och fri att använda under en öppen licens.');
 
 CREATE TABLE map_configs.updates
 (
