@@ -75,6 +75,10 @@
 			{
 				printParents(array('groups'=>all_from_table($dbh, $configSchema, 'groups')), $child);
 			}
+			if ($childType == 'layer')
+			{
+				printParents(array('layers'=>all_from_table($dbh, $configSchema, 'layers')), $child);
+			}
 			if ($childType == 'source' || $childType == 'contact' || $childType == 'export' || $childType == 'update' || $childType == 'origin' || $childType == 'table')
 			{
 				printParents(array('layers'=>all_from_table($dbh, $configSchema, 'layers')), $child);
