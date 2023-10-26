@@ -134,7 +134,7 @@
                         "style": "origo-cities#1",
                         "visible": true,
                         "source": "data/origo-cities-3857.geojson",
-                        "abstract": "<b>Beskrivning: </b>Lager som visar kommuner delaktiga i Origoprojektet.<br><b>Resurser: </b><br><b>Kontakt: </b><br><b>Källa: </b><a href='https://github.com/origo-map/origo' target='_blank'>Origo</a><br><b>Uppdaterad: </b><br><form method='post' target='_blank'><button type='submit' onclick='this.parentElement.action=document.referrer;' name='layerId' value='origo-cities#1' style='float:right; color:blue'>Administrera</button></form>",
+                        "abstract": "<b>Beskrivning: </b>Lager som visar kommuner delaktiga i Origoprojektet.<br><b>Resurser: </b><br><b>Kontakt: </b><br><b>Källa: </b><a href='https://github.com/origo-map/origo' target='_blank'>Origo</a><br><b>Uppdaterad: </b><br><form action='/origo/demo/adm/manage.php' method='post' target='_blank'><button type='submit' name='layerId' value='origo-cities#1' style='float:right; color:blue'>Administrera</button></form>",
                         "attributes": [
                                 {
                                         "name": "name"
@@ -151,7 +151,7 @@
                         "visible": true,
                         "opacity": 0.25,
                         "source": "data/origo-mask-3857.geojson",
-                        "abstract": "<form method='post' target='_blank'><button type='submit' onclick='this.parentElement.action=document.referrer;' name='layerId' value='origo-mask#1' style='float:right; color:blue'>Administrera</button></form>"
+                        "abstract": "<form action='/origo/demo/adm/manage.php' method='post' target='_blank'><button type='submit' name='layerId' value='origo-mask#1' style='float:right; color:blue'>Administrera</button></form>"
                 },
                 {
                         "name": "osm",
@@ -161,7 +161,7 @@
                         "style": "osm#1-bg",
                         "queryable": false,
                         "visible": true,
-                        "abstract": "<b>Beskrivning: </b>Bakgrundslager från OpenStreetMap.<br><b>Resurser: </b><br><b>Kontakt: </b><br><b>Källa: </b><a href='https://www.openstreetmap.org/' target='_blank'>OpenStreetMap</a><br><b>Uppdaterad: </b><br><form method='post' target='_blank'><button type='submit' onclick='this.parentElement.action=document.referrer;' name='layerId' value='osm#1' style='float:right; color:blue'>Administrera</button></form>"
+                        "abstract": "<b>Beskrivning: </b>Bakgrundslager från OpenStreetMap.<br><b>Resurser: </b><br><b>Kontakt: </b><br><b>Källa: </b><a href='https://www.openstreetmap.org/' target='_blank'>OpenStreetMap</a><br><b>Uppdaterad: </b><br><form action='/origo/demo/adm/manage.php' method='post' target='_blank'><button type='submit' name='layerId' value='osm#1' style='float:right; color:blue'>Administrera</button></form>"
                 }
         ],
         "source": {
