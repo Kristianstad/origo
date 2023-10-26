@@ -134,7 +134,7 @@
                         "style": "osm#1-bg",
                         "queryable": false,
                         "visible": true,
-                        "abstract": "Bakgrundslager från OpenStreetMap.<br><form action='' method='post' target='_blank'><button type='submit' name='layerId' value='osm#1'style='float:right; color:blue'>Administrera</button></form>"
+                        "abstract": "<b>Beskrivning: </b>Bakgrundslager från OpenStreetMap.<br><b>Resurser: </b><br><b>Kontakt: </b><br><b>Källa: </b><a href='https://www.openstreetmap.org/' target='_blank'>OpenStreetMap</a><br><b>Uppdaterad: </b><br><form method='post' target='_blank'><button type='submit' onclick='this.parentElement.action=document.referrer;' name='layerId' value='osm#1' style='float:right; color:blue'>Administrera</button></form>"
                 }
         ],
         "source": {
