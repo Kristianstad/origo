@@ -1,7 +1,7 @@
 		html		{ width:100%; height:100%; font-family:OpenSans,"Droid Sans",Verdana,"DejaVu Sans","Bitstream Vera Sans",sans-serif; font-size:clamp(7px, 0.9vw, 12px); line-height:1.4 }
 		body		{ width:100%; height:100%; margin:0 }
 		div			{ float:left }
-		button		{ height: 1.7em; font-family:inherit; font-size:inherit; padding:0.12em; border-width:1px; border-style:solid; line-height:1.2; margin-left:0.5vw; margin-top:0.1vw; background-color:powderblue; border-radius:0.5em }
+		button		{ height: 1.7em; font-family:inherit; font-size:inherit; padding:0.12em; border-width:1px; border-style:solid; line-height:1.2; margin-left:0.5vw; margin-top:0.1vw; background-color:powderblue; border-radius:0.5em; cursor:pointer }
 		h2			{ display:inline-block; margin-block-start:0; margin-block-end:0.3em; font-size:clamp(11px, 1.2vw, 16px) }
 		h3			{ display:inline-block; margin-block-start:0; margin-block-end:0.5em; font-size:clamp(9px, 1vw, 14px) }
 		select		{ font-family:inherit; font-size:inherit; padding:0.1em; position:relative; box-sizing:border-box }
