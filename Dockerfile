@@ -15,7 +15,7 @@ ARG DOWNLOADS="https://github.com/ornskoldsvikskommun/origo/archive/refs/heads/$
 ARG BUILDDEPS="python3"
 ARG BUILDCMDS=\
 "ls -la "\
-"&&   cd origo "\
+"&&   cd origo-$ORIGO_VERSION "\
 "&& rm -rf node_modules package-lock.json "\
 "&& npm install "\
 #"&& npm --depth 8 update "\
