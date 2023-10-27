@@ -77,51 +77,57 @@
 			$id=$post[$type.'Id'];
 			if ($command == 'update')
 			{
-				$config=array_column_search($id, $typeTablePkColumn, $configTables[$typeTable]);
-				if (($type == 'layer' || $type == 'group') && isset($post['updateAbstract']))
+				$updatePosts=updatePosts($post);
+				validateUpdate($updatePosts, $configTables, $updateValid);
+				if ($updateValid)
 				{
-					$post['updateAbstract'] = str_replace(["\r\n", "\r", "\n"], "<br>", $post['updateAbstract']);
-				}
-				if ($type == 'layer' || $type == 'source')
-				{
-					if ($type == 'layer')
+					$config=array_column_search($id, $typeTablePkColumn, $configTables[$typeTable]);
+					if (($type == 'layer' || $type == 'group') && isset($post['updateAbstract']))
 					{
-						$layerName=explode('#', $id)[0];
-						$sourceConfig=array_column_search($config['source'], 'source_id', $configTables['sources']);
+						$post['updateAbstract'] = str_replace(["\r\n", "\r", "\n"], "<br>", $post['updateAbstract']);
 					}
-					else
+					if ($type == 'layer' || $type == 'source')
 					{
-						$layerName=null;
-						$sourceConfig=$config;
-					}
-					$serviceType=array_column_search($sourceConfig['service'], 'service_id', $configTables['services'])['type'];
-					if (strtolower($serviceType) == 'qgis')
-					{
-						$qgsXml = simplexml_load_file('/services/'.$sourceConfig['service'].'/'.explode('#', $sourceConfig['source_id'])[0].'.qgs');
-						if (!empty($qgsXml))
+						if ($type == 'layer')
 						{
-							if ($type == 'source')
-							{
-								if (!empty($fromQgs=substr($qgsXml['saveDateTime'], 0 ,10)))
-								{
-									$post['updateUpdated']=$fromQgs;
-								}
-								if (!empty($fromQgs=strstr($qgsXml['version'], '-', true)))
-								{
-									$post['updateSoftversion']=$fromQgs;
-								}
-							}
-							if (!empty($fromQgs=tablesFromQgsXml($qgsXml, $layerName)))
-							{
-								$post['updateTables']=implode(',', $fromQgs);
-							}
+							$layerName=explode('#', $id)[0];
+							$sourceConfig=array_column_search($config['source'], 'source_id', $configTables['sources']);
 						}
-						unset($qgsXml, $fromQgs);
+						else
+						{
+							$layerName=null;
+							$sourceConfig=$config;
+						}
+						$serviceType=array_column_search($sourceConfig['service'], 'service_id', $configTables['services'])['type'];
+						if (strtolower($serviceType) == 'qgis')
+						{
+							$qgsXml = simplexml_load_file('/services/'.$sourceConfig['service'].'/'.explode('#', $sourceConfig['source_id'])[0].'.qgs');
+							if (!empty($qgsXml))
+							{
+								if ($type == 'source')
+								{
+									if (!empty($fromQgs=substr($qgsXml['saveDateTime'], 0 ,10)))
+									{
+										$post['updateUpdated']=$fromQgs;
+									}
+									if (!empty($fromQgs=strstr($qgsXml['version'], '-', true)))
+									{
+										$post['updateSoftversion']=$fromQgs;
+									}
+								}
+								if (!empty($fromQgs=tablesFromQgsXml($qgsXml, $layerName)))
+								{
+									$post['updateTables']=implode(',', $fromQgs);
+								}
+							}
+							unset($qgsXml, $fromQgs);
+						}
+						unset($layerName, $sourceConfig, $serviceType);
 					}
-					unset($layerName, $sourceConfig, $serviceType);
+					$sql=sqlForUpdate(makeFullTarget($type, $config), $updatePosts);
+					unset($config);
 				}
-				$sql=sqlForUpdate(makeFullTarget($type, $config), updatePosts($post));
-				unset($config);
+				unset($updatePosts, $updateFailed);
 			}
 			elseif ($command == 'operation')
 			{
@@ -222,10 +228,10 @@
 </head>
 <body onresize="Array.from(document.getElementsByClassName('resizeimg')).forEach(function(element) { element.onerror(); });">
 	<form action="read_json.php">
-		<input class="topInput" type="submit" value="Importera JSON" />
+		<button class="topButton" type="submit">Importera JSON</button>
 	</form>
 	<form id="helpForm" action="help.php" target="topFrame">
-		<input class="topInput" onclick="toggleTopFrame('help');" type="submit" value="Hjälp" />
+		<button class="topButton" onclick="toggleTopFrame('help');" type="submit">Hjälp</button>
 	</form>
 	<?php printViewSwitcher($view); ?>
 	<iframe id="topFrame" name="topFrame" style="display:none" onload="javascript:(function(o){o.style.height=o.contentWindow.document.body.parentElement.scrollHeight+'px';}(this));"></iframe>
