@@ -19,6 +19,7 @@
 		echo '<div><div class="printXFormDiv"><form method="post">';
 		printTextarea($map, 'map_id', 'textareaMedium', 'Id:', in_array('map_id', $helps));
 		printTextarea($map, 'title', 'textareaMedium', 'Titel:', in_array('title', $helps));
+		printTextarea($map, 'url', 'textareaLarge', 'Url:', in_array('url', $helps));
 		printTextarea($map, 'layers', 'textareaLarge', 'Lager:', in_array('layers', $helps));
 		printTextarea($map, 'groups', 'textareaLarge', 'Grupper:', in_array('groups', $helps));
 		printTextarea($map, 'controls', 'textareaLarge', 'Kontroller:', in_array('controls', $helps));
@@ -48,6 +49,7 @@
 		printHiddenInputs($inheritPosts);
 		echo '<div class="buttonDiv">';
 		printUpdateButton('map');
+		$url=$map['map']['url'];
 		$map['map']=$map['map']['map_id'];
 		printInfoButton($map);
 		$deleteConfirmStr="Är du säker på att du vill radera kartan ".$map['map']."? Ingående kontroller, grupper och lager påverkas ej.";
@@ -55,6 +57,10 @@
 		printConfigPreviewButton($map['map']);
 		printWriteConfigButton($map['map']);
 		printExportJsonButton($map['map']);
+		if (!empty($url))
+		{
+			printUrlButton($url);
+		}
 		echo '</div></form></div></div>';
 	}
 
