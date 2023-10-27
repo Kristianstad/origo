@@ -135,6 +135,7 @@ CREATE TABLE map_configs.maps
     css_files character varying[] COLLATE pg_catalog."default" DEFAULT '{css/style.css}'::character varying[],
     js character varying COLLATE pg_catalog."default",
     js_files character varying[] COLLATE pg_catalog."default" DEFAULT '{js/origo.min.js}'::character varying[],
+    url character varying COLLATE pg_catalog."default",
     CONSTRAINT map_pk PRIMARY KEY (map_id)
 );
 
