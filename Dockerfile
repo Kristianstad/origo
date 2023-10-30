@@ -6,11 +6,9 @@ ARG SaM_REPO=${SaM_REPO:-ghcr.io/kristianstad/secure_and_minimal}
 ARG ALPINE_VERSION=${ALPINE_VERSION:-3.17}
 ARG IMAGETYPE="application"
 ARG ORIGO_VERSION="2.7.0"
-ARG LIGHTTPD2_VERSION="230118"
 ARG PHP_VERSION="8.1.14"
 ARG CONTENTIMAGE1="node:alpine$ALPINE_VERSION"
 ARG CONTENTDESTINATION1="/"
-ARG BASEIMAGE="ghcr.io/kristianstad/lighttpd2:$LIGHTTPD2_VERSION"
 #ARG CLONEGITS="https://github.com/filleg/origo.git -b wfs-qgis"
 ARG DOWNLOADS="https://github.com/origo-map/origo/archive/refs/tags/v$ORIGO_VERSION.zip"
 ARG BUILDDEPS="python3"
@@ -28,12 +26,13 @@ ARG RUNDEPS="\
         php81-fpm \
         php81-json \
         php81-opcache \
-        php81-pgsql"
-ARG MAKEDIRS="/etc/php81/conf.d /etc/php81/php-fpm.d"
+        php81-pgsql \
+        nginx"
+ARG MAKEDIRS="/etc/php81/conf.d /etc/php81/php-fpm.d /var/log/nginx /usr/lib/nginx/modules /var/lib/nginx/tmp /run/nginx"
 ARG REMOVEDIRS="/origo/origo-documentation /origo/examples /usr/include"
-ARG REMOVEFILES="/etc/php81/php-fpm.d/www.conf /origo/index.json"
-ARG STARTUPEXECUTABLES="/usr/sbin/php-fpm81 /usr/libexec/postgresql14/postgres"
-ARG LINUXUSEROWNED="/origo /origo/origo-cities /origo/origo-cities/index1.json /origo/preview /origo/preview/index.json"
+ARG REMOVEFILES="/etc/php81/php-fpm.d/www.conf /origo/index.json /usr/bin/ab /usr/bin/dbmmanage /usr/bin/htdbm /usr/bin/htdigest /usr/bin/httxt2dbm /usr/bin/logresolve /usr/sbin/checkgid /usr/sbin/envvars /usr/sbin/envvars-std /usr/sbin/htcacheclean /usr/sbin/rotatelogs"
+ARG STARTUPEXECUTABLES="/usr/sbin/php-fpm81 /usr/libexec/postgresql14/postgres /usr/sbin/nginx"
+ARG LINUXUSEROWNED="/var/log/nginx /usr/lib/nginx/modules /var/lib/nginx/tmp /run/nginx /origo /origo/origo-cities /origo/origo-cities/index1.json /origo/preview /origo/preview/index.json"
 ARG FINALCMDS=\
 "   cp -a /tmp/origo/* /origo/ "\
 "&& cd /usr/local "\
@@ -43,7 +42,8 @@ ARG FINALCMDS=\
 "&& find ../../libexec/postgresql14 ! -type l ! -name postgres ! -name ../../libexec/postgresql14 -maxdepth 1 -exec ln -s {} ./ + "\
 "&& chmod g+X /usr/bin/* "\
 "&& ln -s /origo/origo-cities/index1.json /origo/origo-cities#1.json "\
-"&& ln -s /origo/preview/index.json /origo/preview.json"
+"&& ln -s /origo/preview/index.json /origo/preview.json "\
+"&& find /var -user 185 -exec chown 0:0 {} \;"
 # ARGs (can be passed to Build/Final) </END>
 
 # Generic template (don't edit) <BEGIN>
@@ -70,7 +70,7 @@ COPY --from=build /finalfs /
 # =========================================================================
 ARG POSTGRES_CONFIG_DIR="/etc/postgres"
 
-ENV VAR_FINAL_COMMAND="php-fpm81 --force-stderr && postgres --config_file=\"\$VAR_POSTGRES_CONFIG_FILE\" & lighttpd2 -c '\$VAR_CONFIG_DIR/angel.conf'" \
+ENV VAR_FINAL_COMMAND="php-fpm81 --force-stderr && postgres --config_file=\"\$VAR_POSTGRES_CONFIG_FILE\" & nginx -g 'daemon off;'" \
     VAR_ORIGO_CONFIG_DIR="/etc/origo" \
     VAR_OPERATION_MODE="dual" \
     VAR_setup1_module_load="[ 'mod_deflate','mod_fastcgi' ]" \
@@ -115,7 +115,8 @@ ENV VAR_FINAL_COMMAND="php-fpm81 --force-stderr && postgres --config_file=\"\$VA
     VAR_param_ident_file="'$POSTGRES_CONFIG_DIR/pg_ident.conf'" \
     VAR_param_unix_socket_directories="'/var/run/postgresql'" \
     VAR_param_listen_addresses="'*'" \
-    VAR_param_timezone="'UTC'"
+    VAR_param_timezone="'UTC'" \
+    VAR_NGINX_CONFIG_DIR="/etc/nginx"
 #    VAR_FINAL_COMMAND="postgres --config_file=\"\$VAR_POSTGRES_CONFIG_FILE\""
 
 STOPSIGNAL SIGINT
