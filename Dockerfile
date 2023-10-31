@@ -3,25 +3,20 @@
 # =========================================================================
 # ARGs (can be passed to Build/Final) <BEGIN>
 ARG SaM_REPO=${SaM_REPO:-ghcr.io/kristianstad/secure_and_minimal}
-ARG ALPINE_VERSION=${ALPINE_VERSION:-3.17}
+ARG ALPINE_VERSION=${ALPINE_VERSION:-3.18}
 ARG IMAGETYPE="application"
 ARG ORIGO_VERSION="2.7.0"
-#ARG LIGHTTPD2_VERSION="230118"
 ARG CONTENTIMAGE1="node:alpine$ALPINE_VERSION"
 ARG CONTENTDESTINATION1="/"
-#ARG BASEIMAGE="ghcr.io/kristianstad/lighttpd2:$LIGHTTPD2_VERSION"
 #ARG CLONEGITS="https://github.com/filleg/origo.git -b wfs-qgis"
 ARG DOWNLOADS="https://github.com/origo-map/origo/archive/refs/tags/v$ORIGO_VERSION.zip"
-
-ARG RUNDEPS="nginx apache2-utils"
+ARG RUNDEPS="nginx"
 ARG STARTUPEXECUTABLES="/usr/sbin/nginx"
 ARG MAKEDIRS="/var/log/nginx /usr/lib/nginx/modules /var/lib/nginx/tmp /run/nginx"
 ARG LINUXUSEROWNED="/var/log/nginx /usr/lib/nginx/modules /var/lib/nginx/tmp /run/nginx"
 #ARG REMOVEDIRS="/etc/nginx/http.d"
 ARG REMOVEFILES="/usr/bin/ab /usr/bin/dbmmanage /usr/bin/htdbm /usr/bin/htdigest /usr/bin/httxt2dbm /usr/bin/logresolve /usr/sbin/checkgid /usr/sbin/envvars /usr/sbin/envvars-std /usr/sbin/htcacheclean /usr/sbin/rotatelogs"
 ARG FINALCMDS="find /var -user 185 -exec chown 0:0 {} \;"
-
-
 ARG BUILDDEPS="python3"
 ARG BUILDCMDS=\
 "   cd origo-$ORIGO_VERSION "\
