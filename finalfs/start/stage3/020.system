@@ -5,7 +5,4 @@
 # VAR_*
 # All functions in /start/functions
 
-if [ "$isFirstRun" == "true" ]
-then
-   chmod o+rw /dev/stdout /dev/stderr
-fi
+chmod o+rw /dev/stdout /dev/stderr
