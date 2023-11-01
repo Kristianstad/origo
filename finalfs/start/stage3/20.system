@@ -1,1 +1,0 @@
-chmod o+rw /dev/stdout /dev/stderr
