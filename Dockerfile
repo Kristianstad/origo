@@ -43,9 +43,6 @@ ARG FINALCMDS=\
 "&& chmod g+X /usr/bin/* "\
 "&& ln -s /origo/origo-cities/index1.json /origo/origo-cities#1.json "\
 "&& ln -s /origo/preview/index.json /origo/preview.json "\
-"&& ln -sf /dev/stdout /var/log/nginx/access.log "\
-"&& ln -sf /dev/stderr /var/log/nginx/error.log "\
-"&& ln -sf /dev/stderr /var/log/php81/error.log "\
 "&& find /var -user 185 -exec chown 0:0 {} \;"
 # ARGs (can be passed to Build/Final) </END>
 
