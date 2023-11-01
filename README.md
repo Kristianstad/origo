@@ -23,4 +23,4 @@ docker run --name origo -d -p 8080:8080 ghcr.io/kristianstad/origo:with_php
 * VAR_FINAL_COMMAND="nginx -g 'daemon off;'" (Command run by VAR_LINUX_USER)
 
 ## Capabilities
-Can drop all but SETPCAP, SETGID and SETUID.
+Can drop all but CHOWN, SETPCAP, SETGID and SETUID.
