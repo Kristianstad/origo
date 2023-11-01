@@ -30,7 +30,7 @@ ARG RUNDEPS="\
         nginx"
 ARG MAKEDIRS="/etc/php81/conf.d /etc/php81/php-fpm.d /var/log/nginx /usr/lib/nginx/modules /var/lib/nginx/tmp /run/nginx"
 ARG REMOVEDIRS="/origo/origo-documentation /origo/examples /usr/include"
-ARG REMOVEFILES="/etc/php81/php-fpm.d/www.conf /origo/index.json /usr/bin/ab /usr/bin/dbmmanage /usr/bin/htdbm /usr/bin/htdigest /usr/bin/httxt2dbm /usr/bin/logresolve /usr/sbin/checkgid /usr/sbin/envvars /usr/sbin/envvars-std /usr/sbin/htcacheclean /usr/sbin/rotatelogs"
+ARG REMOVEFILES="/etc/php81/php-fpm.d/www.conf /origo/index.json"
 ARG STARTUPEXECUTABLES="/usr/sbin/php-fpm81 /usr/libexec/postgresql14/postgres /usr/sbin/nginx"
 ARG LINUXUSEROWNED="/var/log/nginx /usr/lib/nginx/modules /var/lib/nginx/tmp /run/nginx /origo /origo/origo-cities /origo/origo-cities/index1.json /origo/preview /origo/preview/index.json"
 ARG FINALCMDS=\
