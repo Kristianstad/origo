@@ -3,7 +3,7 @@
 # =========================================================================
 # ARGs (can be passed to Build/Final) <BEGIN>
 ARG SaM_REPO=${SaM_REPO:-ghcr.io/kristianstad/secure_and_minimal}
-ARG ALPINE_VERSION=${ALPINE_VERSION:-3.17}
+ARG ALPINE_VERSION=${ALPINE_VERSION:-3.18}
 ARG IMAGETYPE="application"
 ARG ORIGO_VERSION="2.7.0"
 #ARG PHP_VERSION="8.1.25"
@@ -76,6 +76,11 @@ ARG POSTGRES_CONFIG_DIR="/etc/postgres"
 ENV VAR_FINAL_COMMAND="php-fpm81 --force-stderr && postgres --config_file=\"\$VAR_POSTGRES_CONFIG_FILE\" & nginx -g 'daemon off;'" \
     VAR_ORIGO_CONFIG_DIR="/etc/origo" \
     VAR_SOCKET_FILE="/run/php81-fpm/socket" \
+    VAR_wwwconf_listen='$VAR_SOCKET_FILE' \
+    VAR_wwwconf_pm="dynamic" \
+    VAR_wwwconf_pm__max_children="5" \
+    VAR_wwwconf_pm__min_spare_servers="1" \
+    VAR_wwwconf_pm__max_spare_servers="3" \
     VAR_LINUX_USER="postgres" \
     VAR_INIT_CAPS="cap_chown" \
     VAR_POSTGRES_CONFIG_DIR="$POSTGRES_CONFIG_DIR" \
