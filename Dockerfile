@@ -10,16 +10,6 @@ ARG CONTENTIMAGE1="node:alpine$ALPINE_VERSION"
 ARG CONTENTDESTINATION1="/"
 #ARG CLONEGITS="https://github.com/filleg/origo.git -b wfs-qgis"
 ARG DOWNLOADS="https://github.com/origo-map/origo/archive/refs/tags/v$ORIGO_VERSION.zip"
-ARG RUNDEPS="nginx"
-ARG STARTUPEXECUTABLES="/usr/sbin/nginx"
-ARG MAKEDIRS="/var/log/nginx /usr/lib/nginx/modules /var/lib/nginx/tmp /run/nginx"
-ARG LINUXUSEROWNED="/var/log/nginx /usr/lib/nginx/modules /var/lib/nginx/tmp /run/nginx"
-#ARG REMOVEDIRS="/etc/nginx/http.d"
-ARG REMOVEFILES="/usr/bin/ab /usr/bin/dbmmanage /usr/bin/htdbm /usr/bin/htdigest /usr/bin/httxt2dbm /usr/bin/logresolve /usr/sbin/checkgid /usr/sbin/envvars /usr/sbin/envvars-std /usr/sbin/htcacheclean /usr/sbin/rotatelogs"
-ARG FINALCMDS=\
-"   ln -sf /dev/stdout /var/log/nginx/access.log "\
-"&& ln -sf /dev/stderr /var/log/nginx/error.log "\
-"&& find /var -user 185 -exec chown 0:0 {} \;"
 ARG BUILDDEPS="python3"
 ARG BUILDCMDS=\
 "   cd origo-$ORIGO_VERSION "\
@@ -30,7 +20,16 @@ ARG BUILDCMDS=\
 "&& npm run build "\
 "&& sed -i 's/origo.js/origo.min.js/' build/index.html "\
 "&& cp -a build /finalfs/origo"
+ARG RUNDEPS="nginx"
+ARG MAKEDIRS="/var/log/nginx /usr/lib/nginx/modules /var/lib/nginx/tmp /run/nginx"
+ARG FINALCMDS=\
+"   ln -sf /dev/stdout /var/log/nginx/access.log "\
+"&& ln -sf /dev/stderr /var/log/nginx/error.log "\
+"&& find /var -user 185 -exec chown 0:0 {} \;"
 ARG REMOVEDIRS="/origo/origo-documentation /origo/examples"
+ARG REMOVEFILES="/usr/bin/ab /usr/bin/dbmmanage /usr/bin/htdbm /usr/bin/htdigest /usr/bin/httxt2dbm /usr/bin/logresolve /usr/sbin/checkgid /usr/sbin/envvars /usr/sbin/envvars-std /usr/sbin/htcacheclean /usr/sbin/rotatelogs"
+ARG LINUXUSEROWNED="/var/log/nginx /usr/lib/nginx/modules /var/lib/nginx/tmp /run/nginx"
+ARG STARTUPEXECUTABLES="/usr/sbin/nginx"
 # ARGs (can be passed to Build/Final) </END>
 
 # Generic template (don't edit) <BEGIN>
