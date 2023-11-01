@@ -3,10 +3,10 @@
 # =========================================================================
 # ARGs (can be passed to Build/Final) <BEGIN>
 ARG SaM_REPO=${SaM_REPO:-ghcr.io/kristianstad/secure_and_minimal}
-ARG ALPINE_VERSION=${ALPINE_VERSION:-3.18}
+ARG ALPINE_VERSION=${ALPINE_VERSION:-3.17}
 ARG IMAGETYPE="application"
 ARG ORIGO_VERSION="2.7.0"
-ARG PHP_VERSION="8.1.25"
+#ARG PHP_VERSION="8.1.25"
 ARG CONTENTIMAGE1="node:alpine$ALPINE_VERSION"
 ARG CONTENTDESTINATION1="/"
 #ARG CLONEGITS="https://github.com/filleg/origo.git -b wfs-qgis"
@@ -46,6 +46,7 @@ ARG FINALCMDS=\
 "&& ln -sf /dev/stdout /var/log/nginx/access.log "\
 "&& ln -sf /dev/stderr /var/log/nginx/error.log "\
 "&& ln -sf /dev/stderr /var/log/php81/error.log "\
+"&& chmod o+rw /dev/stdout /dev/stderr "\
 "&& find /var -user 185 -exec chown 0:0 {} \;"
 # ARGs (can be passed to Build/Final) </END>
 
