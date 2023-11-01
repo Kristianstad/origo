@@ -14,6 +14,7 @@ ARG CLONEGITS="https://github.com/origo-map/origo.git"
 ARG BUILDDEPS="python3"
 ARG BUILDCMDS=\
 #"   cd origo-$ORIGO_VERSION "\
+"   cd origo "\
 "&& rm -rf node_modules package-lock.json "\
 "&& npm install "\
 #"&& npm --depth 8 update "\
