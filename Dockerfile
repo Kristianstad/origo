@@ -43,6 +43,9 @@ ARG FINALCMDS=\
 "&& chmod g+X /usr/bin/* "\
 "&& ln -s /origo/origo-cities/index1.json /origo/origo-cities#1.json "\
 "&& ln -s /origo/preview/index.json /origo/preview.json "\
+"&& ln -sf /dev/stdout /var/log/nginx/access.log "\
+"&& ln -sf /dev/stderr /var/log/nginx/error.log "\
+"&& ln -sf /dev/stderr /var/log/php81/error.log "\
 "&& find /var -user 185 -exec chown 0:0 {} \;"
 # ARGs (can be passed to Build/Final) </END>
 
@@ -72,36 +75,7 @@ ARG POSTGRES_CONFIG_DIR="/etc/postgres"
 
 ENV VAR_FINAL_COMMAND="php-fpm81 --force-stderr && postgres --config_file=\"\$VAR_POSTGRES_CONFIG_FILE\" & nginx -g 'daemon off;'" \
     VAR_ORIGO_CONFIG_DIR="/etc/origo" \
-    VAR_OPERATION_MODE="dual" \
-    VAR_setup1_module_load="[ 'mod_deflate','mod_fastcgi' ]" \
-    VAR_WWW_DIR="/origo" \
     VAR_SOCKET_FILE="/run/php81-fpm/socket" \
-    VAR_LOG_FILE="/var/log/php81/error.log" \
-    VAR_wwwconf_listen='$VAR_SOCKET_FILE' \
-    VAR_wwwconf_pm="dynamic" \
-    VAR_wwwconf_pm__max_children="5" \
-    VAR_wwwconf_pm__min_spare_servers="1" \
-    VAR_wwwconf_pm__max_spare_servers="3" \
-    VAR_mode_dual=\
-"      include '\$VAR_CONFIG_DIR/mimetypes.conf';\n"\
-"      docroot '\$VAR_WWW_DIR';\n"\
-"      index [ 'index.php', 'index.html', 'index.htm', 'default.htm', 'index.lighttpd.html', '/index.php' ];\n"\
-"      if phys.path =$ '.php' {\n"\
-"         buffer_request_body false;\n"\
-"         strict.post_content_length false;\n"\
-"         if req.header['X-Forwarded-Proto'] =^ 'http' and req.header['X-Forwarded-Port'] =~ '[0-9]+' {\n"\
-"            env.set 'REQUEST_URI' => '%{req.header[X-Forwarded-Proto]}://%{req.host}:%{req.header[X-Forwarded-Port]}%{req.raw_path}';\n"\
-"         }\n"\
-"         fastcgi 'unix:\$VAR_SOCKET_FILE';\n"\
-"         if request.is_handled { header.remove 'Content-Length'; }\n"\
-"      } else {\n"\
-"         static;\n"\
-"         if request.is_handled {\n"\
-"            if response.header['Content-Type'] =~ '^(.*/javascript|text/.*)(;|$)' {\n"\
-"               deflate;\n"\
-"            }\\n"\
-"         }\n"\
-"      }" \
     VAR_LINUX_USER="postgres" \
     VAR_INIT_CAPS="cap_chown" \
     VAR_POSTGRES_CONFIG_DIR="$POSTGRES_CONFIG_DIR" \
@@ -117,7 +91,6 @@ ENV VAR_FINAL_COMMAND="php-fpm81 --force-stderr && postgres --config_file=\"\$VA
     VAR_param_listen_addresses="'*'" \
     VAR_param_timezone="'UTC'" \
     VAR_NGINX_CONFIG_DIR="/etc/nginx"
-#    VAR_FINAL_COMMAND="postgres --config_file=\"\$VAR_POSTGRES_CONFIG_FILE\""
 
 STOPSIGNAL SIGINT
 
