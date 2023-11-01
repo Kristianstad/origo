@@ -46,7 +46,6 @@ ARG FINALCMDS=\
 "&& ln -sf /dev/stdout /var/log/nginx/access.log "\
 "&& ln -sf /dev/stderr /var/log/nginx/error.log "\
 "&& ln -sf /dev/stderr /var/log/php81/error.log "\
-"&& chmod o+rw /dev/stdout /dev/stderr "\
 "&& find /var -user 185 -exec chown 0:0 {} \;"
 # ARGs (can be passed to Build/Final) </END>
 
