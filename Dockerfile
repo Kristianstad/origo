@@ -27,7 +27,6 @@ ARG FINALCMDS=\
 "&& ln -sf /dev/stderr /var/log/nginx/error.log "\
 "&& find /var -user 185 -exec chown 0:0 {} \;"
 ARG REMOVEDIRS="/origo/origo-documentation /origo/examples"
-ARG REMOVEFILES="/usr/bin/ab /usr/bin/dbmmanage /usr/bin/htdbm /usr/bin/htdigest /usr/bin/httxt2dbm /usr/bin/logresolve /usr/sbin/checkgid /usr/sbin/envvars /usr/sbin/envvars-std /usr/sbin/htcacheclean /usr/sbin/rotatelogs"
 ARG LINUXUSEROWNED="/var/log/nginx /usr/lib/nginx/modules /var/lib/nginx/tmp /run/nginx"
 ARG STARTUPEXECUTABLES="/usr/sbin/nginx"
 # ARGs (can be passed to Build/Final) </END>
