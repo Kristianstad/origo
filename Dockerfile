@@ -73,7 +73,7 @@ ENV VAR_SOCKET_FILE="/run/php81-fpm/socket" \
     VAR_param_unix_socket_directories="'/var/run/postgresql'" \
     VAR_param_listen_addresses="'*'" \
     VAR_param_timezone="'UTC'" \
-    VAR_FINAL_COMMAND="php-fpm81 --force-stderr && postgres --config_file=\"\$VAR_POSTGRES_CONFIG_FILE\" & nginx -g 'daemon off; error_log stderr \$VAR_NGINX_LOG_LEVEL;'"
+    VAR_FINAL_COMMAND="php-fpm81 --force-stderr && postgres --config_file=\"\$VAR_POSTGRES_CONFIG_FILE\" & nginx -g 'daemon off; error_log stderr \$VAR_LOG_LEVEL;'"
 
 STOPSIGNAL SIGINT
 
