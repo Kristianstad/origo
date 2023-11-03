@@ -25,7 +25,7 @@ ARG BUILDCMDS=\
 ARG RUNDEPS="nginx"
 ARG MAKEDIRS="/var/log/nginx /usr/lib/nginx/modules /var/lib/nginx/tmp /run/nginx"
 ARG FINALCMDS=\
-"   sed -i '/worker_processes auto|user nginx/d' /etc/nginx/nginx.conf "\
+"   sed -i '/worker_processes auto/d;/user nginx/d' /etc/nginx/nginx.conf "\
 "&& find /var -user 185 -exec chown 0:0 {} \;"
 ARG REMOVEDIRS="/origo/origo-documentation /origo/examples"
 ARG LINUXUSEROWNED="/var/log/nginx /usr/lib/nginx/modules /var/lib/nginx/tmp /run/nginx"
