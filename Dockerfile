@@ -24,7 +24,9 @@ ARG BUILDCMDS=\
 "&& cp -a build /finalfs/origo"
 ARG RUNDEPS="nginx"
 ARG MAKEDIRS="/var/log/nginx /usr/lib/nginx/modules /var/lib/nginx/tmp /run/nginx"
-ARG FINALCMDS="find /var -user 185 -exec chown 0:0 {} \;"
+ARG FINALCMDS=\
+"   sed -i '/worker_processes auto/d' /etc/nginx/nginx.conf "\
+"&& find /var -user 185 -exec chown 0:0 {} \;"
 ARG REMOVEDIRS="/origo/origo-documentation /origo/examples"
 ARG LINUXUSEROWNED="/var/log/nginx /usr/lib/nginx/modules /var/lib/nginx/tmp /run/nginx"
 ARG STARTUPEXECUTABLES="/usr/sbin/nginx"
