@@ -26,7 +26,7 @@ ARG FINALCMDS=\
 "&& ln -s /origo/preview/index.json /origo/preview.json "
 ARG REMOVEFILES="/etc/php81/php-fpm.d/www.conf /origo/index.json"
 ARG STARTUPEXECUTABLES="/usr/sbin/php-fpm81 /usr/libexec/postgresql14/postgres"
-ARG LINUXUSEROWNED="/origo/origo-cities /origo/origo-cities/index1.json /origo/preview /origo/preview/index.json"
+ARG LINUXUSEROWNED="/var/log/php81 /origo/origo-cities /origo/origo-cities/index1.json /origo/preview /origo/preview/index.json"
 # ARGs (can be passed to Build/Final) </END>
 
 # Generic template (don't edit) <BEGIN>
