@@ -14,7 +14,7 @@ ARG RUNDEPS="\
         php81-json \
         php81-opcache \
         php81-pgsql"
-ARG MAKEDIRS="/etc/php81/conf.d /etc/php81/php-fpm.d"
+ARG MAKEDIRS="/etc/php81/conf.d /etc/php81/php-fpm.d /var/log/php81"
 ARG FINALCMDS=\
 "   cd /usr/local "\
 "&& rm -rf share lib "\
