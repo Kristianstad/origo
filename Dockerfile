@@ -70,7 +70,8 @@ COPY --from=build /finalfs /
 # =========================================================================
 ARG POSTGRES_CONFIG_DIR="/etc/postgres"
 
-ENV VAR_FINAL_COMMAND="php-fpm81 --force-stderr && postgres --config_file=\"\$VAR_POSTGRES_CONFIG_FILE\" & nginx -g 'daemon off;'" \
+ENV VAR_NGINX_LOG_LEVEL="info" \
+    VAR_NGINX_CONFIG_DIR="/etc/nginx" \
     VAR_ORIGO_CONFIG_DIR="/etc/origo" \
     VAR_SOCKET_FILE="/run/php81-fpm/socket" \
     VAR_wwwconf_listen='$VAR_SOCKET_FILE' \
@@ -92,7 +93,7 @@ ENV VAR_FINAL_COMMAND="php-fpm81 --force-stderr && postgres --config_file=\"\$VA
     VAR_param_unix_socket_directories="'/var/run/postgresql'" \
     VAR_param_listen_addresses="'*'" \
     VAR_param_timezone="'UTC'" \
-    VAR_NGINX_CONFIG_DIR="/etc/nginx"
+    VAR_FINAL_COMMAND="php-fpm81 --force-stderr && postgres --config_file=\"\$VAR_POSTGRES_CONFIG_FILE\" & nginx -g 'daemon off; error_log stderr \$VAR_NGINX_LOG_LEVEL;'"
 
 STOPSIGNAL SIGINT
 
