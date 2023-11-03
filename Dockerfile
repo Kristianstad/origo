@@ -56,7 +56,9 @@ ENV VAR_ORIGO_CONFIG_DIR="/etc/origo" \
     VAR_CONFIG_DIR="/etc/nginx" \
     VAR_LINUX_USER="nginx" \
     VAR_LOG_LEVEL="info" \
-    VAR_FINAL_COMMAND="nginx -g 'daemon off; error_log stderr \$VAR_LOG_LEVEL;'"
+    VAR_WORKER_PROCESSES="1" \
+    VAR_WORKER_RLIMIT_NOFILE="2048"; \
+    VAR_FINAL_COMMAND="nginx -g 'daemon off; error_log stderr \$VAR_LOG_LEVEL; worker_processes \$VAR_WORKER_PROCESSES; worker_rlimit_nofile \$VAR_WORKER_RLIMIT_NOFILE;'"
 
 # Generic template (don't edit) <BEGIN>
 USER starter
