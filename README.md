@@ -20,7 +20,8 @@ docker run --name origo -d -p 8080:8080 ghcr.io/kristianstad/origo:with_php
 * VAR_LINUX_USER="nginx" (User running VAR_FINAL_COMMAND)
 * VAR_ORIGO_CONFIG_DIR="/etc/origo" (Directory containing configuration files for Origo)
 * VAR_CONFIG_DIR="/etc/nginx" (Directory containing configuration files for Nginx)
-* VAR_FINAL_COMMAND="nginx -g 'daemon off;'" (Command run by VAR_LINUX_USER)
+* VAR_LOG_LEVEL="info"
+* VAR_FINAL_COMMAND="nginx -g 'daemon off; error_log stderr \$VAR_LOG_LEVEL;'" (Command run by VAR_LINUX_USER)
 
 ## Capabilities
 Can drop all but CHOWN, SETPCAP, SETGID and SETUID.
