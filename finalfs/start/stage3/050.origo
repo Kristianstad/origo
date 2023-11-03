@@ -7,10 +7,10 @@
 
 if [ "$isFirstRun" == "true" ]
 then
-   replaceFileWithLink "/origo/index.html" "$VAR_ORIGO_CONFIG_DIR/index.html"
-   replaceFileWithLink "/origo/index.json" "$VAR_ORIGO_CONFIG_DIR/index.json"
+   replaceFileWithLink "/www/index.html" "$VAR_ORIGO_CONFIG_DIR/index.html"
+   replaceFileWithLink "/www/index.json" "$VAR_ORIGO_CONFIG_DIR/index.json"
    chmod g+rw "$VAR_ORIGO_CONFIG_DIR/index.html" "$VAR_ORIGO_CONFIG_DIR/index.json"
 fi
 cd "$VAR_ORIGO_CONFIG_DIR"
-find * -type d -exec mkdir -p "/origo/{}" \;
-find * -type f -exec ln -sf "$VAR_ORIGO_CONFIG_DIR/{}" "/origo/{}" \;
+find * -type d -exec mkdir -p "/www/{}" \;
+find * -type f -exec ln -sf "$VAR_ORIGO_CONFIG_DIR/{}" "/www/{}" \;
