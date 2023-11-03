@@ -50,7 +50,8 @@ COPY --from=build /finalfs /
 # =========================================================================
 # Final
 # =========================================================================
-ENV VAR_ORIGO_CONFIG_DIR="/etc/origo"
+ENV VAR_ORIGO_CONFIG_DIR="/etc/origo" \
+    VAR_server14_root="/origo"
 
 # Generic template (don't edit) <BEGIN>
 USER starter
