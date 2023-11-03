@@ -5,16 +5,16 @@
 ARG SaM_REPO=${SaM_REPO:-ghcr.io/kristianstad/secure_and_minimal}
 ARG ALPINE_VERSION=${ALPINE_VERSION:-3.18}
 ARG IMAGETYPE="application"
-ARG ORIGO_VERSION="2.7.0"
+ARG ORIGO_VERSION="2.8.0"
 ARG CONTENTIMAGE1="node:alpine$ALPINE_VERSION"
 ARG CONTENTDESTINATION1="/"
-ARG CLONEGITS="https://github.com/origo-map/origo.git"
+#ARG CLONEGITS="https://github.com/origo-map/origo.git"
 #ARG CLONEGITS="https://github.com/filleg/origo.git -b wfs-qgis"
-#ARG DOWNLOADS="https://github.com/origo-map/origo/archive/refs/tags/v$ORIGO_VERSION.zip"
+ARG DOWNLOADS="https://github.com/origo-map/origo/archive/refs/tags/v$ORIGO_VERSION.zip"
 ARG BUILDDEPS="python3"
 ARG BUILDCMDS=\
-#"   cd origo-$ORIGO_VERSION "\
-"   cd origo "\
+"   cd origo-$ORIGO_VERSION "\
+#"   cd origo "\
 "&& rm -rf node_modules package-lock.json "\
 "&& npm install "\
 #"&& npm --depth 8 update "\
