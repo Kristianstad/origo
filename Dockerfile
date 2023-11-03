@@ -25,6 +25,7 @@ ARG BUILDCMDS=\
 "&& sed -i 's/origo.js/origo.min.js/' build/index.html "\
 "&& cp -a build /finalfs/origo"
 ARG REMOVEDIRS="/origo/origo-documentation /origo/examples /usr/include"
+ARG LINUXUSEROWNED="/origo"
 # ARGs (can be passed to Build/Final) </END>
 
 # Generic template (don't edit) <BEGIN>
