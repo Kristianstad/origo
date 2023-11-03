@@ -5,45 +5,28 @@
 ARG SaM_REPO=${SaM_REPO:-ghcr.io/kristianstad/secure_and_minimal}
 ARG ALPINE_VERSION=${ALPINE_VERSION:-3.18}
 ARG IMAGETYPE="application"
-ARG ORIGO_VERSION="2.7.0"
+ARG ORIGO_VERSION="2.8.0"
+ARG BASEIMAGE="ghcr.io/kristianstad/origo:$ORIGO_VERSION"
 #ARG PHP_VERSION="8.1.25"
-ARG CONTENTIMAGE1="node:alpine$ALPINE_VERSION"
-ARG CONTENTDESTINATION1="/"
-#ARG CLONEGITS="https://github.com/filleg/origo.git -b wfs-qgis"
-ARG DOWNLOADS="https://github.com/origo-map/origo/archive/refs/tags/v$ORIGO_VERSION.zip"
-ARG BUILDDEPS="python3"
-ARG BUILDCMDS=\
-"   cd origo-$ORIGO_VERSION "\
-"&& rm -rf node_modules package-lock.json "\
-"&& npm install "\
-#"&& npm --depth 8 update "\
-"&& npm run prebuild-sass "\
-"&& npm run build "\
-"&& rm -rf build/index.html "\
-"&& cp -a build /finalfs/tmp/origo"
 ARG RUNDEPS="\
         postgresql14 \
         php81-fpm \
         php81-json \
         php81-opcache \
-        php81-pgsql \
-        nginx"
-ARG MAKEDIRS="/etc/php81/conf.d /etc/php81/php-fpm.d /var/log/nginx /usr/lib/nginx/modules /var/lib/nginx/tmp /run/nginx"
-ARG REMOVEDIRS="/origo/origo-documentation /origo/examples /usr/include"
-ARG REMOVEFILES="/etc/php81/php-fpm.d/www.conf /origo/index.json"
-ARG STARTUPEXECUTABLES="/usr/sbin/php-fpm81 /usr/libexec/postgresql14/postgres /usr/sbin/nginx"
-ARG LINUXUSEROWNED="/var/log/nginx /usr/lib/nginx/modules /var/lib/nginx/tmp /run/nginx /origo /origo/origo-cities /origo/origo-cities/index1.json /origo/preview /origo/preview/index.json"
+        php81-pgsql"
+ARG MAKEDIRS="/etc/php81/conf.d /etc/php81/php-fpm.d"
 ARG FINALCMDS=\
-"   cp -a /tmp/origo/* /origo/ "\
-"&& cd /usr/local "\
+"   cd /usr/local "\
 "&& rm -rf share lib "\
 "&& ln -s ../lib ../share ./ "\
 "&& cd bin "\
 "&& find ../../libexec/postgresql14 ! -type l ! -name postgres ! -name ../../libexec/postgresql14 -maxdepth 1 -exec ln -s {} ./ + "\
 "&& chmod g+X /usr/bin/* "\
 "&& ln -s /origo/origo-cities/index1.json /origo/origo-cities#1.json "\
-"&& ln -s /origo/preview/index.json /origo/preview.json "\
-"&& find /var -user 185 -exec chown 0:0 {} \;"
+"&& ln -s /origo/preview/index.json /origo/preview.json "
+ARG REMOVEFILES="/etc/php81/php-fpm.d/www.conf /origo/index.json"
+ARG STARTUPEXECUTABLES="/usr/sbin/php-fpm81 /usr/libexec/postgresql14/postgres"
+ARG LINUXUSEROWNED="/origo/origo-cities /origo/origo-cities/index1.json /origo/preview /origo/preview/index.json"
 # ARGs (can be passed to Build/Final) </END>
 
 # Generic template (don't edit) <BEGIN>
@@ -70,10 +53,7 @@ COPY --from=build /finalfs /
 # =========================================================================
 ARG POSTGRES_CONFIG_DIR="/etc/postgres"
 
-ENV VAR_NGINX_LOG_LEVEL="info" \
-    VAR_NGINX_CONFIG_DIR="/etc/nginx" \
-    VAR_ORIGO_CONFIG_DIR="/etc/origo" \
-    VAR_SOCKET_FILE="/run/php81-fpm/socket" \
+ENV VAR_SOCKET_FILE="/run/php81-fpm/socket" \
     VAR_wwwconf_listen='$VAR_SOCKET_FILE' \
     VAR_wwwconf_pm="dynamic" \
     VAR_wwwconf_pm__max_children="5" \
