@@ -6,6 +6,8 @@ ARG SaM_REPO=${SaM_REPO:-ghcr.io/kristianstad/secure_and_minimal}
 ARG ALPINE_VERSION=${ALPINE_VERSION:-3.18}
 ARG IMAGETYPE="application"
 ARG ORIGO_VERSION="2.8.0"
+ARG NGINX_VERSION="main"
+ARG BASEIMAGE="ghcr.io/kristianstad/nginx:$NGINX_VERSION"
 ARG CONTENTIMAGE1="node:alpine$ALPINE_VERSION"
 ARG CONTENTDESTINATION1="/"
 #ARG CLONEGITS="https://github.com/origo-map/origo.git"
@@ -22,14 +24,7 @@ ARG BUILDCMDS=\
 "&& npm run build "\
 "&& sed -i 's/origo.js/origo.min.js/' build/index.html "\
 "&& cp -a build /finalfs/origo"
-ARG RUNDEPS="nginx"
-ARG MAKEDIRS="/var/log/nginx /usr/lib/nginx/modules /var/lib/nginx/tmp /run/nginx"
-ARG FINALCMDS=\
-"   sed -i '/worker_processes auto/d;/user nginx/d' /etc/nginx/nginx.conf "\
-"&& find /var -user 185 -exec chown 0:0 {} \;"
 ARG REMOVEDIRS="/origo/origo-documentation /origo/examples"
-ARG LINUXUSEROWNED="/var/log/nginx /usr/lib/nginx/modules /var/lib/nginx/tmp /run/nginx"
-ARG STARTUPEXECUTABLES="/usr/sbin/nginx"
 # ARGs (can be passed to Build/Final) </END>
 
 # Generic template (don't edit) <BEGIN>
@@ -54,13 +49,7 @@ COPY --from=build /finalfs /
 # =========================================================================
 # Final
 # =========================================================================
-ENV VAR_ORIGO_CONFIG_DIR="/etc/origo" \
-    VAR_CONFIG_DIR="/etc/nginx" \
-    VAR_LINUX_USER="nginx" \
-    VAR_LOG_LEVEL="info" \
-    VAR_WORKER_PROCESSES="1" \
-    VAR_WORKER_RLIMIT_NOFILE="2048" \
-    VAR_FINAL_COMMAND="nginx -g 'daemon off; user \$VAR_LINUX_USER; error_log stderr \$VAR_LOG_LEVEL; worker_processes \$VAR_WORKER_PROCESSES; worker_rlimit_nofile \$VAR_WORKER_RLIMIT_NOFILE;'"
+ENV VAR_ORIGO_CONFIG_DIR="/etc/origo"
 
 # Generic template (don't edit) <BEGIN>
 USER starter
