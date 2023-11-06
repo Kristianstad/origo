@@ -6,27 +6,28 @@ ARG SaM_REPO=${SaM_REPO:-ghcr.io/kristianstad/secure_and_minimal}
 ARG ALPINE_VERSION=${ALPINE_VERSION:-3.18}
 ARG IMAGETYPE="application"
 ARG ORIGO_VERSION="2.8.0"
+ARG POSTGRESQL_VERSION="14"
+ARG PHP_VERSION="83"
 ARG BASEIMAGE="ghcr.io/kristianstad/origo:$ORIGO_VERSION"
-#ARG PHP_VERSION="8.1.25"
 ARG RUNDEPS="\
-        postgresql14 \
-        php81-fpm \
-        php81-json \
-        php81-opcache \
-        php81-pgsql"
-ARG MAKEDIRS="/etc/php81/conf.d /etc/php81/php-fpm.d /var/log/php81"
+        postgresql$POSTGRESQL_VERSION \
+        php$PHP_VERSION-fpm \
+        php$PHP_VERSION-json \
+        php$PHP_VERSION-opcache \
+        php$PHP_VERSION-pgsql"
+ARG MAKEDIRS="/etc/php$PHP_VERSION/conf.d /etc/php$PHP_VERSION/php-fpm.d /var/log/php$PHP_VERSION"
 ARG FINALCMDS=\
 "   cd /usr/local "\
 "&& rm -rf share lib "\
 "&& ln -s ../lib ../share ./ "\
 "&& cd bin "\
-"&& find ../../libexec/postgresql14 ! -type l ! -name postgres ! -name ../../libexec/postgresql14 -maxdepth 1 -exec ln -s {} ./ + "\
+"&& find ../../libexec/postgresql$POSTGRESQL_VERSION ! -type l ! -name postgres ! -name ../../libexec/postgresql$POSTGRESQL_VERSION -maxdepth 1 -exec ln -s {} ./ + "\
 "&& chmod g+X /usr/bin/* "\
 "&& ln -s /www/origo-cities/index1.json /www/origo-cities#1.json "\
 "&& ln -s /www/preview/index.json /www/preview.json "
-ARG REMOVEFILES="/etc/php81/php-fpm.d/www.conf /origo/index.json"
-ARG STARTUPEXECUTABLES="/usr/sbin/php-fpm81 /usr/libexec/postgresql14/postgres"
-ARG LINUXUSEROWNED="/var/log/php81 /www/origo-cities /www/origo-cities/index1.json /www/preview /www/preview/index.json"
+ARG REMOVEFILES="/etc/php$PHP_VERSION/php-fpm.d/www.conf /origo/index.json"
+ARG STARTUPEXECUTABLES="/usr/sbin/php-fpm$PHP_VERSION /usr/libexec/postgresql$POSTGRESQL_VERSION/postgres"
+ARG LINUXUSEROWNED="/var/log/php$PHP_VERSION /www/origo-cities /www/origo-cities/index1.json /www/preview /www/preview/index.json"
 # ARGs (can be passed to Build/Final) </END>
 
 # Generic template (don't edit) <BEGIN>
@@ -51,9 +52,11 @@ COPY --from=build /finalfs /
 # =========================================================================
 # Final
 # =========================================================================
+ARG POSTGRESQL_VERSION
+ARG PHP_VERSION
 ARG POSTGRES_CONFIG_DIR="/etc/postgres"
 
-ENV VAR_SOCKET_FILE="/run/php81-fpm/socket" \
+ENV VAR_SOCKET_FILE="/run/php$PHP_VERSION-fpm/socket" \
     VAR_wwwconf_listen='$VAR_SOCKET_FILE' \
     VAR_wwwconf_pm="dynamic" \
     VAR_wwwconf_pm__max_children="5" \
@@ -75,7 +78,7 @@ ENV VAR_SOCKET_FILE="/run/php81-fpm/socket" \
     VAR_param_timezone="'UTC'" \
     VAR_server15_index="index.html manage.php index.php" \
     VAR_serversub02_location="~ \\.php\$ { fastcgi_pass unix:/run/php81-fpm/socket; fastcgi_param SCRIPT_FILENAME \\\$document_root\\\$fastcgi_script_name; fastcgi_param SCRIPT_NAME \\\$fastcgi_script_name; include fastcgi.conf; }" \
-    VAR_FINAL_COMMAND="php-fpm81 --force-stderr && postgres --config_file=\"\$VAR_POSTGRES_CONFIG_FILE\" & nginx -g 'daemon off; user \$VAR_LINUX_USER; error_log stderr \$VAR_LOG_LEVEL; worker_processes \$VAR_WORKER_PROCESSES; worker_rlimit_nofile \$VAR_WORKER_RLIMIT_NOFILE;'"
+    VAR_FINAL_COMMAND="php-fpm$PHP_VERSION --force-stderr && postgres --config_file=\"\$VAR_POSTGRES_CONFIG_FILE\" & nginx -g 'daemon off; user \$VAR_LINUX_USER; error_log stderr \$VAR_LOG_LEVEL; worker_processes \$VAR_WORKER_PROCESSES; worker_rlimit_nofile \$VAR_WORKER_RLIMIT_NOFILE;'"
 
 STOPSIGNAL SIGINT
 
