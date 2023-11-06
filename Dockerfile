@@ -3,47 +3,30 @@
 # =========================================================================
 # ARGs (can be passed to Build/Final) <BEGIN>
 ARG SaM_REPO=${SaM_REPO:-ghcr.io/kristianstad/secure_and_minimal}
-ARG ALPINE_VERSION=${ALPINE_VERSION:-3.17}
+ARG ALPINE_VERSION=${ALPINE_VERSION:-3.18}
 ARG IMAGETYPE="application"
-ARG ORIGO_VERSION="2.7.0"
-ARG LIGHTTPD2_VERSION="230118"
-ARG PHP_VERSION="8.1.14"
-ARG CONTENTIMAGE1="node:alpine$ALPINE_VERSION"
-ARG CONTENTDESTINATION1="/"
-ARG BASEIMAGE="ghcr.io/kristianstad/lighttpd2:$LIGHTTPD2_VERSION"
-#ARG CLONEGITS="https://github.com/filleg/origo.git -b wfs-qgis"
-ARG DOWNLOADS="https://github.com/origo-map/origo/archive/refs/tags/v$ORIGO_VERSION.zip"
-ARG BUILDDEPS="python3"
-ARG BUILDCMDS=\
-"   cd origo-$ORIGO_VERSION "\
-"&& rm -rf node_modules package-lock.json "\
-"&& npm install "\
-#"&& npm --depth 8 update "\
-"&& npm run prebuild-sass "\
-"&& npm run build "\
-"&& rm -rf build/index.html "\
-"&& cp -a build /finalfs/tmp/origo"
+ARG ORIGO_VERSION="2.8.0"
+ARG BASEIMAGE="ghcr.io/kristianstad/origo:$ORIGO_VERSION"
+#ARG PHP_VERSION="8.1.25"
 ARG RUNDEPS="\
         postgresql14 \
         php81-fpm \
         php81-json \
         php81-opcache \
         php81-pgsql"
-ARG MAKEDIRS="/etc/php81/conf.d /etc/php81/php-fpm.d"
-ARG REMOVEDIRS="/origo/origo-documentation /origo/examples /usr/include"
-ARG REMOVEFILES="/etc/php81/php-fpm.d/www.conf /origo/index.json"
-ARG STARTUPEXECUTABLES="/usr/sbin/php-fpm81 /usr/libexec/postgresql14/postgres"
-ARG LINUXUSEROWNED="/origo /origo/origo-cities /origo/origo-cities/index1.json /origo/preview /origo/preview/index.json"
+ARG MAKEDIRS="/etc/php81/conf.d /etc/php81/php-fpm.d /var/log/php81"
 ARG FINALCMDS=\
-"   cp -a /tmp/origo/* /origo/ "\
-"&& cd /usr/local "\
+"   cd /usr/local "\
 "&& rm -rf share lib "\
 "&& ln -s ../lib ../share ./ "\
 "&& cd bin "\
 "&& find ../../libexec/postgresql14 ! -type l ! -name postgres ! -name ../../libexec/postgresql14 -maxdepth 1 -exec ln -s {} ./ + "\
 "&& chmod g+X /usr/bin/* "\
-"&& ln -s /origo/origo-cities/index1.json /origo/origo-cities#1.json "\
-"&& ln -s /origo/preview/index.json /origo/preview.json"
+"&& ln -s /www/origo-cities/index1.json /www/origo-cities#1.json "\
+"&& ln -s /www/preview/index.json /www/preview.json "
+ARG REMOVEFILES="/etc/php81/php-fpm.d/www.conf /origo/index.json"
+ARG STARTUPEXECUTABLES="/usr/sbin/php-fpm81 /usr/libexec/postgresql14/postgres"
+ARG LINUXUSEROWNED="/var/log/php81 /www/origo-cities /www/origo-cities/index1.json /www/preview /www/preview/index.json"
 # ARGs (can be passed to Build/Final) </END>
 
 # Generic template (don't edit) <BEGIN>
@@ -70,38 +53,12 @@ COPY --from=build /finalfs /
 # =========================================================================
 ARG POSTGRES_CONFIG_DIR="/etc/postgres"
 
-ENV VAR_FINAL_COMMAND="php-fpm81 --force-stderr && postgres --config_file=\"\$VAR_POSTGRES_CONFIG_FILE\" & lighttpd2 -c '\$VAR_CONFIG_DIR/angel.conf'" \
-    VAR_ORIGO_CONFIG_DIR="/etc/origo" \
-    VAR_OPERATION_MODE="dual" \
-    VAR_setup1_module_load="[ 'mod_deflate','mod_fastcgi' ]" \
-    VAR_WWW_DIR="/origo" \
-    VAR_SOCKET_FILE="/run/php81-fpm/socket" \
-    VAR_LOG_FILE="/var/log/php81/error.log" \
+ENV VAR_SOCKET_FILE="/run/php81-fpm/socket" \
     VAR_wwwconf_listen='$VAR_SOCKET_FILE' \
     VAR_wwwconf_pm="dynamic" \
     VAR_wwwconf_pm__max_children="5" \
     VAR_wwwconf_pm__min_spare_servers="1" \
     VAR_wwwconf_pm__max_spare_servers="3" \
-    VAR_mode_dual=\
-"      include '\$VAR_CONFIG_DIR/mimetypes.conf';\n"\
-"      docroot '\$VAR_WWW_DIR';\n"\
-"      index [ 'index.php', 'index.html', 'index.htm', 'default.htm', 'index.lighttpd.html', '/index.php' ];\n"\
-"      if phys.path =$ '.php' {\n"\
-"         buffer_request_body false;\n"\
-"         strict.post_content_length false;\n"\
-"         if req.header['X-Forwarded-Proto'] =^ 'http' and req.header['X-Forwarded-Port'] =~ '[0-9]+' {\n"\
-"            env.set 'REQUEST_URI' => '%{req.header[X-Forwarded-Proto]}://%{req.host}:%{req.header[X-Forwarded-Port]}%{req.raw_path}';\n"\
-"         }\n"\
-"         fastcgi 'unix:\$VAR_SOCKET_FILE';\n"\
-"         if request.is_handled { header.remove 'Content-Length'; }\n"\
-"      } else {\n"\
-"         static;\n"\
-"         if request.is_handled {\n"\
-"            if response.header['Content-Type'] =~ '^(.*/javascript|text/.*)(;|$)' {\n"\
-"               deflate;\n"\
-"            }\\n"\
-"         }\n"\
-"      }" \
     VAR_LINUX_USER="postgres" \
     VAR_INIT_CAPS="cap_chown" \
     VAR_POSTGRES_CONFIG_DIR="$POSTGRES_CONFIG_DIR" \
@@ -115,8 +72,10 @@ ENV VAR_FINAL_COMMAND="php-fpm81 --force-stderr && postgres --config_file=\"\$VA
     VAR_param_ident_file="'$POSTGRES_CONFIG_DIR/pg_ident.conf'" \
     VAR_param_unix_socket_directories="'/var/run/postgresql'" \
     VAR_param_listen_addresses="'*'" \
-    VAR_param_timezone="'UTC'"
-#    VAR_FINAL_COMMAND="postgres --config_file=\"\$VAR_POSTGRES_CONFIG_FILE\""
+    VAR_param_timezone="'UTC'" \
+    VAR_server15_index="index.html manage.php index.php" \
+    VAR_serversub02_location="~ \\.php\$ { fastcgi_pass unix:/run/php81-fpm/socket; fastcgi_param SCRIPT_FILENAME \\\$document_root\\\$fastcgi_script_name; fastcgi_param SCRIPT_NAME \\\$fastcgi_script_name; include fastcgi.conf; }" \
+    VAR_FINAL_COMMAND="php-fpm81 --force-stderr && postgres --config_file=\"\$VAR_POSTGRES_CONFIG_FILE\" & nginx -g 'daemon off; user \$VAR_LINUX_USER; error_log stderr \$VAR_LOG_LEVEL; worker_processes \$VAR_WORKER_PROCESSES; worker_rlimit_nofile \$VAR_WORKER_RLIMIT_NOFILE;'"
 
 STOPSIGNAL SIGINT
 
