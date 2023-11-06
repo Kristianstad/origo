@@ -56,7 +56,8 @@ ARG POSTGRESQL_VERSION
 ARG PHP_VERSION
 ARG POSTGRES_CONFIG_DIR="/etc/postgres"
 
-ENV VAR_SOCKET_FILE="/run/php$PHP_VERSION-fpm/socket" \
+ENV VAR_PHP_VERSION="$PHP_VERSION" \
+    VAR_SOCKET_FILE="/run/php$PHP_VERSION-fpm/socket" \
     VAR_wwwconf_listen='$VAR_SOCKET_FILE' \
     VAR_wwwconf_pm="dynamic" \
     VAR_wwwconf_pm__max_children="5" \
