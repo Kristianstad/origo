@@ -7,11 +7,11 @@
 
 if [ "$isFirstRun" == "true" ]
 then
-   if [ ! -s "/etc/php81/php-fpm.d/www.conf" ]
+   if [ ! -s "/etc/php$VAR_PHP_VERSION/php-fpm.d/www.conf" ]
    then
       createWwwConf
    fi
-   if [ ! -s "/etc/php81/conf.d/50-setting.ini" ]
+   if [ ! -s "/etc/php$VAR_PHP_VERSION/conf.d/50-setting.ini" ]
    then
       setPhpIni
    fi
