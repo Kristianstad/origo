@@ -155,7 +155,10 @@
 							$json = $json.', "editable": true';
 							if (!empty($layer['allowededitoperations']))
 							{
-								$json = $json.', "allowedEditOperations": '.$layer['allowededitoperations'];
+								$allowededitoperations=explode(',', str_replace(["\r\n", "\r", "\n", ' ', '"', '[', ']'], '', $layer['allowededitoperations']));
+								array_walk($allowededitoperations, function(&$value, $key) { $value = '"'.$value.'"'; });
+								$json = $json.', "allowedEditOperations": ['.implode(',', $allowededitoperations).']';
+								unset($allowededitoperations);
 							}
 							if (!empty($layer['geometryname']))
 							{
