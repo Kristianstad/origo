@@ -155,7 +155,7 @@
 							$json = $json.', "editable": true';
 							if (!empty($layer['allowededitoperations']))
 							{
-								$json = $json.', "allowedEditOperations": "'.$layer['allowededitoperations'].'"';
+								$json = $json.', "allowedEditOperations": '.$layer['allowededitoperations'];
 							}
 							if (!empty($layer['geometryname']))
 							{
