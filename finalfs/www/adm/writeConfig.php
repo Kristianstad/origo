@@ -7,6 +7,7 @@
 	require_once("./functions/includeDirectory.php");
 	includeDirectory("./functions/writeConfig");
 
+	require("./constants/webRoot.php");
 	$mapId = $_GET['map'];
 	$mapIdArray = explode('#', $mapId, 2);
 	$mapName = trim($mapIdArray[0]);
@@ -18,7 +19,7 @@
 	{
 		$mapNumber = '';
 	}
-	$configDir="/origo/$mapName";
+	$configDir="$webRoot/$mapName";
 	if (!file_exists("$configDir"))
 	{
 		mkdir("$configDir");
@@ -115,7 +116,7 @@
 	else
 	{
 		file_put_contents($configFile, $json);
-		$configSymlink="/origo/$mapId.json";
+		$configSymlink="$webRoot/$mapId.json";
 		if (!file_exists("$configSymlink") && !is_link("$configSymlink"))
 		{
 			symlink("$configFile", "$configSymlink");
