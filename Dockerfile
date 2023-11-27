@@ -78,6 +78,9 @@ ENV VAR_PHP_VERSION="$PHP_VERSION" \
     VAR_param_listen_addresses="'*'" \
     VAR_param_timezone="'UTC'" \
     VAR_server15_index="index.html manage.php index.php" \
+    VAR_server16_proxy_busy_buffers_size="512k" \
+    VAR_server17_proxy_buffers="4 512k" \
+    VAR_server18_proxy_buffer_size="256k" \
     VAR_serversub02_location="~ \\.php\$ { fastcgi_pass unix:\$VAR_SOCKET_FILE; fastcgi_param SCRIPT_FILENAME \\\$document_root\\\$fastcgi_script_name; fastcgi_param SCRIPT_NAME \\\$fastcgi_script_name; include fastcgi.conf; }" \
     VAR_FINAL_COMMAND="php-fpm$PHP_VERSION --force-stderr && postgres --config_file=\"\$VAR_POSTGRES_CONFIG_FILE\" & nginx -g 'daemon off; user \$VAR_LINUX_USER; error_log stderr \$VAR_LOG_LEVEL; worker_processes \$VAR_WORKER_PROCESSES; worker_rlimit_nofile \$VAR_WORKER_RLIMIT_NOFILE;'"
 
