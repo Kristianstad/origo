@@ -99,7 +99,10 @@
 					{
 						$layer['style_layer'] = $layer['style_layer'].'-bg';
 					}
-					$json = $json.', "style": "'.$layer['style_layer'].'"';
+					if ($styleLayer['show_icon'] != 'f' || $styleLayer['show_iconext'] == 't' || $layer['type'] == 'GROUP')
+					{
+						$json = $json.', "style": "'.$layer['style_layer'].'"';
+					}
 				}
 				if ($layer['queryable'] == 'f')
 				{
@@ -280,7 +283,7 @@
 					$json = $json.', ';
 					addLayersToJson(array(pgArrayToPhp($layer['layers'])), true);
 				}
-				$json = $json.'}';
+
 
 				if (!empty($layer['source']) && !in_array($layer['source'], $mapSources))
 				{
@@ -346,8 +349,13 @@
 						else
 						{
 							unset($styleLayer['icon']);
+							if (($styleLayer['show_iconext'] != 't' || empty($styleLayer['icon_extended'])) && $layer['type'] != 'GROUP')
+							{
+								unset($styleLayer['icon_extended']);
+								$json = $json.', "hasThemeLegend":true, "legendParams" : { "FORMAT" : "image/png", "LAYERTITLE" : true, "ICONLABELSPACE" : 3, "RULELABEL" : true, "TRANSPARENT" : true, "BOXSPACE" : 3, "SYMBOLWIDTH" : 6, "SYMBOLHEIGHT" : 4, "SYMBOLSPACE" : 2, "LAYERSPACE" : 5, "LAYERTITLESPACE" : -7, "LAYERFONTSIZE" : 0.5, "LAYERFONTCOLOR" : "#FFFFFF", "ITEMFONTSIZE" : 8 }';
+							}
 						}
-						if (!empty($styleLayer['icon_extended']))
+						if ($styleLayer['show_iconext'] != 'f' && !empty($styleLayer['icon_extended']))
 						{
 							if (strpos($styleLayer['icon_extended'], '?') === false)
 							{
@@ -381,6 +389,7 @@
 						}
 					}
 				}
+				$json = $json.'}';
 			}
 		}
 		$json = $json.' ]';
