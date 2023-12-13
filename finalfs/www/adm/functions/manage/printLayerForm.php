@@ -75,17 +75,37 @@
 			{
 				printTextarea($layer, 'style_filter', 'textareaLarge', 'Stilfilter:', in_array('style_filter', $helps));
 				printUpdateSelect($layer, array('show_icon'=>array("f", "t")), 'miniSelect', 'Visa ikon:', in_array('show_icon', $helps));
-				if (isset($layer['layer']['show_icon']) && $layer['layer']['show_icon'] == 't')
+				printUpdateSelect($layer, array('show_iconext'=>array("f", "t")), 'miniSelect', 'Visa utfälld ikon:', in_array('show_iconext', $helps));
+				if ($layer['layer']['show_icon'] != 'f')
 				{
 					printTextarea($layer, 'icon', 'textareaLarge', 'Ikon:', in_array('icon', $helps));
+					if ($layer['layer']['show_iconext'] != 'f')
+					{
+						printTextarea($layer, 'icon_extended', 'textareaLarge', 'Utfälld ikon:', in_array('icon_extended', $helps));
+					}
+					else
+					{
+						printHiddenInputs(array(
+							'updateIcon_extended' => $layer['layer']['icon_extended']
+						));
+					}
 				}
 				else
 				{
 					printHiddenInputs(array(
 						'updateIcon' => $layer['layer']['icon']
 					));
+					if ($layer['layer']['show_iconext'] == 't')
+					{
+						printTextarea($layer, 'icon_extended', 'textareaLarge', 'Utfälld ikon:', in_array('icon_extended', $helps));
+					}
+					else
+					{
+						printHiddenInputs(array(
+							'updateIcon_extended' => $layer['layer']['icon_extended']
+						));
+					}
 				}
-				printTextarea($layer, 'icon_extended', 'textareaLarge', 'Utfälld ikon:', in_array('icon_extended', $helps));
 			}
 			else
 			{
