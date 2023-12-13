@@ -283,8 +283,6 @@
 					$json = $json.', ';
 					addLayersToJson(array(pgArrayToPhp($layer['layers'])), true);
 				}
-
-
 				if (!empty($layer['source']) && !in_array($layer['source'], $mapSources))
 				{
 					$mapSources[] = $layer['source'];
