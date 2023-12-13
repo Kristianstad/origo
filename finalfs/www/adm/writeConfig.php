@@ -121,8 +121,6 @@
 	}
 	addGroupsToJson($map['groups']);
 	$json = $json.', ';
-	
-	
 	addLayersToJson($mapLayers);
 	$json = $json.' }';
 	$json=json_encode(json_decode($json));
@@ -138,22 +136,40 @@
 	}
 	else
 	{
-		require("./constants/previewBase.php");
 		$html = <<<HERE
-			<!DOCTYPE html>
-			<html lang="sv">
-				<head>
-					<base href="{$previewBase}">
-					<meta charset="utf-8">
-					<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-					<meta http-equiv="X-UA-Compatible" content="IE=Edge;chrome=1">
-					<title>{$map['title']}</title>
-					<link rel="shortcut icon" href="{$map['icon']}">
+		<!DOCTYPE html>
+		<html lang="sv">
+			<head>
+				<meta charset="utf-8">
+				<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+				<meta http-equiv="X-UA-Compatible" content="IE=Edge;chrome=1">
+				<title>{$map['title']}</title>
+				<link rel="shortcut icon" href="{$map['icon']}">
 		HERE;
+		if ($_GET['getHtml'] == 'y')
+		{
+			require("./constants/previewBase.php");
+			$html = $html."\n\t\t<base href='$previewBase'>";
+		}
 		$cssFiles = pgArrayToPhp($map['css_files']);
 		foreach ($cssFiles as $file)
 		{
-			$html=$html."<link href='$file' rel='stylesheet'>";
+			if (filter_var($file, FILTER_VALIDATE_URL))
+			{
+				$css=file_get_contents($file);
+				// Remove comments
+ 				$css = preg_replace('!/\*[^*]*\*+([^/][^*]*\*+)*/!', '', $css);
+ 				// Remove spaces before and after selectors, braces, and colons
+ 				$css = preg_replace('/\s*([{}|:;,])\s+/', '$1', $css);
+ 				// Remove remaining spaces and line breaks
+ 				$css = str_replace(array("\r\n", "\r", "\n", "\t", '  ', '    ', '    '), '',$css);
+				$html=$html."\n\t\t<style>$css</style>";
+				unset($css);
+			}
+			else
+			{
+				$html=$html."\n\t\t<link href='$file' rel='stylesheet'>";
+			}
 		}
 		if (!empty($map['css']))
 		{
@@ -164,28 +180,38 @@
  			$css = preg_replace('/\s*([{}|:;,])\s+/', '$1', $css);
  			// Remove remaining spaces and line breaks
  			$css = str_replace(array("\r\n", "\r", "\n", "\t", '  ', '    ', '    '), '',$css);
-			$html=$html."<style>{$css}</style>";
+			$html=$html."\n\t\t<style>$css</style>";
+			unset($css);
 		}
 		$jsFiles = pgArrayToPhp($map['js_files']);
 		foreach ($jsFiles as $file)
 		{
-			$html=$html."<script src='$file'></script>";
+			if (filter_var($file, FILTER_VALIDATE_URL))
+			{
+				$html=$html."\n\t\t<script>".file_get_contents($file)."</script>";
+			}
+			else
+			{
+				$html=$html."\n\t\t<script src='$file'></script>";
+			}
 		}
-		$html=$html. <<<HERE
-				</head>
-				<body>
-					<div id="app-wrapper"></div>
-					<script>
-						const origo = Origo({$json});
+		$html=$html."\n". <<<HERE
+			</head>
+			<body>
+				<div id="app-wrapper"></div>
+				<script>
+					<!--const origoConfig = {$json}; Funkar ej med mapstate?-->
+					const origoConfig = 'index.json';
+					const origo = Origo(origoConfig);
 		HERE;
 		if (!empty($map['js']))
 		{
-			$html=$html."{$map['js']}";
+			$html=$html."\n{$map['js']}";
 		}
 		$html=$html. <<<HERE
-					</script>
-				</body>
-			</html>
+				</script>
+			</body>
+		</html>
 		HERE;
 		if ($_GET['getHtml'] == 'y')
 		{
@@ -198,7 +224,6 @@
 		}
 		else
 		{
-		$htmlFile = "$configDir/index2.html";
 			file_put_contents($htmlFile, $html);
 			file_put_contents($jsonFile, $jsonPretty);
 			$configSymlink="$webRoot/$mapId.json";
