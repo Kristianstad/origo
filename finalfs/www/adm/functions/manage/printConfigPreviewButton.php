@@ -11,7 +11,7 @@
 			$layerInput="<input type='hidden' name='layer' value='$layer'>";
 		}
 		echo <<<HERE
-			<form action="writeConfig2.php" method="get" target="_blank">
+			<form action="writeConfig.php" method="get" target="_blank">
 				<input type="hidden" name="getHtml" value="y">
 				{$groupInput}
 				{$layerInput}
