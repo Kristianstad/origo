@@ -38,6 +38,8 @@
 					printTextarea($layer, 'allowededitoperations', 'textareaMedium', 'Redigeringsalt.:', in_array('allowededitoperations', $helps));
 					printTextarea($layer, 'geometryname', 'textareaMedium', 'Geometrinamn:', in_array('geometryname', $helps));
 					printTextarea($layer, 'geometrytype', 'textareaMedium', 'Geometrityp:', in_array('geometrytype', $helps));
+					printTextarea($layer, 'featurelistattributes', 'textareaMedium', 'featureListAttributes:', in_array('featurelistattributes', $helps));
+					printTextarea($layer, 'drawtools', 'textareaMedium', 'drawTools:', in_array('drawtools', $helps));
 				}
 			}
 			elseif ($layer['layer']['type'] == 'WMS')
