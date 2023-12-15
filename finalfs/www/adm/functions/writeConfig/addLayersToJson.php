@@ -171,6 +171,17 @@
 							{
 								$json = $json.', "geometryType": "'.$layer['geometrytype'].'"';
 							}
+							if (!empty($layer['featurelistattributes']))
+							{
+								$featurelistattributes=explode(',', str_replace(["\r\n", "\r", "\n", ' ', '"', '[', ']'], '', $layer['featurelistattributes']));
+								array_walk($featurelistattributes, function(&$value, $key) { $value = '"'.$value.'"'; });
+								$json = $json.', "featureListAttributes": ['.implode(',', $featurelistattributes).']';
+								unset($featurelistattributes);
+							}
+							if (!empty($layer['drawtools']))
+							{
+								$json = $json.', "drawTools": '.$layer['drawtools'];
+							}
 						}
 					}
 				}
