@@ -222,8 +222,8 @@
 			<body>
 				<div id="app-wrapper"></div>
 				<script>
-					<!--const origoConfig = {$json}; Funkar ej med mapstate?-->
-					const origoConfig = 'index.json';
+					const origoConfig = {$json};
+					<!--const origoConfig = '{$mapId}.json';-->
 					const origo = Origo(origoConfig);
 		HERE;
 		if (!empty($map['js']))
