@@ -129,6 +129,7 @@
 				'updateShow_icon' => $layer['layer']['show_icon']
 			));
 		}
+		printTextarea($layer, 'indexweight', 'textareaSmall', 'Indexvikt:', in_array('indexweight', $helps));
 		printTextarea($layer, 'maxscale', 'textareaSmall', 'Maxskala:', in_array('maxscale', $helps));
 		printTextarea($layer, 'minscale', 'textareaSmall', 'Minskala:', in_array('minscale', $helps));
 		printTextarea($layer, 'exports', 'textareaMedium', 'Exportlager:', in_array('exports', $helps));
