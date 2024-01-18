@@ -36,7 +36,6 @@
 	$mapControls = pgArrayToPhp($map['controls']);
 	addControlsToJson($mapControls);
 	$json = $json.', ';
-
 	// PageSettings <start>
 	$json = $json.'"pageSettings": {';
 	if (!empty($map['footer']))
@@ -100,7 +99,12 @@
 	$json = $json.'"enableRotation": '.pgBoolToText($map['enablerotation']).', ';
 	$json = $json.'"constrainResolution": '.pgBoolToText($map['constrainresolution']).', ';
 	$json = $json.'"resolutions": [ '.pgArrayToText($map['resolutions']).' ]';
-	$mapLayers = array('root' => pgArrayToPhp($map['layers']));
+	$mapLayers=array();
+	if (!empty(pgArrayToPhp($map['layers'])))
+	{
+		$mapLayers['root'] = pgArrayToPhp($map['layers']);
+		$mapLayers['root'] = preg_filter('/^/', 'root>', $mapLayers['root']);
+	}
 	if ($_GET['getHtml'] == 'y' && (!empty($_GET['group']) || !empty($_GET['layer'])))
 	{
 		if (!empty($_GET['group']))
@@ -116,13 +120,31 @@
 		}
 		elseif (!empty($_GET['layer']))
 		{
-			$mapLayers['root'][]=$_GET['layer'];
+			$mapLayers['root']=array();
+			$mapLayers['root'][]='root>'.$_GET['layer'];
 		}
 	}
+	$mapGroups = pgArrayToPhp($map['groups']);
+	$mapLayerIds=groupDepth($mapGroups, $mapLayers);
+	$mapLayersList=getArrayValuesRecursively($mapLayerIds);
+	$mapLayersList=indexweightedLayersList($mapLayersList);
 	addGroupsToJson($map['groups']);
 	$json = $json.', ';
-	addLayersToJson($mapLayers);
+	addLayersToJson($mapLayersList);
 	$json = $json.' }';
+	if (isset($_GET['badJson']))
+	{
+		header('Content-Type: application/octet-stream');
+		header("Content-Disposition: attachment;filename=$mapId.json");
+		echo "$json";
+		exit;
+	}
+	if (json_decode($json) === null)
+	{
+		require("./constants/proxyRoot.php");
+		echo '<script>alert("Fel i Json! Ingen konfiguration skriven."); window.location.href="'.$proxyRoot.$_SERVER["REQUEST_URI"].'&badJson=y";</script>';
+		exit;
+	}
 	$json=json_encode(json_decode($json));
 	$jsonPretty = json_format($json);
 	if ($_GET['getJson'] == 'y')
@@ -200,8 +222,8 @@
 			<body>
 				<div id="app-wrapper"></div>
 				<script>
-					const origoConfig = {$json};
-					<!--const origoConfig = '{$mapId}.json';-->
+					<!--const origoConfig = {$json}; Funkar ej med mapstate?-->
+					const origoConfig = 'index.json';
 					const origo = Origo(origoConfig);
 		HERE;
 		if (!empty($map['js']))
