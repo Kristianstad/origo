@@ -53,6 +53,7 @@
 		}
 		printUpdateSelect($layer, array('queryable'=>array("f", "t")), 'miniSelect', 'Klickbar:', in_array('queryable', $helps));
 		printUpdateSelect($layer, array('visible'=>array("f", "t")), 'miniSelect', 'Synlig:', in_array('visible', $helps));
+		printUpdateSelect($layer, array('exportable'=>array("f", "t")), 'miniSelect', 'Exporterbar:', in_array('exportable', $helps));
 		printTextarea($layer, 'opacity', 'textareaSmall', 'Opacitet:', in_array('opacity', $helps));
 		if (isset($layer['layer']['service']) && $layer['layer']['service'] == 'restricted')
 		{
