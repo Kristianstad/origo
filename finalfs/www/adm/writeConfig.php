@@ -141,7 +141,7 @@
 	}
 	if (json_decode($json) === null)
 	{
-		require("./constants/proxyRoot.php");
+		require_once("./constants/proxyRoot.php");
 		echo '<script>alert("Fel i Json! Ingen konfiguration skriven."); window.location.href="'.$proxyRoot.$_SERVER["REQUEST_URI"].'&badJson=y";</script>';
 		exit;
 	}
@@ -179,6 +179,12 @@
 			if (filter_var($file, FILTER_VALIDATE_URL))
 			{
 				$css=file_get_contents($file);
+				if ($css === false)
+				{
+					require_once("./constants/proxyRoot.php");
+					echo '<script>alert("Filen '.$file.' kunde inte läsas! Ingen konfiguration skriven."); window.location.href="'.$proxyRoot.$_SERVER["REQUEST_URI"].'&badJson=y";</script>';
+					exit;
+				}
 				// Remove comments
  				$css = preg_replace('!/\*[^*]*\*+([^/][^*]*\*+)*/!', '', $css);
  				// Remove spaces before and after selectors, braces, and colons
@@ -210,7 +216,14 @@
 		{
 			if (filter_var($file, FILTER_VALIDATE_URL))
 			{
-				$html=$html."\n\t\t<script>".file_get_contents($file)."</script>";
+				$js=file_get_contents($file);
+				if ($js === false)
+				{
+					require_once("./constants/proxyRoot.php");
+					echo '<script>alert("Filen '.$file.' kunde inte läsas! Ingen konfiguration skriven."); window.location.href="'.$proxyRoot.$_SERVER["REQUEST_URI"].'&badJson=y";</script>';
+					exit;
+				}
+				$html=$html."\n\t\t<script>".$js."</script>";
 			}
 			else
 			{
