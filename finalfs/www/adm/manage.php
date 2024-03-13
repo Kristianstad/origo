@@ -31,7 +31,6 @@
 	{
 		$groupIdsArray=array();
 	}
-	//var_dump($post);
 	$idPosts=idPosts($post);
 	$categoryPosts=categoryPosts($post);
 	$focusTable=focusTable($idPosts);
