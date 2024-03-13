@@ -7,7 +7,7 @@
 	require_once("./functions/manage/printInfoButton.php");
 	require_once("./functions/manage/printDeleteButton.php");
 
-	function printTableForm($table, $selectables, $inheritPosts, $helps=array())
+	function printTableForm($table, $dbhConnectionString, $selectables, $inheritPosts, $helps=array())
 	{
 		if (!isFullTarget($table))
 		{
@@ -19,7 +19,11 @@
 		printTextarea($table, 'keywords', 'textareaLarge', 'Nyckelord:', in_array('keywords', $helps));
 		printUpdateSelect($table, array('contact'=>$selectables['contacts']), 'bodySelect', 'Kontakt:', in_array('contact', $helps));
 		printUpdateSelect($table, array('origin'=>$selectables['origins']), 'bodySelect', 'Ursprungskälla:', in_array('origin', $helps));
-		printTextarea($table, 'updated', 'textareaMedium', 'Uppdaterad (åååå-mm-dd):', in_array('updated', $helps));
+		//printTextarea($table, 'updated', 'textareaMedium', 'Uppdaterad (åååå-mm-dd):', in_array('updated', $helps));
+		$dbh2=dbh($dbhConnectionString);
+		$tableWithSchema=substr($table['table']['table_id'], strpos($table['table']['table_id'], '.')+1);
+		$updated=substr(updated_from_table($dbh2, $tableWithSchema)[0], 0, 10);
+		echo '<span style="vertical-align: text-bottom; margin-left:0.6em">Updaterad: </span><textarea readonly rows="1" class="textareaMedium">'.$updated.'</textarea>';
 		printUpdateSelect($table, array('update'=>$selectables['updates']), 'bodySelect', 'Uppdatering:', in_array('update', $helps));
 		printTextarea($table, 'history', 'textareaLarge', 'Tillkomsthistorik:', in_array('history', $helps));
 		printTextarea($table, 'info', 'textareaLarge', 'Info:', in_array('info', $helps));
