@@ -31,6 +31,7 @@
 	{
 		$groupIdsArray=array();
 	}
+	//var_dump($post);
 	$idPosts=idPosts($post);
 	$categoryPosts=categoryPosts($post);
 	$focusTable=focusTable($idPosts);
@@ -421,8 +422,10 @@
 				'origins'=>array_combine(array_column($configTables['origins'], 'origin_id'), array_column($configTables['origins'], 'name')),
 				'updates'=>array_column($configTables['updates'], 'update_id')
 			);
-			printTableForm($childFullTarget, $selectables, $inheritPosts, $typeHelps);
-			unset($selectables);
+			$databaseId=substr($childFullTarget['table']['table_id'], 0, strpos($childFullTarget['table']['table_id'], '.'));
+			$connectionString=array_column_search($databaseId, 'database_id', $configTables['databases'])['connectionstring'];
+			printTableForm($childFullTarget, $connectionString, $selectables, $inheritPosts, $typeHelps);
+			unset($selectables, $databaseId, $connectionString);
 		}
 		
 		//  Om kontroll vald
