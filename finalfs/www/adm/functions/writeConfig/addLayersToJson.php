@@ -246,15 +246,26 @@
 						$originStr=$layerOrigin['name'];
 					}
 					$json = $json.', "abstract": "<b>Beskrivning: </b>'.$beskr.'<br><b>Resurser: </b>';
+					$layerTables=trim($layer['tables'], '{}');
 					if (empty($layer['resources']))
 					{
-						$json = $json.str_replace(',', ', ', trim($layer['tables'], '{}'));
+						$json = $json.str_replace(',', ', ', $layerTables);
 					}
 					else
 					{
 						$json = $json.$layer['resources'];
 					}
-					$json = $json.'<br><b>Kontakt: </b>'.$contactStr.'<br><b>Källa: </b>'.$originStr.'<br><b>Uppdaterad: </b>'.$layer['updated'].'<br>';
+					$json = $json.'<br><b>Kontakt: </b>'.$contactStr.'<br><b>Källa: </b>'.$originStr.'<br>';
+					if (!empty($layer['updated']))
+					{
+						$json = $json.'<b>Uppdaterad: </b>'.$layer['updated'];
+					}
+					elseif (!empty($layerTables))
+					{
+						$json = $json."<b>Uppdaterad: </b><iframe id='".$layer['layer_id']."uppd' src='' style='display:none;width:6em;height:1em;padding-top:3px'></iframe><button onclick='var iframe=document.getElementById(\\\"".$layer['layer_id']."uppd\\\");iframe.src=\\\"/php/adm/updated.php?table=".$layerTables."\\\";iframe.style.display=null;this.style.display=\\\"none\\\";'>Visa</button>";
+					}
+					$json = $json.'<br>';
+					unset($layerTables);
 				}
 				else
 				{
