@@ -34,6 +34,7 @@
 		printUpdateSelect($map, array('mapgrid'=>array("f", "t")), 'miniSelect', 'Visa rutnät:', in_array('mapgrid', $helps));
 		printUpdateSelect($map, array('enablerotation'=>array("f", "t")), 'miniSelect', 'Roterbar:', in_array('enablerotation', $helps));
 		printUpdateSelect($map, array('embedded'=>array("f", "t")), 'miniSelect', 'Inbäddad:', in_array('embedded', $helps));
+		printTextarea($map, 'palette', 'textareaLarge', 'Färgpalett:', in_array('palette', $helps));
 		printTextarea($map, 'resolutions', 'textareaMedium', 'Upplösningar:', in_array('resolutions', $helps));
 		printUpdateSelect($map, array('constrainresolution'=>array("f", "t")), 'miniSelect', 'Upplösningsbegränsad:', in_array('constrainresolution', $helps));
 		printUpdateSelect($map, array('tilegrid'=>$selectables['tilegrids']), 'bodySelect', 'Tilegrid:', in_array('tilegrid', $helps));
