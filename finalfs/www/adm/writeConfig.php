@@ -104,6 +104,10 @@
 	$json = $json.'"center": ['.pgCoordsToText($map['center']).'], ';
 	$json = $json.'"zoom": '.$map['zoom'].', ';
 	$json = $json.'"enableRotation": '.pgBoolToText($map['enablerotation']).', ';
+	if (!empty($map['palette']))
+	{
+		$json = $json.'"palette": '.$map['palette'].', ';
+	}
 	$json = $json.'"constrainResolution": '.pgBoolToText($map['constrainresolution']).', ';
 	$json = $json.'"resolutions": [ '.pgArrayToText($map['resolutions']).' ]';
 	$mapLayers=array();
