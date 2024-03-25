@@ -8,7 +8,14 @@
 	includeDirectory("./functions/writeConfig");
 
 	require("./constants/webRoot.php");
-	$mapId = $_GET['map'];
+	// Workaround för swiper i preview-verktyget https://github.com/SigtunaGIS/swiper-plugin/issues/41 <start>
+	$getMapParam=explode('\\', $_GET['map'], 2);
+	$mapId = $getMapParam[0];
+	if (isset($getMapParam[1]))
+	{
+		$_GET['getJson'] = 'y';
+	}
+	// Workaround för swiper i preview-verktyget </end>
 	$mapIdArray = explode('#', $mapId, 2);
 	$mapName = trim($mapIdArray[0]);
 	if (!empty($mapIdArray[1]))
@@ -235,10 +242,17 @@
 			<body>
 				<div id="app-wrapper"></div>
 				<script>
-					const origoConfig = {$json};
-					<!--const origoConfig = '{$mapId}.json';-->
-					const origo = Origo(origoConfig);
 		HERE;
+		//const origoConfig = {$json}; Funkar ej med mapstate?
+		if ($_GET['getHtml'] == 'y')
+		{
+			$html=$html."const origoConfig = {$json};";
+		}
+		else
+		{
+			$html=$html."const origoConfig = 'index.json';";
+		}
+		$html=$html."const origo = Origo(origoConfig);";
 		if (!empty($map['js']))
 		{
 			$html=$html."\n{$map['js']}";
