@@ -134,7 +134,7 @@
 			{
 				$json = $json.', "legend": true';
 			}
-			if ($layer['opacity'] < 1)
+			if (isset($layer['opacity']) && $layer['opacity'] < 1)
 			{
 				$json = $json.', "opacity": '.$layer['opacity'];
 			}
