@@ -46,3 +46,5 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
             SaM_REPO=${{ env.REGISTRY }}/kristianstad/secure_and_minimal
+        env:
+          SOURCE_DATE_EPOCH: 0
