@@ -11,7 +11,7 @@ https://kartor.kristianstad.se/demo/adm/manage.php
 
 ## Docker run examples
 ### If you just need Origo
-docker run --name origo -d -p 8080:8080 ghcr.io/kristianstad/origo:2.7.0
+docker run --name origo -d -p 8080:8080 ghcr.io/kristianstad/origo:2.8.1
 ### If you also want Kristianstad's management tool for Origo and metadata
 docker run --name origo -d -p 8080:8080 ghcr.io/kristianstad/origo:with_php
 
