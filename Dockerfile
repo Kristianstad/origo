@@ -5,15 +5,15 @@
 ARG SaM_REPO=${SaM_REPO:-ghcr.io/kristianstad/secure_and_minimal}
 ARG ALPINE_VERSION=${ALPINE_VERSION:-3.19}
 ARG IMAGETYPE="application"
-ARG ORIGO_VERSION="2.8.1"
-ARG NGINX_VERSION="1.24.0-r14"
+ARG ORIGO_VERSION="2.9.0"
+ARG NGINX_VERSION="1.26.1-r0"
 ARG BASEIMAGE="ghcr.io/kristianstad/nginx:$NGINX_VERSION"
 ARG CONTENTIMAGE1="node:alpine$ALPINE_VERSION"
 ARG CONTENTDESTINATION1="/"
 #ARG CLONEGITS="https://github.com/origo-map/origo.git"
 #ARG CLONEGITS="https://github.com/filleg/origo.git -b wfs-qgis"
 ARG DOWNLOADS="https://github.com/origo-map/origo/archive/refs/tags/v$ORIGO_VERSION.zip"
-ARG BUILDDEPS="python3"
+ARG BUILDDEPS="python3 py3-libsass"
 ARG BUILDCMDS=\
 "   cd origo-$ORIGO_VERSION "\
 #"   cd origo "\
