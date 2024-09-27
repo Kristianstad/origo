@@ -18,8 +18,9 @@ ARG BUILDCMDS=\
 "   cd origo-$ORIGO_VERSION "\
 #"   cd origo "\
 "&& rm -rf node_modules package-lock.json "\
+"&& npm rebuild node-sass "\
 "&& npm install "\
-"&& npm --depth 8 update "\
+#"&& npm --depth 8 update "\
 "&& npm run prebuild-sass "\
 "&& npm run build "\
 "&& sed -i 's/origo.js/origo.min.js/' build/index.html "\
