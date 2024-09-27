@@ -18,6 +18,7 @@ ARG BUILDCMDS=\
 "   cd origo-$ORIGO_VERSION "\
 #"   cd origo "\
 "&& rm -rf node_modules package-lock.json "\
+"&& sed -1 's/\"node-sass\": \"^9.0.0\",/\"sass\": \"^1.79.3\",/g' package.json "\
 "&& sed -i 's/node-sass/sass/g' package.json "\
 "&& npm install "\
 #"&& npm --depth 8 update "\
