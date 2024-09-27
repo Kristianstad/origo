@@ -3,23 +3,21 @@
 # =========================================================================
 # ARGs (can be passed to Build/Final) <BEGIN>
 ARG SaM_REPO=${SaM_REPO:-ghcr.io/kristianstad/secure_and_minimal}
-ARG ALPINE_VERSION=${ALPINE_VERSION:-3.20}
+ARG ALPINE_VERSION=${ALPINE_VERSION:-3.19}
 ARG IMAGETYPE="application"
-ARG ORIGO_VERSION="2.9.0"
-ARG NGINX_VERSION="1.26.1-r0"
+ARG ORIGO_VERSION="2.8.1"
+ARG NGINX_VERSION="1.24.0-r14"
 ARG BASEIMAGE="ghcr.io/kristianstad/nginx:$NGINX_VERSION"
 ARG CONTENTIMAGE1="node:alpine$ALPINE_VERSION"
 ARG CONTENTDESTINATION1="/"
 #ARG CLONEGITS="https://github.com/origo-map/origo.git"
 #ARG CLONEGITS="https://github.com/filleg/origo.git -b wfs-qgis"
 ARG DOWNLOADS="https://github.com/origo-map/origo/archive/refs/tags/v$ORIGO_VERSION.zip"
-ARG BUILDDEPS="python3 libbz2"
+ARG BUILDDEPS="python3"
 ARG BUILDCMDS=\
 "   cd origo-$ORIGO_VERSION "\
 #"   cd origo "\
 "&& rm -rf node_modules package-lock.json "\
-#"&& sed -i 's/\"node-sass\": \"^9.0.0\",/\"sass-embedded\": \"^1.79.3\",/g' package.json "\
-#"&& sed -i 's/node-sass/sass-embedded/g' package.json "\
 "&& npm install "\
 #"&& npm --depth 8 update "\
 "&& npm run prebuild-sass "\
