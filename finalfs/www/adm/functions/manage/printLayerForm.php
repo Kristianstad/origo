@@ -109,6 +109,10 @@
 						));
 					}
 				}
+				if (($layer['layer']['show_icon'] == 'f' || empty($layer['layer']['icon'])) && (($layer['layer']['icon_extended'] != 't' || empty($layer['layer']['icon_extended'])) && $layer['type'] != 'GROUP'))
+				{
+					printUpdateSelect($layer, array('thematicstyling'=>array("f", "t")), 'miniSelect', 'Regelbaserad visning:', in_array('thematicstyling', $helps));
+				}
 			}
 			else
 			{
