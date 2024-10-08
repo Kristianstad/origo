@@ -378,7 +378,16 @@
 						if (($styleLayer['show_iconext'] != 't' || empty($styleLayer['icon_extended'])) && $layer['type'] != 'GROUP')
 						{
 							unset($styleLayer['icon_extended']);
-							$json = $json.', "hasThemeLegend":true, "legendParams" : { "FORMAT" : "image/png", "LAYERTITLE" : true, "ICONLABELSPACE" : 3, "RULELABEL" : true, "TRANSPARENT" : true, "BOXSPACE" : 3, "SYMBOLWIDTH" : 6, "SYMBOLHEIGHT" : 4, "SYMBOLSPACE" : 2, "LAYERSPACE" : 5, "LAYERTITLESPACE" : -7, "LAYERFONTSIZE" : 0.5, "LAYERFONTCOLOR" : "#FFFFFF", "ITEMFONTSIZE" : 8 }';
+							$json = $json.', "hasThemeLegend":true';
+							if ($styleLayer['thematicstyling'] == 't')
+							{
+								$json = $json.', "thematicStyling":true';
+								$json = $json.', "legendParams" : { "FORMAT" : "image/png", "LAYERTITLE" : true, "SHOWRULEDETAILS": true, "TRANSPARENT" : true }';
+							}
+							else
+							{
+								$json = $json.', "legendParams" : { "FORMAT" : "image/png", "LAYERTITLE" : true, "ICONLABELSPACE" : 3, "RULELABEL" : true, "TRANSPARENT" : true, "BOXSPACE" : 3, "SYMBOLWIDTH" : 6, "SYMBOLHEIGHT" : 4, "SYMBOLSPACE" : 2, "LAYERSPACE" : 5, "LAYERTITLESPACE" : -7, "LAYERFONTSIZE" : 0.5, "LAYERFONTCOLOR" : "#FFFFFF", "ITEMFONTSIZE" : 8 }';
+							}
 						}
 					}
 					if ($styleLayer['show_iconext'] != 'f' && !empty($styleLayer['icon_extended']))
