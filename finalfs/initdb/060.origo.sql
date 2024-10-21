@@ -151,7 +151,7 @@ INSERT INTO map_configs.maps(map_id,footer,groups,abstract,show_meta) VALUES ('p
 CREATE TABLE map_configs.proj4defs
 (
     code character varying COLLATE pg_catalog."default" NOT NULL,
-    projection character varying COLLATE pg_catalog."default" NOT NULL,
+    projection character varying COLLATE pg_catalog."default",
     alias character varying COLLATE pg_catalog."default",
     info character varying COLLATE pg_catalog."default",
     abstract character varying COLLATE pg_catalog."default",
