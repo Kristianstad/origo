@@ -1,19 +1,32 @@
 <!DOCTYPE html>
 <?php
+	// Tell browsers to not cache response
 	header("Cache-Control: must-revalidate, max-age=0, s-maxage=0, no-cache, no-store");
+
+	// Expose specific functions
 	require_once("./functions/dbh.php");
 	require_once("./functions/array_column_search.php");
 	require_once("./functions/pkColumnOfTable.php");
 	require_once("./functions/configTables.php");
 	require_once("./functions/includeDirectory.php");
+
+	// Expose all functions in given folder
 	includeDirectory("./functions/manage");
+
+	// Expose posted data as $post (array)
 	$post=array_filter($_POST, function($value) {return (!empty($value) || $value === "0");});
+
+	// Expose view query parameter as $view
 	$view=null;
 	if (isset($_GET['view']))
 	{
 		$view=$_GET['view'];
 	}
+
+	// Unset unused global variables
 	unset($_POST, $_GET);
+
+	// Create $groupIdsArray (array) from $post and update related, missing $post values
 	if (isset($post['groupIds']))
 	{
 		$groupIdsArray=explode(',', $post['groupIds']);
@@ -31,12 +44,25 @@
 	{
 		$groupIdsArray=array();
 	}
+
+	// Expose all $post values where the key ends with 'Id' (excluding 'fromMapId', 'toMapId', 'fromGroupId', 'toGroupId') as $idPosts (array)
 	$idPosts=idPosts($post);
+
+	// Expose all $post values where the key ends with 'Category' as $categoryPosts (array)
 	$categoryPosts=categoryPosts($post);
+
+	// Determine which table has focus and expose the id as $focusTable (string)
 	$focusTable=focusTable($idPosts);
+
+	// Expose postgresql database handle as $dbh
 	$dbh=dbh();
+
+	// Read configuration tables from database and expose as $configTables (array)
 	$configTables=configTables($dbh);
+
+	// Ids of tables (in current view) that should be categotized by keywords, exposed as $keywordCategorized (array)
 	$keywordCategorized=viewKeywordCategorized($view);
+
 	$categoryConfigs=array_intersect_key($configTables, array_flip($keywordCategorized));
 	foreach ($categoryConfigs as $table=>$config)
 	{
