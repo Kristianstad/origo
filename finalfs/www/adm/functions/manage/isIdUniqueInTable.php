@@ -1,10 +1,8 @@
 <?php
 
-	require_once("./functions/pkColumnOfTable.php");
-
-	function isIdUniqueInTable($id, $table)
+	function isIdUniqueInTable($id, $tablePkColumn, $table)
 	{
-		return !in_array($id, array_column($table, pkColumnOfTable($table)));
+		return !in_array($id, array_column($table, $tablePkColumn));
 	}
 
 ?>
