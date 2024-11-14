@@ -2,20 +2,13 @@
 
 	function pkColumnOfTable($table)
 	{
-		if (is_array($table))
+		if ($table == 'proj4defs')
 		{
-			return array_key_first($table[0]);
+			return 'code';
 		}
 		else
 		{
-			if ($table == 'proj4defs')
-			{
-				return 'code';
-			}
-			else
-			{
-				return rtrim($table, 's').'_id';
-			}
+			return rtrim($table, 's').'_id';
 		}
 	}
 
