@@ -1,6 +1,6 @@
 <?php
 
-	function typeTable($type)
+	function typeTableName($type)
 	{
 		return $type.'s';
 	}
