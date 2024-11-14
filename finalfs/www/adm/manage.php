@@ -16,7 +16,7 @@
 	// Expose posted data as $post (array)
 	$post=array_filter($_POST, function($value) {return (!empty($value) || $value === "0");});
 
-	// Expose view query parameter as $view
+	// Expose view query parameter as $view (string)
 	$view=null;
 	if (isset($_GET['view']))
 	{
@@ -54,63 +54,96 @@
 	// Determine which table has focus and expose the id as $focusTable (string)
 	$focusTable=focusTable($idPosts);
 
-	// Expose postgresql database handle as $dbh
+	// Expose postgresql database handle as $dbh (handle)
 	$dbh=dbh();
 
 	// Read configuration tables from database and expose as $configTables (array)
 	$configTables=configTables($dbh);
 
-	// Ids of tables (in current view) that should be categotized by keywords, exposed as $keywordCategorized (array)
+	// Ids of tables (in current view) that should be categorized by keywords, exposed as $keywordCategorized (array)
 	$keywordCategorized=viewKeywordCategorized($view);
 
+	// Configs (from tables) that should be categorized by keywords, exposed as $categoryConfigs (array)
 	$categoryConfigs=array_intersect_key($configTables, array_flip($keywordCategorized));
+
+	// Extract the categories (keywords) for all $categoryConfigs and expose as $<table>Categories (array)
 	foreach ($categoryConfigs as $table=>$config)
 	{
 		$catParam=pkColumnOfTable($table);
 		eval("\${$table}Categories=categories(\$config, \$catParam);");
 	}
+
+	// If a post form was submitted by clicking a button, then the id of the button is exposed as $postButton (string)
 	$postButton=postButton($post);
+
+	// If a form has been submitted, then make changes to the configuration database accordingly
 	if (isset($postButton))
 	{
+		// Extract type from the $postButton and expose as $type (string)
 		$type=substr($postButton, 0, -6);
-		$typeTable=typeTable($type);
-		$typeTablePkColumn=pkColumnOfTable($typeTable);
+
+		// Expose the table name of $type as $typeTableName (string)
+		$typeTableName=typeTableName($type);
+
+		// Expose the primary key column of $typeTableName as $typeTablePkColumn (string)
+		$typeTablePkColumn=pkColumnOfTable($typeTableName);
+		
+		// Expose the table for $type as $typeTable (array)
+		$typeTable=$configTables[$typeTableName];
+		
+		// Expose the command associated with the $postButton as $command
 		$command=$post[$postButton];
+
+		// $sql (string) will contain an sql-query to be executed on the database
 		$sql="";
+
+		// If $command is 'create' and a new unique id was posted, then $sql will contain an sql-query to insert a new row into the database table named by $typeTableName
 		if ($command == 'create' && !empty($post[$type.'IdNew']))
 		{
 			$id=$post[$type.'IdNew'];
-			if (!in_array($id, array_column($configTables[$typeTable], $typeTablePkColumn)))
+			if (isIdUniqueInTable($id, $typeTable))
 			{
-				require("./constants/configSchema.php");
-				$sql="INSERT INTO $configSchema.$typeTable($typeTablePkColumn) VALUES ('".$id."')";
-				unset($configSchema);
+				$sql=insertIdSql($id, $typeTableName);
 			}
 		}
+		
+		// Else, if $command is 'delete' and the specified id exists, $sql will contain an sql-query to delete a row in the database table named by $typeTableName
 		elseif ($command == 'delete' && !empty($post[$type.'IdDel']))
 		{
 			$id=$post[$type.'IdDel'];
-			if (in_array($id, array_column($configTables[$typeTable], $typeTablePkColumn)))
+			if (!isIdUniqueInTable($id, $typeTable))
 			{
-				require("./constants/configSchema.php");
-				$sql="DELETE FROM $configSchema.$typeTable WHERE $typeTablePkColumn = '".$id."'";
-				unset($configSchema);
+				$sql=deleteIdSql($id, $typeTableName);
 			}
 		}
+
+		// Else, if given input is valid, $sql will contain an sql-query to update a row in the database
 		elseif (isset($post[$type.'Id']))
 		{
+
+			// The id of the given item (of type $type) is read from $post and is exposed as $id (string)
 			$id=$post[$type.'Id'];
+			
+			// If $command is 'update', then $sql will contain an sql-query to update a row in the database table named by $typeTableName
 			if ($command == 'update')
 			{
+				
+				// If $type is 'layer' or 'group', make the posted abstract field html compatible
 				if (($type == 'layer' || $type == 'group') && isset($post['updateAbstract']))
 				{
 					$post['updateAbstract'] = str_replace(["\r\n", "\r", "\n"], "<br>", $post['updateAbstract']);
 				}
+				
+				// Expose posted configuration fields as $updatePosts (array)
 				$updatePosts=updatePosts($post);
+				
+				// Makes sure posted configuration fields are valid before continueing database update, or else aborts and gives an alert 
 				validateUpdate($updatePosts, $configTables, $updateValid);
 				if ($updateValid)
 				{
-					$config=array_column_search($id, $typeTablePkColumn, $configTables[$typeTable]);
+					$config=array_column_search($id, $typeTablePkColumn, $typeTable);
+					
+					// If $type is 'layer' or 'source' and is originating from Qgis Server, then $post is updated with information gathered from corresponding Qgis project file
 					if ($type == 'layer' || $type == 'source')
 					{
 						if ($type == 'layer')
@@ -149,13 +182,19 @@
 						}
 						unset($layerName, $sourceConfig, $serviceType);
 					}
+
+					// $sql is set to an sql-query to update a row in the database with data from $updatePosts
 					$sql=sqlForUpdate(makeFullTarget($type, $config), $updatePosts);
 					unset($config);
 				}
 				unset($updatePosts, $updateFailed);
 			}
+			
+			// If $command is 'operation', then $sql will contain an sql-query to update a specific field in the configuration database to add or remove a given $id of $type from a given map or group
 			elseif ($command == 'operation')
 			{
+				
+				// If a parent has been given (whos config is to be edited) then expose its type, which needs to be either 'map' or 'group', as $parentKey (string)
 				if (!empty($post['toMapId']) || !empty($post['fromMapId']))
 				{
 					$parentKey='map';
@@ -164,6 +203,10 @@
 				{
 					$parentKey='group';
 				}
+
+				// If a parent has been given: 
+				// Determine if the operation is 'add' or 'remove' and expose the result as $operation
+				// Read the id of the parent from $post and expose as $parentPkColumnValue (string)
 				if (isset($parentKey))
 				{
 					if (!empty($post['toMapId']) || !empty($post['toGroupId']))
@@ -176,6 +219,8 @@
 						$operation='remove';
 						$parentPkColumnValue=$post['from'.ucfirst($parentKey).'Id'];
 					}
+					
+					// If $operation is set, then $sql will contain an sql-query that adds or removes given $id of type $type from given parent $parentPkColumnValue
 					if (isset($operation))
 					{
 						$parentPkColumnKey=pkColumnOfTable($parentKey.'s');
@@ -189,6 +234,8 @@
 				}
 			}
 		}
+
+		// if $sql has been set, then perform database operations and re-read data
 		if (!empty($sql))
 		{
 			$result=pg_query($dbh, $sql);
@@ -198,12 +245,12 @@
 			}
 			unset($result);
 			$configTables=configTables($dbh);
-			if ($command != 'operation' && in_array($typeTable, $keywordCategorized))
+			if ($command != 'operation' && in_array($typeTableName, $keywordCategorized))
 			{
-				eval("\${$typeTable}Categories=categories(\$configTables[\$typeTable], \$typeTablePkColumn);");
+				eval("\${$typeTableName}Categories=categories(\$configTables[\$typeTableName], \$typeTablePkColumn);");
 			}
 		}
-		unset($id, $type, $typeTable, $typeTablePkColumn, $command, $sql);
+		unset($id, $type, $typeTableName, $typeTablePkColumn, $typeTable, $command, $sql);
 	}
 	$inheritPosts=$idPosts;
 	if (isset($post['groupIds']))
