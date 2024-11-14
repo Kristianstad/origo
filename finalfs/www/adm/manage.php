@@ -101,7 +101,7 @@
 		if ($command == 'create' && !empty($post[$type.'IdNew']))
 		{
 			$id=$post[$type.'IdNew'];
-			if (isIdUniqueInTable($id, $typeTable))
+			if (isIdUniqueInTable($id, $typeTablePkColumn, $typeTable))
 			{
 				$sql=insertIdSql($id, $typeTableName);
 			}
@@ -111,7 +111,7 @@
 		elseif ($command == 'delete' && !empty($post[$type.'IdDel']))
 		{
 			$id=$post[$type.'IdDel'];
-			if (!isIdUniqueInTable($id, $typeTable))
+			if (!isIdUniqueInTable($id, $typeTablePkColumn, $typeTable))
 			{
 				$sql=deleteIdSql($id, $typeTableName);
 			}
