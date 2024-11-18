@@ -252,6 +252,9 @@
 		}
 		unset($id, $type, $typeTableName, $typeTablePkColumn, $typeTable, $command, $sql);
 	}
+
+	// Some common information needs to be passed on every time a form is posted, this info is aggregated in $inheritPosts (array)
+	// $inheritPosts is set to include $idPosts, $post['groupIds'] and $categoryPosts
 	$inheritPosts=$idPosts;
 	if (isset($post['groupIds']))
 	{
@@ -270,7 +273,12 @@
 	<script>
 		let topFrame="";
 		<?php
+
+			// Include all js-code from the given directory
 			includeDirectory("./js-functions/manage");
+			
+			// Prepare js-code to run later that sets the contents of the item selection boxes based on selected keyword category, store it in $updateSelects (string)
+			// Create and expose a js-variable for each keyword category, each containing a list of items that has the specified keyword among their keywords
 			$updateSelects="";
 			foreach ($keywordCategorized as $categorized)
 			{
@@ -295,10 +303,16 @@
 		?>
 	</script>
 	<style>
-		<?php require("./styles/manage.css"); ?>
+		<?php
+
+			// Include all css-stylesheets from the given directory
+			require("./styles/manage.css");
+		?>
 	</style>
 </head>
 <body onresize="Array.from(document.getElementsByClassName('resizeimg')).forEach(function(element) { element.onerror(); });">
+
+	<!-- Print the top buttons, including radio buttons to change view -->
 	<form action="read_json.php">
 		<button class="topButton" type="submit">Importera JSON</button>
 	</form>
@@ -306,14 +320,25 @@
 		<button class="topButton" onclick="toggleTopFrame('help');" type="submit">Hjälp</button>
 	</form>
 	<?php printViewSwitcher($view); ?>
+
+	<!-- Initialize iframes "topFrame" and "hiddenFrame", start hidden -->
 	<iframe id="topFrame" name="topFrame" style="display:none" onload="javascript:(function(o){o.style.height=o.contentWindow.document.body.parentElement.scrollHeight+'px';}(this));"></iframe>
 	<iframe id="hiddenFrame" name="hiddenFrame" style="display:none"></iframe>
+
+	<!-- Initialize form "multiselectForm" and set its target to topFrame -->
 	<form id="multiselectForm" action="multiselect.php" method="get" target="topFrame"></form>
+	
+	<!-- Print a row of selection forms. What columns shown depends on the selected view -->
 	<?php printHeadForms($view, $configTables, $focusTable, $inheritPosts); ?>
+	
 	<script>
 		<?php
+
+			// Run the prepared js-code stored in $updateSelects
 			echo $updateSelects;
 			unset($updateSelects);
+			
+			// Add js-code that populates the keyword category selection boxes
 			foreach ($categoryPosts as $postName=>$category)
 			{
 				$table=substr($postName, 0, -8);
