@@ -356,20 +356,27 @@
 	</script>
 <?php
 /*
- ************************
- *  DYNAMISKT INNEHÅLL  *
- ************************
+ **********************
+ *  DYNAMIC CONTENTS  *
+ **********************
 */
+	// Expose field help ids (identifying fields with existing help text) as $helps (array)
 	$helps=array_column($configTables["helps"], "help_id");
 
-	// Om karta vald
+	// If a map is selected
 	if (isset($post['mapId']))
 	{
+		// Expose selected map target as $map (array)
 		$map=array('map'=>array_column_search($post['mapId'], 'map_id', $configTables['maps']));
 		if (!empty(current($map)))
 		{
+			// Map selectable items (footers, tilegrids) are exposed as $selectables (array)
 			$selectables=array('footers'=>array_column($configTables['footers'], 'footer_id'), 'tilegrids'=>array_column($configTables['tilegrids'], 'tilegrid_id'));
+			
+			// Print the form for the selected map
 			printMapForm($map, $selectables, $inheritPosts, typeHelps("map", $helps));
+			
+			// Print child select dialogs for layers, groups and controls if any exists for selected map
 			echo '<table><tr>';
 			$thClass='thFirst';
 			if (!empty($groupIdsArray))
@@ -400,15 +407,23 @@
 		unset($map, $idPosts['mapId']);
 	}
 	
-	// Om databas vald
+	// If a database is selected
 	elseif (isset($post['databaseId']))
 	{
+		// Expose selected database target as $database (array)
 		$database=array('database'=>array_column_search($post['databaseId'], 'database_id', $configTables['databases']));
 		if (!empty(current($database)))
 		{
+			// Print the form for the selected database
 			printDatabaseForm($database, $inheritPosts, typeHelps("database", $helps));
+
+			// Expose all schema ids of selected database as $databaseSchemas (array)
 			$databaseSchemas =preg_grep("/^".$post['databaseId']."[.]/", array_column($configTables['schemas'], 'schema_id'));
+
+			// Add $databaseSchemas to $database
 			$database['database']['schemas']='{'.implode(',', $databaseSchemas).'}';
+
+			// Print child select dialog for schemas if any exists for selected database
 			echo '<table><tr>';
 			$thClass='thFirst';
 			printChildSelect($database, 'schemas', $thClass, 'Schema', $inheritPosts);
@@ -418,20 +433,30 @@
 		unset($database, $idPosts['databaseId']);
 	}
 	
-	// Om schema vald
+	// If a schema is selected
 	if (isset($post['schemaId']))
 	{
+		// Expose selected schema target as $schema (array)
 		$schema=array('schema'=>array_column_search($post['schemaId'], 'schema_id', $configTables['schemas']));
 		if (!empty(current($schema)))
 		{
+			// Schema selectable items (contacts, origins, updates) are exposed as $selectables (array)
 			$selectables=array(
 				'contacts'=>array_combine(array_column($configTables['contacts'], 'contact_id'), array_column($configTables['contacts'], 'name')),
 				'origins'=>array_combine(array_column($configTables['origins'], 'origin_id'), array_column($configTables['origins'], 'name')),
 				'updates'=>array_column($configTables['updates'], 'update_id')
 			);
+
+			// Print the form for the selected schema
 			printSchemaForm($schema, $selectables, $inheritPosts, typeHelps("schema", $helps));
+
+			// Expose all table ids of selected schema as $schemaTables (array)
 			$schemaTables =preg_grep("/^".$post['schemaId']."[.]/", array_column($configTables['tables'], 'table_id'));
+
+			// Add $schemaTables to $schema
 			$schema['schema']['tables']='{'.implode(',', $schemaTables).'}';
+			
+			// Print child select dialog for tables if any exists for selected schema
 			echo '<table><tr>';
 			$thClass='thFirst';
 			printChildSelect($schema, 'tables', $thClass, 'Tabell', $inheritPosts);
@@ -441,22 +466,37 @@
 		unset($schema, $idPosts['schemaId']);
 	}
 
-	//  Om grupp vald
+	//  (If a group is selected)
+	
+	// Expose a copy of $groupIdsArray as $tmpGroupIds (array)
 	$tmpGroupIds=$groupIdsArray;
+	
+	// Expose the parent group id of selected group as $parent (string)
 	$parent=array_shift($tmpGroupIds);
+	
+	// Expose the count of total parent group levels as $totGroupLevels (integer)
 	$totGroupLevels=count($groupIdsArray);
 	$groupLevel=1;
+	
+	// Loop through the tree of groups where selected group belongs
 	foreach ($groupIdsArray as $groupId)
 	{
+		// Expose current loop group target as $group (array)
 		$group=array('group'=>array_column_search($groupId, 'group_id', $configTables['groups']));
+
 		$inheritPosts['groupId']=$groupId;
 		if (!empty(current($group)))
 		{
+			// If there is multiple parents to the selected group (ie parents of parents), use the loop to append them to $parent
 			if (count($tmpGroupIds) > 0)
 			{
 				$parent="$parent,".array_shift($tmpGroupIds);
 			}
+
+			// Print the form for the current loop group
 			printGroupForm($group, array('maps'=>$configTables['maps'], 'groups'=>$configTables['groups']), $inheritPosts, typeHelps("group", $helps));
+			
+			// Print child select dialogs for layers and/or groups if any exists for the current loop group
 			echo '<table><tr>';
 			$thClass='thFirst';
 			if ($groupLevel == $totGroupLevels && isset($inheritPosts['layerId']))
@@ -476,20 +516,29 @@
 	}
 	unset($tmpGroupIds, $parent, $groupLevel, $groupId, $thClass, $idPosts['groupId'], $totGroupLevels);
 
+	// If any <item> is selected
 	if (!empty($idPosts))
 	{
+		// Expose selected <item> target as $childFullTarget (array)
 		$childFullTarget=makeTargetFull(makeBasicTarget(substr(key($idPosts), 0, -2), current($idPosts)), $configTables);
+
+		// Expose the type of the selected <item> as $childType (string)
 		$childType=targetType($childFullTarget);
+
+		// Expose the help ids available for $childType as $typeHelps (array)
 		$typeHelps=typeHelps($childType, $helps);
 
-		//  Om lager vald
+		//  If a layer is selected
 		if ($childType == 'layer')
 		{
+			// Layer selectable items (contacts, origins, updates) are exposed as $selectables (array)
 			$selectables=array(
 				'contacts'=>array_combine(array_column($configTables['contacts'], 'contact_id'), array_column($configTables['contacts'], 'name')),
 				'origins'=>array_combine(array_column($configTables['origins'], 'origin_id'), array_column($configTables['origins'], 'name')),
 				'updates'=>array_column($configTables['updates'], 'update_id')
 			);
+
+			// If the selected layer has a source set, then append the service of that source to $childFullTarget
 			if (!empty(targetConfigParam($childFullTarget, 'source')))
 			{
 				$layerSource=array_column_search(targetConfigParam($childFullTarget, 'source'), 'source_id', $configTables['sources']);
@@ -499,41 +548,59 @@
 				}
 				unset($layerSource);
 			}
+
+			// Print the form for the selected layer
 			printLayerForm($childFullTarget, $selectables, array("maps"=>$configTables["maps"], "groups"=>$configTables["groups"]), array_column($configTables["sources"], "source_id"), $inheritPosts, $typeHelps);
 			unset($selectables);
 		}
 		
-		//  Om källa vald
+		//  Else, if a source is selected
 		elseif ($childType == 'source')
 		{
-			$selectables=array('services'=>array_column($configTables['services'], 'service_id'), 'tilegrids'=>array_column($configTables['tilegrids'], 'tilegrid_id'), 'contacts'=>array_combine(array_column($configTables['contacts'], 'contact_id'), array_column($configTables['contacts'], 'name')));
+			// Source selectable items (services, tilegrids, contacts) are exposed as $selectables (array)
+			$selectables=array(
+				'services'=>array_column($configTables['services'], 'service_id'), 
+				'tilegrids'=>array_column($configTables['tilegrids'], 'tilegrid_id'), 
+				'contacts'=>array_combine(array_column($configTables['contacts'], 'contact_id'), array_column($configTables['contacts'], 'name'))
+			);
+
+			// Print the form for the selected source
 			printSourceForm($childFullTarget, $selectables, $inheritPosts, $typeHelps);
 			unset($selectables);
 		}
 		
-		// Om tabell vald
+		// Else, if a table is selected
 		elseif ($childType == 'table')
 		{
+			// Table selectable items (contacts, origins, updates) are exposed as $selectables (array)
 			$selectables=array(
 				'contacts'=>array_combine(array_column($configTables['contacts'], 'contact_id'), array_column($configTables['contacts'], 'name')),
 				'origins'=>array_combine(array_column($configTables['origins'], 'origin_id'), array_column($configTables['origins'], 'name')),
 				'updates'=>array_column($configTables['updates'], 'update_id')
 			);
+			
+			// The id of the database where the table is stored is exposed as $databaseId (string)
 			$databaseId=substr($childFullTarget['table']['table_id'], 0, strpos($childFullTarget['table']['table_id'], '.'));
+			
+			// The connection string for $databaseId is exposed as $connectionString (string)
 			$connectionString=array_column_search($databaseId, 'database_id', $configTables['databases'])['connectionstring'];
+			
+			// Print the form for the selected table
 			printTableForm($childFullTarget, $connectionString, $selectables, $inheritPosts, $typeHelps);
 			unset($selectables, $databaseId, $connectionString);
 		}
 		
-		//  Om kontroll vald
+		//  Else, if a control is selected
 		elseif ($childType == 'control')
 		{
+			// Print the form for the selected control
 			printControlForm($childFullTarget, array("maps"=>$configTables["maps"]), $inheritPosts, $typeHelps);
 		}
 		
-		// Om något annat valts
+		// Else, if <item> of other type is selected
 		else
 		{
+			// Print the form for the selected <item> based on its type
 			eval('print'.ucfirst($childType).'Form($childFullTarget, $inheritPosts, $typeHelps);');
 		}
 		unset($childFullTarget, $childType, $typeHelps);
