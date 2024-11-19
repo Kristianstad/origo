@@ -371,7 +371,10 @@
 		if (!empty(current($map)))
 		{
 			// Map selectable items (footers, tilegrids) are exposed as $selectables (array)
-			$selectables=array('footers'=>array_column($configTables['footers'], 'footer_id'), 'tilegrids'=>array_column($configTables['tilegrids'], 'tilegrid_id'));
+			$selectables=array(
+				'footers'=>array_column($configTables['footers'], 'footer_id'), 
+				'tilegrids'=>array_column($configTables['tilegrids'], 'tilegrid_id')
+			);
 			
 			// Print the form for the selected map
 			printMapForm($map, $selectables, $inheritPosts, typeHelps("map", $helps));
