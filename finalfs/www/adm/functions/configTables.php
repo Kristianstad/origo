@@ -3,7 +3,9 @@
 	require_once("./functions/tableNamesFromSchema.php");
 	require_once("./functions/all_from_table.php");
 
-	// Takes a pg_connect database handle as parameter, reads a schema name from constant configSchema.php, and returns an associative array with all tables in the database schema. The array keys holds the table names while the associated values holds the "configurations"
+	// Takes a pg_connect database handle as parameter, reads a schema name from constant configSchema.php, 
+	// and returns an associative array with all tables in the database schema. The array keys holds the table 
+	// names while the associated values holds the "configurations"
 	function configTables(&$dbh)
 	{
 		require("./constants/configSchema.php");
