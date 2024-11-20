@@ -1,5 +1,6 @@
 <?php
 
+	// Takes an array of idPosts (see idposts.php) and returns the name of the table that has focus
 	function focusTable($idPosts)
 	{
 		if (isset($idPosts['mapId']))
