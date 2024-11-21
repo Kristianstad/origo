@@ -1,5 +1,6 @@
 <?php
 
+	// An associative array that are used by the manage tool to translate some words from english to swedish
 	$swedishDic=array(
 		'map'		=>'karta',
 		'maps'		=>'kartor',
