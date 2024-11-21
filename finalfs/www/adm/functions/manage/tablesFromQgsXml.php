@@ -1,5 +1,7 @@
 <?php
 
+	// Takes an SimpleXMLElement object, derived from a qgis .qgs-file, and an optional layer name as initial parameters (the third and fourth parameter is only used internally by the iterative process).
+	// Returns an array of postgis layers (table names) used in the file and (optionally) layer
 	function tablesFromQgsXml($qgsXml=null, $layerName=null, $tables=array(), $subtree=null)
 	{
 		if (isset($subtree))
