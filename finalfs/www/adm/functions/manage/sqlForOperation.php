@@ -3,6 +3,8 @@
 	require_once("./functions/pgArrayToPhp.php");
 	require_once("./functions/pkColumnOfTable.php");
 
+	// Takes an operation ('add' or 'remove'), a basic child target (array), and a parent (array) as parameters.
+	// Returns a sql-query string that updates the database by adding or removing the child from the appropriate field of the given parent 
 	function sqlForOperation($operation, $child, $parent)
 	{
 		require("./constants/configSchema.php");
@@ -28,5 +30,5 @@
 		$sql="UPDATE $configSchema.$parentTable SET $parentColumn = '$parentColumnNewValue' WHERE $parentPkColumn = '$parentId'";
 		return $sql;
 	}
-	
+
 ?>
