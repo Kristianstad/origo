@@ -1,5 +1,7 @@
 <?php
 
+	// Takes a view (string) and prints a html form with radio buttons to switch between views defined in the constant views.php.
+	// The radio button for the given view is selected on load.
 	function printViewSwitcher($view)
 	{
 		require("./constants/views.php");
@@ -19,5 +21,5 @@
 		}
 		echo "</form>";
 	}
-	
+
 ?>
