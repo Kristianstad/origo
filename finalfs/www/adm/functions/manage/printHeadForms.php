@@ -4,6 +4,9 @@
 	require_once("./functions/manage/printHeadForm.php");
 	require_once("./functions/manage/printMultiselectButton.php");
 
+	// Takes view (string), configTables (array), focusTable (string) and inheritPosts (array) as parameters.
+	// Prints a html code with a div containing a table of selection forms. 
+	// Which forms that are displayed depends on the given view. The given focusTable is placed first and its heading is in bold.
 	function printHeadForms($view, $configTables, $focusTable, $inheritPosts)
 	{
 		require("./constants/views.php");
@@ -81,5 +84,5 @@
 			</div>
 		HERE;
 	}
-	
+
 ?>
