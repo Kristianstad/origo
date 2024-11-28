@@ -10,6 +10,10 @@
 	require_once("./functions/manage/printAddOperation.php");
 	require_once("./functions/manage/printRemoveOperation.php");
 
+	// Takes a full group target (array), group operationtables (array), inheritPosts (array), and helps (array).
+	// Prints form fields and buttons that are used to:
+	// 1. View and edit the configuration for the given group.
+	// 2. Add or remove given group to/from maps or other groups.
 	function printGroupForm($group, $operationTables, $inheritPosts, $helps=array())
 	{
 		if (!isFullTarget($group))
