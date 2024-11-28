@@ -1,5 +1,10 @@
 <?php
 
+	// takes a full target of a type that can have children (array), a child table name (string), a css class name for th-elements (string),
+	// a heading (string), inheritPosts (array), groupLevel (optional, integer), and selectedValue (optional, string).
+	// Prints a child selection form for the given target. The type of the child depends on the second parameter. Style and heading is 
+	// controlled by the third and fourth parameter. GroupLevel and selectedValue is only used when looping through a group tree 
+	// (groups within groups) to keep track of the current depth level and parent.
 	require_once("./functions/pkColumnOfTable.php");
 	require_once("./functions/manage/printSelectOptions.php");
 	require_once("./functions/manage/printHiddenInputs.php");
@@ -105,5 +110,5 @@
 			$thClass='thNext';
 		}
 	}
-	
+
 ?>
