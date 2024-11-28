@@ -10,6 +10,8 @@
 	require_once("./functions/manage/printExportJsonButton.php");
 	require_once("./functions/manage/printDeleteButton.php");
 
+	// Takes a full map target (array), map selectables (array), inheritPosts (array), and helps (array).
+	// Prints forms and buttons that are used to view and edit the configuration for the given map.
 	function printMapForm($map, $selectables, $inheritPosts, $helps=array())
 	{
 		if (!isFullTarget($map))
