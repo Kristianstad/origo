@@ -8,6 +8,8 @@
 	require_once("./functions/manage/printReadDbSchemasButton.php");
 	require_once("./functions/manage/printDeleteButton.php");
 
+	// Takes a full database target (array), inheritPosts (array), and helps (array).
+	// Prints form fields and buttons that are used to view and edit the configuration for the given database.
 	function printDatabaseForm($database, $inheritPosts, $helps=array())
 	{
 		if (!isFullTarget($database))
