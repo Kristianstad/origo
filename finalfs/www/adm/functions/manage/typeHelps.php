@@ -1,5 +1,7 @@
 <?php
 
+	// Takes a type (string) and a helps array.
+	// Returns an array of all helps available for the given type
 	function typeHelps($type, $helps)
 	{
 		$typeHelps=array();
