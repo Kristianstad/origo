@@ -356,9 +356,9 @@
 	</script>
 <?php
 /*
- **********************
- *  DYNAMIC CONTENTS  *
- **********************
+ *********************************************
+ *  DYNAMIC CONTENTS BASED ON SELECTED ITEM  *
+ *********************************************
 */
 	// Expose field help ids (identifying fields with existing help text) as $helps (array)
 	$helps=array_column($configTables["helps"], "help_id");
