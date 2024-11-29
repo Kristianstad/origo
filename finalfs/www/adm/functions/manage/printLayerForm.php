@@ -11,6 +11,10 @@
 	require_once("./functions/manage/printAddOperation.php");
 	require_once("./functions/manage/printRemoveOperation.php");
 
+	// Takes a full layer target (array), layer selectables (array), layer operationtables (array), layer sources (array), inheritPosts (array), and helps (array).
+	// Prints form fields and buttons that are used to:
+	// 1. View and edit the configuration for the given layer.
+	// 2. Add or remove given layer to/from maps or groups.
 	function printLayerForm($layer, $selectables, $operationTables, $sources, $inheritPosts, $helps=array())
 	{
 		if (!isFullTarget($layer))
