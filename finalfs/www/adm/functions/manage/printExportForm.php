@@ -7,6 +7,8 @@
 	require_once("./functions/manage/printInfoButton.php");
 	require_once("./functions/manage/printDeleteButton.php");
 
+	// Takes a full export target (array), inheritPosts (array), and helps (array).
+	// Prints form fields and buttons that are used to view and edit the configuration for the given export.
 	function printExportForm($export, $inheritPosts, $helps=array())
 	{
 		if (!isFullTarget($export))
