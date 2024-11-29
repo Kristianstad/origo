@@ -7,6 +7,8 @@
 	require_once("./functions/manage/printInfoButton.php");
 	require_once("./functions/manage/printDeleteButton.php");
 
+	// Takes a full table target (array), pg_connect connection string, table selectables (array), inheritPosts (array), and helps (array).
+	// Prints form fields and buttons that are used to view and edit the configuration for the given table.
 	function printTableForm($table, $dbhConnectionString, $selectables, $inheritPosts, $helps=array())
 	{
 		if (!isFullTarget($table))
