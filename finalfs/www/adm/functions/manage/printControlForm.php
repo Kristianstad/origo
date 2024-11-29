@@ -9,6 +9,8 @@
 	require_once("./functions/manage/printAddOperation.php");
 	require_once("./functions/manage/printRemoveOperation.php");
 
+	// Takes a full control target (array), maps (array), inheritPosts (array), and helps (array).
+	// Prints form fields and buttons that are used to view and edit the configuration for the given control.
 	function printControlForm($control, $maps, $inheritPosts, $helps=array())
 	{
 		if (!isFullTarget($control))
