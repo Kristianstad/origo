@@ -7,6 +7,8 @@
 	require_once("./functions/manage/printInfoButton.php");
 	require_once("./functions/manage/printDeleteButton.php");
 
+	// Takes a full proj4def target (array), inheritPosts (array), and helps (array).
+	// Prints form fields and buttons that are used to view and edit the configuration for the given proj4def.
 	function printProj4defForm($proj4def, $inheritPosts, $helps=array())
 	{
 		if (!isFullTarget($proj4def))
