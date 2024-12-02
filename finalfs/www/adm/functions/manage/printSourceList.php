@@ -6,6 +6,8 @@
 	require_once("./functions/manage/printSelectOptions.php");
 	require_once("./functions/manage/printHelpButton.php");
 
+	// Takes a full layer target array, sources (array), and help-exist (boolean).
+	// Prints a drop-down selection box for selecting the source of the layer.
 	function printSourceList($layer, $sources, $help=false)
 	{
 		if (!isFullTarget($layer))
