@@ -1,9 +1,12 @@
 <?php
 
-	function printInfoButton($target)
+	// Takes a basic target array.
+	// Prints a form with a button labeled "Info" as only visible element. The button toggles the topFrame-iframe with contents from info.php.
+	// The type and id of the given target is posted (method=get) to info.php
+	function printInfoButton($basicTarget)
 	{
-		$type=key($target);
-		$id=current($target);
+		$type=key($basicTarget);
+		$id=current($basicTarget);
 		echo <<<HERE
 			<form></form>
 			<form action="info.php" method="get" target="topFrame">
@@ -14,5 +17,5 @@
 			</form>
 		HERE;
 	}
-	
+
 ?>
