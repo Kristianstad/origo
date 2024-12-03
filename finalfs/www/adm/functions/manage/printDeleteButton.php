@@ -1,5 +1,9 @@
 <?php
 
+	// Takes a basic target array, a confirmation string, and inheritPosts (array).
+	// Prints a form with a button labeled "Radera" as only visible element. 
+	// The button lauches a confirmation popup with the given confirmation string. 
+	// If OK is pressed in the confirmation popup then the target is posted to manage.php for deletion.
 	function printDeleteButton($target, $deleteConfirmStr, $inheritPosts)
 	{
 		$targetType=key($target);
