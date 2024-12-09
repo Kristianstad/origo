@@ -53,7 +53,7 @@
 		echo '<div class="buttonDiv">';
 		printUpdateButton('map');
 		$url=$map['map']['url'];
-		$map['map']=$map['map']['map_id'];
+		$map=makeTargetBasic($map);
 		printInfoButton($map);
 		$deleteConfirmStr="Är du säker på att du vill radera kartan ".$map['map']."? Ingående kontroller, grupper och lager påverkas ej.";
 		printDeleteButton($map, $deleteConfirmStr, $inheritPosts);
