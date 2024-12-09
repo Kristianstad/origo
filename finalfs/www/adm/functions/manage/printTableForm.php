@@ -32,7 +32,7 @@
 		printHiddenInputs($inheritPosts);
 		echo '<div class="buttonDiv">';
 		printUpdateButton('table');
-		$table['table']=$table['table']['table_id'];
+		$table=makeTargetBasic($table);
 		printInfoButton($table);
 		$deleteConfirmStr="Är du säker att du vill radera all metadata för tabellen ".$table['table']."?";
 		printDeleteButton($table, $deleteConfirmStr, $inheritPosts);
