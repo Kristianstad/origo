@@ -25,7 +25,7 @@
 		printHiddenInputs($inheritPosts);
 		echo '<div class="buttonDiv">';
 		printUpdateButton('origin');
-		$origin['origin']=$origin['origin']['origin_id'];
+		$origin=makeTargetBasic($origin);
 		printInfoButton($origin);
 		$deleteConfirmStr="Är du säker att du vill radera ursprungskällan ".$origin['origin']."? Referenser till ursprungskällan hanteras separat.";
 		printDeleteButton($origin, $deleteConfirmStr, $inheritPosts);
