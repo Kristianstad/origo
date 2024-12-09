@@ -28,7 +28,7 @@
 		printHiddenInputs($inheritPosts);
 		echo '<div class="buttonDiv">';
 		printUpdateButton('schema');
-		$schema['schema']=$schema['schema']['schema_id'];
+		$schema=makeTargetBasic($schema);
 		printInfoButton($schema);
 		printReadSchemaTablesButton($schema['schema']);
 		$deleteConfirmStr="Är du säker att du vill radera all metadata för schemat ".$schema['schema']."? Metadata för ingående tabeller hanteras separat.";
