@@ -25,7 +25,7 @@
 		printHiddenInputs($inheritPosts);
 		echo '<div class="buttonDiv">';
 		printUpdateButton('footer');
-		$footer['footer']=$footer['footer']['footer_id'];
+		$footer=makeTargetBasic($footer);
 		printInfoButton($footer);
 		$deleteConfirmStr="Är du säker att du vill radera sidfoten ".$footer['footer']."? Referenser till sidfoten hanteras separat.";
 		printDeleteButton($footer, $deleteConfirmStr, $inheritPosts);
