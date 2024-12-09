@@ -25,7 +25,7 @@
 		printHiddenInputs($inheritPosts);
 		echo '<div class="buttonDiv">';
 		printUpdateButton('contact');
-		$contact['contact']=$contact['contact']['contact_id'];
+		$contact=makeTargetBasic($contact);
 		printInfoButton($contact);
 		$deleteConfirmStr="Är du säker att du vill radera kontakten ".$contact['contact']."? Referenser till kontakten hanteras separat.";
 		printDeleteButton($contact, $deleteConfirmStr, $inheritPosts);
