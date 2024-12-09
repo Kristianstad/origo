@@ -23,7 +23,7 @@
 		printHiddenInputs($inheritPosts);
 		echo '<div class="buttonDiv">';
 		printUpdateButton('tilegrid');
-		$tilegrid['tilegrid']=$tilegrid['tilegrid']['tilegrid_id'];
+		$tilegrid=makeTargetBasic($tilegrid);
 		printInfoButton($tilegrid);
 		$deleteConfirmStr="Är du säker att du vill radera tilegriden ".$tilegrid['tilegrid']."? Referenser till tilegriden hanteras separat.";
 		printDeleteButton($tilegrid, $deleteConfirmStr, $inheritPosts);
