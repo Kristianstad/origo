@@ -34,7 +34,7 @@
 		echo '<hr class="dashedHr">';
 		echo '<div class="buttonDiv">';
 		printUpdateButton('group');
-		$group['group']=$group['group']['group_id'];
+		$group=makeTargetBasic($group);
 		printInfoButton($group);
 		printConfigPreviewButton('preview', $group['group']);
 		$deleteConfirmStr="Är du säker på att du vill radera gruppen ".$group['group']."? Ingående lager påverkas ej och referenser till gruppen hanteras separat.";
