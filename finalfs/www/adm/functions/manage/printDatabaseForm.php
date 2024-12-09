@@ -24,7 +24,7 @@
 		printHiddenInputs($inheritPosts);
 		echo '<div class="buttonDiv">';
 		printUpdateButton('database');
-		$database['database']=$database['database']['database_id'];
+		$database=makeTargetBasic($database);
 		printInfoButton($database);
 		printReadDbSchemasButton($database['database']);
 		$deleteConfirmStr="Är du säker att du vill radera all metadata för databasen ".$database['database']."? Metadata för ingående scheman och tabeller hanteras separat.";
