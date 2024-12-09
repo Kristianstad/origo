@@ -24,7 +24,7 @@
 		printHiddenInputs($inheritPosts);
 		echo '<div class="buttonDiv">';
 		printUpdateButton('export');
-		$export['export']=$export['export']['export_id'];
+		$export=makeTargetBasic($export);
 		printInfoButton($export);
 		$deleteConfirmStr="Är du säker att du vill radera exportinställningen ".$export['export']."? Referenser till exportinställningen hanteras separat.";
 		printDeleteButton($export, $deleteConfirmStr, $inheritPosts);
