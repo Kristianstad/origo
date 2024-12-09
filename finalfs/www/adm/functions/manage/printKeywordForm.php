@@ -22,7 +22,7 @@
 		printHiddenInputs($inheritPosts);
 		echo '<div class="buttonDiv">';
 		printUpdateButton('keyword');
-		$keyword['keyword']=$keyword['keyword']['keyword_id'];
+		$keyword=makeTargetBasic($keyword);
 		printInfoButton($keyword);
 		$deleteConfirmStr="Är du säker att du vill radera nyckelordet ".$keyword['keyword']."? Referenser till nyckelordet hanteras separat.";
 		printDeleteButton($keyword, $deleteConfirmStr, $inheritPosts);
