@@ -26,7 +26,7 @@
 		echo '<hr class="dashedHr">';
 		echo '<div class="buttonDiv">';
 		printUpdateButton('control');
-		$control['control']=$control['control']['control_id'];
+		$control=makeTargetBasic($control);
 		printInfoButton($control);
 		$deleteConfirmStr="Är du säker att du vill radera kontrollen ".$control['control']."? Referenser till kontrollen hanteras separat.";
 		printDeleteButton($control, $deleteConfirmStr, $inheritPosts);
