@@ -164,7 +164,7 @@
 		echo '<hr class="dashedHr">';
 		echo '<div class="buttonDiv">';
 		printUpdateButton('layer');
-		$layer['layer']=$layer['layer']['layer_id'];
+		$layer=makeTargetBasic($layer);
 		printInfoButton($layer);
 		printConfigPreviewButton('preview', null, $layer['layer']);
 		$deleteConfirmStr="Är du säker att du vill radera lagret ".$layer['layer']."? Referenser till lagret hanteras separat.";
