@@ -1,5 +1,7 @@
 <?php
 
+	// Takes a postgresql database handle, schema and table name.
+	// Returns all rows of given table as associative array.
 	function all_from_table($dbh, $schema, $table)
 	{
 		$tableWithSchema=$schema.'.'.$table;
@@ -10,5 +12,5 @@
 		}
 		return pg_fetch_all($result);
 	}
-	
+
 ?>
