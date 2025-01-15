@@ -318,3 +318,4 @@ INSERT INTO map_configs.helps(help_id,abstract) VALUES ('layer:style_filter','<b
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('map:url','<b>Karta > Url</b><br>Frivilligt, informativt fält där man kan ange en webblänk till kartan.');
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('map:layers','<b>Karta > Lager</b><br>En kommaseparerad lista med lager-idn för de lager som ska ligga i roten av kartan (utan att ligga i någon undergrupp). Ordningen i listan bestämmer ordningen i lagerträdet.');
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('map:groups','<b>Karta > Grupper</b><br>En kommaseparerad lista med grupp-idn för de grupper som ska ligga i roten av kartan. Ordningen i listan bestämmer ordningen i lagerträdet.');
+INSERT INTO map_configs.helps(help_id,abstract) VALUES ('map:controls','<b>Karta > Kontroller</b><br>En kommaseparerad lista med kontroll-idn för de kontroller som ska finnas med i kartan.');
