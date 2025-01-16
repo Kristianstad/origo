@@ -440,7 +440,14 @@ foreach ($jsonProj4Defs as $def)
 	{
 		if (!in_array($def['code'], array_column($proj4defs, 'code')))
 		{
-			$sql="INSERT INTO map_configs.proj4defs(code, projection, alias) VALUES ('".$def['code']."', '".$def['projection']."', '".$def['alias']."')";
+			if ($def['code'] == $jsonProjectionCode)
+			{
+				$sql="INSERT INTO map_configs.proj4defs(code, projection, projectionextent, alias) VALUES ('".$def['code']."', '".$def['projection']."', '(".$jsonProjectionExtent[0].",".$jsonProjectionExtent[1]."),(".$jsonProjectionExtent[2].",".$jsonProjectionExtent[3].")', '".$def['alias']."')";
+			}
+			else
+			{
+				$sql="INSERT INTO map_configs.proj4defs(code, projection, alias) VALUES ('".$def['code']."', '".$def['projection']."', '".$def['alias']."')";
+			}
 			$result=pg_query($dbh, $sql);
 			if (!$result)
 			{
@@ -509,9 +516,9 @@ if ($_POST['map'] == 'yes')
 			$tilegridCount++;
 		}
 	}
-	$mapColumns='map_id, mapgrid, projectioncode, projectionextent, featureinfooptions, extent, enablerotation, constrainresolution, resolutions, controls, groups, layers, proj4defs, footer, tilegrid';
+	$mapColumns='map_id, mapgrid, projectioncode, featureinfooptions, extent, enablerotation, constrainresolution, resolutions, controls, groups, layers, proj4defs, footer, tilegrid';
 
-	$mapValues="'".$_POST['mapid']."', '".var_export($jsonMapGrid['visible'], true)."', '$jsonProjectionCode', '(".$jsonProjectionExtent[0].",".$jsonProjectionExtent[1]."),(".$jsonProjectionExtent[2].",".$jsonProjectionExtent[3].")', '".json_encode($jsonFeatureinfoOptions, JSON_PRETTY_PRINT)."', '(".$jsonExtent[0].",".$jsonExtent[1]."),(".$jsonExtent[2].",".$jsonExtent[3].")', '$jsonEnableRotation', '$jsonConstrainResolution', '$jsonResolutions', '{".implode(',', $mapControls)."}', '{".implode(',', $mapGroups)."}', '{".implode(',', $mapLayers)."}', '{".implode(',', $mapProj4Defs)."}', '$mapFooter', '$tilegridId'";
+	$mapValues="'".$_POST['mapid']."', '".var_export($jsonMapGrid['visible'], true)."', '$jsonProjectionCode', '".json_encode($jsonFeatureinfoOptions, JSON_PRETTY_PRINT)."', '(".$jsonExtent[0].",".$jsonExtent[1]."),(".$jsonExtent[2].",".$jsonExtent[3].")', '$jsonEnableRotation', '$jsonConstrainResolution', '$jsonResolutions', '{".implode(',', $mapControls)."}', '{".implode(',', $mapGroups)."}', '{".implode(',', $mapLayers)."}', '{".implode(',', $mapProj4Defs)."}', '$mapFooter', '$tilegridId'";
 	if (!empty($jsonCenter))
 	{
 		$mapColumns=$mapColumns.', center';
