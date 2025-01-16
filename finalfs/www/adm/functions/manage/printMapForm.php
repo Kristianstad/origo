@@ -29,7 +29,6 @@
 		printUpdateSelect($map, array('footer'=>$selectables['footers']), 'bodySelect', 'Sidfot:', in_array('footer', $helps));
 		printTextarea($map, 'featureinfooptions', 'textareaMedium', 'FeatureInfoOptions:', in_array('featureinfooptions', $helps));
 		printTextarea($map, 'projectioncode', 'textareaMedium', 'Projektion:', in_array('projectioncode', $helps));
-		printTextarea($map, 'projectionextent', 'textareaMedium', 'Projektionsutbredning:', in_array('projectionextent', $helps));
 		printTextarea($map, 'extent', 'textareaMedium', 'Utbredning:', in_array('extent', $helps));
 		printTextarea($map, 'center', 'textareaMedium', 'Mittpunkt:', in_array('center', $helps));
 		printTextarea($map, 'zoom', 'textareaXSmall', 'Zoom:', in_array('zoom', $helps));
