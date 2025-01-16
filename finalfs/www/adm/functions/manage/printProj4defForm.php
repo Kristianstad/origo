@@ -18,6 +18,7 @@
 		echo '<div><div class="printXFormDiv"><form method="post">';
 		printTextarea($proj4def, 'code', 'textareaMedium', 'Kod:', in_array('code', $helps));
 		printTextarea($proj4def, 'projection', 'textareaLarge', 'Projektion:', in_array('projection', $helps));
+		printTextarea($proj4def, 'projectionextent', 'textareaMedium', 'Projektionsutbredning:', in_array('projectionextent', $helps));
 		printTextarea($proj4def, 'alias', 'textareaMedium', 'Alias:', in_array('alias', $helps));
 		printTextarea($proj4def, 'abstract', 'textareaLarge', 'Beskrivning:', in_array('abstract', $helps));
 		printTextarea($proj4def, 'info', 'textareaLarge', 'Info:', in_array('info', $helps));
