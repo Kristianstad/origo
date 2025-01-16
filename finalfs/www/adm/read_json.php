@@ -37,13 +37,14 @@
 		echo     '</button>';
 		echo   '</form>';
 		echo   '<form action="manage.php">';
-		echo     '<input type="hidden" name="view" value="Origo" />';
 		echo     '<input type="submit" value="Till konfigurationsverktyget" />';
 		echo   '</form>';
 		exit;
 	}
 
 	require_once("./functions/dbh.php");
+	require_once("./functions/pgArrayToPhp.php");
+	require_once("./functions/all_from_table.php");
 	require_once("./functions/configTables.php");
 	require_once("./functions/includeDirectory.php");
 	includeDirectory("./functions/read_json");
@@ -146,9 +147,8 @@ foreach ($jsonSource as $sourceId => $source)
 	if (strpos($source['url'], "?") !== false)
 	{
 		parse_str(substr($source['url'], strpos($source['url'], "?") + 1), $urlQuery);
-		//$source['url']=substr($source['url'], 0, strpos($source['url'], "?"));
+		$source['url']=substr($source['url'], 0, strpos($source['url'], "?"));
 	}
-	$source['url']=dirname($source['url']);
 	if ($_POST['services'] == 'yes')
 	{
 		if (!in_array($source['url'], $jsonServices))
@@ -380,20 +380,8 @@ if ($_POST['layers'] == 'yes')
 			$layerLayers='{}';
 			$layerSource=$layer['source']."#$importId";
 		}
-		if (!empty($layer['abstract']))
-		{
-			$layer['abstract']=preg_replace("|(<br>)*<form action='[^']*' method='post' target='_blank'><button type='submit' name='layerId' value='[^']*' style='[^']*'>Administrera</button></form>|i", '', $layer['abstract']);
-		}
-		if (empty($layerIcon))
-		{
-			$layerShowicon='false';
-		}
-		else
-		{
-			$layerShowicon='true';
-		}
-		$layersColumns='layer_id, title, format, type, attributes, abstract, queryable, featureinfolayer, opacity, visible, source, style_config, show_icon, icon, style_filter, icon_extended, layers, layertype, clusterstyle, attribution';
-		$layersValues="'".$layer['name']."$importId', '".$layer['title']."', '".$layer['format']."', '".$layer['type']."', ".pg_escape_literal(json_encode($layer['attributes'], JSON_PRETTY_PRINT)).", ".pg_escape_literal(str_replace(array('"'), '\"', str_replace(array("\r\n", "\r", "\n"), "<br />", $layer['abstract']))).", '$layerQueryable', '".$layer['featureinfoLayer']."', '".$layer['opacity']."', '$layerVisible', '$layerSource', ".pg_escape_literal($layerStyleConfig).", $layerShowicon, '$layerIcon', ".pg_escape_literal($layerStyleFilter).", '$layerExtendedIcon', '$layerLayers', '".$layer['layerType']."', '$layerClusterStyle', '".$layer['attribution']."'";
+		$layersColumns='layer_id, title, format, type, attributes, abstract, queryable, featureinfolayer, opacity, visible, source, style_config, icon, style_filter, icon_extended, layers, layertype, clusterstyle, attribution';
+		$layersValues="'".$layer['name']."$importId', '".$layer['title']."', '".$layer['format']."', '".$layer['type']."', ".pg_escape_literal(json_encode($layer['attributes'], JSON_PRETTY_PRINT)).", ".pg_escape_literal(str_replace(array('"'), '\"', str_replace(array("\r\n", "\r", "\n"), "<br />", $layer['abstract']))).", '$layerQueryable', '".$layer['featureinfoLayer']."', '".$layer['opacity']."', '$layerVisible', '$layerSource', ".pg_escape_literal($layerStyleConfig).", '$layerIcon', ".pg_escape_literal($layerStyleFilter).", '$layerExtendedIcon', '$layerLayers', '".$layer['layerType']."', '$layerClusterStyle', '".$layer['attribution']."'";
 		if (!empty($layer['maxScale']))
 		{
 			$layersColumns=$layersColumns.', maxscale';
@@ -440,7 +428,14 @@ foreach ($jsonProj4Defs as $def)
 	{
 		if (!in_array($def['code'], array_column($proj4defs, 'code')))
 		{
-			$sql="INSERT INTO map_configs.proj4defs(code, projection, alias) VALUES ('".$def['code']."', '".$def['projection']."', '".$def['alias']."')";
+			if ($def['code'] == $jsonProjectionCode)
+			{
+				$sql="INSERT INTO map_configs.proj4defs(code, projection, projectionextent, alias) VALUES ('".$def['code']."', '".$def['projection']."', '(".$jsonProjectionExtent[0].",".$jsonProjectionExtent[1]."),(".$jsonProjectionExtent[2].",".$jsonProjectionExtent[3].")', '".$def['alias']."')";
+			}
+			else
+			{
+				$sql="INSERT INTO map_configs.proj4defs(code, projection, alias) VALUES ('".$def['code']."', '".$def['projection']."', '".$def['alias']."')";
+			}
 			$result=pg_query($dbh, $sql);
 			if (!$result)
 			{
@@ -509,15 +504,15 @@ if ($_POST['map'] == 'yes')
 			$tilegridCount++;
 		}
 	}
-	$mapColumns='map_id, mapgrid, projectioncode, projectionextent, featureinfooptions, extent, enablerotation, constrainresolution, resolutions, controls, groups, layers, proj4defs, footer, tilegrid';
+	$mapColumns='map_id, mapgrid, projectioncode, featureinfooptions, extent, enablerotation, constrainresolution, resolutions, controls, groups, layers, proj4defs, footer, tilegrid';
 
-	$mapValues="'".$_POST['mapid']."', '".var_export($jsonMapGrid['visible'], true)."', '$jsonProjectionCode', '(".$jsonProjectionExtent[0].",".$jsonProjectionExtent[1]."),(".$jsonProjectionExtent[2].",".$jsonProjectionExtent[3].")', '".json_encode($jsonFeatureinfoOptions, JSON_PRETTY_PRINT)."', '(".$jsonExtent[0].",".$jsonExtent[1]."),(".$jsonExtent[2].",".$jsonExtent[3].")', '$jsonEnableRotation', '$jsonConstrainResolution', '$jsonResolutions', '{".implode(',', $mapControls)."}', '{".implode(',', $mapGroups)."}', '{".implode(',', $mapLayers)."}', '{".implode(',', $mapProj4Defs)."}', '$mapFooter', '$tilegridId'";
+	$mapValues="'".$_POST['mapid']."', '".var_export($jsonMapGrid['visible'], true)."', '$jsonProjectionCode', '".json_encode($jsonFeatureinfoOptions, JSON_PRETTY_PRINT)."', '(".$jsonExtent[0].",".$jsonExtent[1]."),(".$jsonExtent[2].",".$jsonExtent[3].")', '$jsonEnableRotation', '$jsonConstrainResolution', '$jsonResolutions', '{".implode(',', $mapControls)."}', '{".implode(',', $mapGroups)."}', '{".implode(',', $mapLayers)."}', '{".implode(',', $mapProj4Defs)."}', '$mapFooter', '$tilegridId'";
 	if (!empty($jsonCenter))
 	{
 		$mapColumns=$mapColumns.', center';
 		$mapValues=$mapValues.", '(".$jsonCenter[0].",".$jsonCenter[1].")'";
 	}
-	if (isset($jsonZoom))
+	if (!empty($jsonZoom))
 	{
 		$mapColumns=$mapColumns.', zoom';
 		$mapValues=$mapValues.", '$jsonZoom'";
@@ -533,7 +528,6 @@ if ($result)
 {
 	echo "Import lyckades!";
 	echo '<form action="manage.php">';
-	echo   '<input type="hidden" name="view" value="Origo" />';
 	echo   '<input type="submit" value="Till konfigurationsverktyget" />';
 	echo '</form>';
 }
