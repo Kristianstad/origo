@@ -66,7 +66,14 @@
 	$json = $json.' },';
 	// PageSettings </end>
 	$json = $json.'"projectionCode": "'.$map['projectioncode'].'", ';
-	$json = $json.'"projectionExtent": ['.pgBoxToText($map['projectionextent']).'], ';
+	$mapProjectionExtent=pgBoxToText(array_column_search($map['projectioncode'], 'code', $proj4defs)['projectionextent']);
+	if (empty($mapProjectionExtent))
+	{
+		require_once("./constants/proxyRoot.php");
+		echo '<script>alert("Projektionsutbredning saknas! Ingen konfiguration skriven."); window.location.href="'.$proxyRoot.$_SERVER["REQUEST_URI"].'&badJson=y";</script>';
+		exit;
+	}
+	$json = $json.'"projectionExtent": ['.$mapProjectionExtent.'], ';
 	$json = $json.'"featureinfoOptions": '.$map['featureinfooptions'].', ';
 	if (!empty($map['tilegrid']))
 	{
