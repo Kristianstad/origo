@@ -116,7 +116,6 @@ CREATE TABLE map_configs.maps
     controls character varying[] COLLATE pg_catalog."default" NOT NULL DEFAULT '{home#1,mapmenu#1,sharemap#1,geoposition#1,print#1,about#1,link#1,legend#1,position#1,measure#1}'::character varying[],
     mapgrid boolean NOT NULL DEFAULT true,
     projectioncode character varying COLLATE pg_catalog."default" NOT NULL DEFAULT 'EPSG:3857'::character varying,
-    projectionextent box NOT NULL DEFAULT '(-20026376.39,-20048966.10),(20026376.39,20048966.10)'::box,
     extent box NOT NULL DEFAULT '(-20026376.39,-20048966.10),(20026376.39,20048966.10)'::box,
     center point NOT NULL DEFAULT '(1770000,8770000)'::point,
     zoom integer NOT NULL DEFAULT 7,
@@ -152,13 +151,14 @@ CREATE TABLE map_configs.proj4defs
 (
     code character varying COLLATE pg_catalog."default" NOT NULL,
     projection character varying COLLATE pg_catalog."default",
+    projectionextent box,
     alias character varying COLLATE pg_catalog."default",
     info character varying COLLATE pg_catalog."default",
     abstract character varying COLLATE pg_catalog."default",
     CONSTRAINT proj4defs_pkey PRIMARY KEY (code)
 );
 
-INSERT INTO map_configs.proj4defs(code,projection) VALUES ('EPSG:3006','+proj=utm +zone=33 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs');
+INSERT INTO map_configs.proj4defs(code,projection,projectionextent) VALUES ('EPSG:3006','+proj=utm +zone=33 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs','(-20026376.39,-20048966.10),(20026376.39,20048966.10)');
 
 CREATE TABLE map_configs.services
 (
@@ -319,6 +319,6 @@ INSERT INTO map_configs.helps(help_id,abstract) VALUES ('map:url','<b>Karta > Ur
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('map:layers','<b>Karta > Lager</b><br>En kommaseparerad lista med lager-idn för de lager som ska ligga i roten av kartan (utan att ligga i någon undergrupp). Ordningen i listan bestämmer ordningen i lagerträdet.');
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('map:groups','<b>Karta > Grupper</b><br>En kommaseparerad lista med grupp-idn för de grupper som ska ligga i roten av kartan. Ordningen i listan bestämmer ordningen i lagerträdet.');
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('map:controls','<b>Karta > Kontroller</b><br>En kommaseparerad lista med kontroll-idn för de kontroller som ska finnas med i kartan.');
-INSERT INTO map_configs.helps(help_id,abstract) VALUES ('map:proj4defs','<b>Karta > Proj4defs</b><br>En kommaseparerad lista med EPSG-koder för de Proj4-definitioner som ska vara tillgängliga i kartan. EPSG:3857 och EPSG:4326 är inbyggda och behöver inte definieras.');
-INSERT INTO map_configs.helps(help_id,abstract) VALUES ('map:projectioncode','<b>Karta > Projektion</b><br>EPSG-koden för den projektion (koordinatsystem) som kartan ska visas i. Den valda EPSG-koden måste finnas med i proj4defs för kartan (undantaget EPSG:3857 och EPSG:4326 som är inbyggda och inte behöver definieras).');
-INSERT INTO map_configs.helps(help_id,abstract) VALUES ('map:projectionextent','<b>Karta > Projektionsutbredning</b><br>Två koordinatpar som definierar utbredningen för kartans projektion. T ex: <i>(573714.68,7702218.01),(-72234.21,6098290.04)</i><br><a href="https://origo-map.github.io/origo-documentation/latest/#projectionextent" target="_blank">Se projectionExtent-konfiguration</a>');
+INSERT INTO map_configs.helps(help_id,abstract) VALUES ('map:proj4defs','<b>Karta > Proj4defs</b><br>En kommaseparerad lista med EPSG-koder för de Proj4-definitioner som ska vara tillgängliga i kartan.');
+INSERT INTO map_configs.helps(help_id,abstract) VALUES ('map:projectioncode','<b>Karta > Projektion</b><br>EPSG-koden för den projektion (koordinatsystem) som kartan ska visas i. Den valda EPSG-koden måste finnas med i proj4defs för kartan.');
+INSERT INTO map_configs.helps(help_id,abstract) VALUES ('proj4def:projectionextent','<b>Proj4def > Projektionsutbredning</b><br>Två koordinatpar som definierar projektionens utbredning. T ex: <i>(573714.68,7702218.01),(-72234.21,6098290.04)</i>');
