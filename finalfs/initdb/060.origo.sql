@@ -323,3 +323,4 @@ INSERT INTO map_configs.helps(help_id,abstract) VALUES ('map:proj4defs','<b>Kart
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('map:projectioncode','<b>Karta > Projektion</b><br>EPSG-koden för den projektion (koordinatsystem) som kartan ska visas i. Den valda EPSG-koden måste finnas med i proj4defs för kartan.');
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('proj4def:projectionextent','<b>Proj4def > Projektionsutbredning</b><br>Två koordinatpar som definierar projektionens utbredning. T ex: <i>(573714.68,7702218.01),(-72234.21,6098290.04)</i>');
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('map:extent','<b>Karta > Utbredning</b><br>Två koordinatpar som definierar kartans utbredning. T ex: <i>(300000,6280000),(-80000,6130000)</i>');
+INSERT INTO map_configs.helps(help_id,abstract) VALUES ('map:center','<b>Karta > Mittpunkt</b><br>Ett koordinatpar som definierar mittpunkten för kartan vid uppstart. T ex: <i>(191000,6211212)</i>');
