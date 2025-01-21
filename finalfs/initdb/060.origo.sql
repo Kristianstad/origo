@@ -334,3 +334,4 @@ INSERT INTO map_configs.helps(help_id,abstract) VALUES ('map:js_files','<b>Karta
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('map:js','<b>Karta > JS</b><br>Javascript-kod som inkluderas direkt i kartans html-dokument.');
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('map:abstract','<b>Karta > Beskrivning</b><br>En frivillig, informativ text som beskriver kartan och dess innehåll. Information för administratörer.');
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('map:title','<b>Karta > Titel</b><br>Titeln på kartan. Skrivs in i kartans html-dokument.');
+INSERT INTO map_configs.helps(help_id,abstract) VALUES ('map:icon','<b>Karta > Genvägsikon</b><br>Kartans genvägsikon (shortcut icon). Skrivs in i kartans html-dokument.');
