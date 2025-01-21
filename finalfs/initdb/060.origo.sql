@@ -338,3 +338,4 @@ INSERT INTO map_configs.helps(help_id,abstract) VALUES ('map:icon','<b>Karta > G
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('map:footer','<b>Karta > Sidfot</b><br>Välj en fördefinierad sidfot för kartan eller lämna fältet tomt.');
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('map:tilegrid','<b>Karta > Tilegrid</b><br>Välj en fördefinierad tilegrid för kartan eller lämna fältet tomt.');
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('map:zoom','<b>Karta > Zoom</b><br>Den zoomnivå som kartan ska laddas i vid uppstart. Anges som ett heltal, där ett högre värde innebär en mer inzoomad karta.');
+INSERT INTO map_configs.helps(help_id,abstract) VALUES ('map:mapgrid','<b>Karta > Visa rutnät</b><br>Om "Visa rutnät" är satt till "t" kommer ett rutnät ritas bakom befintliga kartlager, annars är bakgrunden enfärgat vit.');
