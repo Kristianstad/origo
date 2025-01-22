@@ -347,4 +347,4 @@ INSERT INTO map_configs.helps(help_id,abstract) VALUES ('control:abstract','<b>K
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('control:options','<b>Kontroll > Inställningar</b><br>JSON-formaterat fält med specifika inställningar (options) för vald kontroll.<br><a href="https://origo-map.github.io/origo-documentation/latest/#controls-1" target="_blank">Se kontrollkonfiguration</a>');
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('control:info','<b>Kontroll > Info</b><br>Fält för administrativ information, rörande kontrollen, som inte passar in någon annanstans.');
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('layer:title','<b>Lager > Titel</b><br>Lagrets titel, som bland annat visas i lagerträdet.');
-INSERT INTO map_configs.helps(help_id,abstract) VALUES ('layer:source','<b>Lager > Källa</b><br>Välj lagrets fördefinierade källa, alternativt skriv in ett filnamn (med sökväg).');
+INSERT INTO map_configs.helps(help_id,abstract) VALUES ('layer:source','<b>Lager > Källa</b><br>Välj lagrets fördefinierade källa, alternativt skriv in ett filnamn med sökväg (om källan är t ex. en json-fil).');
