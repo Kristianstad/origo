@@ -24,7 +24,8 @@
 		else
 		{
 			echo <<<HERE
-				<a href="https://origo-map.github.io/origo-documentation/latest/#origo-map" target="_blank">Origo-dokumentation</a>
+				<a href="https://origo-map.github.io/origo-documentation/latest/#origo-map" target="_blank">Origo-dokumentation</a><br>
+				<a href="https://jsonchecker.com/" target="_blank">JSON Checker</a>
 			HERE;
 		}
 	?>
