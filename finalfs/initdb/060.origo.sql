@@ -356,3 +356,4 @@ INSERT INTO map_configs.helps(help_id,abstract) VALUES ('group:groups','<b>Grupp
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('group:title','<b>Grupp > Titel</b><br>Gruppens titel, som visas i lagerträdet.');
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('group:info','<b>Grupp > Info</b><br>Fält för administrativ information, rörande gruppen, som inte passar in någon annanstans.');
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('group:show_meta','<b>Grupp > Visa metadata</b><br>Om "Visa metadata" är satt till "f" kommer aldrig metadata för gruppens lager eller undergrupper att skrivas in i Origo-konfigurationen.');
+INSERT INTO map_configs.helps(help_id,abstract) VALUES ('layer:keywords','<b>Lager > Nyckelord</b><br>En kommaseparerad lista av nyckelord som är associerade med det aktuella lagret. Nyckelorden används bland annat för att gruppera lager i det administrativa verktyget.');
