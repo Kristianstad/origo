@@ -354,3 +354,4 @@ INSERT INTO map_configs.helps(help_id,abstract) VALUES ('layer:info','<b>Lager >
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('group:layers','<b>Grupp > Lager</b><br>En kommaseparerad lista med lager-idn för de lager som ska ligga i gruppen. Ordningen i listan bestämmer ordningen i lagerträdet.');
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('group:groups','<b>Grupp > Grupper</b><br>En kommaseparerad lista med grupp-idn för de grupper som ska utgöra undergrupper till den aktuella gruppen. Ordningen i listan bestämmer ordningen i lagerträdet.');
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('group:title','<b>Grupp > Titel</b><br>Gruppens titel, som visas i lagerträdet.');
+INSERT INTO map_configs.helps(help_id,abstract) VALUES ('group:info','<b>Grupp > Info</b><br>Fält för administrativ information, rörande gruppen, som inte passar in någon annanstans.');
