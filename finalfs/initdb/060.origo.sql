@@ -69,7 +69,7 @@ CREATE TABLE map_configs.layers
     editable boolean,
     gutter integer,
     tiled boolean DEFAULT true,
-    opacity numeric(3,2) NOT NULL DEFAULT 1,
+    opacity numeric(3,2),
     featureinfolayer character varying COLLATE pg_catalog."default",
     info character varying COLLATE pg_catalog."default",
     format character varying COLLATE pg_catalog."default" DEFAULT 'image/png'::character varying,
