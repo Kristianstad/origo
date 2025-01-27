@@ -172,7 +172,7 @@ CREATE TABLE map_configs.services
     CONSTRAINT services_pkey PRIMARY KEY (service_id)
 );
 
-INSERT INTO map_configs.services(service_id,formats,abstract) VALUES ('GEOJSON','{GEOJSON}','Använd denna tjänst om källan är en GeoJSON-fil.');
+INSERT INTO map_configs.services(service_id,type,formats,abstract) VALUES ('GEOJSON','File','{GEOJSON}','Använd denna tjänst om källan är en GeoJSON-fil.');
 
 CREATE TABLE map_configs.sources
 (
