@@ -32,7 +32,8 @@
 		'keyword'	=>'nyckelord',
 		'keywords'	=>'nyckelord',
 		'help'		=>'hjälp',
-		'helps'		=>'hjälp'
+		'helps'		=>'hjälp',
+		'formats'	=>'format'
 	);
 
 ?>
