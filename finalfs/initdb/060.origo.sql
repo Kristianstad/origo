@@ -298,6 +298,17 @@ CREATE TABLE map_configs.keywords
     CONSTRAINT keywords_pkey PRIMARY KEY (keyword_id)
 );
 
+CREATE TABLE map_configs.formats
+(
+    format_id character varying COLLATE pg_catalog."default" NOT NULL,
+    abstract character varying COLLATE pg_catalog."default",
+    info character varying COLLATE pg_catalog."default",
+    CONSTRAINT formats_pkey PRIMARY KEY (format_id)
+);
+
+INSERT INTO map_configs.formats(format_id,abstract) VALUES ('GEOJSON','GeoJSON-format');
+INSERT INTO map_configs.formats(format_id,abstract) VALUES ('OSM','OpenStreetMap-format');
+
 CREATE TABLE map_configs.helps
 (
     help_id character varying COLLATE pg_catalog."default" NOT NULL,
