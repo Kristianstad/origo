@@ -8,6 +8,7 @@
 	require_once("./functions/array_column_search.php");
 	require_once("./functions/pkColumnOfTable.php");
 	require_once("./functions/configTables.php");
+	require_once("./functions/pgArrayToPhp.php");
 	require_once("./functions/includeDirectory.php");
 
 	// Expose all functions in given folder
@@ -534,13 +535,6 @@
 		//  If a layer is selected
 		if ($childType == 'layer')
 		{
-			// Layer selectable items (contacts, origins, updates) are exposed as $selectables (array)
-			$selectables=array(
-				'contacts'=>array_combine(array_column($configTables['contacts'], 'contact_id'), array_column($configTables['contacts'], 'name')),
-				'origins'=>array_combine(array_column($configTables['origins'], 'origin_id'), array_column($configTables['origins'], 'name')),
-				'updates'=>array_column($configTables['updates'], 'update_id')
-			);
-
 			// If the selected layer has a source set, then append the service of that source to $childFullTarget
 			if (!empty(targetConfigParam($childFullTarget, 'source')))
 			{
@@ -549,11 +543,22 @@
 				{
 					setTargetConfigParam($childFullTarget, 'service', $layerSource['service']);
 				}
-				unset($layerSource);
+				$layerService=array_column_search($layerSource['service'], 'service_id', $configTables['services']);
+				$layerFormats=pgArrayToPhp($layerService['formats']);
+				unset($layerSource, $layerService);
 			}
 
+			// Layer selectable items (contacts, origins, formats, updates) are exposed as $selectables (array)
+			$selectables=array(
+				'contacts'=>array_combine(array_column($configTables['contacts'], 'contact_id'), array_column($configTables['contacts'], 'name')),
+				'origins'=>array_combine(array_column($configTables['origins'], 'origin_id'), array_column($configTables['origins'], 'name')),
+				'formats'=>$layerFormats,
+				'sources'=>array_column($configTables["sources"], "source_id"),
+				'updates'=>array_column($configTables['updates'], 'update_id')
+			);
+
 			// Print the form for the selected layer
-			printLayerForm($childFullTarget, $selectables, array("maps"=>$configTables["maps"], "groups"=>$configTables["groups"]), array_column($configTables["sources"], "source_id"), $inheritPosts, $typeHelps);
+			printLayerForm($childFullTarget, $selectables, array("maps"=>$configTables["maps"], "groups"=>$configTables["groups"]), $inheritPosts, $typeHelps);
 			unset($selectables);
 		}
 		
