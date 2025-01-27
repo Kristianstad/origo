@@ -18,7 +18,8 @@
 		echo '<div><div class="printXFormDiv"><form method="post">';
 		printTextarea($service, 'service_id', 'textareaMedium', 'Id:', in_array('service_id', $helps));
 		printTextarea($service, 'base_url', 'textareaLarge', 'Huvudurl:', in_array('base_url', $helps));
-		printTextarea($service, 'type', 'textareaMedium', 'Typ:', in_array('type', $helps));
+		printUpdateSelect($service, array('type'=>array("File","QGIS","Geoserver")), 'bodySelect', 'Typ:', in_array('type', $helps));
+		printTextarea($service, 'formats', 'textareaLarge', 'Tillgängliga format:', in_array('formats', $helps));
 		printTextarea($service, 'abstract', 'textareaLarge', 'Beskrivning:', in_array('abstract', $helps));
 		printTextarea($service, 'info', 'textareaLarge', 'Info:', in_array('info', $helps));
 		printHiddenInputs($inheritPosts);
