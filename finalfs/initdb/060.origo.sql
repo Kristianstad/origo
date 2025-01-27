@@ -167,9 +167,12 @@ CREATE TABLE map_configs.services
     alias character varying COLLATE pg_catalog."default",
     type character varying COLLATE pg_catalog."default",
     info character varying COLLATE pg_catalog."default",
+    formats character varying[] COLLATE pg_catalog."default",
     abstract character varying COLLATE pg_catalog."default",
     CONSTRAINT services_pkey PRIMARY KEY (service_id)
 );
+
+INSERT INTO map_configs.services(service_id,formats,abstract) VALUES ('GEOJSON','{GEOJSON}','Använd denna tjänst om källan är en GeoJSON-fil.');
 
 CREATE TABLE map_configs.sources
 (
@@ -186,6 +189,7 @@ CREATE TABLE map_configs.sources
     history character varying COLLATE pg_catalog."default",
     softversion character varying COLLATE pg_catalog."default",
     abstract character varying COLLATE pg_catalog."default",
+    file character varying COLLATE pg_catalog."default",
     CONSTRAINT sources_pkey PRIMARY KEY (source_id)
 );
 
