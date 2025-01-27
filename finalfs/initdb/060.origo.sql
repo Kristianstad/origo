@@ -193,6 +193,9 @@ CREATE TABLE map_configs.sources
     CONSTRAINT sources_pkey PRIMARY KEY (source_id)
 );
 
+INSERT INTO map_configs.sources(source_id,service,file,abstract) VALUES ('origo-cities#1','GEOJSON','data/origo-cities-3857.geojson','Fil med origokommuner.');
+INSERT INTO map_configs.sources(source_id,service,file,abstract) VALUES ('origo-mask#1','GEOJSON','data/origo-mask-3857.geojson','Fil med en mask för origokommuner.');
+
 CREATE TABLE map_configs.tilegrids
 (
     tilegrid_id character varying COLLATE pg_catalog."default" NOT NULL,
