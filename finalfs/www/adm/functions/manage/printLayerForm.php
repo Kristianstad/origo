@@ -2,7 +2,6 @@
 
 	require_once("./functions/manage/isFullTarget.php");
 	require_once("./functions/manage/printTextarea.php");
-	require_once("./functions/manage/printSourceList.php");
 	require_once("./functions/manage/printUpdateSelect.php");
 	require_once("./functions/manage/targetConfigParam.php");
 	require_once("./functions/manage/printHiddenInputs.php");
