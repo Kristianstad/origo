@@ -105,7 +105,7 @@
 				{
 					$layer['style_layer'] = $layer['style_layer'].'-bg';
 				}
-				if ($styleLayer['show_icon'] != 'f' || $styleLayer['show_iconext'] == 't' || $layer['type'] == 'GROUP')
+				if ($styleLayer['show_icon'] != 'f' || $styleLayer['show_iconext'] == 't' || $layer['type'] == 'GROUP' || $layer['type'] == 'GEOJSON')
 				{
 					$json = $json.', "style": "'.$layer['style_layer'].'"';
 				}
