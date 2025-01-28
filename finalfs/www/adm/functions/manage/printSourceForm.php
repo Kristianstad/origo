@@ -23,8 +23,7 @@
 		$sourceServiceId=targetConfigParam($source, 'service');
 		if (!empty($sourceServiceId))
 		{
-			$sourceServiceType=targetConfigParam($source, 'service_type');
-			if ($sourceServiceType == "File")
+			if (targetConfigParam($source, 'service_type') == "File")
 			{
 				printTextarea($source, 'file', 'textareaLarge', 'Fil:', in_array('file', $helps));
 			}
