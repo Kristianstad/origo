@@ -138,55 +138,62 @@
 			{
 				$json = $json.', "opacity": '.$layer['opacity'];
 			}
-			if ($layer['type'] != 'OSM')
+			if ($layer['type'] == 'GEOJSON')
 			{
-				$json = $json.', "source": "'.$layer['source'].'"';
-				if ($layer['type'] == 'WMS')
+				$json = $json.', "source": "'.$source['file'].'"';
+			}
+			else
+			{
+				if ($layer['type'] != 'OSM')
 				{
-					if (!empty($layer['gutter']))
+					$json = $json.', "source": "'.$layer['source'].'"';
+					if ($layer['type'] == 'WMS')
 					{
-						$json = $json.', "gutter": '.$layer['gutter'];
+						if (!empty($layer['gutter']))
+						{
+							$json = $json.', "gutter": '.$layer['gutter'];
+						}
+						if ($layer['tiled'] == 'f')
+						{
+							$json = $json.', "renderMode": "image"';
+						}
+						if (!empty($layer['featureinfolayer']))
+						{
+							$json = $json.', "featureinfoLayer": "'.$layer['featureinfolayer'].'"';
+						}
 					}
-					if ($layer['tiled'] == 'f')
+					elseif ($layer['type'] == 'WFS')
 					{
-						$json = $json.', "renderMode": "image"';
-					}
-					if (!empty($layer['featureinfolayer']))
-					{
-						$json = $json.', "featureinfoLayer": "'.$layer['featureinfolayer'].'"';
-					}
-				}
-				elseif ($layer['type'] == 'WFS')
-				{
-					$json = $json.', "projection": "EPSG:4326"';
-					if ($layer['editable'] == 't')
-					{
-						$json = $json.', "editable": true';
-						if (!empty($layer['allowededitoperations']))
+						$json = $json.', "projection": "EPSG:4326"';
+						if ($layer['editable'] == 't')
 						{
-							$allowededitoperations=explode(',', str_replace(["\r\n", "\r", "\n", ' ', '"', '[', ']'], '', $layer['allowededitoperations']));
-							array_walk($allowededitoperations, function(&$value, $key) { $value = '"'.$value.'"'; });
-							$json = $json.', "allowedEditOperations": ['.implode(',', $allowededitoperations).']';
-							unset($allowededitoperations);
-						}
-						if (!empty($layer['geometryname']))
-						{
-							$json = $json.', "geometryName": "'.$layer['geometryname'].'"';
-						}
-						if (!empty($layer['geometrytype']))
-						{
-							$json = $json.', "geometryType": "'.$layer['geometrytype'].'"';
-						}
-						if (!empty($layer['featurelistattributes']))
-						{
-							$featurelistattributes=explode(',', str_replace(["\r\n", "\r", "\n", ' ', '"', '[', ']'], '', $layer['featurelistattributes']));
-							array_walk($featurelistattributes, function(&$value, $key) { $value = '"'.$value.'"'; });
-							$json = $json.', "featureListAttributes": ['.implode(',', $featurelistattributes).']';
-							unset($featurelistattributes);
-						}
-						if (!empty($layer['drawtools']))
-						{
-							$json = $json.', "drawTools": '.$layer['drawtools'];
+							$json = $json.', "editable": true';
+							if (!empty($layer['allowededitoperations']))
+							{
+								$allowededitoperations=explode(',', str_replace(["\r\n", "\r", "\n", ' ', '"', '[', ']'], '', $layer['allowededitoperations']));
+								array_walk($allowededitoperations, function(&$value, $key) { $value = '"'.$value.'"'; });
+								$json = $json.', "allowedEditOperations": ['.implode(',', $allowededitoperations).']';
+								unset($allowededitoperations);
+							}
+							if (!empty($layer['geometryname']))
+							{
+								$json = $json.', "geometryName": "'.$layer['geometryname'].'"';
+							}
+							if (!empty($layer['geometrytype']))
+							{
+								$json = $json.', "geometryType": "'.$layer['geometrytype'].'"';
+							}
+							if (!empty($layer['featurelistattributes']))
+							{
+								$featurelistattributes=explode(',', str_replace(["\r\n", "\r", "\n", ' ', '"', '[', ']'], '', $layer['featurelistattributes']));
+								array_walk($featurelistattributes, function(&$value, $key) { $value = '"'.$value.'"'; });
+								$json = $json.', "featureListAttributes": ['.implode(',', $featurelistattributes).']';
+								unset($featurelistattributes);
+							}
+							if (!empty($layer['drawtools']))
+							{
+								$json = $json.', "drawTools": '.$layer['drawtools'];
+							}
 						}
 					}
 				}
