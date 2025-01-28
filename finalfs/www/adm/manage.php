@@ -535,24 +535,29 @@
 		//  If a layer is selected
 		if ($childType == 'layer')
 		{
-			// If the selected layer has a source set, then append the service of that source to $childFullTarget
-			if (!empty(targetConfigParam($childFullTarget, 'source')))
+			// If the selected layer has a source set, then append the 'service_id' of that source to $childFullTarget and also append the service's 'restricted' as 'service_restricted'.
+			$layerSourceId=targetConfigParam($childFullTarget, 'source');
+			if (!empty($layerSourceId))
 			{
-				$layerSource=array_column_search(targetConfigParam($childFullTarget, 'source'), 'source_id', $configTables['sources']);
-				if (!empty($layerSource) && isset($layerSource['service']))
+				$layerSource=array_column_search($layerSourceId, 'source_id', $configTables['sources']);
+				$layerServiceId=$layerSource['service'];
+				if (!empty($layerServiceId))
 				{
-					setTargetConfigParam($childFullTarget, 'service', $layerSource['service']);
+					setTargetConfigParam($childFullTarget, 'service_id', $layerServiceId);
+					$layerService=array_column_search($layerServiceId, 'service_id', $configTables['services']);
+					setTargetConfigParam($childFullTarget, 'service_restricted', $layerService['restricted']);
+					$layerServiceFormats=pgArrayToPhp($layerService['formats']);
+					unset($layerService);
 				}
-				$layerService=array_column_search($layerSource['service'], 'service_id', $configTables['services']);
-				$layerFormats=pgArrayToPhp($layerService['formats']);
-				unset($layerSource, $layerService);
+				unset($layerSource, $layerServiceId);
 			}
+			unset($layerSourceId);
 
 			// Layer selectable items (contacts, origins, formats, updates) are exposed as $selectables (array)
 			$selectables=array(
 				'contacts'=>array_combine(array_column($configTables['contacts'], 'contact_id'), array_column($configTables['contacts'], 'name')),
 				'origins'=>array_combine(array_column($configTables['origins'], 'origin_id'), array_column($configTables['origins'], 'name')),
-				'formats'=>$layerFormats,
+				'formats'=>$layerServiceFormats,
 				'sources'=>array_column($configTables["sources"], "source_id"),
 				'updates'=>array_column($configTables['updates'], 'update_id')
 			);
@@ -565,6 +570,16 @@
 		//  Else, if a source is selected
 		elseif ($childType == 'source')
 		{
+			// If the selected source has a service set, then append the type of that service to $childFullTarget as 'service_type'.
+			$sourceServiceId=targetConfigParam($childFullTarget, 'service');
+			if (!empty($sourceServiceId))
+			{
+				$sourceService=array_column_search($sourceServiceId, 'service_id', $configTables['services']);
+				setTargetConfigParam($childFullTarget, 'service_type', $sourceService['type']);
+				unset($sourceService);
+			}
+			unset($sourceServiceId);
+			
 			// Source selectable items (services, tilegrids, contacts) are exposed as $selectables (array)
 			$selectables=array(
 				'services'=>array_column($configTables['services'], 'service_id'), 
