@@ -23,7 +23,8 @@
 		$sourceServiceId=targetConfigParam($source, 'service');
 		if (!empty($sourceServiceId))
 		{
-			if ($sourceServiceId == "GEOJSON")
+			$sourceServiceType=targetConfigParam($source, 'service_type');
+			if ($sourceServiceType == "File")
 			{
 				printTextarea($source, 'file', 'textareaLarge', 'Fil:', in_array('file', $helps));
 			}
