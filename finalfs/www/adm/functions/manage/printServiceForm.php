@@ -18,11 +18,11 @@
 		}
 		echo '<div><div class="printXFormDiv"><form method="post">';
 		printTextarea($service, 'service_id', 'textareaMedium', 'Id:', in_array('service_id', $helps));
-		printUpdateSelect($service, array('type'=>array("File","QGIS","Geoserver")), 'bodySelect', 'Typ:', in_array('type', $helps));
+		printUpdateSelect($service, array('type'=>array("File","OpenStreetMap","QGIS","Geoserver")), 'bodySelect', 'Typ:', in_array('type', $helps));
 		$serviceType=targetConfigParam($service, 'type');
 		if (!empty($serviceType))
 		{
-			if ($serviceType != 'File')
+			if ($serviceType != 'File' && $serviceType != 'OpenStreetMap')
 			{
 				printTextarea($service, 'base_url', 'textareaLarge', 'Huvudurl:', in_array('base_url', $helps));
 			}
