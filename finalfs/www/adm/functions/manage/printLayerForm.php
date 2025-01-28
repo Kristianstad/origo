@@ -29,7 +29,7 @@
 		if (!empty($layerSourceId))
 		{
 			printUpdateSelect($layer, array('type'=>$selectables['formats']), 'miniSelect', 'Typ:', in_array('type', $helps));
-			if (!empty($layer['layer']['type']))
+			if (!empty(targetConfigParam($layer, 'type')))
 			{
 				if ($layer['layer']['type'] == 'WFS')
 				{
@@ -61,7 +61,7 @@
 				printUpdateSelect($layer, array('visible'=>array("f", "t")), 'miniSelect', 'Synlig:', in_array('visible', $helps));
 				printUpdateSelect($layer, array('exportable'=>array("f", "t")), 'miniSelect', 'Exporterbar:', in_array('exportable', $helps));
 				printTextarea($layer, 'opacity', 'textareaSmall', 'Opacitet:', in_array('opacity', $helps));
-				if (isset($layer['layer']['service']) && $layer['layer']['service'] == 'restricted')
+				if (isset($layer['layer']['service_id']) && $layer['layer']['service_restricted'] == 't')
 				{
 					echo "<span><img class='yellowLock' src='../img/png/lock_yellow.png' alt='Skyddat lager' title='Skyddat lager'>";
 					printTextarea($layer, 'adusers', 'textareaLarge', 'Användare:', in_array('adusers', $helps));
