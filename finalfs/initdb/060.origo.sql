@@ -173,7 +173,7 @@ CREATE TABLE map_configs.services
     CONSTRAINT services_pkey PRIMARY KEY (service_id)
 );
 
-INSERT INTO map_configs.services(service_id,type,formats,abstract) VALUES ('GEOJSON','File','{GEOJSON}','Använd denna tjänst om källan är en GeoJSON-fil.');
+INSERT INTO map_configs.services(service_id,type,formats,abstract) VALUES ('GeoJSON','File','{GEOJSON}','Använd denna tjänst om källan är en GeoJSON-fil.');
 
 CREATE TABLE map_configs.sources
 (
@@ -194,8 +194,8 @@ CREATE TABLE map_configs.sources
     CONSTRAINT sources_pkey PRIMARY KEY (source_id)
 );
 
-INSERT INTO map_configs.sources(source_id,service,file,abstract) VALUES ('origo-cities#1','GEOJSON','data/origo-cities-3857.geojson','Fil med origokommuner.');
-INSERT INTO map_configs.sources(source_id,service,file,abstract) VALUES ('origo-mask#1','GEOJSON','data/origo-mask-3857.geojson','Fil med en mask för origokommuner.');
+INSERT INTO map_configs.sources(source_id,service,file,abstract) VALUES ('origo-cities#1','GeoJSON','data/origo-cities-3857.geojson','Fil med origokommuner.');
+INSERT INTO map_configs.sources(source_id,service,file,abstract) VALUES ('origo-mask#1','GeoJSON','data/origo-mask-3857.geojson','Fil med en mask för origokommuner.');
 
 CREATE TABLE map_configs.tilegrids
 (
