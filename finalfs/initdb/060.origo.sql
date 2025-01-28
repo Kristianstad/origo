@@ -166,7 +166,7 @@ CREATE TABLE map_configs.services
     base_url character varying COLLATE pg_catalog."default",
     alias character varying COLLATE pg_catalog."default",
     type character varying COLLATE pg_catalog."default",
-    restricted boolean DEFAULT false,
+    restricted boolean,
     info character varying COLLATE pg_catalog."default",
     formats character varying[] COLLATE pg_catalog."default",
     abstract character varying COLLATE pg_catalog."default",
