@@ -144,8 +144,8 @@ CREATE TABLE map_configs.maps
     CONSTRAINT map_pk PRIMARY KEY (map_id)
 );
 
-INSERT INTO map_configs.maps(map_id,footer,layers,groups,abstract,show_meta) VALUES ('origo-cities#1','origo#1','{origo-cities#1}','{none#1,background#1}','En demokarta som visar kommuner delaktiga i Origoprojektet.',true);
-INSERT INTO map_configs.maps(map_id,footer,groups,abstract,show_meta) VALUES ('preview','origo#1','{background#1}','En karta som används för att visa förhandsgranskningar i administrationsverktyget.',true);
+INSERT INTO map_configs.maps(map_id,title,footer,layers,groups,abstract,show_meta) VALUES ('origo-cities#1','Demokarta - Origo','origo#1','{origo-cities#1}','{none#1,background#1}','En demokarta som visar kommuner delaktiga i Origoprojektet.',true);
+INSERT INTO map_configs.maps(map_id,title,footer,groups,abstract,show_meta) VALUES ('preview','Förhandsgranska - Origo','origo#1','{background#1}','En karta som används för att visa förhandsgranskningar i administrationsverktyget.',true);
 
 CREATE TABLE map_configs.proj4defs
 (
