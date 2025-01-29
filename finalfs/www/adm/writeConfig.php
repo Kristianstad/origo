@@ -259,6 +259,7 @@
 			<body>
 				<div id="app-wrapper"></div>
 				<script>
+					
 		HERE;
 		//const origoConfig = {$json}; Funkar ej med mapstate?
 		if ($_GET['getHtml'] == 'y')
@@ -281,6 +282,7 @@
 					{
 						const origo = Origo(origoConfig);
 					}
+		
 		HERE;
 		if (!empty($map['js']))
 		{
