@@ -269,6 +269,18 @@
 		else
 		{
 			$html=$html."const origoConfig = 'index.json';";
+			$html=$html. <<<HERE
+
+				const htmlFileMatch = document.location.pathname.match(/([^\/]+)\.html$/i);
+				if (htmlFileMatch)
+				{
+					const origoConfig = htmlFileMatch[1] + 'json';
+				}
+				else
+				{
+					const origoConfig = 'index.json';
+				}
+			HERE;
 		}
 		$html=$html. <<<HERE
 		
