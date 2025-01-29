@@ -270,6 +270,7 @@
 			$html=$html."const origoConfig = 'index.json';";
 		}
 		$html=$html. <<<HERE
+		
 					const urlParams = new URL(document.location.href).searchParams;
 					const map = urlParams.get('map');
 					if (map != null)
