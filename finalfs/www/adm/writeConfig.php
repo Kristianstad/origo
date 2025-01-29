@@ -286,13 +286,12 @@
 					const htmlFileMatch = document.location.pathname.match(/([^\/]+)\.html$/i);
 					if (htmlFileMatch)
 					{
-						const origoConfig = htmlFileMatch[1] + 'json';
+						const origo = Origo(htmlFileMatch[1] + '.json');
 					}
 					else
 					{
-						const origoConfig = 'index.json';
+						const origo = Origo('index.json');
 					}
-					const origo = Origo(origoConfig);
 				}
 
 			HERE;
