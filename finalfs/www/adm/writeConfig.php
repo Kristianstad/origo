@@ -264,35 +264,42 @@
 		//const origoConfig = {$json}; Funkar ej med mapstate?
 		if ($_GET['getHtml'] == 'y')
 		{
-			$html=$html."const origoConfig = {$json};";
+			$html=$html. <<<HERE
+
+				const origoConfig = {$json};
+				const origo = Origo(origoConfig);
+
+			HERE;
 		}
 		else
 		{
 			$html=$html. <<<HERE
 
-				const htmlFileMatch = document.location.pathname.match(/([^\/]+)\.html$/i);
-				if (htmlFileMatch)
+				const urlParams = new URL(document.location.href).searchParams;
+				const map = urlParams.get('map');
+				if (map != null)
 				{
-					const origoConfig = htmlFileMatch[1] + 'json';
+					const origo = Origo(map.replace('#', '%23') + '.json');
 				}
 				else
 				{
-					const origoConfig = 'index.json';
+					const htmlFileMatch = document.location.pathname.match(/([^\/]+)\.html$/i);
+					if (htmlFileMatch)
+					{
+						const origoConfig = htmlFileMatch[1] + 'json';
+					}
+					else
+					{
+						const origoConfig = 'index.json';
+					}
+					const origo = Origo(origoConfig);
 				}
+
 			HERE;
 		}
 		$html=$html. <<<HERE
 		
-					const urlParams = new URL(document.location.href).searchParams;
-					const map = urlParams.get('map');
-					if (map != null)
-					{
-						const origo = Origo(map.replace('#', '%23') + '.json');
-					}
-					else
-					{
-						const origo = Origo(origoConfig);
-					}
+					
 		
 		HERE;
 		if (!empty($map['js']))
