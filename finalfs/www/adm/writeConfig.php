@@ -268,7 +268,6 @@
 		}
 		else
 		{
-			$html=$html."const origoConfig = 'index.json';";
 			$html=$html. <<<HERE
 
 				const htmlFileMatch = document.location.pathname.match(/([^\/]+)\.html$/i);
