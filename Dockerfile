@@ -25,6 +25,7 @@ ARG FINALCMDS=\
 "&& find ../../libexec/postgresql$POSTGRESQL_VERSION ! -type l ! -name postgres ! -name ../../libexec/postgresql$POSTGRESQL_VERSION -maxdepth 1 -exec ln -s {} ./ + "\
 "&& chmod g+X /usr/bin/* "\
 "&& ln -s /www/demokarta/index.json /www/demokarta.json "\
+"&& ln -sf /www/demokarta/index.html /www/index.html "\
 "&& ln -s /www/preview/index.json /www/preview.json "
 ARG REMOVEFILES="/etc/php$PHP_VERSION/php-fpm.d/www.conf /origo/index.json"
 ARG STARTUPEXECUTABLES="/usr/sbin/php-fpm$PHP_VERSION /usr/libexec/postgresql$POSTGRESQL_VERSION/postgres"
