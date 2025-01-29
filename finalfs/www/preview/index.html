@@ -11,7 +11,9 @@
         </head>
         <body>
                 <div id="app-wrapper"></div>
-                <script>const origoConfig = 'index.json';                       const urlParams = new URL(document.location.href).searchParams;
+                <script>
+                        const origoConfig = 'index.json';
+                        const urlParams = new URL(document.location.href).searchParams;
                         const map = urlParams.get('map');
                         if (map != null)
                         {
@@ -20,6 +22,7 @@
                         else
                         {
                                 const origo = Origo(origoConfig);
-                        }               </script>
+                        }
+                </script>
         </body>
 </html>
