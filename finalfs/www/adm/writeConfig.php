@@ -259,15 +259,14 @@
 			<body>
 				<div id="app-wrapper"></div>
 				<script>
-					
 		HERE;
 		//const origoConfig = {$json}; Funkar ej med mapstate?
 		if ($_GET['getHtml'] == 'y')
 		{
 			$html=$html. <<<HERE
 
-				const origoConfig = {$json};
-				const origo = Origo(origoConfig);
+						const origoConfig = {$json};
+						const origo = Origo(origoConfig);
 
 			HERE;
 		}
@@ -275,32 +274,27 @@
 		{
 			$html=$html. <<<HERE
 
-				const urlParams = new URL(document.location.href).searchParams;
-				const map = urlParams.get('map');
-				if (map != null)
-				{
-					const origo = Origo(map.replace('#', '%23') + '.json');
-				}
-				else
-				{
-					const htmlFileMatch = document.location.pathname.match(/([^\/]+)\.html$/i);
-					if (htmlFileMatch)
-					{
-						const origo = Origo(htmlFileMatch[1] + '.json');
-					}
-					else
-					{
-						const origo = Origo('index.json');
-					}
-				}
+						const urlParams = new URL(document.location.href).searchParams;
+						const map = urlParams.get('map');
+						if (map != null)
+						{
+							const origo = Origo(map.replace('#', '%23') + '.json');
+						}
+						else
+						{
+							const htmlFileMatch = document.location.pathname.match(/([^\/]+)\.html$/i);
+							if (htmlFileMatch)
+							{
+								const origo = Origo(htmlFileMatch[1] + '.json');
+							}
+							else
+							{
+								const origo = Origo('index.json');
+							}
+						}
 
 			HERE;
 		}
-		$html=$html. <<<HERE
-		
-					
-		
-		HERE;
 		if (!empty($map['js']))
 		{
 			$html=$html."\n{$map['js']}";
