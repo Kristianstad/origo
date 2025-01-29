@@ -48,7 +48,7 @@ CREATE TABLE map_configs.groups
 );
 
 INSERT INTO map_configs.groups(group_id,title,expanded,layers,abstract) VALUES ('background#1','Bakgrundskartor',true,'{osm#1}','Grupp som innehåller alla bakgrundslager.');
-INSERT INTO map_configs.groups(group_id,layers,abstract) VALUES ('none#1','{origo-mask#1}','Grupp som inte visas i lagerträdet.');
+INSERT INTO map_configs.groups(group_id,layers,abstract) VALUES ('none#1','{kommunmask#1}','Grupp som inte visas i lagerträdet.');
 
 CREATE TABLE map_configs.layers
 (
@@ -144,7 +144,7 @@ CREATE TABLE map_configs.maps
     CONSTRAINT map_pk PRIMARY KEY (map_id)
 );
 
-INSERT INTO map_configs.maps(map_id,title,footer,layers,groups,abstract,show_meta) VALUES ('demokarta','Demokarta - Origo','origo#1','{origo-cities#1}','{none#1,background#1}','En demokarta som visar kommuner delaktiga i Origoprojektet.',true);
+INSERT INTO map_configs.maps(map_id,title,footer,layers,groups,abstract,show_meta) VALUES ('demokarta','Demokarta - Origo','origo#1','{origokommuner#1}','{none#1,background#1}','En demokarta som visar kommuner delaktiga i Origoprojektet.',true);
 INSERT INTO map_configs.maps(map_id,title,footer,groups,abstract,show_meta) VALUES ('preview','Förhandsgranska - Origo','origo#1','{background#1}','En karta som används för att visa förhandsgranskningar i administrationsverktyget.',true);
 
 CREATE TABLE map_configs.proj4defs
