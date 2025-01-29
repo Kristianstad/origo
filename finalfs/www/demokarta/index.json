@@ -26,14 +26,14 @@
                         "options": {
                                 "buttonText": "Om Origo",
                                 "title": "Om Origo",
-                                "content": "<p>Origo är ett ramverk för webbkartor. Ramverket bygger på JavaScript-biblioteket OpenLayers. Du kan använda Origo för att skapa egna webbaserade kartapplikationer.</p><br><p>Projektet drivs och underhålls av ett antal svenska kommuner. Besök gärna <a href=\"https://github.com/origo-map/origo\" target=\"_blank\">Origo på GitHub</a> för mer information.</p>"
+                                "content": "<p>Origo \u00e4r ett ramverk f\u00f6r webbkartor. Ramverket bygger p\u00e5 JavaScript-biblioteket OpenLayers. Du kan anv\u00e4nda Origo f\u00f6r att skapa egna webbaserade kartapplikationer.<\/p><br><p>Projektet drivs och underh\u00e5lls av ett antal svenska kommuner. Bes\u00f6k g\u00e4rna <a href=\"https:\/\/github.com\/origo-map\/origo\" target=\"_blank\">Origo p\u00e5 GitHub<\/a> f\u00f6r mer information.<\/p>"
                         }
                 },
                 {
                         "name": "link",
                         "options": {
                                 "title": "Origo",
-                                "url": "https://github.com/origo-map/origo"
+                                "url": "https:\/\/github.com\/origo-map\/origo"
                         }
                 },
                 {
@@ -59,8 +59,8 @@
         ],
         "pageSettings": {
                 "footer": {
-                        "img": "img/png/logo.png",
-                        "url": "https://github.com/origo-map/origo",
+                        "img": "img\/png\/logo.png",
+                        "url": "https:\/\/github.com\/origo-map\/origo",
                         "text": "Origo"
                 },
                 "mapGrid": {
@@ -68,12 +68,6 @@
                 }
         },
         "projectionCode": "EPSG:3857",
-        "projectionExtent": [
-                -20026376.39,
-                -20048966.1,
-                20026376.39,
-                20048966.1
-        ],
         "featureinfoOptions": {
                 "infowindow": "overlay"
         },
@@ -105,7 +99,7 @@
                 4891.97,
                 2445.98,
                 1222.99,
-                611.50,
+                611.5,
                 305.75,
                 152.87,
                 76.437,
@@ -122,19 +116,19 @@
                         "name": "background",
                         "title": "Bakgrundskartor",
                         "expanded": true,
-                        "abstract": "Grupp som innehåller alla bakgrundslager."
+                        "abstract": "Grupp som inneh\u00e5ller alla bakgrundslager."
                 }
         ],
         "layers": [
                 {
-                        "name": "origo-cities",
+                        "name": "origokommuner",
                         "title": "Origokommuner",
                         "type": "GEOJSON",
                         "group": "root",
-                        "style": "origo-cities#1",
+                        "style": "origokommuner#1",
                         "visible": true,
-                        "source": "data/origo-cities-3857.geojson",
-                        "abstract": "<b>Beskrivning: </b>Lager som visar kommuner delaktiga i Origoprojektet.<br><b>Resurser: </b><br><b>Kontakt: </b><br><b>Källa: </b><a href='https://github.com/origo-map/origo' target='_blank'>Origo</a><br><b>Uppdaterad: </b><br><form action='adm/manage.php' method='post' target='_blank'><button type='submit' name='layerId' value='origo-cities#1' style='float:right; color:blue'>Administrera</button></form>",
+                        "source": "data\/origo-cities-3857.geojson",
+                        "abstract": "<b>Beskrivning: <\/b>Lager som visar kommuner delaktiga i Origoprojektet.<br><b>Resurser: <\/b><br><b>Kontakt: <\/b><br><b>K\u00e4lla: <\/b><a href='https:\/\/github.com\/origo-map\/origo' target='_blank'>Origo<\/a><br><br><form action='\/origo\/demo\/adm\/' method='post' target='_blank'><button type='submit' name='layerId' value='origokommuner#1' style='float:right; color:blue'>Administrera<\/button><\/form>",
                         "attributes": [
                                 {
                                         "name": "name"
@@ -142,16 +136,16 @@
                         ]
                 },
                 {
-                        "name": "origo-mask",
+                        "name": "kommunmask",
                         "title": "Origo-mask",
                         "type": "GEOJSON",
                         "group": "none",
-                        "style": "origo-mask#1",
+                        "style": "kommunmask#1",
                         "queryable": false,
                         "visible": true,
                         "opacity": 0.25,
-                        "source": "data/origo-mask-3857.geojson",
-                        "abstract": "<form action='adm/manage.php' method='post' target='_blank'><button type='submit' name='layerId' value='origo-mask#1' style='float:right; color:blue'>Administrera</button></form>"
+                        "source": "data\/origo-mask-3857.geojson",
+                        "abstract": "<form action='\/origo\/demo\/adm\/' method='post' target='_blank'><button type='submit' name='layerId' value='kommunmask#1' style='float:right; color:blue'>Administrera<\/button><\/form>"
                 },
                 {
                         "name": "osm",
@@ -161,14 +155,25 @@
                         "style": "osm#1-bg",
                         "queryable": false,
                         "visible": true,
-                        "abstract": "<b>Beskrivning: </b>Bakgrundslager från OpenStreetMap.<br><b>Resurser: </b><br><b>Kontakt: </b><br><b>Källa: </b><a href='https://www.openstreetmap.org/' target='_blank'>OpenStreetMap</a><br><b>Uppdaterad: </b><br><form action='adm/manage.php' method='post' target='_blank'><button type='submit' name='layerId' value='osm#1' style='float:right; color:blue'>Administrera</button></form>"
+                        "abstract": "<b>Beskrivning: <\/b>Bakgrundslager fr\u00e5n OpenStreetMap.<br><b>Resurser: <\/b><br><b>Kontakt: <\/b><br><b>K\u00e4lla: <\/b><a href='https:\/\/www.openstreetmap.org\/' target='_blank'>OpenStreetMap<\/a><br><br><form action='\/origo\/demo\/adm\/' method='post' target='_blank'><button type='submit' name='layerId' value='osm#1' style='float:right; color:blue'>Administrera<\/button><\/form>"
                 }
         ],
         "source": {
-
+                "origo-cities.json": {
+                        "url": "\/origo-cities.json",
+                        "type": "File"
+                },
+                "origo-mask.json": {
+                        "url": "\/origo-mask.json",
+                        "type": "File"
+                },
+                "OpenStreetMap": {
+                        "url": "\/OpenStreetMap",
+                        "type": "OpenStreetMap"
+                }
         },
         "styles": {
-                "origo-cities#1": [
+                "origokommuner#1": [
                         [
                                 {
                                         "label": "Origokommuner",
@@ -197,7 +202,7 @@
                                 }
                         ]
                 ],
-                "origo-mask#1": [
+                "kommunmask#1": [
                         [
                                 {
                                         "stroke": {
@@ -213,7 +218,7 @@
                         [
                                 {
                                         "image": {
-                                                "src": "img/png/osm.png?ttl=36000"
+                                                "src": "img\/png\/osm.png?ttl=36000"
                                         }
                                 }
                         ]
