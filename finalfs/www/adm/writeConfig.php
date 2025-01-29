@@ -303,7 +303,12 @@
 		{
 			file_put_contents($htmlFile, $html);
 			file_put_contents($jsonFile, $jsonPretty);
+			$htmlSymlink="$webRoot/$mapId.html";
 			$configSymlink="$webRoot/$mapId.json";
+			if (!file_exists("$htmlSymlink") && !is_link("$htmlSymlink"))
+			{
+				symlink("$htmlFile", "$htmlSymlink");
+			}
 			if (!file_exists("$configSymlink") && !is_link("$configSymlink"))
 			{
 				symlink("$jsonFile", "$configSymlink");
