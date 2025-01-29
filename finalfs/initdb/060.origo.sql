@@ -106,8 +106,8 @@ CREATE TABLE map_configs.layers
     CONSTRAINT layers_pkey PRIMARY KEY (layer_id)
 );
 
-INSERT INTO map_configs.layers(layer_id,title,type,attributes,visible,style_config,source,abstract,show_meta,origin) VALUES ('origo-cities#1','Origokommuner','GEOJSON','[ { "name": "name" } ]',true,'[ [ { "label": "Origokommuner", "circle": { "radius": 10, "stroke": { "color": "rgba(0,0,0,1)", "width": 2.5 }, "fill": { "color": "rgba(255,255,255,0.9)" } } }, { "circle": { "radius": 2.5, "stroke": { "color": "rgba(0,0,0,0)", "width": 1 }, "fill": { "color": "rgba(37,129,196,1)" } } } ] ]','origo-cities#1','Lager som visar kommuner delaktiga i Origoprojektet.',true,'origo');
-INSERT INTO map_configs.layers(layer_id,title,type,visible,style_config,source,queryable,opacity,abstract,show_meta) VALUES ('origo-mask#1','Origo-mask','GEOJSON',true,'[ [ { "stroke": { "color": "rgba(0,0,0,1.0)" }, "fill": { "color": "rgba(0,0,0,1.0)" } } ] ]','origo-mask#1',false,0.25,'Lager som tonar ner de delar av kartan som inte utgör del av en Origokommun.',false);
+INSERT INTO map_configs.layers(layer_id,title,type,attributes,visible,style_config,source,abstract,show_meta,origin) VALUES ('origokommuner#1','Origokommuner','GEOJSON','[ { "name": "name" } ]',true,'[ [ { "label": "Origokommuner", "circle": { "radius": 10, "stroke": { "color": "rgba(0,0,0,1)", "width": 2.5 }, "fill": { "color": "rgba(255,255,255,0.9)" } } }, { "circle": { "radius": 2.5, "stroke": { "color": "rgba(0,0,0,0)", "width": 1 }, "fill": { "color": "rgba(37,129,196,1)" } } } ] ]','origo-cities.json','Lager som visar kommuner delaktiga i Origoprojektet.',true,'origo');
+INSERT INTO map_configs.layers(layer_id,title,type,visible,style_config,source,queryable,opacity,abstract,show_meta) VALUES ('kommunmask#1','Origo-mask','GEOJSON',true,'[ [ { "stroke": { "color": "rgba(0,0,0,1.0)" }, "fill": { "color": "rgba(0,0,0,1.0)" } } ] ]','origo-mask.json',false,0.25,'Lager som tonar ner de delar av kartan som inte utgör del av en Origokommun.',false);
 INSERT INTO map_configs.layers(layer_id,title,type,visible,show_icon,icon,source,queryable,abstract,show_meta,origin) VALUES ('osm#1','OpenStreetMap','OSM',true,true,'img/png/osm.png','OpenStreetMap',false,'Bakgrundslager från OpenStreetMap.',true,'osm');
 
 CREATE TABLE map_configs.maps
@@ -195,8 +195,8 @@ CREATE TABLE map_configs.sources
     CONSTRAINT sources_pkey PRIMARY KEY (source_id)
 );
 
-INSERT INTO map_configs.sources(source_id,service,file,abstract) VALUES ('origo-cities#1','GeoJSON','data/origo-cities-3857.geojson','Fil med origokommuner.');
-INSERT INTO map_configs.sources(source_id,service,file,abstract) VALUES ('origo-mask#1','GeoJSON','data/origo-mask-3857.geojson','Fil med en mask för origokommuner.');
+INSERT INTO map_configs.sources(source_id,service,file,abstract) VALUES ('origo-cities.json','GeoJSON','data/origo-cities-3857.geojson','Fil med origokommuner.');
+INSERT INTO map_configs.sources(source_id,service,file,abstract) VALUES ('origo-mask.json','GeoJSON','data/origo-mask-3857.geojson','Fil med en mask för origokommuner.');
 INSERT INTO map_configs.sources(source_id,service,abstract) VALUES ('OpenStreetMap','OpenStreetMap','Geodata från OpenStreetMap.');
 
 CREATE TABLE map_configs.tilegrids
