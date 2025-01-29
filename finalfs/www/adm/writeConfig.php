@@ -269,7 +269,18 @@
 		{
 			$html=$html."const origoConfig = 'index.json';";
 		}
-		$html=$html."const origo = Origo(origoConfig);";
+		$html=$html. <<<HERE
+					const urlParams = new URL(document.location.href).searchParams;
+					const map = urlParams.get('map');
+					if (map != null)
+					{
+						const origo = Origo(map.replace('#', '%23') + '.json');
+					}
+					else
+					{
+						const origo = Origo(origoConfig);
+					}
+		HERE;
 		if (!empty($map['js']))
 		{
 			$html=$html."\n{$map['js']}";
