@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="sv">
+        <head>
+                <meta charset="utf-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+                <meta http-equiv="X-UA-Compatible" content="IE=Edge;chrome=1">
+                <title>Förhandsgranska - Origo</title>
+                <link rel="shortcut icon" href="../img/png/logo.png">
+                <link href='css/style.css' rel='stylesheet'>
+                <script src='js/origo.min.js'></script>
+        </head>
+        <body>
+                <div id="app-wrapper"></div>
+                <script>const origoConfig = 'index.json';                       const urlParams = new URL(document.location.href).searchParams;
+                        const map = urlParams.get('map');
+                        if (map != null)
+                        {
+                                const origo = Origo(map.replace('#', '%23') + '.json');
+                        }
+                        else
+                        {
+                                const origo = Origo(origoConfig);
+                        }               </script>
+        </body>
+</html>
