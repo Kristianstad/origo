@@ -260,6 +260,7 @@
 				<div id="app-wrapper"></div>
 				<script>
 					const urlParams = new URL(document.location.href).searchParams;
+					let origo;
 		HERE;
 		//const origoConfig = {$json}; Funkar ej med mapstate?
 		if ($_GET['getHtml'] == 'y')
@@ -267,7 +268,7 @@
 			$html=$html. <<<HERE
 
 						const origoConfig = {$json};
-						const origo = Origo(origoConfig);
+						origo = Origo(origoConfig);
 
 			HERE;
 		}
@@ -278,18 +279,18 @@
 						const map = urlParams.get('map');
 						if (map != null)
 						{
-							const origo = Origo(map.replace('#', '%23') + '.json');
+							origo = Origo(map.replace('#', '%23') + '.json');
 						}
 						else
 						{
 							const htmlFileMatch = document.location.pathname.match(/([^\/]+)\.html$/i);
 							if (htmlFileMatch)
 							{
-								const origo = Origo(htmlFileMatch[1] + '.json');
+								origo = Origo(htmlFileMatch[1] + '.json');
 							}
 							else
 							{
-								const origo = Origo('index.json');
+								origo = Origo('index.json');
 							}
 						}
 
