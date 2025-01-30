@@ -259,6 +259,7 @@
 			<body>
 				<div id="app-wrapper"></div>
 				<script>
+					const urlParams = new URL(document.location.href).searchParams;
 		HERE;
 		//const origoConfig = {$json}; Funkar ej med mapstate?
 		if ($_GET['getHtml'] == 'y')
@@ -274,7 +275,6 @@
 		{
 			$html=$html. <<<HERE
 
-						const urlParams = new URL(document.location.href).searchParams;
 						const map = urlParams.get('map');
 						if (map != null)
 						{
