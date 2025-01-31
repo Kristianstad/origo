@@ -7,7 +7,7 @@ A live demo of the Image can be found here:
 
 https://kartor.kristianstad.se/origo/demo/
 
-https://kartor.kristianstad.se/origo/demo/adm/
+https://kartor.kristianstad.se/origo/demo/adm/?view=Origo
 
 ## Docker run examples
 ### If you just need Origo
