@@ -56,7 +56,7 @@ CREATE TABLE map_configs.layers
     title character varying COLLATE pg_catalog."default",
     source character varying COLLATE pg_catalog."default",
     style_layer character varying COLLATE pg_catalog."default",
-    type character varying COLLATE pg_catalog."default" DEFAULT 'WMS'::character varying,
+    type character varying COLLATE pg_catalog."default",
     queryable boolean DEFAULT true,
     legend boolean,
     visible boolean DEFAULT false,
