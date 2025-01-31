@@ -8,6 +8,8 @@
 	// The map will show a preview of a map, a group or a layer depending on the input parameters.
 	function printConfigPreviewButton($mapId, $group=null, $layer=null)
 	{
+		$groupInput='';
+		$layerInput='';
 		if (isset($group))
 		{
 			$groupInput="<input type='hidden' name='group' value='$group'>";
