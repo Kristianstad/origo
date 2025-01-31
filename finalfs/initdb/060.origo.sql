@@ -103,6 +103,7 @@ CREATE TABLE map_configs.layers
     featurelistattributes character varying COLLATE pg_catalog."default",
     indexweight integer,
     exportable boolean DEFAULT true,
+    thematicstyling boolean,
     CONSTRAINT layers_pkey PRIMARY KEY (layer_id)
 );
 
