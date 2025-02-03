@@ -55,6 +55,16 @@
 					printTextarea($layer, 'featurelistattributes', 'textareaMedium', 'featureListAttributes:', in_array('featurelistattributes', $helps));
 					printTextarea($layer, 'drawtools', 'textareaMedium', 'drawTools:', in_array('drawtools', $helps));
 				}
+				else
+				{
+					printHiddenInputs(array(
+						'updateAllowededitoperations' => $layer['layer']['allowededitoperations'],
+						'updateGeometryname' => $layer['layer']['geometryname'],
+						'updateGeometrytype' => $layer['layer']['geometrytype'],
+						'updateFeaturelistattributes' => $layer['layer']['featurelistattributes'],
+						'updateDrawtools' => $layer['layer']['drawtools']
+					));
+				}
 			}
 			elseif ($layer['layer']['type'] == 'WMS')
 			{
@@ -76,11 +86,25 @@
 				printTextarea($layer, 'adgroups', 'textareaLarge', 'Grupper:', in_array('adgroups', $helps));
 				echo "</span><wbr>";
 			}
+			else
+			{
+				printHiddenInputs(array(
+					'updateAdusers' => $layer['layer']['adusers'],
+					'updateAdgroups' => $layer['layer']['adgroups']
+				));
+			}
 			printUpdateSelect($layer, array('swiper'=>array("f", "t", "under")), 'miniSelect', 'Swiper-lager:', in_array('swiper', $helps));
 			if (isset($layer['layer']['type']) && $layer['layer']['type'] == 'WMS')
 			{
 				printTextarea($layer, 'format', 'textareaMedium', 'Format:', in_array('format', $helps));
 				printTextarea($layer, 'featureinfolayer', 'textareaMedium', 'FeatureInfo-lager:', in_array('featureinfolayer', $helps));
+			}
+			else
+			{
+				printHiddenInputs(array(
+					'updateFormat' => $layer['layer']['format'],
+					'updateFeatureinfolayer' => $layer['layer']['featureinfolayer']
+				));
 			}
 			printTextarea($layer, 'attributes', 'textareaLarge', 'Attribut:', in_array('attributes', $helps));
 			printTextarea($layer, 'style_layer', 'textareaMedium', 'Stillager:', in_array('style_layer', $helps));
