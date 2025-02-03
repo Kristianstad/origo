@@ -21,14 +21,19 @@
 		printTextarea($source, 'source_id', 'textareaMedium', 'Id:', in_array('source_id', $helps));
 		printUpdateSelect($source, array('service'=>$selectables['services']), 'bodySelect', 'Tjänst:', in_array('service', $helps));
 		$sourceServiceId=targetConfigParam($source, 'service');
-		if (!empty($sourceServiceId))
+		
+		// If 'service' isn't set then hide the following fields by inserting a span-tag.
+		if (empty($sourceServiceId))
 		{
+			echo '<span title="serviceNotSet" style="display:none">';
+		}
+		
+			// If 'service_type' == 'File' then hide the following fields by inserting a span-tag.
 			if (targetConfigParam($source, 'service_type') == "File")
 			{
 				printTextarea($source, 'file', 'textareaLarge', 'Fil:', in_array('file', $helps));
+				echo '<span title="service_typeFile" style="display:none">';
 			}
-			else
-			{
 				printUpdateSelect($source, array('with_geometry'=>array("f", "t")), 'miniSelect', 'With_geometry:', in_array('with_geometry', $helps));
 				printTextarea($source, 'fi_point_tolerance', 'textareaSmall', 'Fi_point_tolerance:', in_array('fi_point_tolerance', $helps));
 				printTextarea($source, 'ttl', 'textareaSmall', 'Ttl:', in_array('ttl', $helps));
@@ -38,12 +43,24 @@
 				{
 					printTextarea($source, 'tables', 'textareaLarge', 'Tabeller:', 'yes');
 				}
+					
+			// If 'service_type' == 'File' then the fields above is hidden by a span-tag and the span-tag is closed.
+			if (targetConfigParam($source, 'service_type') == "File")
+			{
+				echo '</span title="service_typeFile">';
 			}
+			
 			printTextarea($source, 'abstract', 'textareaLarge', 'Beskrivning:', in_array('abstract', $helps));
 			printUpdateSelect($source, array('contact'=>$selectables['contacts']), 'bodySelect', 'Kontakt:', in_array('contact', $helps));
 			printTextarea($source, 'updated', 'textareaMedium', 'Uppdaterad (åååå-mm-dd):', in_array('updated', $helps));
 			printTextarea($source, 'history', 'textareaLarge', 'Tillkomsthistorik:', in_array('history', $helps));
+
+		// If 'service' isn't set then the fields above is hidden by a span-tag and the span-tag is closed.
+		if (empty($sourceServiceId))
+		{
+			echo '</span title="serviceNotSet">';
 		}
+		
 		printTextarea($source, 'info', 'textareaLarge', 'Info:', in_array('info', $helps));
 		printHiddenInputs($inheritPosts);
 		echo '<div class="buttonDiv">';
