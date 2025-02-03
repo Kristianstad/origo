@@ -93,10 +93,10 @@
 		
 				printTextarea($layer, 'style_config', 'textareaLarge', 'Stilkonfiguration:', in_array('style_config', $helps));
 				
-				// If 'style_config' isn't set then hide the following fields by inserting a span-tag.
-				if (!isset($layer['layer']['style_config']) || empty(trim($layer['layer']['style_config'], " []{}\n\r\t")) || $layer['layer']['style_config'] == 'null')
+				// If 'style_config' is set then hide the following fields by inserting a span-tag.
+				if (isset($layer['layer']['style_config']) && !empty(trim($layer['layer']['style_config'], " []{}\n\r\t")) && $layer['layer']['style_config'] != 'null')
 				{
-					echo '<span title="style_configNotSet" style="display:none">';
+					echo '<span title="style_configSet" style="display:none">';
 				}
 				
 					printTextarea($layer, 'style_filter', 'textareaLarge', 'Stilfilter:', in_array('style_filter', $helps));
@@ -137,10 +137,10 @@
 						printUpdateSelect($layer, array('thematicstyling'=>array("f", "t")), 'miniSelect', 'Regelbaserad visning:', in_array('thematicstyling', $helps));
 					}
 					
-				// If 'style_config' isn't set then the fields above is hidden by a span-tag and the span-tag is closed.
-				if (!isset($layer['layer']['style_config']) || empty(trim($layer['layer']['style_config'], " []{}\n\r\t")) || $layer['layer']['style_config'] == 'null')
+				// If 'style_config' is set then the fields above is hidden by a span-tag and the span-tag is closed.
+				if (isset($layer['layer']['style_config']) && !empty(trim($layer['layer']['style_config'], " []{}\n\r\t")) && $layer['layer']['style_config'] != 'null')
 				{
-					echo '</span title="style_configNotSet">';
+					echo '</span title="style_configSet">';
 				}
 
 			// If 'style_layer' is set then the fields above is hidden by a span-tag and the span-tag is closed.
@@ -171,7 +171,7 @@
 			}
 		
 		// If 'type' isn't set, or is set to a format not supported by the source, then the fields above is hidden by a span-tag and the span-tag is closed.
-		if (empty(targetConfigParam($layer, 'type')))
+		if (empty(targetConfigParam($layer, 'type')) || !in_array($layer['layer']['type'], $selectables['formats']))
 		{
 			echo '</span title="typeNotSet">';
 		}
