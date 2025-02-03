@@ -30,6 +30,15 @@
 			printTextarea($service, 'formats', 'textareaLarge', 'Tillgängliga format:', in_array('formats', $helps));
 			printTextarea($service, 'abstract', 'textareaLarge', 'Beskrivning:', in_array('abstract', $helps));
 		}
+		else
+		{
+			printHiddenInputs(array(
+				'updateBase_url' => $layer['layer']['base_url'],
+				'updateRestricted' => $layer['layer']['restricted'],
+				'updateFormats' => $layer['layer']['formats'],
+				'updateAbstract' => $layer['layer']['abstract']
+			));
+		}
 		printTextarea($service, 'info', 'textareaLarge', 'Info:', in_array('info', $helps));
 		printHiddenInputs($inheritPosts);
 		echo '<div class="buttonDiv">';
