@@ -28,14 +28,16 @@
 		$layerSourceId=targetConfigParam($layer, 'source');
 		if (empty($layerSourceId))
 		{
-			printUpdateSelect($layer, array('type'=>array("GROUP")), 'miniSelect', 'Typ:', in_array('type', $helps));
+			$selectables['formats']=array("GROUP");
 		}
-		else
+		printUpdateSelect($layer, array('type'=>$selectables['formats']), 'miniSelect', 'Typ:', in_array('type', $helps));
+		
+		// If 'type' isn't set, or is set to a format not supported by the source, then hide the following fields by inserting a span-tag.
+		if (empty(targetConfigParam($layer, 'type')) || !in_array($layer['layer']['type'], $selectables['formats']))
 		{
-			printUpdateSelect($layer, array('type'=>$selectables['formats']), 'miniSelect', 'Typ:', in_array('type', $helps));
+			echo '<span title="typeNotSet" style="display:none">';
 		}
-		if (!empty(targetConfigParam($layer, 'type')))
-		{
+		
 			if ($layer['layer']['type'] == 'WFS')
 			{
 				printUpdateSelect($layer, array('layertype'=>array("vector", "cluster", "image")), 'miniSelect', 'WFS-typ:', in_array('layertype', $helps));
@@ -82,11 +84,21 @@
 			}
 			printTextarea($layer, 'attributes', 'textareaLarge', 'Attribut:', in_array('attributes', $helps));
 			printTextarea($layer, 'style_layer', 'textareaMedium', 'Stillager:', in_array('style_layer', $helps));
-			if (!isset($layer['layer']['style_layer']) || empty(trim($layer['layer']['style_layer'])))
+		
+			// If 'style_layer' is set then hide the following fields by inserting a span-tag.
+			if (isset($layer['layer']['style_layer']) && !empty(trim($layer['layer']['style_layer'])))
 			{
+				echo '<span title="style_layerSet" style="display:none">';
+			}
+		
 				printTextarea($layer, 'style_config', 'textareaLarge', 'Stilkonfiguration:', in_array('style_config', $helps));
+				
+				// If 'style_config' isn't set then hide the following fields by inserting a span-tag.
 				if (!isset($layer['layer']['style_config']) || empty(trim($layer['layer']['style_config'], " []{}\n\r\t")) || $layer['layer']['style_config'] == 'null')
 				{
+					echo '<span title="style_configNotSet" style="display:none">';
+				}
+				
 					printTextarea($layer, 'style_filter', 'textareaLarge', 'Stilfilter:', in_array('style_filter', $helps));
 					printUpdateSelect($layer, array('show_icon'=>array("f", "t")), 'miniSelect', 'Visa ikon:', in_array('show_icon', $helps));
 					printUpdateSelect($layer, array('show_iconext'=>array("f", "t")), 'miniSelect', 'Visa utfälld ikon:', in_array('show_iconext', $helps));
@@ -124,27 +136,19 @@
 					{
 						printUpdateSelect($layer, array('thematicstyling'=>array("f", "t")), 'miniSelect', 'Regelbaserad visning:', in_array('thematicstyling', $helps));
 					}
-				}
-				else
+					
+				// If 'style_config' isn't set then the fields above is hidden by a span-tag and the span-tag is closed.
+				if (!isset($layer['layer']['style_config']) || empty(trim($layer['layer']['style_config'], " []{}\n\r\t")) || $layer['layer']['style_config'] == 'null')
 				{
-					printHiddenInputs(array(
-						'updateIcon' => $layer['layer']['icon'],
-						'updateIcon_extended' => $layer['layer']['icon_extended'],
-						'updateStyle_filter' => $layer['layer']['style_filter'],
-						'updateShow_icon' => $layer['layer']['show_icon']
-					));
+					echo '</span title="style_configNotSet">';
 				}
-			}
-			else
+
+			// If 'style_layer' is set then the fields above is hidden by a span-tag and the span-tag is closed.
+			if (isset($layer['layer']['style_layer']) && !empty(trim($layer['layer']['style_layer'])))
 			{
-				printHiddenInputs(array(
-					'updateStyle_config' => $layer['layer']['style_config'],
-					'updateIcon' => $layer['layer']['icon'],
-					'updateIcon_extended' => $layer['layer']['icon_extended'],
-					'updateStyle_filter' => $layer['layer']['style_filter'],
-					'updateShow_icon' => $layer['layer']['show_icon']
-				));
+				echo '</span title="style_layerSet">';
 			}
+			
 			printTextarea($layer, 'indexweight', 'textareaSmall', 'Indexvikt:', in_array('indexweight', $helps));
 			printTextarea($layer, 'maxscale', 'textareaSmall', 'Maxskala:', in_array('maxscale', $helps));
 			printTextarea($layer, 'minscale', 'textareaSmall', 'Minskala:', in_array('minscale', $helps));
@@ -165,7 +169,13 @@
 			{
 				printTextarea($layer, 'tables', 'textareaMedium', 'Tabeller:', in_array('tables', $helps), true);
 			}
+		
+		// If 'type' isn't set, or is set to a format not supported by the source, then the fields above is hidden by a span-tag and the span-tag is closed.
+		if (empty(targetConfigParam($layer, 'type')))
+		{
+			echo '</span title="typeNotSet">';
 		}
+
 		echo '<hr class="dashedHr">';
 		printTextarea($layer, 'info', 'textareaLarge', 'Info:', in_array('info', $helps));
 		printHiddenInputs($inheritPosts);
