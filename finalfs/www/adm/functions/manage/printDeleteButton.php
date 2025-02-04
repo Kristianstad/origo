@@ -1,5 +1,7 @@
 <?php
 
+	require_once("./functions/toSwedish.php");
+
 	// Takes a basic target array, a confirmation string, and inheritPosts (array).
 	// Prints a form with a button labeled "Radera" as only visible element. 
 	// The button lauches a confirmation popup with the given confirmation string. 
@@ -36,10 +38,11 @@
 				}
 			}
 		}
+		$targetTypeSwe=toSwedish($targetType);
 		echo <<<HERE
 				<form method='post' onsubmit='confirmStr="{$deleteConfirmStr}"; return confirm(confirmStr);'>
 					<input type="hidden" name="{$targetType}IdDel" value="{$targetId}">
-					<button class='deleteButton' type='submit' name='{$targetType}Button' value='delete'>Radera</button>
+					<button title='Radera {$targetTypeSwe}' class='deleteButton' type='submit' name='{$targetType}Button' value='delete'>Radera</button>
 		HERE;
 		printHiddenInputs($inheritPosts);
 		echo '</form>';
