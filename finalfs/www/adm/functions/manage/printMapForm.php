@@ -9,6 +9,8 @@
 	require_once("./functions/manage/printWriteConfigButton.php");
 	require_once("./functions/manage/printExportJsonButton.php");
 	require_once("./functions/manage/printDeleteButton.php");
+	require_once("./functions/manage/targetConfigParam.php");
+	require_once("./functions/manage/targetId.php");
 
 	// Takes a full map target (array), map selectables (array), inheritPosts (array), and helps (array).
 	// Prints form fields and buttons that are used to view and edit the configuration for the given map.
@@ -51,14 +53,14 @@
 		printHiddenInputs($inheritPosts);
 		echo '<div class="buttonDiv">';
 		printUpdateButton('map');
-		$url=$map['map']['url'];
+		$url=targetConfigParam($map, 'url');
 		$map=makeTargetBasic($map);
 		printInfoButton($map);
-		$deleteConfirmStr="Är du säker på att du vill radera kartan ".$map['map']."? Ingående kontroller, grupper och lager påverkas ej.";
+		$deleteConfirmStr="Är du säker på att du vill radera kartan ".targetId($map)."? Ingående kontroller, grupper och lager påverkas ej.";
 		printDeleteButton($map, $deleteConfirmStr, $inheritPosts);
-		printConfigPreviewButton($map['map']);
-		printWriteConfigButton($map['map']);
-		printExportJsonButton($map['map']);
+		printConfigPreviewButton(targetId($map));
+		printWriteConfigButton(targetId($map));
+		printExportJsonButton(targetId($map));
 		if (!empty($url))
 		{
 			printUrlButton($url);
