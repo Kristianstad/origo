@@ -7,6 +7,7 @@
 	require_once("./functions/manage/printInfoButton.php");
 	require_once("./functions/manage/printReadSchemaTablesButton.php");
 	require_once("./functions/manage/printDeleteButton.php");
+	require_once("./functions/manage/targetId.php");
 
 	// Takes a full schema target (array), schema selectables (array), inheritPosts (array), and helps (array).
 	// Prints form fields and buttons that are used to view and edit the configuration for the given schema.
@@ -30,8 +31,8 @@
 		printUpdateButton('schema');
 		$schema=makeTargetBasic($schema);
 		printInfoButton($schema);
-		printReadSchemaTablesButton($schema['schema']);
-		$deleteConfirmStr="Är du säker att du vill radera all metadata för schemat ".$schema['schema']."? Metadata för ingående tabeller hanteras separat.";
+		printReadSchemaTablesButton(targetId($schema));
+		$deleteConfirmStr="Är du säker att du vill radera all metadata för schemat ".targetId($schema)."? Metadata för ingående tabeller hanteras separat.";
 		printDeleteButton($schema, $deleteConfirmStr, $inheritPosts);
 		echo '</div></form></div></div>';
 	}
