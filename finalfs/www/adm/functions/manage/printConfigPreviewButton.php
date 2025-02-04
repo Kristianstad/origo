@@ -10,20 +10,26 @@
 	{
 		$groupInput='';
 		$layerInput='';
+		$titleTarget='karta';
 		if (isset($group))
 		{
 			$groupInput="<input type='hidden' name='group' value='$group'>";
+			$titleTarget='grupp';
 		}
 		if (isset($layer))
 		{
 			$layerInput="<input type='hidden' name='layer' value='$layer'>";
+			if (!isset($group))
+			{
+				$titleTarget='lager';
+			}
 		}
 		echo <<<HERE
 			<form action="writeConfig.php" method="get" target="_blank">
 				<input type="hidden" name="getHtml" value="y">
 				{$groupInput}
 				{$layerInput}
-				<button class="updateButton" type="submit" name="map" value="{$mapId}">
+				<button title="Förhandsgranska {$titleTarget}" class="updateButton" type="submit" name="map" value="{$mapId}">
 					Förhandsgranska
 				</button>
 			</form>
