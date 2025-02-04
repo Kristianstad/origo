@@ -7,6 +7,7 @@
 	require_once("./functions/manage/printUpdateButton.php");
 	require_once("./functions/manage/printInfoButton.php");
 	require_once("./functions/manage/printDeleteButton.php");
+	require_once("./functions/manage/targetId.php");
 
 	// Takes a full service target (array), inheritPosts (array), and helps (array).
 	// Prints form fields and buttons that are used to view and edit the configuration for the given service.
@@ -45,7 +46,7 @@
 		printUpdateButton('service');
 		$service=makeTargetBasic($service);
 		printInfoButton($service);
-		$deleteConfirmStr="Är du säker att du vill radera tjänsten ".$service['service']."? Referenser till tjänsten hanteras separat.";
+		$deleteConfirmStr="Är du säker att du vill radera tjänsten ".targetId($service)."? Referenser till tjänsten hanteras separat.";
 		printDeleteButton($service, $deleteConfirmStr, $inheritPosts);
 		echo '</div></form></div></div>';
 	}
