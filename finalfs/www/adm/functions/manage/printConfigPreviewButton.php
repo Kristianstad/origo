@@ -10,7 +10,7 @@
 	{
 		$groupInput='';
 		$layerInput='';
-		$titleTarget='karta';
+		$titleTarget='karta (utan att skriva till disk)';
 		if (isset($group))
 		{
 			$groupInput="<input type='hidden' name='group' value='$group'>";
