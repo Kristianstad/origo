@@ -6,6 +6,7 @@
 	require_once("./functions/manage/printUpdateButton.php");
 	require_once("./functions/manage/printInfoButton.php");
 	require_once("./functions/manage/printDeleteButton.php");
+	require_once("./functions/manage/targetId.php");
 
 	// Takes a full footer target (array), inheritPosts (array), and helps (array).
 	// Prints form fields and buttons that are used to view and edit the configuration for the given footer.
@@ -27,7 +28,7 @@
 		printUpdateButton('footer');
 		$footer=makeTargetBasic($footer);
 		printInfoButton($footer);
-		$deleteConfirmStr="Är du säker att du vill radera sidfoten ".$footer['footer']."? Referenser till sidfoten hanteras separat.";
+		$deleteConfirmStr="Är du säker att du vill radera sidfoten ".targetId($footer)."? Referenser till sidfoten hanteras separat.";
 		printDeleteButton($footer, $deleteConfirmStr, $inheritPosts);
 		echo '</div></form></div></div>';
 	}
