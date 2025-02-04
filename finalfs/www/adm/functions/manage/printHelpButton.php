@@ -8,7 +8,7 @@
 			$buttonValue=$buttonValue.":$configParam";
 		}
 		echo <<<HERE
-			<button form="helpForm" onclick="toggleTopFrame('{$buttonValue}');" type="submit" name="id" value="{$buttonValue}" class="{$buttonClass}">
+			<button title="Visa hjälptext" form="helpForm" onclick="toggleTopFrame('{$buttonValue}');" type="submit" name="id" value="{$buttonValue}" class="{$buttonClass}">
 				{$buttonText}
 			</button>
 		HERE;
