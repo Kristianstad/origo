@@ -6,6 +6,7 @@
 	require_once("./functions/manage/printUpdateButton.php");
 	require_once("./functions/manage/printInfoButton.php");
 	require_once("./functions/manage/printDeleteButton.php");
+	require_once("./functions/manage/targetId.php");
 
 	// Takes a full update target (array), inheritPosts (array), and helps (array).
 	// Prints form fields and buttons that are used to view and edit the configuration for the given update.
@@ -27,7 +28,7 @@
 		printUpdateButton('update');
 		$update=makeTargetBasic($update);
 		printInfoButton($update);
-		$deleteConfirmStr="Är du säker att du vill radera uppdateringsrutinen ".$update['update']."? Referenser till uppdateringsrutinen hanteras separat.";
+		$deleteConfirmStr="Är du säker att du vill radera uppdateringsrutinen ".targetId($update)."? Referenser till uppdateringsrutinen hanteras separat.";
 		printDeleteButton($update, $deleteConfirmStr, $inheritPosts);
 		echo '</div></form></div></div>';
 	}
