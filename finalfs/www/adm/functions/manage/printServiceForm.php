@@ -33,10 +33,10 @@
 		else
 		{
 			printHiddenInputs(array(
-				'updateBase_url' => $layer['layer']['base_url'],
-				'updateRestricted' => $layer['layer']['restricted'],
-				'updateFormats' => $layer['layer']['formats'],
-				'updateAbstract' => $layer['layer']['abstract']
+				'updateBase_url' => targetConfigParam($service, 'base_url'),
+				'updateRestricted' => targetConfigParam($service, 'restricted'),
+				'updateFormats' => targetConfigParam($service, 'formats'),
+				'updateAbstract' => targetConfigParam($service, 'abstract')
 			));
 		}
 		printTextarea($service, 'info', 'textareaLarge', 'Info:', in_array('info', $helps));
