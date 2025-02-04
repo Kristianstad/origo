@@ -6,6 +6,7 @@
 	require_once("./functions/manage/printUpdateButton.php");
 	require_once("./functions/manage/printInfoButton.php");
 	require_once("./functions/manage/printDeleteButton.php");
+	require_once("./functions/manage/targetId.php");
 
 	// Takes a full origin target (array), inheritPosts (array), and helps (array).
 	// Prints form fields and buttons that are used to view and edit the configuration for the given origin.
@@ -27,7 +28,7 @@
 		printUpdateButton('origin');
 		$origin=makeTargetBasic($origin);
 		printInfoButton($origin);
-		$deleteConfirmStr="Är du säker att du vill radera ursprungskällan ".$origin['origin']."? Referenser till ursprungskällan hanteras separat.";
+		$deleteConfirmStr="Är du säker att du vill radera ursprungskällan ".targetId($origin)."? Referenser till ursprungskällan hanteras separat.";
 		printDeleteButton($origin, $deleteConfirmStr, $inheritPosts);
 		echo '</div></form></div></div>';
 	}
