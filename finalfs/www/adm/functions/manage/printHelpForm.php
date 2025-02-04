@@ -6,6 +6,7 @@
 	require_once("./functions/manage/printUpdateButton.php");
 	require_once("./functions/manage/printInfoButton.php");
 	require_once("./functions/manage/printDeleteButton.php");
+	require_once("./functions/manage/targetId.php");
 
 	// Takes a full help target (array), inheritPosts (array), and helps (array).
 	// Prints form fields and buttons that are used to view and edit the configuration for the given help.
@@ -24,7 +25,7 @@
 		printUpdateButton('help');
 		$help=makeTargetBasic($help);
 		printInfoButton($help);
-		$deleteConfirmStr="Är du säker att du vill radera hjälpen ".$help['help']."?";
+		$deleteConfirmStr="Är du säker att du vill radera hjälpen ".targetId($help)."?";
 		printDeleteButton($help, $deleteConfirmStr, $inheritPosts);
 		echo '</div></form></div></div>';
 	}
