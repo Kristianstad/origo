@@ -8,6 +8,7 @@
 	require_once("./functions/manage/printDeleteButton.php");
 	require_once("./functions/manage/printAddOperation.php");
 	require_once("./functions/manage/printRemoveOperation.php");
+	require_once("./functions/manage/targetId.php");
 
 	// Takes a full control target (array), maps (array), inheritPosts (array), and helps (array).
 	// Prints form fields and buttons that are used to view and edit the configuration for the given control.
@@ -28,7 +29,7 @@
 		printUpdateButton('control');
 		$control=makeTargetBasic($control);
 		printInfoButton($control);
-		$deleteConfirmStr="Är du säker att du vill radera kontrollen ".$control['control']."? Referenser till kontrollen hanteras separat.";
+		$deleteConfirmStr="Är du säker att du vill radera kontrollen ".targetId($control)."? Referenser till kontrollen hanteras separat.";
 		printDeleteButton($control, $deleteConfirmStr, $inheritPosts);
 		echo '</div></form></div></div><div class="addRemoveDiv">';
 		printAddOperation($control, array('maps'=>array_column($maps['maps'], 'map_id')), 'Lägg till i karta', $inheritPosts);
