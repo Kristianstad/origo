@@ -6,6 +6,7 @@
 	require_once("./functions/manage/printUpdateButton.php");
 	require_once("./functions/manage/printInfoButton.php");
 	require_once("./functions/manage/printDeleteButton.php");
+	require_once("./functions/manage/targetId.php");
 
 	// Takes a full tilegrid target (array), inheritPosts (array), and helps (array).
 	// Prints form fields and buttons that are used to view and edit the configuration for the given tilegrid.
@@ -25,7 +26,7 @@
 		printUpdateButton('tilegrid');
 		$tilegrid=makeTargetBasic($tilegrid);
 		printInfoButton($tilegrid);
-		$deleteConfirmStr="Är du säker att du vill radera tilegriden ".$tilegrid['tilegrid']."? Referenser till tilegriden hanteras separat.";
+		$deleteConfirmStr="Är du säker att du vill radera tilegriden ".targetId($tilegrid)."? Referenser till tilegriden hanteras separat.";
 		printDeleteButton($tilegrid, $deleteConfirmStr, $inheritPosts);
 		echo '</div></form></div></div>';
 	}
