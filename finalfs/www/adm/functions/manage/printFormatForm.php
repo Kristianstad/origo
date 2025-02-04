@@ -6,6 +6,7 @@
 	require_once("./functions/manage/printUpdateButton.php");
 	require_once("./functions/manage/printInfoButton.php");
 	require_once("./functions/manage/printDeleteButton.php");
+	require_once("./functions/manage/targetId.php");
 
 	// Takes a full format target (array), inheritPosts (array), and helps (array).
 	// Prints form fields and buttons that are used to view and edit the configuration for the given format.
@@ -24,7 +25,7 @@
 		printUpdateButton('format');
 		$format=makeTargetBasic($format);
 		printInfoButton($format);
-		$deleteConfirmStr="Är du säker att du vill radera formatet ".$format['format']."? Referenser till formatet hanteras separat.";
+		$deleteConfirmStr="Är du säker att du vill radera formatet ".targetId($format)."? Referenser till formatet hanteras separat.";
 		printDeleteButton($format, $deleteConfirmStr, $inheritPosts);
 		echo '</div></form></div></div>';
 	}
