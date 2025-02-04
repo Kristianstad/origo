@@ -28,13 +28,18 @@
 		{
 			echo '<span title="serviceNotSet" style="display:none">';
 		}
-		
-			// If 'service_type' == 'File' then hide the following fields by inserting a span-tag.
+
 			if (targetConfigParam($source, 'service_type') == "File")
 			{
 				printTextarea($source, 'file', 'textareaLarge', 'Fil:', in_array('file', $helps));
-				echo '<span title="service_typeFile" style="display:none">';
 			}
+
+			// If 'service_type' == 'File'/'OpenStreetMap' then hide the following fields by inserting a span-tag.
+			if (targetConfigParam($source, 'service_type') == "File" || targetConfigParam($source, 'service_type') == "OpenStreetMap")
+			{
+				echo '<span title="service_typeFileOpenStreetMap" style="display:none">';
+			}
+
 				printUpdateSelect($source, array('with_geometry'=>array("f", "t")), 'miniSelect', 'With_geometry:', in_array('with_geometry', $helps));
 				printTextarea($source, 'fi_point_tolerance', 'textareaSmall', 'Fi_point_tolerance:', in_array('fi_point_tolerance', $helps));
 				printTextarea($source, 'ttl', 'textareaSmall', 'Ttl:', in_array('ttl', $helps));
@@ -45,10 +50,10 @@
 					printTextarea($source, 'tables', 'textareaLarge', 'Tabeller:', 'yes');
 				}
 					
-			// If 'service_type' == 'File' then the fields above is hidden by a span-tag and the span-tag is closed.
-			if (targetConfigParam($source, 'service_type') == "File")
+			// If 'service_type' == 'File'/'OpenStreetMap' then the fields above is hidden by a span-tag and the span-tag is closed.
+			if (targetConfigParam($source, 'service_type') == "File" || targetConfigParam($source, 'service_type') == "OpenStreetMap")
 			{
-				echo '</span title="service_typeFile">';
+				echo '</span title="service_typeFileOpenStreetMap">';
 			}
 			
 			printTextarea($source, 'abstract', 'textareaLarge', 'Beskrivning:', in_array('abstract', $helps));
