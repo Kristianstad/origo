@@ -40,7 +40,7 @@
 				printTextarea($source, 'ttl', 'textareaSmall', 'Ttl:', in_array('ttl', $helps));
 				printUpdateSelect($source, array('tilegrid'=>$selectables['tilegrids']), 'bodySelect', 'Tilegrid:', in_array('tilegrid', $helps));
 				printTextarea($source, 'softversion', 'textareaSmall', 'Programversion:', in_array('softversion', $helps));
-				if (isset(current($source)['tables']) && !empty(trim(current($source)['tables'], '{}')))
+				if (!empty(targetConfigParam($source, 'tables')) && !empty(trim(targetConfigParam($source, 'tables'), '{}')))
 				{
 					printTextarea($source, 'tables', 'textareaLarge', 'Tabeller:', 'yes');
 				}
