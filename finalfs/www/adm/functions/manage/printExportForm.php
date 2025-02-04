@@ -6,6 +6,7 @@
 	require_once("./functions/manage/printUpdateButton.php");
 	require_once("./functions/manage/printInfoButton.php");
 	require_once("./functions/manage/printDeleteButton.php");
+	require_once("./functions/manage/targetId.php");
 
 	// Takes a full export target (array), inheritPosts (array), and helps (array).
 	// Prints form fields and buttons that are used to view and edit the configuration for the given export.
@@ -26,7 +27,7 @@
 		printUpdateButton('export');
 		$export=makeTargetBasic($export);
 		printInfoButton($export);
-		$deleteConfirmStr="Är du säker att du vill radera exportinställningen ".$export['export']."? Referenser till exportinställningen hanteras separat.";
+		$deleteConfirmStr="Är du säker att du vill radera exportinställningen ".targetId($export)."? Referenser till exportinställningen hanteras separat.";
 		printDeleteButton($export, $deleteConfirmStr, $inheritPosts);
 		echo '</div></form></div></div>';
 	}
