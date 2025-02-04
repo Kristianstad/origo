@@ -61,10 +61,11 @@
 		printConfigPreviewButton(targetId($map));
 		printWriteConfigButton(targetId($map));
 		printExportJsonButton(targetId($map));
-		if (!empty($url))
+		if (empty($url))
 		{
-			printUrlButton($url);
+			$url="../".targetId($map).".html";
 		}
+		printUrlButton($url);
 		echo '</div></form></div></div>';
 	}
 
