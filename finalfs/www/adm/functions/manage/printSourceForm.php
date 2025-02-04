@@ -8,6 +8,7 @@
 	require_once("./functions/manage/printUpdateButton.php");
 	require_once("./functions/manage/printInfoButton.php");
 	require_once("./functions/manage/printDeleteButton.php");
+	require_once("./functions/manage/targetId.php");
 
 	// Takes a full source target (array), source selectables (array), inheritPosts (array), and helps (array).
 	// Prints form fields and buttons that are used to view and edit the configuration for the given source.
@@ -67,7 +68,7 @@
 		printUpdateButton('source');
 		$source=makeTargetBasic($source);
 		printInfoButton($source);
-		$deleteConfirmStr="Är du säker att du vill radera källan ".$source['source']."? Referenser till källan hanteras separat.";
+		$deleteConfirmStr="Är du säker att du vill radera källan ".targetId($source)."? Referenser till källan hanteras separat.";
 		printDeleteButton($source, $deleteConfirmStr, $inheritPosts);
 		echo '</div></form></div></div>';
 	}
