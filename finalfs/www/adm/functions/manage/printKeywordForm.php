@@ -6,6 +6,7 @@
 	require_once("./functions/manage/printUpdateButton.php");
 	require_once("./functions/manage/printInfoButton.php");
 	require_once("./functions/manage/printDeleteButton.php");
+	require_once("./functions/manage/targetId.php");
 
 	// Takes a full keyword target (array), inheritPosts (array), and helps (array).
 	// Prints form fields and buttons that are used to view and edit the configuration for the given keyword.
@@ -24,7 +25,7 @@
 		printUpdateButton('keyword');
 		$keyword=makeTargetBasic($keyword);
 		printInfoButton($keyword);
-		$deleteConfirmStr="Är du säker att du vill radera nyckelordet ".$keyword['keyword']."? Referenser till nyckelordet hanteras separat.";
+		$deleteConfirmStr="Är du säker att du vill radera nyckelordet ".targetId($keyword)."? Referenser till nyckelordet hanteras separat.";
 		printDeleteButton($keyword, $deleteConfirmStr, $inheritPosts);
 		echo '</div></form></div></div>';
 	}
