@@ -11,7 +11,7 @@
 			<form></form>
 			<form action="info.php" method="get" target="topFrame">
 				<input type="hidden" name="type" value="{$type}">
-				<button class="updateButton" onclick="toggleTopFrame('info');" type="submit" name="id" value="{$id}">
+				<button title="Visa ytterligare information" class="updateButton" onclick="toggleTopFrame('info');" type="submit" name="id" value="{$id}">
 					Info
 				</button>
 			</form>
