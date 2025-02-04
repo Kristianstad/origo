@@ -6,6 +6,7 @@
 	require_once("./functions/manage/printUpdateButton.php");
 	require_once("./functions/manage/printInfoButton.php");
 	require_once("./functions/manage/printDeleteButton.php");
+	require_once("./functions/manage/targetId.php");
 
 	// Takes a full contact target (array), inheritPosts (array), and helps (array).
 	// Prints form fields and buttons that are used to view and edit the configuration for the given contact.
@@ -27,7 +28,7 @@
 		printUpdateButton('contact');
 		$contact=makeTargetBasic($contact);
 		printInfoButton($contact);
-		$deleteConfirmStr="Är du säker att du vill radera kontakten ".$contact['contact']."? Referenser till kontakten hanteras separat.";
+		$deleteConfirmStr="Är du säker att du vill radera kontakten ".targetId($contact)."? Referenser till kontakten hanteras separat.";
 		printDeleteButton($contact, $deleteConfirmStr, $inheritPosts);
 		echo '</div></form></div></div>';
 	}
