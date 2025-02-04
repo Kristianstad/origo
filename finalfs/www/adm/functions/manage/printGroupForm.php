@@ -9,6 +9,7 @@
 	require_once("./functions/manage/printDeleteButton.php");
 	require_once("./functions/manage/printAddOperation.php");
 	require_once("./functions/manage/printRemoveOperation.php");
+	require_once("./functions/manage/targetId.php");
 
 	// Takes a full group target (array), group operationtables (array), inheritPosts (array), and helps (array).
 	// Prints form fields and buttons that are used to:
@@ -36,8 +37,8 @@
 		printUpdateButton('group');
 		$group=makeTargetBasic($group);
 		printInfoButton($group);
-		printConfigPreviewButton('preview', $group['group']);
-		$deleteConfirmStr="Är du säker på att du vill radera gruppen ".$group['group']."? Ingående lager påverkas ej och referenser till gruppen hanteras separat.";
+		printConfigPreviewButton('preview', targetId($group));
+		$deleteConfirmStr="Är du säker på att du vill radera gruppen ".targetId($group)."? Ingående lager påverkas ej och referenser till gruppen hanteras separat.";
 		printDeleteButton($group, $deleteConfirmStr, $inheritPosts);
 		echo '</div></form></div></div><div class="addRemoveDiv">';
 		printAddOperation($group, array('maps'=>array_column($operationTables['maps'], 'map_id')), 'Lägg till i karta', $inheritPosts);
