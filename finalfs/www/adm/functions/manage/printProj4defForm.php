@@ -6,6 +6,7 @@
 	require_once("./functions/manage/printUpdateButton.php");
 	require_once("./functions/manage/printInfoButton.php");
 	require_once("./functions/manage/printDeleteButton.php");
+	require_once("./functions/manage/targetId.php");
 
 	// Takes a full proj4def target (array), inheritPosts (array), and helps (array).
 	// Prints form fields and buttons that are used to view and edit the configuration for the given proj4def.
@@ -27,7 +28,7 @@
 		printUpdateButton('proj4def');
 		$proj4def=makeTargetBasic($proj4def);
 		printInfoButton($proj4def);
-		$deleteConfirmStr="Är du säker att du vill radera proj4def ".$proj4def['proj4def']."? Referenser till aktuell proj4def hanteras separat.";
+		$deleteConfirmStr="Är du säker att du vill radera proj4def ".targetId($proj4def)."? Referenser till aktuell proj4def hanteras separat.";
 		printDeleteButton($proj4def, $deleteConfirmStr, $inheritPosts);
 		echo '</div></form></div></div>';
 	}
