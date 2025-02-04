@@ -7,6 +7,7 @@
 	require_once("./functions/manage/printInfoButton.php");
 	require_once("./functions/manage/printReadDbSchemasButton.php");
 	require_once("./functions/manage/printDeleteButton.php");
+	require_once("./functions/manage/targetId.php");
 
 	// Takes a full database target (array), inheritPosts (array), and helps (array).
 	// Prints form fields and buttons that are used to view and edit the configuration for the given database.
@@ -26,8 +27,8 @@
 		printUpdateButton('database');
 		$database=makeTargetBasic($database);
 		printInfoButton($database);
-		printReadDbSchemasButton($database['database']);
-		$deleteConfirmStr="Är du säker att du vill radera all metadata för databasen ".$database['database']."? Metadata för ingående scheman och tabeller hanteras separat.";
+		printReadDbSchemasButton(targetId($database));
+		$deleteConfirmStr="Är du säker att du vill radera all metadata för databasen ".targetId($database)."? Metadata för ingående scheman och tabeller hanteras separat.";
 		printDeleteButton($database, $deleteConfirmStr, $inheritPosts);
 		echo '</div></form></div></div>';
 	}
