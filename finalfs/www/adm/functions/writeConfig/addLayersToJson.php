@@ -235,9 +235,13 @@
 					{
 						$contactStr="<a href='mailto:".$layerContact['email']."'>".$layerContact['name']."</a>";
 					}
-					else
+					elseif (!empty($layerContact['name']))
 					{
 						$contactStr=$layerContact['name'];
+					}
+					else
+					{
+						$contactStr='';
 					}
 					$layerOrigin = array_column_search($layer['origin'], 'origin_id', $origins);
 					if (!empty($layerOrigin['web']))
