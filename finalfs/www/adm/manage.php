@@ -344,13 +344,17 @@
 			{
 				$table=substr($postName, 0, -8);
 				$type=tableType($table);
-				$id=$idPosts[$type.'Id'];
-				echo <<<HERE
-					document.getElementById("{$table}Categories").value="{$category}";
-					updateSelect("{$type}Select", {$table}{$category});
-					document.getElementById("{$type}Select").value="{$id}";
-				HERE;
-				unset($table, $type, $id);
+				if (isset($idPosts[$type.'Id']))
+				{
+					$id=$idPosts[$type.'Id'];
+					echo <<<HERE
+						document.getElementById("{$table}Categories").value="{$category}";
+						updateSelect("{$type}Select", {$table}{$category});
+						document.getElementById("{$type}Select").value="{$id}";
+					HERE;
+					unset($id);
+				}
+				unset($table, $type);
 			}
 			unset($categoryPosts, $postName, $category);
 		?>
