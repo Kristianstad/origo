@@ -171,7 +171,7 @@
 	}
 	$json=json_encode(json_decode($json));
 	$jsonPretty = json_format($json);
-	if ($_GET['getJson'] == 'y')
+	if (isset($_GET['getJson']) && $_GET['getJson'] == 'y')
 	{
 		if ($_GET['download'] == 'y')
 		{
