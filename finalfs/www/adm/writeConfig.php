@@ -129,7 +129,7 @@
 		$mapLayers['root'] = pgArrayToPhp($map['layers']);
 		$mapLayers['root'] = preg_filter('/^/', 'root>', $mapLayers['root']);
 	}
-	if ($_GET['getHtml'] == 'y' && (!empty($_GET['group']) || !empty($_GET['layer'])))
+	if (isset($_GET['getHtml']) && $_GET['getHtml'] == 'y' && (!empty($_GET['group']) || !empty($_GET['layer'])))
 	{
 		if (!empty($_GET['group']))
 		{
