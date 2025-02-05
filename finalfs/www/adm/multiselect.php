@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<?php 
+<?php
+	header("Cache-Control: must-revalidate, max-age=0, s-maxage=0, no-cache, no-store");
 	require_once("./functions/includeDirectory.php");
 	require_once("./functions/toSwedish.php");
 ?>
@@ -22,7 +23,6 @@
 </head>
 <body>
 <?php
-	header("Cache-Control: must-revalidate, max-age=0, s-maxage=0, no-cache, no-store");
 	require_once("./functions/dbh.php");
 	require_once("./functions/all_from_table.php");
 	$dbh=dbh();
