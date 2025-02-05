@@ -1,6 +1,7 @@
 <?php
 
 	require_once("./functions/pkColumnOfTable.php");
+	require_once("./functions/toSwedish.php");
 	require_once("./functions/manage/printSelectOptions.php");
 	require_once("./functions/manage/printHiddenInputs.php");
 
@@ -59,9 +60,10 @@
 		}
 		echo "<select $sId onchange='this.form.submit();' class='headSelect' name='$sName'>";
 		printSelectOptions($optionValues, $selected);
+		$typeSwe=toSwedish($type);
 		echo <<<HERE
 						</select>
-						<button type="submit" class="headButton" name="{$type}Button" value="get">Hämta</button>
+						<button title="Hämta {$typeSwe}" type="submit" class="headButton" name="{$type}Button" value="get">Hämta</button>
 					</div>
 				</form><br>
 				<form class="headForm" method="post">
@@ -70,7 +72,7 @@
 		HERE;
 		printHiddenInputs($inheritPosts);
 		echo <<<HERE
-						<button type="submit" class="headButton" name="{$type}Button" value="create">Skapa</button>
+						<button title="Skapa ny {$typeSwe}" type="submit" class="headButton" name="{$type}Button" value="create">Skapa</button>
 					</div>
 				</form>
 			</div>
