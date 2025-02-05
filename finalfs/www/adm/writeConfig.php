@@ -305,9 +305,9 @@
 			</body>
 		</html>
 		HERE;
-		if ($_GET['getHtml'] == 'y')
+		if (isset($_GET['getHtml']) && $_GET['getHtml'] == 'y')
 		{
-			if ($_GET['download'] == 'y')
+			if (isset($_GET['download']) && $_GET['download'] == 'y')
 			{
 				header('Content-Type: application/octet-stream');
 				header("Content-Disposition: attachment;filename=$mapId.html");
