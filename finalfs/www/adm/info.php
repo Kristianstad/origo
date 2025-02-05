@@ -35,20 +35,17 @@
 		$allOfChildType=all_from_table($dbh, $configSchema, $childType.'s');
 		$child=array($childType=>$childId);
 		$childFull=array_column_search($childId, pkColumnOfTable($childType.'s'), $allOfChildType);
-		$name=$childFull['name'];
-		if (!empty($name))
+		if (!empty($childFull['name']))
 		{
-			echo "<b>Namn: </b>$name</br>";
+			echo "<b>Namn: </b>".$childFull['name']."</br>";
 		}
-		$alias=$childFull['alias'];
-		if (!empty($alias))
+		if (!empty($childFull['alias']))
 		{
-			echo "<b>Alias: </b>$alias</br>";
+			echo "<b>Alias: </b>".$childFull['alias']."</br>";
 		}
-		$info=$childFull['info'];
-		if (!empty($info))
+		if (!empty($childFull['info']))
 		{
-			echo "$info</br>";
+			echo $childFull['info']."</br>";
 		}
 		if ($childType == 'source')
 		{
