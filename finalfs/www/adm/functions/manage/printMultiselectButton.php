@@ -8,7 +8,7 @@
 			$buttonValue=$buttonValue.":$value";
 		}
 		echo <<<HERE
-			<button form="multiselectForm" onclick="toggleTopFrame('{$buttonValue}');" type="submit" name="table" value="{$buttonValue}" class="{$buttonClass}">
+			<button title="Visa/dölj flervalsverktyg" form="multiselectForm" onclick="toggleTopFrame('{$buttonValue}');" type="submit" name="table" value="{$buttonValue}" class="{$buttonClass}">
 				{$buttonText}
 			</button>
 		HERE;
