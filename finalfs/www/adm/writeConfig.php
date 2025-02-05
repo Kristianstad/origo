@@ -66,8 +66,12 @@
 	$json = $json.' },';
 	// PageSettings </end>
 	$json = $json.'"projectionCode": "'.$map['projectioncode'].'", ';
-	$mapProjectionExtent=pgBoxToText(array_column_search($map['projectioncode'], 'code', $proj4defs)['projectionextent']);
-	if (empty($mapProjectionExtent))
+	if (!empty(array_column_search($map['projectioncode'], 'code', $proj4defs)['projectionextent']))
+	{
+		$mapProjectionExtent=pgBoxToText(array_column_search($map['projectioncode'], 'code', $proj4defs)['projectionextent']);
+		$json = $json.'"projectionExtent": ['.$mapProjectionExtent.'], ';
+	}
+	else
 	{
 		if ($map['projectioncode'] != 'EPSG:3857' && $map['projectioncode'] != 'EPSG:4326')
 		{
@@ -75,10 +79,6 @@
 			echo '<script>alert("Projektionsutbredning saknas! Ingen konfiguration skriven."); window.location.href="'.$proxyRoot.$_SERVER["REQUEST_URI"].'&badJson=y";</script>';
 			exit;
 		}
-	}
-	else
-	{
-		$json = $json.'"projectionExtent": ['.$mapProjectionExtent.'], ';
 	}
 	$json = $json.'"featureinfoOptions": '.$map['featureinfooptions'].', ';
 	if (!empty($map['tilegrid']))
