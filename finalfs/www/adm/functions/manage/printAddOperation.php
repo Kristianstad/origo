@@ -16,7 +16,7 @@
 		printHiddenInputs($inheritPosts);
 		$targetTypeSwe=toSwedish(targetType($target));
 		$addToTableTypeSwe=toSwedish($addToTableType);
-		echo '<button title="Lägg '.$targetTypeSwe.' till '.$addToTableTypeSwe.'" type="submit" name="'.key($target).'Button" value="operation">'.$buttontext.'</button>';
+		echo '<button title="Lägg till '.$targetTypeSwe.' i '.$addToTableTypeSwe.'" type="submit" name="'.key($target).'Button" value="operation">'.$buttontext.'</button>';
 		echo '</form>';
 	}
 
