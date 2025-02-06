@@ -12,7 +12,7 @@
 		echo "<form>";
 		foreach ($views as $k => $v)
 		{
-			echo "<input type='radio' name='view' value='$k' onchange='this.form.submit();'";
+			echo "<input title='Välj visningsvy' type='radio' name='view' value='$k' onchange='this.form.submit();'";
 			if ($k == $view)
 			{
 				echo " checked='checked'";
