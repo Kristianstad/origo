@@ -315,10 +315,10 @@
 
 	<!-- Print the top buttons, including radio buttons to change view -->
 	<form action="read_json.php">
-		<button class="topButton" type="submit">Importera JSON</button>
+		<button title="Importera konfiguration från JSON-fil" class="topButton" type="submit">Importera JSON</button>
 	</form>
 	<form id="helpForm" action="help.php" target="topFrame">
-		<button class="topButton" onclick="toggleTopFrame('help');" type="submit">Hjälp</button>
+		<button title="Visa/dölj hjälptext" class="topButton" onclick="toggleTopFrame('help');" type="submit">Hjälp</button>
 	</form>
 	<?php printViewSwitcher($view); ?>
 
