@@ -407,3 +407,5 @@ INSERT INTO map_configs.helps(help_id,abstract) VALUES ('tilegrid:abstract','<b>
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('tilegrid:info','<b>Tilegrid > Info</b><br>Fält för administrativ information, rörande tilegriden, som inte passar in någon annanstans.');
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('footer:abstract','<b>Sidfot > Beskrivning</b><br>En frivillig, informativ text för administratörer som beskriver sidfoten.');
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('footer:info','<b>Sidfot > Info</b><br>Fält för administrativ information, rörande sidfoten, som inte passar in någon annanstans.');
+INSERT INTO map_configs.helps(help_id,abstract) VALUES ('format:abstract','<b>Format > Beskrivning</b><br>En frivillig, informativ text för administratörer som beskriver formatet.');
+INSERT INTO map_configs.helps(help_id,abstract) VALUES ('format:info','<b>Format > Info</b><br>Fält för administrativ information, rörande formatet, som inte passar in någon annanstans.');
