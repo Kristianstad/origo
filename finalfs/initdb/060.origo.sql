@@ -403,3 +403,5 @@ INSERT INTO map_configs.helps(help_id,abstract) VALUES ('service:type','<b>Tjän
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('service:abstract','<b>Tjänst > Beskrivning</b><br>En frivillig, informativ text för administratörer som beskriver tjänsten.');
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('service:info','<b>Tjänst > Info</b><br>Fält för administrativ information, rörande tjänsten, som inte passar in någon annanstans.');
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('service:restricted','<b>Tjänst > Rättighetsstyrd</b><br>Ett fält som indikerar huruvida åtkomst av tjänsten är rättighetsstyrd. Om "Rättighetsstyrd" är satt till "t" kommer det, under lager som läser från tjänsten, att visas fält som kan användas för rättighetsstyrning.');
+INSERT INTO map_configs.helps(help_id,abstract) VALUES ('tilegrid:abstract','<b>Tilegrid > Beskrivning</b><br>En frivillig, informativ text för administratörer som beskriver tilegriden.');
+INSERT INTO map_configs.helps(help_id,abstract) VALUES ('tilegrid:info','<b>Tilegrid > Info</b><br>Fält för administrativ information, rörande tilegriden, som inte passar in någon annanstans.');
