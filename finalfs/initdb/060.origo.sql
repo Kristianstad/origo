@@ -397,3 +397,4 @@ INSERT INTO map_configs.helps(help_id,abstract) VALUES ('source:fi_point_toleran
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('source:ttl','<b>Källa > Ttl</b><br>Om "Ttl" är satt så kommer ttl=värde att läggas till som en parameter i anropen till kartservern. Syftet med "Ttl" är att meddela en webcache på servern, som t ex Varnish, hur länge svaret ska cachas. (Kräver särskilld anpassning på servern.)');
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('source:tilegrid','<b>Källa > Tilegrid</b><br>Välj en fördefinierad tilegrid för källan eller lämna fältet tomt.');
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('source:contact','<b>Källa > Kontakt</b><br>Välj en fördefinierad kontakt för källan eller lämna fältet tomt.');
+INSERT INTO map_configs.helps(help_id,abstract) VALUES ('source:abstract','<b>Källa > Beskrivning</b><br>En frivillig, informativ text för administratörer som beskriver källan och dess innehåll.');
