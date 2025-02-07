@@ -47,7 +47,7 @@
 				printTextarea($source, 'softversion', 'textareaSmall', 'Programversion:', in_array('softversion', $helps));
 				if (!empty(targetConfigParam($source, 'tables')) && !empty(trim(targetConfigParam($source, 'tables'), '{}')))
 				{
-					printTextarea($source, 'tables', 'textareaLarge', 'Tabeller:', 'yes');
+					printTextarea($source, 'tables', 'textareaLarge', 'Tabeller:', in_array('tables', $helps), 'yes');
 				}
 					
 			// If 'service_type' == 'File'/'OpenStreetMap' then the fields above is hidden by a span-tag and the span-tag is closed.
