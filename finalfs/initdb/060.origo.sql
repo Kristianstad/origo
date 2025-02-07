@@ -401,3 +401,4 @@ INSERT INTO map_configs.helps(help_id,abstract) VALUES ('source:abstract','<b>K�
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('source:info','<b>Källa > Info</b><br>Fält för administrativ information, rörande källan, som inte passar in någon annanstans.');
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('service:type','<b>Tjänst > Typ</b><br>Välj typ av tjänst och klicka på knappen "Uppdatera" för att administrationsgränssnittet ska visa rätt inställningsfält. Välj "File" om data läses direkt från fil, t ex GeoJSON. ');
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('service:abstract','<b>Tjänst > Beskrivning</b><br>En frivillig, informativ text för administratörer som beskriver tjänsten.');
+INSERT INTO map_configs.helps(help_id,abstract) VALUES ('service:info','<b>Tjänst > Info</b><br>Fält för administrativ information, rörande tjänsten, som inte passar in någon annanstans.');
