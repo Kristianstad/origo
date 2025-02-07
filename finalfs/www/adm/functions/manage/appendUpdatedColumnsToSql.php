@@ -5,7 +5,7 @@
 		$first=true;
 		foreach ($dbColumns as $column => $value)
 		{
-			if (empty($value) && $value !== '0')
+			if ((empty($value) && $value !== '0') || $value == '{}' || $value == '{{}}')
 			{
 				$value="null";
 			}
@@ -25,5 +25,5 @@
 		}
 		return $sql;
 	}
-	
+
 ?>
