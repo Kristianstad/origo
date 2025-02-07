@@ -409,3 +409,5 @@ INSERT INTO map_configs.helps(help_id,abstract) VALUES ('footer:abstract','<b>Si
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('footer:info','<b>Sidfot > Info</b><br>Fält för administrativ information, rörande sidfoten, som inte passar in någon annanstans.');
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('format:abstract','<b>Format > Beskrivning</b><br>En frivillig, informativ text för administratörer som beskriver formatet.');
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('format:info','<b>Format > Info</b><br>Fält för administrativ information, rörande formatet, som inte passar in någon annanstans.');
+INSERT INTO map_configs.helps(help_id,abstract) VALUES ('proj4def:abstract','<b>Proj4def > Beskrivning</b><br>En frivillig, informativ text för administratörer som beskriver proj4-definitionen.');
+INSERT INTO map_configs.helps(help_id,abstract) VALUES ('proj4def:info','<b>Proj4def > Info</b><br>Fält för administrativ information, rörande proj4-definitionen, som inte passar in någon annanstans.');
