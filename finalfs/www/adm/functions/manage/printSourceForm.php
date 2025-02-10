@@ -20,14 +20,18 @@
 		}
 		echo '<div><div class="printXFormDiv"><form method="post">';
 		printTextarea($source, 'source_id', 'textareaMedium', 'Id:', in_array('source_id', $helps));
-		printUpdateSelect($source, array('service'=>$selectables['services']), 'bodySelect', 'Tjänst:', in_array('service', $helps));
+		printUpdateSelect($source, array('service'=>$selectables['services']), 'bodySelect', 'Tjänst:', in_array('service', $helps), null, 'document.getElementById("serviceSet").style.display="none";');
 		$sourceServiceId=targetConfigParam($source, 'service');
 		
-		// If 'service' isn't set then hide the following fields by inserting a span-tag.
 		if (empty($sourceServiceId))
 		{
-			echo '<span title="serviceNotSet" style="display:none">';
+			$spanStyle="display:none";
 		}
+		else
+		{
+			$spanStyle='';
+		}
+		echo '<span id="serviceSet" style="'.$spanStyle.'">';
 
 			if (targetConfigParam($source, 'service_type') == "File")
 			{
@@ -61,11 +65,7 @@
 			printTextarea($source, 'updated', 'textareaMedium', 'Uppdaterad (åååå-mm-dd):', in_array('updated', $helps));
 			printTextarea($source, 'history', 'textareaLarge', 'Tillkomsthistorik:', in_array('history', $helps));
 
-		// If 'service' isn't set then the fields above is hidden by a span-tag and the span-tag is closed.
-		if (empty($sourceServiceId))
-		{
-			echo '</span title="serviceNotSet">';
-		}
+		echo '</span title="serviceSet">';
 		
 		printTextarea($source, 'info', 'textareaLarge', 'Info:', in_array('info', $helps));
 		printHiddenInputs($inheritPosts);
