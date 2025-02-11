@@ -173,7 +173,7 @@
 	$jsonPretty = json_format($json);
 	if (isset($_GET['getJson']) && $_GET['getJson'] == 'y')
 	{
-		if ($_GET['download'] == 'y')
+		if (isset($_GET['download']) && $_GET['download'] == 'y')
 		{
 			header('Content-Type: application/octet-stream');
 			header("Content-Disposition: attachment;filename=$mapId.json");
@@ -192,7 +192,7 @@
 				<title>{$map['title']}</title>
 				<link rel="shortcut icon" href="{$map['icon']}">
 		HERE;
-		if ($_GET['getHtml'] == 'y')
+		if (isset($_GET['getHtml']) && $_GET['getHtml'] == 'y')
 		{
 			require("./constants/previewBase.php");
 			$html = $html."\n\t\t<base href='$previewBase'>";
