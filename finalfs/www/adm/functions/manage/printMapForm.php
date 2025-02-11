@@ -63,7 +63,7 @@
 		printExportJsonButton(targetId($map));
 		if (empty($url))
 		{
-			$url="../".targetId($map).".html";
+			$url="../".str_replace('#', '%23', targetId($map)).".html";
 		}
 		printUrlButton($url);
 		echo '</div></form></div></div>';
