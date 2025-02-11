@@ -263,7 +263,7 @@
 					let origo;
 		HERE;
 		//const origoConfig = {$json}; Funkar ej med mapstate?
-		if ($_GET['getHtml'] == 'y')
+		if (isset($_GET['getHtml']) && $_GET['getHtml'] == 'y')
 		{
 			$html=$html. <<<HERE
 
