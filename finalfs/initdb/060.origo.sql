@@ -419,3 +419,4 @@ INSERT INTO map_configs.helps(help_id,abstract) VALUES ('service:base_url','<b>T
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('source:file','<b>Källa > Fil</b><br>Ange en datafil, med sökväg, som är åtkomlig på/från webbservern där Origo ligger.');
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('layer:queryable','<b>Lager > Klickbar</b><br>Om "Klickbar" är satt till "f" kommer ingen information (featureinfo) visas när man klickar på lagrets objekt.');
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('layer:visible','<b>Lager > Synlig</b><br>Om "Synlig" är satt till "t" kommer lagret vara tänt när man laddar kartan.');
+INSERT INTO map_configs.helps(help_id,abstract) VALUES ('layer:exportable','<b>Lager > Exporterbar</b><br>Om "Exporterbar" är satt till "f" kommer lagret inte exporteras av exportverktyget. Inställningen hindrar dock inte åtkomst av bakomliggande tjänster (t ex WFS).');
