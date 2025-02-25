@@ -35,6 +35,7 @@
 		echo '<hr class="dashedHr">';
 		echo '<div class="buttonDiv">';
 		printUpdateButton('group');
+		printCopyButton('group');
 		$group=makeTargetBasic($group);
 		printInfoButton($group);
 		printConfigPreviewButton('preview', targetId($group));
