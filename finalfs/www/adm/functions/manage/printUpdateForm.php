@@ -26,6 +26,7 @@
 		printHiddenInputs($inheritPosts);
 		echo '<div class="buttonDiv">';
 		printUpdateButton('update');
+		printCopyButton('update');
 		$update=makeTargetBasic($update);
 		printInfoButton($update);
 		$deleteConfirmStr="Är du säker att du vill radera uppdateringsrutinen ".targetId($update)."? Referenser till uppdateringsrutinen hanteras separat.";
