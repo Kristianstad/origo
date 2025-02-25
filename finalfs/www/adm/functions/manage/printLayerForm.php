@@ -217,6 +217,7 @@
 		echo '<hr class="dashedHr">';
 		echo '<div class="buttonDiv">';
 		printUpdateButton('layer');
+		printCopyButton('layer');
 		$layer=makeTargetBasic($layer);
 		printInfoButton($layer);
 		printConfigPreviewButton('preview', null, targetId($layer));
