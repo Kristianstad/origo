@@ -27,6 +27,7 @@
 		echo '<hr class="dashedHr">';
 		echo '<div class="buttonDiv">';
 		printUpdateButton('control');
+		printCopyButton('control');
 		$control=makeTargetBasic($control);
 		printInfoButton($control);
 		$deleteConfirmStr="Är du säker att du vill radera kontrollen ".targetId($control)."? Referenser till kontrollen hanteras separat.";
