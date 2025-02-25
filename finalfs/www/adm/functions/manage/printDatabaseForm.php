@@ -25,6 +25,7 @@
 		printHiddenInputs($inheritPosts);
 		echo '<div class="buttonDiv">';
 		printUpdateButton('database');
+		printCopyButton('database');
 		$database=makeTargetBasic($database);
 		printInfoButton($database);
 		printReadDbSchemasButton(targetId($database));
