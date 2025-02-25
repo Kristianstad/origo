@@ -98,6 +98,17 @@
 		// $sql (string) will contain an sql-query to be executed on the database
 		$sql="";
 
+		// If $command is 'copy' and an id was posted, then $sql will contain an sql-query to insert a new row into the database table named by $typeTableName.
+		if ($command == 'copy' && isset($post[$type.'Id']))
+		{
+			$copyId=$post[$type.'Id'];
+			while (!isIdUniqueInTable($copyId, $typeTablePkColumn, $typeTable))
+			{
+				$copyId=$copyId.'-kopia';
+			}
+			$sql=insertIdSql($copyId, $typeTableName).'; ';
+		}
+
 		// If $command is 'create' and a new unique id was posted, then $sql will contain an sql-query to insert a new row into the database table named by $typeTableName
 		if ($command == 'create' && !empty($post[$type.'IdNew']))
 		{
@@ -125,8 +136,8 @@
 			// The id of the given item (of type $type) is read from $post and is exposed as $id (string)
 			$id=$post[$type.'Id'];
 			
-			// If $command is 'update', then $sql will contain an sql-query to update a row in the database table named by $typeTableName
-			if ($command == 'update')
+			// If $command is 'update' or 'copy', then $sql will contain an sql-query to update a row in the database table named by $typeTableName
+			if ($command == 'update' || $command == 'copy')
 			{
 				
 				// If $type is 'layer' or 'group', make the posted abstract field html compatible
@@ -184,8 +195,16 @@
 						unset($layerName, $sourceConfig, $serviceType);
 					}
 
-					// $sql is set to an sql-query to update a row in the database with data from $updatePosts
-					$sql=sqlForUpdate(makeFullTarget($type, $config), $updatePosts);
+					// If $command is 'copy' then use the new $copyId in the update operation
+					if ($command == 'copy')
+					{
+						$config[$typeTablePkColumn]=$copyId;
+						$updatePosts['update'.ucfirst($typeTablePkColumn)]=$copyId;
+						unset($copyId);
+					}
+
+					// $sql is appended with an sql-query to update a row in the database with data from $updatePosts
+					$sql=$sql.sqlForUpdate(makeFullTarget($type, $config), $updatePosts);
 					unset($config);
 				}
 				unset($updatePosts, $updateFailed);
