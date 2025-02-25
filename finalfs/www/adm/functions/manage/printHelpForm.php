@@ -23,6 +23,7 @@
 		printHiddenInputs($inheritPosts);
 		echo '<div class="buttonDiv">';
 		printUpdateButton('help');
+		printCopyButton('help');
 		$help=makeTargetBasic($help);
 		printInfoButton($help);
 		$deleteConfirmStr="Är du säker att du vill radera hjälpen ".targetId($help)."?";
