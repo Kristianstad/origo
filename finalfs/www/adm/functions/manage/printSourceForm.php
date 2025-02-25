@@ -71,6 +71,7 @@
 		printHiddenInputs($inheritPosts);
 		echo '<div class="buttonDiv">';
 		printUpdateButton('source');
+		printCopyButton('source');
 		$source=makeTargetBasic($source);
 		printInfoButton($source);
 		$deleteConfirmStr="Är du säker att du vill radera källan ".targetId($source)."? Referenser till källan hanteras separat.";
