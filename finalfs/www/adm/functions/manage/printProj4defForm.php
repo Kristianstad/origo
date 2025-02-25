@@ -26,6 +26,7 @@
 		printHiddenInputs($inheritPosts);
 		echo '<div class="buttonDiv">';
 		printUpdateButton('proj4def');
+		printCopyButton('proj4def');
 		$proj4def=makeTargetBasic($proj4def);
 		printInfoButton($proj4def);
 		$deleteConfirmStr="Är du säker att du vill radera proj4def ".targetId($proj4def)."? Referenser till aktuell proj4def hanteras separat.";
