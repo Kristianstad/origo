@@ -53,6 +53,7 @@
 		printHiddenInputs($inheritPosts);
 		echo '<div class="buttonDiv">';
 		printUpdateButton('map');
+		printCopyButton('map');
 		$url=targetConfigParam($map, 'url');
 		$map=makeTargetBasic($map);
 		printInfoButton($map);
