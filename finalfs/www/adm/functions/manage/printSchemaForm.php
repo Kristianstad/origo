@@ -29,6 +29,7 @@
 		printHiddenInputs($inheritPosts);
 		echo '<div class="buttonDiv">';
 		printUpdateButton('schema');
+		printCopyButton('schema');
 		$schema=makeTargetBasic($schema);
 		printInfoButton($schema);
 		printReadSchemaTablesButton(targetId($schema));
