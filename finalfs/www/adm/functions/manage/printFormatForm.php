@@ -23,6 +23,7 @@
 		printHiddenInputs($inheritPosts);
 		echo '<div class="buttonDiv">';
 		printUpdateButton('format');
+		printCopyButton('format');
 		$format=makeTargetBasic($format);
 		printInfoButton($format);
 		$deleteConfirmStr="Är du säker att du vill radera formatet ".targetId($format)."? Referenser till formatet hanteras separat.";
