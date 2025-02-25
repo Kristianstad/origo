@@ -44,6 +44,7 @@
 		printHiddenInputs($inheritPosts);
 		echo '<div class="buttonDiv">';
 		printUpdateButton('service');
+		printCopyButton('service');
 		$service=makeTargetBasic($service);
 		printInfoButton($service);
 		$deleteConfirmStr="Är du säker att du vill radera tjänsten ".targetId($service)."? Referenser till tjänsten hanteras separat.";
