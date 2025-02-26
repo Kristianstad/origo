@@ -101,7 +101,14 @@
 		// If $command is 'copy' and an id was posted, then $sql will contain an sql-query to insert a new row into the database table named by $typeTableName.
 		if ($command == 'copy' && isset($post[$type.'Id']))
 		{
-			$copyId=$post[$type.'Id'];
+			if (isset($post['update'.ucfirst($typeTablePkColumn)]))
+			{
+				$copyId=$post['update'.ucfirst($typeTablePkColumn)];
+			}
+			else
+			{
+				$copyId=$post[$type.'Id'];
+			}
 			while (!isIdUniqueInTable($copyId, $typeTablePkColumn, $typeTable))
 			{
 				$copyId=$copyId.'-kopia';
