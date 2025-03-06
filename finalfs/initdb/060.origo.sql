@@ -427,3 +427,6 @@ INSERT INTO map_configs.helps(help_id,abstract) VALUES ('layer:icon_extended','<
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('layer:minscale','<b>Lager > Minskala</b><br>Minsta skala då lagret är synligt (frivilligt). Lager som ligger utanför sitt skalintervall gråmarkeras i legenden.');
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('layer:maxscale','<b>Lager > Maxskala</b><br>Största skala då lagret är synligt (frivilligt). Lager som ligger utanför sitt skalintervall gråmarkeras i legenden.');
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('layer:attribution','<b>Lager > Tillskrivning</b><br>Cypyright-text eller liknande. Visas i sidfoten, samt vid utskrift, när lagret är tänt.');
+INSERT INTO map_configs.helps(help_id,abstract) VALUES ('layer:contact','<b>Lager > Kontakt</b><br>Välj en fördefinierad kontakt för lagret eller lämna fältet tomt.');
+INSERT INTO map_configs.helps(help_id,abstract) VALUES ('layer:origin','<b>Lager > Ursprungskälla</b><br>Välj en fördefinierad ursprungskälla för lagret eller lämna fältet tomt.');
+INSERT INTO map_configs.helps(help_id,abstract) VALUES ('layer:update','<b>Lager > Uppdatering</b><br>Välj en fördefinierad uppdateringstyp för lagret eller lämna fältet tomt.');
