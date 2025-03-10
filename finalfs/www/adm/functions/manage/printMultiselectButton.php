@@ -2,6 +2,11 @@
 
 	function printMultiselectButton($configParam, $value=null, $buttonText='Flervalsverktyg', $buttonClass='largeMultiselectButton')
 	{
+		require("./constants/tableAliases.php");
+		if (!empty($tableAliases[$configParam]))
+		{
+			$configParam=$tableAliases[$configParam];
+		}
 		$buttonValue=$configParam;
 		if (!empty($value))
 		{
