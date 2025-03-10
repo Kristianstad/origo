@@ -21,7 +21,7 @@
 		$sName='update'.$ucConfigParam;
 		$selected=current($fullTarget)[rtrim(key($configParamValues), 's')];
 		echo <<<HERE
-			<span>
+			<span class="optionSpan">
 				<label title="{$targetType}:{$configParam}" for='{$targetId}{$ucConfigParam}'>{$label}</label>
 				<select onchange='{$onchange}' class='{$class}' id='{$targetId}{$ucConfigParam}' name='{$sName}'>
 		HERE;
