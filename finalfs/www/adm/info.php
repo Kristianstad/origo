@@ -75,6 +75,7 @@
 			if ($childType == 'layer')
 			{
 				printParents(array('layers'=>all_from_table($dbh, $configSchema, 'layers')), $child);
+				printParents(array('layers'=>all_from_table($dbh, $configSchema, 'layers')), array('export'=>current($child)));
 			}
 			if ($childType == 'source' || $childType == 'contact' || $childType == 'export' || $childType == 'update' || $childType == 'origin' || $childType == 'table')
 			{
