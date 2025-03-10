@@ -8,9 +8,19 @@
 		$parents=findParents($potentialParents, $child);
 		$parentsTable=key($potentialParents);
 		$parentsTableSv=toSwedish($parentsTable);
+		$parentsOption=key($child).'s';
+		if ($parentsTable != $parentsOption)
+		{
+			$parentsOptionSv=toSwedish($parentsOption);
+			$headerString="$parentsTableSv ($parentsOptionSv): ";
+		}
+		else
+		{
+			$headerString="$parentsTableSv: ";
+		}
 		if (!empty($parents))
 		{
-			echo "<b>$parentsTableSv: </b>";
+			echo "<b>$headerString</b>";
 			$first=true;
 			$parentType=rtrim($parentsTable, 's');
 			foreach ($parents as $parent)
