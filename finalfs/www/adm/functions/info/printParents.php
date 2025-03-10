@@ -9,15 +9,8 @@
 		$parentsTable=key($potentialParents);
 		$parentsTableSv=toSwedish($parentsTable);
 		$parentsOption=key($child).'s';
-		if ($parentsTable != $parentsOption)
-		{
-			$parentsOptionSv=toSwedish($parentsOption);
-			$headerString="$parentsTableSv ($parentsOptionSv): ";
-		}
-		else
-		{
-			$headerString="$parentsTableSv: ";
-		}
+		$parentsOptionSv=toSwedish($parentsOption);
+		$headerString="$parentsTableSv ($parentsOptionSv): ";
 		if (!empty($parents))
 		{
 			echo "<b>$headerString</b>";
