@@ -36,7 +36,7 @@
 		$targetId=targetId($fullTarget);
 		$targetType=targetType($fullTarget);
 		echo <<<HERE
-			<span>
+			<span class="optionSpan">
 				<label title="{$targetType}:{$configParam}" for="{$targetId}{$ucConfigParam}">{$label}</label>
 				<textarea {$ro}rows="1" class="{$class}" id="{$targetId}{$ucConfigParam}" name="update{$ucConfigParam}">{$configParamValue}</textarea>
 		HERE;
