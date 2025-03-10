@@ -223,16 +223,6 @@ CREATE TABLE map_configs.contacts
     CONSTRAINT contacts_pkey PRIMARY KEY (contact_id)
 );
 
-CREATE TABLE map_configs.exports
-(
-    export_id character varying COLLATE pg_catalog."default" NOT NULL,
-    resource character varying COLLATE pg_catalog."default",
-    style character varying COLLATE pg_catalog."default",
-    info character varying COLLATE pg_catalog."default",
-    abstract character varying COLLATE pg_catalog."default",
-    CONSTRAINT exports_pkey PRIMARY KEY (export_id)
-);
-
 CREATE TABLE map_configs.origins
 (
     origin_id character varying COLLATE pg_catalog."default" NOT NULL,
