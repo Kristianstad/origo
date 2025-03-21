@@ -433,3 +433,4 @@ INSERT INTO map_configs.helps(help_id,abstract) VALUES ('database:connectionstri
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('database:abstract','<b>Databas > Beskrivning</b><br>En informativ text för administratörer som beskriver databasen och dess innehåll.');
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('database:info','<b>Databas > Info</b><br>Fält för administrativ information, rörande databasen, som inte passar in någon annanstans.');
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('schema:schema_id','<b>Schema > Id</b><br>Ett unikt id som används som primärnyckel av verktyget och som består av ett databas-id och ett schema-namn, formaterat enligt nedan:<br>databas-id.schema-namn (t ex. geodata.public)');
+INSERT INTO map_configs.helps(help_id,abstract) VALUES ('schema:abstract','<b>Schema > Beskrivning</b><br>En informativ text för administratörer som beskriver schemat och dess innehåll.');
