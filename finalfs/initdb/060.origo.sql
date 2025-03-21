@@ -436,3 +436,4 @@ INSERT INTO map_configs.helps(help_id,abstract) VALUES ('schema:schema_id','<b>S
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('schema:abstract','<b>Schema > Beskrivning</b><br>En informativ text för administratörer som beskriver schemat och dess innehåll.');
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('schema:keywords','<b>Schema > Nyckelord</b><br>En kommaseparerad lista av nyckelord som är associerade med det aktuella schemat. Nyckelorden används för att gruppera scheman i det administrativa verktyget.');
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('schema:contact','<b>Schema > Kontakt</b><br>Välj en fördefinierad kontakt för schemat eller lämna fältet tomt.');
+INSERT INTO map_configs.helps(help_id,abstract) VALUES ('schema:origin','<b>Schema > Ursprungskälla</b><br>Välj en fördefinierad ursprungskälla för schemat eller lämna fältet tomt.');
