@@ -447,3 +447,4 @@ INSERT INTO map_configs.helps(help_id,abstract) VALUES ('table:contact','<b>Tabe
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('table:origin','<b>Tabell > Ursprungskälla</b><br>Välj en fördefinierad ursprungskälla för tabellen eller lämna fältet tomt.');
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('table:updated','<b>Tabell > Uppdaterad</b><br>Ett readonly-fält som visar när tabellen senast uppdaterades i databasen.');
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('table:update','<b>Tabell > Uppdatering</b><br>Välj en fördefinierad uppdateringstyp för tabellen eller lämna fältet tomt.');
+INSERT INTO map_configs.helps(help_id,abstract) VALUES ('table:history','<b>Tabell > Tillkomsthistorik</b><br>Ett informativt fält där man kan skriva in information om hur tabellen skapades.');
