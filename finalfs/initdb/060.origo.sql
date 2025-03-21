@@ -449,3 +449,5 @@ INSERT INTO map_configs.helps(help_id,abstract) VALUES ('table:updated','<b>Tabe
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('table:update','<b>Tabell > Uppdatering</b><br>Välj en fördefinierad uppdateringstyp för tabellen eller lämna fältet tomt.');
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('table:history','<b>Tabell > Tillkomsthistorik</b><br>Ett informativt fält där man kan skriva in information om hur tabellen skapades.');
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('table:info','<b>Tabell > Info</b><br>Fält för administrativ information, rörande tabellen, som inte passar in någon annanstans.');
+INSERT INTO map_configs.helps(help_id,abstract) VALUES ('contact:contact_id','<b>Kontakt > Id</b><br>Ett unikt id som används som primärnyckel i databasen.');
+INSERT INTO map_configs.helps(help_id,abstract) VALUES ('contact:name','<b>Kontakt > Namn</b><br>Kontaktens namn.');
