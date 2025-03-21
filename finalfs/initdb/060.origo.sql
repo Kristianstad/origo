@@ -451,3 +451,4 @@ INSERT INTO map_configs.helps(help_id,abstract) VALUES ('table:history','<b>Tabe
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('table:info','<b>Tabell > Info</b><br>Fält för administrativ information, rörande tabellen, som inte passar in någon annanstans.');
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('contact:contact_id','<b>Kontakt > Id</b><br>Ett unikt id som används som primärnyckel i databasen.');
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('contact:name','<b>Kontakt > Namn</b><br>Kontaktens namn.');
+INSERT INTO map_configs.helps(help_id,abstract) VALUES ('contact:web','<b>Kontakt > Webbsida</b><br>Adress till eventuell webbsida för kontakten.');
