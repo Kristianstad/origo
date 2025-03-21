@@ -445,3 +445,4 @@ INSERT INTO map_configs.helps(help_id,abstract) VALUES ('table:abstract','<b>Tab
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('table:keywords','<b>Tabell > Nyckelord</b><br>En kommaseparerad lista av nyckelord som är associerade med den aktuella tabellen. Nyckelorden används för att gruppera tabeller i det administrativa verktyget.');
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('table:contact','<b>Tabell > Kontakt</b><br>Välj en fördefinierad kontakt för tabellen eller lämna fältet tomt.');
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('table:origin','<b>Tabell > Ursprungskälla</b><br>Välj en fördefinierad ursprungskälla för tabellen eller lämna fältet tomt.');
+INSERT INTO map_configs.helps(help_id,abstract) VALUES ('table:updated','<b>Tabell > Uppdaterad</b><br>Ett readonly-fält som visar när tabellen senast uppdaterades i databasen.');
