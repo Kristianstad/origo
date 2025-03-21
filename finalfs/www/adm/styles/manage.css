@@ -49,6 +49,6 @@
 		.headFormDiv1	{ width:16em; white-space:nowrap; display:inline-block }
 		.headFormDiv2	{ width:100%; white-space:nowrap; display:inline-block }
 		.headFormDiv3	{ width:100%; white-space:nowrap; display:inline-block; margin-top:2px }
-		.addRemoveDiv	{ clear:both; padding-top:0.5em; padding-bottom:0; max-width:calc(100% - 16em) }
+		.addRemoveDiv	{ clear:both; padding-top:0.5em; padding-bottom:0; max-width:calc(100% - 29em) }
 		.optionSpan		{ white-space:nowrap }
 		.yellowLock		{ margin-right:-0.4em }
