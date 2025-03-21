@@ -7,6 +7,7 @@
 	require_once("./functions/manage/printInfoButton.php");
 	require_once("./functions/manage/printDeleteButton.php");
 	require_once("./functions/manage/targetId.php");
+	require_once("./functions/manage/setTargetConfigParam.php");
 
 	// Takes a full table target (array), pg_connect connection string, table selectables (array), inheritPosts (array), and helps (array).
 	// Prints form fields and buttons that are used to view and edit the configuration for the given table.
@@ -27,7 +28,8 @@
 		$dbh2=dbh($dbhConnectionString);
 		$tableWithSchema=substr(targetId($table), strpos(targetId($table), '.')+1);
 		$updated=substr(updated_from_table($dbh2, $tableWithSchema)[0], 0, 10);
-		echo '<span style="vertical-align: text-bottom; margin-left:0.6em">Updaterad: </span><textarea readonly rows="1" class="textareaMedium">'.$updated.'</textarea>';
+		setTargetConfigParam($table, 'updated', $updated);
+		printTextarea($table, 'updated', 'textareaMedium', 'Uppdaterad:', in_array('update', $helps), true);
 		printUpdateSelect($table, array('update'=>$selectables['updates']), 'bodySelect', 'Uppdatering:', in_array('update', $helps));
 		printTextarea($table, 'history', 'textareaLarge', 'Tillkomsthistorik:', in_array('history', $helps));
 		printTextarea($table, 'info', 'textareaLarge', 'Info:', in_array('info', $helps));
