@@ -454,3 +454,4 @@ INSERT INTO map_configs.helps(help_id,abstract) VALUES ('contact:name','<b>Konta
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('contact:web','<b>Kontakt > Webbsida</b><br>Adress till eventuell webbsida för kontakten.');
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('contact:email','<b>Kontakt > E-mail</b><br>Eventuell e-postadress till kontakten.');
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('contact:abstract','<b>Kontakt > Beskrivning</b><br>En informativ text för administratörer som beskriver kontakten.');
+INSERT INTO map_configs.helps(help_id,abstract) VALUES ('contact:info','<b>Kontakt > Info</b><br>Fält för administrativ information, rörande kontakten, som inte passar in någon annanstans.');
