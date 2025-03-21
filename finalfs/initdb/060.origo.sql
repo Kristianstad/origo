@@ -439,3 +439,4 @@ INSERT INTO map_configs.helps(help_id,abstract) VALUES ('schema:contact','<b>Sch
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('schema:origin','<b>Schema > Ursprungskälla</b><br>Välj en fördefinierad ursprungskälla för schemat eller lämna fältet tomt.');
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('schema:update','<b>Schema > Uppdatering</b><br>Välj en fördefinierad uppdateringstyp för schemat eller lämna fältet tomt.');
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('schema:updated','<b>Schema > Uppdaterad (åååå-mm-dd)</b><br>Ett informativt fält där man kan ange när schemat senast uppdaterades. Fältet måste ajourhållas manuellt.');
+INSERT INTO map_configs.helps(help_id,abstract) VALUES ('schema:info','<b>Schema > Info</b><br>Fält för administrativ information, rörande schemat, som inte passar in någon annanstans.');
