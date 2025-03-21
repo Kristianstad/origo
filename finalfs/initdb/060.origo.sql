@@ -437,3 +437,5 @@ INSERT INTO map_configs.helps(help_id,abstract) VALUES ('schema:abstract','<b>Sc
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('schema:keywords','<b>Schema > Nyckelord</b><br>En kommaseparerad lista av nyckelord som är associerade med det aktuella schemat. Nyckelorden används för att gruppera scheman i det administrativa verktyget.');
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('schema:contact','<b>Schema > Kontakt</b><br>Välj en fördefinierad kontakt för schemat eller lämna fältet tomt.');
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('schema:origin','<b>Schema > Ursprungskälla</b><br>Välj en fördefinierad ursprungskälla för schemat eller lämna fältet tomt.');
+INSERT INTO map_configs.helps(help_id,abstract) VALUES ('schema:update','<b>Schema > Uppdatering</b><br>Välj en fördefinierad uppdateringstyp för schemat eller lämna fältet tomt.');
+INSERT INTO map_configs.helps(help_id,abstract) VALUES ('schema:updated','<b>Schema > Uppdaterad (åååå-mm-dd)</b><br>Ett informativt fält där man kan ange när schemat senast uppdaterades. Fältet måste ajourhållas manuellt.');
