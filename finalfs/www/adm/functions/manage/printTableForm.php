@@ -29,7 +29,7 @@
 		$tableWithSchema=substr(targetId($table), strpos(targetId($table), '.')+1);
 		$updated=substr(updated_from_table($dbh2, $tableWithSchema)[0], 0, 10);
 		setTargetConfigParam($table, 'updated', $updated);
-		printTextarea($table, 'updated', 'textareaMedium', 'Uppdaterad:', in_array('update', $helps), true);
+		printTextarea($table, 'updated', 'textareaMedium', 'Uppdaterad:', in_array('updated', $helps), true);
 		printUpdateSelect($table, array('update'=>$selectables['updates']), 'bodySelect', 'Uppdatering:', in_array('update', $helps));
 		printTextarea($table, 'history', 'textareaLarge', 'Tillkomsthistorik:', in_array('history', $helps));
 		printTextarea($table, 'info', 'textareaLarge', 'Info:', in_array('info', $helps));
