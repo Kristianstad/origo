@@ -455,3 +455,4 @@ INSERT INTO map_configs.helps(help_id,abstract) VALUES ('contact:web','<b>Kontak
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('contact:email','<b>Kontakt > E-mail</b><br>Eventuell e-postadress till kontakten.');
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('contact:abstract','<b>Kontakt > Beskrivning</b><br>En informativ text för administratörer som beskriver kontakten.');
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('contact:info','<b>Kontakt > Info</b><br>Fält för administrativ information, rörande kontakten, som inte passar in någon annanstans.');
+INSERT INTO map_configs.helps(help_id,abstract) VALUES ('origin:origin_id','<b>Ursprungskälla > Id</b><br>Ett unikt id som används som primärnyckel i databasen.');
