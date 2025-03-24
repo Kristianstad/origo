@@ -462,3 +462,4 @@ INSERT INTO map_configs.helps(help_id,abstract) VALUES ('origin:email','<b>Urspr
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('origin:abstract','<b>Ursprungskälla > Beskrivning</b><br>En informativ text för administratörer som beskriver ursprungskällan.');
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('origin:info','<b>Ursprungskälla > Info</b><br>Fält för administrativ information, rörande ursprungskällan, som inte passar in någon annanstans.');
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('update:update_id','<b>Uppdateringsrutin > Id</b><br>Ett unikt id som används som primärnyckel i databasen.');
+INSERT INTO map_configs.helps(help_id,abstract) VALUES ('update:name','<b>Uppdateringsrutin > Namn</b><br>Ett namn på uppdateringsrutinen som även fungerar som en kortfattad beskrivning av densamma.');
