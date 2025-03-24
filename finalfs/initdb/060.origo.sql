@@ -458,3 +458,4 @@ INSERT INTO map_configs.helps(help_id,abstract) VALUES ('contact:info','<b>Konta
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('origin:origin_id','<b>Ursprungskälla > Id</b><br>Ett unikt id som används som primärnyckel i databasen.');
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('origin:name','<b>Ursprungskälla > Namn</b><br>Ursprungskällans namn.');
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('origin:web','<b>Ursprungskälla > Webbsida</b><br>Adress till eventuell webbsida för ursprungskällan.');
+INSERT INTO map_configs.helps(help_id,abstract) VALUES ('origin:email','<b>Ursprungskälla > E-mail</b><br>Eventuell e-postadress till ursprungskällan.');
