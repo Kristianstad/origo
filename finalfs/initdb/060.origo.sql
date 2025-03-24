@@ -467,3 +467,4 @@ INSERT INTO map_configs.helps(help_id,abstract) VALUES ('update:interval','<b>Up
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('update:method','<b>Uppdateringsrutin > Metod</b><br>Välj ett av de fördefinierade uppdateringsmetoderna eller lämna fältet tomt.');
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('update:abstract','<b>Uppdateringsrutin > Beskrivning</b><br>En informativ text för administratörer som beskriver uppdateringsrutinen.');
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('update:info','<b>Uppdateringsrutin > Info</b><br>Fält för administrativ information, rörande uppdateringsrutinen, som inte passar in någon annanstans.');
+INSERT INTO map_configs.helps(help_id,abstract) VALUES ('keyword:keyword_id','<b>Nyckelord > Id</b><br>Ett nyckelord som bland annat kan användas för att skapa en logisk gruppering av t ex. lager. Används även som primärnyckel i databasen.');
