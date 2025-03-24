@@ -469,3 +469,4 @@ INSERT INTO map_configs.helps(help_id,abstract) VALUES ('update:abstract','<b>Up
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('update:info','<b>Uppdateringsrutin > Info</b><br>Fält för administrativ information, rörande uppdateringsrutinen, som inte passar in någon annanstans.');
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('keyword:keyword_id','<b>Nyckelord > Id</b><br>Ett nyckelord som bland annat kan användas för att skapa en logisk gruppering av t ex. lager. Används även som primärnyckel i databasen.');
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('keyword:abstract','<b>Nyckelord > Beskrivning</b><br>En informativ text för administratörer som beskriver nyckelordet.');
+INSERT INTO map_configs.helps(help_id,abstract) VALUES ('keyword:info','<b>Nyckelord > Info</b><br>Fält för administrativ information, rörande nyckelordet, som inte passar in någon annanstans.');
