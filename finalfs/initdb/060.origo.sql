@@ -460,3 +460,4 @@ INSERT INTO map_configs.helps(help_id,abstract) VALUES ('origin:name','<b>Urspru
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('origin:web','<b>Ursprungskälla > Webbsida</b><br>Adress till eventuell webbsida för ursprungskällan.');
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('origin:email','<b>Ursprungskälla > E-mail</b><br>Eventuell e-postadress till ursprungskällan.');
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('origin:abstract','<b>Ursprungskälla > Beskrivning</b><br>En informativ text för administratörer som beskriver ursprungskällan.');
+INSERT INTO map_configs.helps(help_id,abstract) VALUES ('origin:info','<b>Ursprungskälla > Info</b><br>Fält för administrativ information, rörande ursprungskällan, som inte passar in någon annanstans.');
