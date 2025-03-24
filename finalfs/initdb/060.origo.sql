@@ -457,3 +457,4 @@ INSERT INTO map_configs.helps(help_id,abstract) VALUES ('contact:abstract','<b>K
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('contact:info','<b>Kontakt > Info</b><br>Fält för administrativ information, rörande kontakten, som inte passar in någon annanstans.');
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('origin:origin_id','<b>Ursprungskälla > Id</b><br>Ett unikt id som används som primärnyckel i databasen.');
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('origin:name','<b>Ursprungskälla > Namn</b><br>Ursprungskällans namn.');
+INSERT INTO map_configs.helps(help_id,abstract) VALUES ('origin:web','<b>Ursprungskälla > Webbsida</b><br>Adress till eventuell webbsida för ursprungskällan.');
