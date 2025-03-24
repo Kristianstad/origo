@@ -466,3 +466,4 @@ INSERT INTO map_configs.helps(help_id,abstract) VALUES ('update:name','<b>Uppdat
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('update:interval','<b>Uppdateringsrutin > Intervall</b><br>Välj ett av de fördefinierade uppdateringsintervallen eller lämna fältet tomt.');
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('update:method','<b>Uppdateringsrutin > Metod</b><br>Välj ett av de fördefinierade uppdateringsmetoderna eller lämna fältet tomt.');
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('update:abstract','<b>Uppdateringsrutin > Beskrivning</b><br>En informativ text för administratörer som beskriver uppdateringsrutinen.');
+INSERT INTO map_configs.helps(help_id,abstract) VALUES ('update:info','<b>Uppdateringsrutin > Info</b><br>Fält för administrativ information, rörande uppdateringsrutinen, som inte passar in någon annanstans.');
