@@ -475,3 +475,4 @@ INSERT INTO map_configs.helps(help_id,abstract) VALUES ('proj4def:alias','<b>Pro
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('tilegrid:tilesize','<b>Tilegrid > Tile-storlek</b><br>Storleken på genererade tiles. Kan anges som en siffra (t ex. 512), eller som en array (t ex. [ 512,512 ]). Standardstorlek är [ 256,256 ].');
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('footer:img','<b>Sidfot > Logotyp</b><br>En bild som visas i sidfoten. Ange en bildfil, med sökväg, som är åtkomlig på/från webbservern där Origo ligger.');
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('footer:url','<b>Sidfot > Url</b><br>En webblänk som öppnas i ett nytt fönster om man klickar på logotypen eller texten i sidfoten.');
+INSERT INTO map_configs.helps(help_id,abstract) VALUES ('footer:text','<b>Sidfot > Text</b><br>En textsträng som skrivs ut i sidfoten.');
