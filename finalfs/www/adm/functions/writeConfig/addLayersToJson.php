@@ -141,6 +141,7 @@
 			if ($layer['type'] == 'GEOJSON')
 			{
 				$json = $json.', "source": "'.$source['file'].'"';
+				$json = $json.', "headers": { "Accept": "application/geo+json" }';
 			}
 			else
 			{
