@@ -476,3 +476,4 @@ INSERT INTO map_configs.helps(help_id,abstract) VALUES ('tilegrid:tilesize','<b>
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('footer:img','<b>Sidfot > Logotyp</b><br>En bild som visas i sidfoten. Ange en bildfil, med sökväg, som är åtkomlig på/från webbservern där Origo ligger.');
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('footer:url','<b>Sidfot > Url</b><br>En webblänk som öppnas i ett nytt fönster om man klickar på logotypen eller texten i sidfoten.');
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('footer:text','<b>Sidfot > Text</b><br>En textsträng som skrivs ut i sidfoten.');
+INSERT INTO map_configs.helps(help_id,abstract) VALUES ('layer:layertype','<b>Lager > WFS-typ</b><br>Välj hur WFS-lagret ska renderas: vector, cluster eller image. Om inget har valts renderas lagret som vektor (vector).');
