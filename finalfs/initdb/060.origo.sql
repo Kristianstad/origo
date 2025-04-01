@@ -477,3 +477,4 @@ INSERT INTO map_configs.helps(help_id,abstract) VALUES ('footer:img','<b>Sidfot 
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('footer:url','<b>Sidfot > Url</b><br>En webblänk som öppnas i ett nytt fönster om man klickar på logotypen eller texten i sidfoten.');
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('footer:text','<b>Sidfot > Text</b><br>En textsträng som skrivs ut i sidfoten.');
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('layer:layertype','<b>Lager > WFS-typ</b><br>Välj hur WFS-lagret ska renderas: vector, cluster eller image. Om inget har valts renderas lagret som vektor (vector).');
+INSERT INTO map_configs.helps(help_id,abstract) VALUES ('layer:editable','<b>Lager > Redigerbar</b><br>Sätt "Redigerbar" till "t" om lagret ska kunna redigeras i kartan. Kräver att kartan har editor-kontrollen och att källan stödjer WFS-T.');
