@@ -123,7 +123,7 @@
 				printTextarea($layer, 'style_config', 'textareaLarge', 'Stilkonfiguration:', in_array('style_config', $helps));
 			
 				// If 'style_config' is set then hide the following fields by inserting a span-tag.
-				if (!empty(targetConfigParam($layer, 'style_config')) && !empty(trim(targetConfigParam($layer, 'style_config'), " []{}\n\r\t")) && targetConfigParam($layer, 'style_config') != 'null')
+				if ((!empty(targetConfigParam($layer, 'style_config')) && !empty(trim(targetConfigParam($layer, 'style_config'), " []{}\n\r\t")) && targetConfigParam($layer, 'style_config') != 'null') || targetConfigParam($layer, 'type') == 'GEOJSON')
 				{
 					echo '<span title="style_configSet" style="display:none">';
 				}
@@ -167,7 +167,7 @@
 					}
 				
 				// If 'style_config' is set then the fields above is hidden by a span-tag and the span-tag is closed.
-				if (!empty(targetConfigParam($layer, 'style_config')) && !empty(trim(targetConfigParam($layer, 'style_config'), " []{}\n\r\t")) && targetConfigParam($layer, 'style_config') != 'null')
+				if ((!empty(targetConfigParam($layer, 'style_config')) && !empty(trim(targetConfigParam($layer, 'style_config'), " []{}\n\r\t")) && targetConfigParam($layer, 'style_config') != 'null') || targetConfigParam($layer, 'type') == 'GEOJSON')
 				{
 					echo '</span title="style_configSet">';
 				}
