@@ -5,7 +5,7 @@
 	require_once("./functions/writeConfig/addSourcesToJson.php");
 	require_once("./functions/writeConfig/addStylesToJson.php");
 
-	function addLayersToJson($mapLayersList, $groupLayer=false)
+	function addLayersToJson($mapLayersList, &$layersMeta, $groupLayer=false)
 	{
 		GLOBAL $map, $layers, $json, $mapStyles, $mapSources, $sources, $services, $mapStyleLayers, $contacts, $origins, $tables;
 		$json = $json. '"layers": [ ';
@@ -44,6 +44,7 @@
 				$json = $json.', ';
 			}
 			$layer = array_column_search($layerId, 'layer_id', $layers);
+			$layersMeta[]=array('title'=>trim(json_encode(trim($layer['title'], " \t\n\r\0\x0B\""), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES), '"'), 'abstract'=>trim(json_encode(trim($layer['abstract'], " \t\n\r\0\x0B\""), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES), '"'), 'keywords'=>trim(json_encode(str_replace(array("'", "\""), '', trim($layer['keywords'], " \t\n\r\0\x0B\"{}")), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES), '"'));
 			if ($layer['type'] !== 'GROUP')
 			{
 				$source = array_column_search($layer['source'], 'source_id', $sources);
@@ -321,7 +322,7 @@
 			if ($layer['type'] === 'GROUP')
 			{
 				$json = $json.', ';
-				addLayersToJson(pgArrayToPhp($layer['layers']), true);
+				addLayersToJson(pgArrayToPhp($layer['layers']), $layersMeta, true);
 			}
 			if (!empty($layer['source']) && !in_array($layer['source'], $mapSources))
 			{
