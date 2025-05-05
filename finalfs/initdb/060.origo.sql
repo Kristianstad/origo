@@ -142,6 +142,7 @@ CREATE TABLE map_configs.maps
     js_files character varying[] COLLATE pg_catalog."default" DEFAULT '{js/origo.min.js}'::character varying[],
     url character varying COLLATE pg_catalog."default",
     palette json,
+    searchengineindexable boolean,
     CONSTRAINT map_pk PRIMARY KEY (map_id)
 );
 
