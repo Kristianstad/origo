@@ -34,6 +34,7 @@
 	}
 	$htmlFile = "$configDir/index$mapNumber.html";
 	$jsonFile = "$configDir/index$mapNumber.json";
+	$sitemapFile = "$configDir/sitemap.xml";
 	ignore_user_abort(true);
 	$dbh=dbh();
 	$configTables=configTables($dbh);
@@ -154,7 +155,8 @@
 	$mapLayersList=indexweightedLayersList($mapLayersList);
 	addGroupsToJson($map['groups']);
 	$json = $json.', ';
-	addLayersToJson($mapLayersList);
+	$layersMeta=array();
+	addLayersToJson($mapLayersList, $layersMeta);
 	$json = $json.' }';
 	if (isset($_GET['badJson']))
 	{
@@ -169,7 +171,7 @@
 		echo '<script>alert("Fel i Json! Ingen konfiguration skriven."); window.location.href="'.$proxyRoot.$_SERVER["REQUEST_URI"].'&badJson=y";</script>';
 		exit;
 	}
-	$json=json_encode(json_decode($json));
+	$json=json_encode(json_decode($json), JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);
 	$jsonPretty = json_format($json);
 	if (isset($_GET['getJson']) && $_GET['getJson'] == 'y')
 	{
@@ -189,6 +191,7 @@
 				<meta charset="utf-8">
 				<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 				<meta http-equiv="X-UA-Compatible" content="IE=Edge;chrome=1">
+				<meta name="robots" content="index, follow">
 				<title>{$map['title']}</title>
 				<link rel="shortcut icon" href="{$map['icon']}">
 		HERE;
@@ -197,6 +200,12 @@
 			require("./constants/previewBase.php");
 			$html = $html."\n\t\t<base href='$previewBase'>";
 		}
+		/*
+		elseif ($map['searchengineindexable'] == "t")
+		{
+			$html = $html."\n\t\t<script type=\"application/ld+json\" src=\"structured-data".$mapNumber.".json\"></script>";
+		}
+		*/
 		$cssFiles = pgArrayToPhp($map['css_files']);
 		foreach ($cssFiles as $file)
 		{
@@ -301,12 +310,16 @@
 			$html=$html."\n{$map['js']}";
 		}
 		$html=$html. <<<HERE
-				</script>
-			</body>
-		</html>
+		
+		</script>
+		
 		HERE;
 		if (isset($_GET['getHtml']) && $_GET['getHtml'] == 'y')
 		{
+			$html=$html. <<<HERE
+			</body>
+			</html>
+			HERE;
 			if (isset($_GET['download']) && $_GET['download'] == 'y')
 			{
 				header('Content-Type: application/octet-stream');
@@ -316,6 +329,101 @@
 		}
 		else
 		{
+			if ($map['searchengineindexable'] == "t")
+			{
+				$mapTitle=json_encode(trim($map['title'], " \t\n\r\0\x0B\""), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+				$mapAbstract=json_encode(trim($map['abstract'], " \t\n\r\0\x0B\""), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+				$mapUrl=trim(json_encode(trim($map['url'], " \t\n\r\0\x0B\""), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES), '"');
+				$tmpMapKeywords=array_unique(array_filter(array_column($layersMeta, 'keywords')));
+				$mapKeywords=array();
+				foreach ($tmpMapKeywords as $layerKeywords)
+				{
+					$mapKeywords=array_merge($mapKeywords, explode(',', $layerKeywords));
+				}
+				$mapKeywords=array_unique($mapKeywords);
+				$mapKeywords=implode(',', $mapKeywords);
+				$structuredDataJson = <<<HERE
+				{
+					"@context": "https://schema.org",
+					"@type": "WebPage",
+					"name": {$mapTitle},
+					"description": {$mapAbstract},
+					"url": "{$mapUrl}",
+					"keywords": "{$mapKeywords}",
+					"about": [ 
+				HERE;
+				$firstTitle=true;
+				foreach ($layersMeta as $lmeta)
+				{
+					if ($firstTitle)
+					{
+						$firstTitle=false;
+					}
+					else
+					{
+						$structuredDataJson=$structuredDataJson.', ';
+					}
+					$structuredDataJson=$structuredDataJson.'{ "@type": "Thing", "name": "'.$lmeta['title'].'"';
+					if (isset($lmeta['abstract']) && !empty($lmeta['abstract']) && $lmeta['abstract'] !== 'null')
+					{
+						$structuredDataJson=$structuredDataJson.', "description": "'.$lmeta['abstract'].'"';
+					}
+					if (isset($lmeta['keywords']) && !empty($lmeta['keywords']) && $lmeta['keywords'] !== 'null')
+					{
+						$structuredDataJson=$structuredDataJson.', "keywords": "'.$lmeta['keywords'].'"';
+					}
+					$structuredDataJson=$structuredDataJson.' }';
+				}
+				require("./constants/searchEngineMeta.php");
+				$structuredDataJson=$structuredDataJson.<<<HERE
+					],
+					"geo": {
+						"@type": "GeoCoordinates",
+						"latitude": {$geoLatitude},
+						"longitude": {$geoLongitude}
+					},
+					"contentLocation": {
+						"@type": "Place",
+						"name": "{$contentLocationName}",
+						"address": {
+							"@type": "PostalAddress",
+							"addressLocality": "{$contentLocationAddressLocality}",
+							"addressCountry": "{$contentLocationAddressCountry}"
+						}
+					},
+					"publisher": {
+						"@type": "Organization",
+						"name": "{$publisherName}",
+						"url": "{$publisherUrl}"
+					}
+				}
+				HERE;
+				$structuredDataJson=json_encode(json_decode($structuredDataJson), JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);
+				$html=$html. <<<HERE
+				<script type="application/ld+json">
+				{$structuredDataJson}
+				</script>
+				
+				HERE;
+				$structuredDataJson=json_format($structuredDataJson);
+				$structuredDataFile = "$configDir/structured-data$mapNumber.json";
+				file_put_contents($structuredDataFile, $structuredDataJson);
+				$sitemapStr = <<<HERE
+				<?xml version="1.0" encoding="UTF-8"?>
+				<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+				  <url>
+				    <loc>{$mapUrl}</loc>
+				    <changefreq>weekly</changefreq>
+				    <priority>1.0</priority>
+				  </url>
+				</urlset>
+				HERE;
+				file_put_contents($sitemapFile, $sitemapStr);
+			}
+			$html=$html. <<<HERE
+			</body>
+			</html>
+			HERE;
 			file_put_contents($htmlFile, $html);
 			file_put_contents($jsonFile, $jsonPretty);
 			$htmlSymlink="$webRoot/$mapId.html";
