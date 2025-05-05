@@ -42,6 +42,7 @@
 		printUpdateSelect($map, array('constrainresolution'=>array("f", "t")), 'miniSelect', 'Upplösningsbegränsad:', in_array('constrainresolution', $helps));
 		printUpdateSelect($map, array('tilegrid'=>$selectables['tilegrids']), 'bodySelect', 'Tilegrid:', in_array('tilegrid', $helps));
 		printUpdateSelect($map, array('show_meta'=>array("f", "t")), 'miniSelect', 'Visa metadata:', in_array('show_meta', $helps));
+		printUpdateSelect($map, array('searchengineindexable'=>array("f", "t")), 'miniSelect', 'Kan indexeras av sökmotorer:', in_array('searchengineindexable', $helps));
 		printTextarea($map, 'icon', 'textareaMedium', 'Genvägsikon:', in_array('icon', $helps));
 		printTextarea($map, 'css_files', 'textareaLarge', 'CSS-filer:', in_array('css_files', $helps));
 		printTextarea($map, 'css', 'textareaLarge', 'CSS:', in_array('css', $helps));
