@@ -383,7 +383,10 @@
 						{
 							$styleLayer['icon'] = $styleLayer['icon'].'&';
 						}
-						$styleLayer['icon'] = $styleLayer['icon'].'ttl=36000';
+						if (strpos($styleLayer['icon'], '.php') === false)
+						{
+							$styleLayer['icon'] = $styleLayer['icon'].'ttl=36000';
+						}
 					}
 					else
 					{
@@ -413,7 +416,10 @@
 						{
 							$styleLayer['icon_extended'] = $styleLayer['icon_extended'].'&';
 						}
-						$styleLayer['icon_extended'] = $styleLayer['icon_extended'].'ttl=36000';
+						if (strpos($styleLayer['icon_extended'], '.php') === false)
+						{
+							$styleLayer['icon_extended'] = $styleLayer['icon_extended'].'ttl=36000';
+						}
 					}
 				}
 				$styleLayerId=$styleLayer['layer_id'];
