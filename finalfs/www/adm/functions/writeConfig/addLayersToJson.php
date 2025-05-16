@@ -380,7 +380,7 @@
 					require("./constants/iconTtl.php");
 					if (isset($styleLayer['show_icon']) && $styleLayer['show_icon'] == 't' && !empty($styleLayer['icon']))
 					{
-						if ($service['restricted'] != 't')
+						if ($iconTtl != '0' && $service['restricted'] != 't')
 						{
 							if (strpos($styleLayer['icon'], '?') === false)
 							{
@@ -413,7 +413,7 @@
 					}
 					if ($styleLayer['show_iconext'] != 'f' && !empty($styleLayer['icon_extended']))
 					{
-						if ($service['restricted'] != 't')
+						if ($iconTtl != '0' && $service['restricted'] != 't')
 						{
 							if (strpos($styleLayer['icon_extended'], '?') === false)
 							{
