@@ -45,14 +45,14 @@
 			}
 			$layer = array_column_search($layerId, 'layer_id', $layers);
 			$layersMeta[]=array('title'=>trim(json_encode(trim($layer['title'], " \t\n\r\0\x0B\""), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES), '"'), 'abstract'=>trim(json_encode(trim($layer['abstract'], " \t\n\r\0\x0B\""), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES), '"'), 'keywords'=>trim(json_encode(str_replace(array("'", "\""), '', trim($layer['keywords'], " \t\n\r\0\x0B\"{}")), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES), '"'));
-			$source = array_column_search($layer['source'], 'source_id', $sources);
-			$service = array_column_search($source['service'], 'service_id', $services);
 			if ($layer['type'] !== 'GROUP')
 			{
+				$source = array_column_search($layer['source'], 'source_id', $sources);
 				if ($layer['type'] == 'WFS')
 				{
 					$layer['source'] = $layer['source'].'@wfs';
 				}
+				$service = array_column_search($source['service'], 'service_id', $services);
 				if ($layer['attributes'] == '[]' || $layer['attributes'] == '{}' || $layer['attributes'] == '""' || $layer['attributes'] == 'null')
 				{
 					$layer['attributes'] = '';
@@ -381,9 +381,17 @@
 						$styleLayer['label'] = $styleLayer['title'];
 					}
 					require("./constants/iconTtl.php");
+					if (isset($service) && isset($service['restricted']) && $service['restricted'] == 't')
+					{
+						$restricted=true;
+					}
+					else
+					{
+						$restricted=false;
+					}
 					if (isset($styleLayer['show_icon']) && $styleLayer['show_icon'] == 't' && !empty($styleLayer['icon']))
 					{
-						if ($iconTtl != '0' && $service['restricted'] != 't')
+						if ($iconTtl != '0' && !$restricted)
 						{
 							if (strpos($styleLayer['icon'], '?') === false)
 							{
@@ -416,7 +424,7 @@
 					}
 					if ($styleLayer['show_iconext'] != 'f' && !empty($styleLayer['icon_extended']))
 					{
-						if ($iconTtl != '0' && $service['restricted'] != 't')
+						if ($iconTtl != '0' && !$restricted)
 						{
 							if (strpos($styleLayer['icon_extended'], '?') === false)
 							{
