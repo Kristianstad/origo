@@ -23,7 +23,10 @@
     				foreach ($source as $sourceParam)
     				{
     					$tmp=explode('=', $sourceParam);
-    					$sourceParamArray[$tmp[0]]=$tmp[1];
+						if (!empty($tmp[1]))
+						{
+							$sourceParamArray[$tmp[0]]=$tmp[1];
+						}
     				}
     				if (!empty($sourceParamArray['dbname']) && !empty($sourceParamArray['table']) && strpos($sourceParamArray['table'], '(') === false)
     				{
