@@ -206,13 +206,16 @@
 				foreach (pgArrayToPhp($layer['tables']) as $tableId)
 				{
 					$table = array_column_search($tableId, 'table_id', $tables);
-					if (empty($beskr))
+					if (!empty($table['abstract']))
 					{
-						$beskr=$table['abstract'];
-					}
-					else
-					{
-						$beskr=$beskr.' '.$table['abstract'];
+						if (empty($beskr))
+						{
+							$beskr=$table['abstract'];
+						}
+						else
+						{
+							$beskr=$beskr.' '.$table['abstract'];
+						}
 					}
 				}
 			}
