@@ -13,7 +13,7 @@
 			$config=targetConfig($fullTarget);
 			foreach ($config as $column=>$value)
 			{
-				if (!empty($updatePosts['update'.ucfirst($column)]) || $updatePosts['update'.ucfirst($column)] === "0")
+				if (isset($updatePosts['update'.ucfirst($column)]))
 				{
 					$newValue=$updatePosts['update'.ucfirst($column)];
 				}
