@@ -45,14 +45,14 @@
 			}
 			$layer = array_column_search($layerId, 'layer_id', $layers);
 			$layersMeta[]=array('title'=>trim(json_encode(trim($layer['title'], " \t\n\r\0\x0B\""), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES), '"'), 'abstract'=>trim(json_encode(trim($layer['abstract'], " \t\n\r\0\x0B\""), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES), '"'), 'keywords'=>trim(json_encode(str_replace(array("'", "\""), '', trim($layer['keywords'], " \t\n\r\0\x0B\"{}")), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES), '"'));
+			$source = array_column_search($layer['source'], 'source_id', $sources);
+			$service = array_column_search($source['service'], 'service_id', $services);
 			if ($layer['type'] !== 'GROUP')
 			{
-				$source = array_column_search($layer['source'], 'source_id', $sources);
 				if ($layer['type'] == 'WFS')
 				{
 					$layer['source'] = $layer['source'].'@wfs';
 				}
-				$service = array_column_search($source['service'], 'service_id', $services);
 				if ($layer['attributes'] == '[]' || $layer['attributes'] == '{}' || $layer['attributes'] == '""' || $layer['attributes'] == 'null')
 				{
 					$layer['attributes'] = '';
@@ -254,9 +254,13 @@
 					{
 						$originStr="<a href='mailto:".$layerOrigin['email']."'>".$layerOrigin['name']."</a>";
 					}
-					else
+					elseif (!empty($layerOrigin['name']))
 					{
 						$originStr=$layerOrigin['name'];
+					}
+					else
+					{
+						$originStr='';
 					}
 					$json = $json.', "abstract": "<b>Beskrivning: </b>'.$beskr.'<br><b>Resurser: </b>';
 					$layerTables=trim($layer['tables'], '{}');
@@ -373,19 +377,20 @@
 					{
 						$styleLayer['label'] = $styleLayer['title'];
 					}
+					require("./constants/iconTtl.php");
 					if (isset($styleLayer['show_icon']) && $styleLayer['show_icon'] == 't' && !empty($styleLayer['icon']))
 					{
-						if (strpos($styleLayer['icon'], '?') === false)
+						if ($service['restricted'] != 't')
 						{
-							$styleLayer['icon'] = $styleLayer['icon'].'?';
-						}
-						else
-						{
-							$styleLayer['icon'] = $styleLayer['icon'].'&';
-						}
-						if (strpos($styleLayer['icon'], '.php') === false)
-						{
-							$styleLayer['icon'] = $styleLayer['icon'].'ttl=36000';
+							if (strpos($styleLayer['icon'], '?') === false)
+							{
+								$styleLayer['icon'] = $styleLayer['icon'].'?';
+							}
+							else
+							{
+								$styleLayer['icon'] = $styleLayer['icon'].'&';
+							}
+							$styleLayer['icon'] = $styleLayer['icon'].'ttl='.$iconTtl;
 						}
 					}
 					else
@@ -408,17 +413,17 @@
 					}
 					if ($styleLayer['show_iconext'] != 'f' && !empty($styleLayer['icon_extended']))
 					{
-						if (strpos($styleLayer['icon_extended'], '?') === false)
+						if ($service['restricted'] != 't')
 						{
-							$styleLayer['icon_extended'] = $styleLayer['icon_extended'].'?';
-						}
-						else
-						{
-							$styleLayer['icon_extended'] = $styleLayer['icon_extended'].'&';
-						}
-						if (strpos($styleLayer['icon_extended'], '.php') === false)
-						{
-							$styleLayer['icon_extended'] = $styleLayer['icon_extended'].'ttl=36000';
+							if (strpos($styleLayer['icon_extended'], '?') === false)
+							{
+								$styleLayer['icon_extended'] = $styleLayer['icon_extended'].'?';
+							}
+							else
+							{
+								$styleLayer['icon_extended'] = $styleLayer['icon_extended'].'&';
+							}
+							$styleLayer['icon_extended'] = $styleLayer['icon_extended'].'ttl='.$iconTtl;
 						}
 					}
 				}
