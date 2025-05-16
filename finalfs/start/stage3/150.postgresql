@@ -15,6 +15,10 @@ then
       /bin/chown root "$dataDir"
       /bin/chmod 0750 "$dataDir"
       /bin/chown $VAR_LINUX_USER "$dataDir"
+      if [ -e "$dataDir/postmaster.pid" ]
+      then
+         /bin/rm "$dataDir/postmaster.pid"
+      fi
    fi
    initPgConfig
    if [ ! -s "$dataDir/PG_VERSION" ]
