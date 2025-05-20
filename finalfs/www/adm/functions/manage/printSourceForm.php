@@ -1,6 +1,7 @@
 <?php
 
 	require_once("./functions/manage/isFullTarget.php");
+	require_once("./functions/manage/sizePosts.php");
 	require_once("./functions/manage/targetConfigParam.php");
 	require_once("./functions/manage/printTextarea.php");
 	require_once("./functions/manage/printUpdateSelect.php");
@@ -18,8 +19,9 @@
 		{
 			die("printSourceForm($source, $selectables, $inheritPosts, $helps=array()) failed!");
 		}
+		$sizePosts=sizePosts($inheritPosts);
 		echo '<div><div class="printXFormDiv"><form method="post">';
-		printTextarea($source, 'source_id', 'textareaMedium', 'Id:', in_array('source_id', $helps));
+		printTextarea($source, 'source_id', 'textareaMedium', 'Id:', in_array('source_id', $helps), $sizePosts);
 		printUpdateSelect($source, array('service'=>$selectables['services']), 'bodySelect', 'Tjänst:', in_array('service', $helps), null, 'document.getElementById("serviceSet").style.display="none";');
 		$sourceServiceId=targetConfigParam($source, 'service');
 		
@@ -35,7 +37,7 @@
 
 			if (targetConfigParam($source, 'service_type') == "File")
 			{
-				printTextarea($source, 'file', 'textareaLarge', 'Fil:', in_array('file', $helps));
+				printTextarea($source, 'file', 'textareaLarge', 'Fil:', in_array('file', $helps), $sizePosts);
 			}
 
 			// If 'service_type' == 'File'/'OpenStreetMap' then hide the following fields by inserting a span-tag.
@@ -45,13 +47,13 @@
 			}
 
 				printUpdateSelect($source, array('with_geometry'=>array("f", "t")), 'miniSelect', 'With_geometry:', in_array('with_geometry', $helps));
-				printTextarea($source, 'fi_point_tolerance', 'textareaSmall', 'Fi_point_tolerance:', in_array('fi_point_tolerance', $helps));
-				printTextarea($source, 'ttl', 'textareaSmall', 'Ttl:', in_array('ttl', $helps));
+				printTextarea($source, 'fi_point_tolerance', 'textareaSmall', 'Fi_point_tolerance:', in_array('fi_point_tolerance', $helps), $sizePosts);
+				printTextarea($source, 'ttl', 'textareaSmall', 'Ttl:', in_array('ttl', $helps), $sizePosts);
 				printUpdateSelect($source, array('tilegrid'=>$selectables['tilegrids']), 'bodySelect', 'Tilegrid:', in_array('tilegrid', $helps));
-				printTextarea($source, 'softversion', 'textareaSmall', 'Programversion:', in_array('softversion', $helps));
+				printTextarea($source, 'softversion', 'textareaSmall', 'Programversion:', in_array('softversion', $helps), $sizePosts);
 				if (!empty(targetConfigParam($source, 'tables')) && !empty(trim(targetConfigParam($source, 'tables'), '{}')))
 				{
-					printTextarea($source, 'tables', 'textareaLarge', 'Tabeller:', in_array('tables', $helps), 'yes');
+					printTextarea($source, 'tables', 'textareaLarge', 'Tabeller:', in_array('tables', $helps), $sizePosts, true);
 				}
 					
 			// If 'service_type' == 'File'/'OpenStreetMap' then the fields above is hidden by a span-tag and the span-tag is closed.
@@ -60,14 +62,14 @@
 				echo '</span title="service_typeFileOpenStreetMap">';
 			}
 			
-			printTextarea($source, 'abstract', 'textareaLarge', 'Beskrivning:', in_array('abstract', $helps));
+			printTextarea($source, 'abstract', 'textareaLarge', 'Beskrivning:', in_array('abstract', $helps), $sizePosts);
 			printUpdateSelect($source, array('contact'=>$selectables['contacts']), 'bodySelect', 'Kontakt:', in_array('contact', $helps));
-			printTextarea($source, 'updated', 'textareaMedium', 'Uppdaterad (åååå-mm-dd):', in_array('updated', $helps));
-			printTextarea($source, 'history', 'textareaLarge', 'Tillkomsthistorik:', in_array('history', $helps));
+			printTextarea($source, 'updated', 'textareaMedium', 'Uppdaterad (åååå-mm-dd):', in_array('updated', $helps), $sizePosts);
+			printTextarea($source, 'history', 'textareaLarge', 'Tillkomsthistorik:', in_array('history', $helps), $sizePosts);
 
 		echo '</span title="serviceSet">';
 		
-		printTextarea($source, 'info', 'textareaLarge', 'Info:', in_array('info', $helps));
+		printTextarea($source, 'info', 'textareaLarge', 'Info:', in_array('info', $helps), $sizePosts);
 		printHiddenInputs($inheritPosts);
 		echo '<div class="buttonDiv">';
 		printUpdateButton('source');
