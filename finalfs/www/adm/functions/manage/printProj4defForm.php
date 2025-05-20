@@ -1,6 +1,7 @@
 <?php
 
 	require_once("./functions/manage/isFullTarget.php");
+	require_once("./functions/manage/sizePosts.php");
 	require_once("./functions/manage/printTextarea.php");
 	require_once("./functions/manage/printHiddenInputs.php");
 	require_once("./functions/manage/printUpdateButton.php");
@@ -16,13 +17,14 @@
 		{
 			die("printProj4defForm($proj4def, $inheritPosts, $helps=array()) failed!");
 		}
+		$sizePosts=sizePosts($inheritPosts);
 		echo '<div><div class="printXFormDiv"><form method="post">';
-		printTextarea($proj4def, 'code', 'textareaMedium', 'Kod:', in_array('code', $helps));
-		printTextarea($proj4def, 'projection', 'textareaLarge', 'Projektion:', in_array('projection', $helps));
-		printTextarea($proj4def, 'projectionextent', 'textareaMedium', 'Projektionsutbredning:', in_array('projectionextent', $helps));
-		printTextarea($proj4def, 'alias', 'textareaMedium', 'Alias:', in_array('alias', $helps));
-		printTextarea($proj4def, 'abstract', 'textareaLarge', 'Beskrivning:', in_array('abstract', $helps));
-		printTextarea($proj4def, 'info', 'textareaLarge', 'Info:', in_array('info', $helps));
+		printTextarea($proj4def, 'code', 'textareaMedium', 'Kod:', in_array('code', $helps), $sizePosts);
+		printTextarea($proj4def, 'projection', 'textareaLarge', 'Projektion:', in_array('projection', $helps), $sizePosts);
+		printTextarea($proj4def, 'projectionextent', 'textareaMedium', 'Projektionsutbredning:', in_array('projectionextent', $helps), $sizePosts);
+		printTextarea($proj4def, 'alias', 'textareaMedium', 'Alias:', in_array('alias', $helps), $sizePosts);
+		printTextarea($proj4def, 'abstract', 'textareaLarge', 'Beskrivning:', in_array('abstract', $helps), $sizePosts);
+		printTextarea($proj4def, 'info', 'textareaLarge', 'Info:', in_array('info', $helps), $sizePosts);
 		printHiddenInputs($inheritPosts);
 		echo '<div class="buttonDiv">';
 		printUpdateButton('proj4def');
