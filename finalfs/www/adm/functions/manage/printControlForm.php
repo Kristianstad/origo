@@ -1,6 +1,7 @@
 <?php
 
 	require_once("./functions/manage/isFullTarget.php");
+	require_once("./functions/manage/sizePosts.php");
 	require_once("./functions/manage/printTextarea.php");
 	require_once("./functions/manage/printHiddenInputs.php");
 	require_once("./functions/manage/printUpdateButton.php");
@@ -18,11 +19,12 @@
 		{
 			die("printControlForm($control, $maps, $inheritPosts, $helps=array()) failed!");
 		}
+		$sizePosts=sizePosts($inheritPosts);
 		echo '<div><div class="printXFormDiv"><form method="post">';
-		printTextarea($control, 'control_id', 'textareaMedium', 'Id:', in_array('control_id', $helps));
-		printTextarea($control, 'abstract', 'textareaLarge', 'Beskrivning:', in_array('abstract', $helps));
-		printTextarea($control, 'options', 'textareaLarge', 'Inställningar:', in_array('options', $helps));
-		printTextarea($control, 'info', 'textareaLarge', 'Info:', in_array('info', $helps));
+		printTextarea($control, 'control_id', 'textareaMedium', 'Id:', in_array('control_id', $helps), $sizePosts);
+		printTextarea($control, 'abstract', 'textareaLarge', 'Beskrivning:', in_array('abstract', $helps), $sizePosts);
+		printTextarea($control, 'options', 'textareaLarge', 'Inställningar:', in_array('options', $helps), $sizePosts);
+		printTextarea($control, 'info', 'textareaLarge', 'Info:', in_array('info', $helps), $sizePosts);
 		printHiddenInputs($inheritPosts);
 		echo '<hr class="dashedHr">';
 		echo '<div class="buttonDiv">';
