@@ -49,12 +49,9 @@
 	// Expose all $post values where the key ends with 'Id' (excluding 'fromMapId', 'toMapId', 'fromGroupId', 'toGroupId') as $idPosts (array)
 	$idPosts=idPosts($post);
 
-	// Expose posted configuration field widths as $widthPosts (array)
-	$widthPosts=widthPosts($post);
+	// Expose posted configuration field widths and heights as $sizePosts (array)
+	$sizePosts=sizePosts($post);
 				
-	// Expose posted configuration field heights as $heightPosts (array)
-	$heightPosts=heightPosts($post);
-
 	// Expose all $post values where the key ends with 'Category' as $categoryPosts (array)
 	$categoryPosts=categoryPosts($post);
 
@@ -287,9 +284,8 @@
 	}
 
 	// Some common information needs to be passed on every time a form is posted, this info is aggregated in $inheritPosts (array)
-	// $inheritPosts is set to include $idPosts, $widthPosts, $heightPosts, $post['groupIds'] and $categoryPosts
-	$inheritPosts=array_merge($idPosts, $widthPosts, $heightPosts);
-
+	// $inheritPosts is set to include $idPosts, $sizePosts, $post['groupIds'] and $categoryPosts
+	$inheritPosts=array_merge($idPosts, $sizePosts);
 	if (isset($post['groupIds']))
 	{
 		$inheritPosts['groupIds']=$post['groupIds'];
@@ -668,5 +664,9 @@
 	unset($helps, $idPosts);
 
 ?>
+	<script>
+		/* Save scroll position at form submission and restore after page load. */
+		preservePageScroll();
+	</script>
 </body>
 </html>
