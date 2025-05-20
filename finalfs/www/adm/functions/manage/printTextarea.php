@@ -7,7 +7,7 @@
 	require_once("./functions/manage/printMultiselectButton.php");
 	require_once("./functions/manage/printHelpButton.php");
 
-	// Takes a full target array, a config parameter name (string), a textarea css class name (string), a label (string), help available (boolean), is readonly (optional, boolean).
+	// Takes a full target array, a config parameter name (string), a textarea css class name (string), a label (string), help available (boolean), sizePosts (array), is readonly (optional, boolean).
 	// Prints a textarea containing the configuration parameter for the given target. Class name and label for the textarea are taken from the parameter three and four. 
 	// The textarea is set to readonly if parameter six is set to true. A help button is printed if a help target exists, and a multiselect button is printed if the config
 	// parameter name exists in the multiselectables.php constant.
