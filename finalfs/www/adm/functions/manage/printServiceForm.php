@@ -1,6 +1,7 @@
 <?php
 
 	require_once("./functions/manage/isFullTarget.php");
+	require_once("./functions/manage/sizePosts.php");
 	require_once("./functions/manage/printTextarea.php");
 	require_once("./functions/manage/targetConfigParam.php");
 	require_once("./functions/manage/printHiddenInputs.php");
@@ -17,19 +18,20 @@
 		{
 			die("printServiceForm($service, $inheritPosts, $helps=array()) failed!");
 		}
+		$sizePosts=sizePosts($inheritPosts);
 		echo '<div><div class="printXFormDiv"><form method="post">';
-		printTextarea($service, 'service_id', 'textareaMedium', 'Id:', in_array('service_id', $helps));
+		printTextarea($service, 'service_id', 'textareaMedium', 'Id:', in_array('service_id', $helps), $sizePosts);
 		printUpdateSelect($service, array('type'=>array("File","OpenStreetMap","QGIS","Geoserver")), 'bodySelect', 'Typ:', in_array('type', $helps));
 		$serviceType=targetConfigParam($service, 'type');
 		if (!empty($serviceType))
 		{
 			if ($serviceType != 'File' && $serviceType != 'OpenStreetMap')
 			{
-				printTextarea($service, 'base_url', 'textareaLarge', 'Huvudurl:', in_array('base_url', $helps));
+				printTextarea($service, 'base_url', 'textareaLarge', 'Huvudurl:', in_array('base_url', $helps), $sizePosts);
 			}
 			printUpdateSelect($service, array('restricted'=>array("f", "t")), 'miniSelect', 'Rättighetsstyrd:', in_array('restricted', $helps));
-			printTextarea($service, 'formats', 'textareaLarge', 'Tillgängliga format:', in_array('formats', $helps));
-			printTextarea($service, 'abstract', 'textareaLarge', 'Beskrivning:', in_array('abstract', $helps));
+			printTextarea($service, 'formats', 'textareaLarge', 'Tillgängliga format:', in_array('formats', $helps), $sizePosts);
+			printTextarea($service, 'abstract', 'textareaLarge', 'Beskrivning:', in_array('abstract', $helps), $sizePosts);
 		}
 		else
 		{
@@ -40,7 +42,7 @@
 				'updateAbstract' => targetConfigParam($service, 'abstract')
 			));
 		}
-		printTextarea($service, 'info', 'textareaLarge', 'Info:', in_array('info', $helps));
+		printTextarea($service, 'info', 'textareaLarge', 'Info:', in_array('info', $helps), $sizePosts);
 		printHiddenInputs($inheritPosts);
 		echo '<div class="buttonDiv">';
 		printUpdateButton('service');
