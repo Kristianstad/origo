@@ -1,6 +1,7 @@
 <?php
 
 	require_once("./functions/manage/isFullTarget.php");
+	require_once("./functions/manage/sizePosts.php");
 	require_once("./functions/manage/printTextarea.php");
 	require_once("./functions/manage/printHiddenInputs.php");
 	require_once("./functions/manage/printUpdateButton.php");
@@ -16,13 +17,14 @@
 		{
 			die("printOriginForm($origin, $inheritPosts, $helps=array()) failed!");
 		}
+		$sizePosts=sizePosts($inheritPosts);
 		echo '<div><div class="printXFormDiv"><form method="post">';
-		printTextarea($origin, 'origin_id', 'textareaMedium', 'Id:', in_array('origin_id', $helps));
-		printTextarea($origin, 'name', 'textareaMedium', 'Namn:', in_array('name', $helps));
-		printTextarea($origin, 'web', 'textareaMedium', 'Webbsida:', in_array('web', $helps));
-		printTextarea($origin, 'email', 'textareaMedium', 'E-mail:', in_array('email', $helps));
-		printTextarea($origin, 'abstract', 'textareaLarge', 'Beskrivning:', in_array('abstract', $helps));
-		printTextarea($origin, 'info', 'textareaLarge', 'Info:', in_array('info', $helps));
+		printTextarea($origin, 'origin_id', 'textareaMedium', 'Id:', in_array('origin_id', $helps), $sizePosts);
+		printTextarea($origin, 'name', 'textareaMedium', 'Namn:', in_array('name', $helps), $sizePosts);
+		printTextarea($origin, 'web', 'textareaMedium', 'Webbsida:', in_array('web', $helps), $sizePosts);
+		printTextarea($origin, 'email', 'textareaMedium', 'E-mail:', in_array('email', $helps), $sizePosts);
+		printTextarea($origin, 'abstract', 'textareaLarge', 'Beskrivning:', in_array('abstract', $helps), $sizePosts);
+		printTextarea($origin, 'info', 'textareaLarge', 'Info:', in_array('info', $helps), $sizePosts);
 		printHiddenInputs($inheritPosts);
 		echo '<div class="buttonDiv">';
 		printUpdateButton('origin');
