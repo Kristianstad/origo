@@ -1,6 +1,7 @@
 <?php
 
 	require_once("./functions/manage/isFullTarget.php");
+	require_once("./functions/manage/sizePosts.php");
 	require_once("./functions/manage/printTextarea.php");
 	require_once("./functions/manage/printHiddenInputs.php");
 	require_once("./functions/manage/printUpdateButton.php");
@@ -16,10 +17,11 @@
 		{
 			die("printHelpForm($help, $inheritPosts, $helps=array()) failed!");
 		}
+		$sizePosts=sizePosts($inheritPosts);
 		echo '<div><div class="printXFormDiv"><form method="post">';
-		printTextarea($help, 'help_id', 'textareaMedium', 'Verktygsfält:', in_array('help_id', $helps));
-		printTextarea($help, 'abstract', 'textareaLarge', 'Hjälptext:', in_array('abstract', $helps));
-		printTextarea($help, 'info', 'textareaLarge', 'Info:', in_array('info', $helps));
+		printTextarea($help, 'help_id', 'textareaMedium', 'Verktygsfält:', in_array('help_id', $helps), $sizePosts);
+		printTextarea($help, 'abstract', 'textareaLarge', 'Hjälptext:', in_array('abstract', $helps), $sizePosts);
+		printTextarea($help, 'info', 'textareaLarge', 'Info:', in_array('info', $helps), $sizePosts);
 		printHiddenInputs($inheritPosts);
 		echo '<div class="buttonDiv">';
 		printUpdateButton('help');
