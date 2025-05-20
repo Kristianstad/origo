@@ -1,6 +1,7 @@
 <?php
 
 	require_once("./functions/manage/isFullTarget.php");
+	require_once("./functions/manage/sizePosts.php");
 	require_once("./functions/manage/printTextarea.php");
 	require_once("./functions/manage/printUpdateSelect.php");
 	require_once("./functions/manage/printHiddenInputs.php");
@@ -21,16 +22,17 @@
 		{
 			die("printGroupForm($group, $operationTables, $inheritPosts, $helps=array()) failed!");
 		}
+		$sizePosts=sizePosts($inheritPosts);
 		echo '<div><div class="printXFormDiv"><form method="post">';
-		printTextarea($group, 'group_id', 'textareaMedium', 'Id:', in_array('group_id', $helps));
-		printTextarea($group, 'layers', 'textareaLarge', 'Lager:', in_array('layers', $helps));
-		printTextarea($group, 'groups', 'textareaLarge', 'Grupper:', in_array('groups', $helps));
-		printTextarea($group, 'title', 'textareaMedium', 'Titel:', in_array('title', $helps));
+		printTextarea($group, 'group_id', 'textareaMedium', 'Id:', in_array('group_id', $helps), $sizePosts);
+		printTextarea($group, 'layers', 'textareaLarge', 'Lager:', in_array('layers', $helps), $sizePosts);
+		printTextarea($group, 'groups', 'textareaLarge', 'Grupper:', in_array('groups', $helps), $sizePosts);
+		printTextarea($group, 'title', 'textareaMedium', 'Titel:', in_array('title', $helps), $sizePosts);
 		printUpdateSelect($group, array('expanded'=>array("f", "t")), 'miniSelect', 'Expanderad:', in_array('expanded', $helps));
 		printUpdateSelect($group, array('show_meta'=>array("f", "t")), 'miniSelect', 'Visa metadata:', in_array('show_meta', $helps));
-		printTextarea($group, 'abstract', 'textareaMedium', 'Beskrivning:', in_array('abstract', $helps));
-		printTextarea($group, 'keywords', 'textareaLarge', 'Nyckelord:', in_array('keywords', $helps));
-		printTextarea($group, 'info', 'textareaLarge', 'Info:', in_array('info', $helps));
+		printTextarea($group, 'abstract', 'textareaMedium', 'Beskrivning:', in_array('abstract', $helps), $sizePosts);
+		printTextarea($group, 'keywords', 'textareaLarge', 'Nyckelord:', in_array('keywords', $helps), $sizePosts);
+		printTextarea($group, 'info', 'textareaLarge', 'Info:', in_array('info', $helps), $sizePosts);
 		printHiddenInputs($inheritPosts);
 		echo '<hr class="dashedHr">';
 		echo '<div class="buttonDiv">';
