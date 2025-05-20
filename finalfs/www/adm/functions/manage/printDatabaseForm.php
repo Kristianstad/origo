@@ -1,6 +1,7 @@
 <?php
 
 	require_once("./functions/manage/isFullTarget.php");
+	require_once("./functions/manage/sizePosts.php");
 	require_once("./functions/manage/printTextarea.php");
 	require_once("./functions/manage/printHiddenInputs.php");
 	require_once("./functions/manage/printUpdateButton.php");
@@ -17,11 +18,12 @@
 		{
 			die("printDatabaseForm($database, $inheritPosts, $helps=array()) failed!");
 		}
+		$sizePosts=sizePosts($inheritPosts);
 		echo '<div><div class="printXFormDiv"><form method="post">';
-		printTextarea($database, 'database_id', 'textareaMedium', 'Id:', in_array('database_id', $helps));
-		printTextarea($database, 'connectionstring', 'textareaLarge', 'Anslutningssträng:', in_array('connectionstring', $helps));
-		printTextarea($database, 'abstract', 'textareaLarge', 'Beskrivning:', in_array('abstract', $helps));
-		printTextarea($database, 'info', 'textareaLarge', 'Info:', in_array('info', $helps));
+		printTextarea($database, 'database_id', 'textareaMedium', 'Id:', in_array('database_id', $helps), $sizePosts);
+		printTextarea($database, 'connectionstring', 'textareaLarge', 'Anslutningssträng:', in_array('connectionstring', $helps), $sizePosts);
+		printTextarea($database, 'abstract', 'textareaLarge', 'Beskrivning:', in_array('abstract', $helps), $sizePosts);
+		printTextarea($database, 'info', 'textareaLarge', 'Info:', in_array('info', $helps), $sizePosts);
 		printHiddenInputs($inheritPosts);
 		echo '<div class="buttonDiv">';
 		printUpdateButton('database');
