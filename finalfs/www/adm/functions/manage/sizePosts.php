@@ -1,6 +1,6 @@
 <?php
 
-	// Takes an associative array and returns all values (and keys) where the key starts with 'width', 'newwidth', 'height' or 'newheight'.
+	// Takes an associative array and returns all values (and keys) where the key starts with 'width', 'newwidth', 'height', 'newheight', 'scroll' or 'newscroll'.
 	function sizePosts($post)
 	{
 		$widthPosts=array_filter($post, function($key) {return (substr($key, 0, 5) == 'width');}, ARRAY_FILTER_USE_KEY);
@@ -15,7 +15,13 @@
 		{
 			$heightPosts[substr($key, 3)]=$value;
 		}
-		return array_merge($widthPosts, $heightPosts);
+		$scrollPosts=array_filter($post, function($key) {return (substr($key, 0, 6) == 'scroll');}, ARRAY_FILTER_USE_KEY);
+		$newscrollPosts=array_filter($post, function($key) {return (substr($key, 0, 9) == 'newscroll');}, ARRAY_FILTER_USE_KEY);
+		foreach ($newscrollPosts as $key=>$value)
+		{
+			$scrollPosts[substr($key, 3)]=$value;
+		}
+		return array_merge($widthPosts, $heightPosts, $scrollPosts);
 	}
 
 ?>
