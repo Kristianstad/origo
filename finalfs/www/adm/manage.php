@@ -49,7 +49,7 @@
 	// Expose all $post values where the key ends with 'Id' (excluding 'fromMapId', 'toMapId', 'fromGroupId', 'toGroupId') as $idPosts (array)
 	$idPosts=idPosts($post);
 
-	// Expose posted configuration field widths and heights as $sizePosts (array)
+	// Expose posted textarea widths, heights and scroll as $sizePosts (array)
 	$sizePosts=sizePosts($post);
 				
 	// Expose all $post values where the key ends with 'Category' as $categoryPosts (array)
