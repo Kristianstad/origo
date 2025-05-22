@@ -668,7 +668,7 @@
 		/* Save scroll position at form submission and restore after page load. */
 		preservePageScroll();
 		
-		/* Change the appearance of the "Uppdatera"-button on form edit. */
+		/* Change the appearance of the "Uppdatera" button on form edit. */
 		formChangeButton();
 	</script>
 </body>
