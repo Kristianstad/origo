@@ -1,50 +1,42 @@
-function update(menu)
-{
-	let selection = document.querySelector("#selection");
-	var last_action = '';
-	var qty = 0;
+function update(menu) {
+    if (!menu || !$(menu).length || !$('#selection').length) {
+        console.error('Menu or selection element not found');
+        return;
+    }
 
-	// nothing selected
-	if ($(menu).val() == null) 
-	{
-		$.each($(menu).find('option'), function(i) {
-			qty = 0;
-			last_action = "nothing selected";
-			$(this).removeAttr('selected');
-			$(menu).attr('data-sorted-values', '');
-		});
-	} 
-	// at least 1 item selected
-	else 
-	{
-		$.each($(menu).find('option'), function(i) {
-			var vals = $(menu).val().join(' ');
-			var opt = $(this).text();
-			qty = $(menu).val().length;
-			if (vals.indexOf(opt) > -1) 
-			{
-				// most recent selection
-				if ($(this).attr('selected') != 'selected') 
-				{
-					last_action = "added: " + opt;
-					$(menu).attr('data-sorted-values', $(menu).attr('data-sorted-values') + $(this).text() + ' ');
-					$(this).attr('selected', 'selected');
-				}
-			} 
-			else 
-			{
-				// most recent deletion
-				if ($(this).attr('selected') == 'selected') 
-				{
-					last_action = "removed: " + opt;
-					var string = $(menu).attr('data-sorted-values').replace(new RegExp(opt + ',', 'g'), '');
-					$(menu).attr('data-sorted-values', string);
-					$(this).removeAttr('selected');
-				}
-			}
-		});
-	}
-	$(menu).attr('data-sorted-values', $(menu).attr('data-sorted-values').replace(' ', ','));
-	$('#selection').html($(menu).attr('data-sorted-values').slice(0, -1));
-	selection.value=$(menu).attr('data-sorted-values').slice(0, -1);
+    const $menu = $(menu);
+    const $selection = $('#selection');
+    
+    // Initialize data attribute if undefined
+    if (!$menu.attr('data-sorted-values')) {
+        $menu.attr('data-sorted-values', '');
+    }
+
+    // Handle empty selection
+    if (!$menu.val()?.length) {
+        $menu.find('option').prop('selected', false);
+        $menu.attr('data-sorted-values', '');
+    } else {
+        let values = $menu.attr('data-sorted-values').split(',').filter(Boolean);
+        
+        $menu.find('option').each(function() {
+            const opt = $(this).text();
+            const isSelected = $menu.val().includes(opt);
+            
+            if (isSelected) {
+                $(this).prop('selected', true);
+                if (!values.includes(opt)) {
+                    values.push(opt);
+                }
+            } else {
+                $(this).prop('selected', false);
+                values = values.filter(v => v !== opt);
+            }
+        });
+        
+        $menu.attr('data-sorted-values', values.join(','));
+    }
+
+    const sortedValues = $menu.attr('data-sorted-values');
+    $selection.val(sortedValues).html(sortedValues);
 }
