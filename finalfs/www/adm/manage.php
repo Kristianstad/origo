@@ -415,6 +415,7 @@
 		if (isset($failedUpdate) && $failedUpdate['type'] == 'map')
 		{
 			$map=array('map'=>$failedUpdate['values']);
+			$formChangedGlobal=true;
 		}
 		else
 		{
@@ -470,6 +471,7 @@
 		if (isset($failedUpdate) && $failedUpdate['type'] == 'database')
 		{
 			$database=array('database'=>$failedUpdate['values']);
+			$formChangedGlobal=true;
 		}
 		else
 		{
@@ -504,6 +506,7 @@
 		if (isset($failedUpdate) && $failedUpdate['type'] == 'schema')
 		{
 			$schema=array('schema'=>$failedUpdate['values']);
+			$formChangedGlobal=true;
 		}
 		else
 		{
@@ -557,6 +560,7 @@
 		if (isset($failedUpdate) && $failedUpdate['type'] == 'group' && $failedUpdate['id'] == $groupId)
 		{
 			$group=array('group'=>$failedUpdate['values']);
+			$formChangedGlobal=true;
 		}
 		else
 		{
@@ -608,6 +612,7 @@
 		if (isset($failedUpdate) && $failedUpdate['type'] == $childType)
 		{
 			$childFullTarget=array($childType=>$failedUpdate['values']);
+			$formChangedGlobal=true;
 		}
 
 		// Expose the help ids available for $childType as $typeHelps (array)
