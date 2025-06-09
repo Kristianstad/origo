@@ -217,7 +217,17 @@
 					$sql=$sql.sqlForUpdate(makeFullTarget($type, $config), $updatePosts);
 					unset($config);
 				}
-				unset($updatePosts, $updateFailed);
+				else
+				{
+					$failedUpdate['type']=$type;
+					$failedUpdate['id']=$id;
+					$failedUpdate['values']=array();
+					foreach ($updatePosts as $key=>$value)
+					{
+						$failedUpdate['values'][lcfirst(substr($key, 6))]=$value;
+					}
+				}
+				unset($updatePosts, $updateValid);
 			}
 			
 			// If $command is 'operation', then $sql will contain an sql-query to update a specific field in the configuration database to add or remove a given $id of $type from a given map or group
@@ -400,8 +410,16 @@
 	// If a map is selected
 	if (isset($post['mapId']))
 	{
-		// Expose selected map target as $map (array)
-		$map=array('map'=>array_column_search($post['mapId'], 'map_id', $configTables['maps']));
+		// Expose selected map target as $map (array).
+		// If a failed update occured then show those values, else show the stored values.
+		if (isset($failedUpdate) && $failedUpdate['type'] == 'map')
+		{
+			$map=array('map'=>$failedUpdate['values']);
+		}
+		else
+		{
+			$map=array('map'=>array_column_search($post['mapId'], 'map_id', $configTables['maps']));
+		}
 		if (!empty(current($map)))
 		{
 			// Map selectable items (footers, tilegrids) are exposed as $selectables (array)
@@ -409,7 +427,7 @@
 				'footers'=>array_column($configTables['footers'], 'footer_id'), 
 				'tilegrids'=>array_column($configTables['tilegrids'], 'tilegrid_id')
 			);
-			
+
 			// Print the form for the selected map
 			printMapForm($map, $selectables, $inheritPosts, typeHelps("map", $helps));
 			
@@ -447,8 +465,16 @@
 	// If a database is selected
 	elseif (isset($post['databaseId']))
 	{
-		// Expose selected database target as $database (array)
-		$database=array('database'=>array_column_search($post['databaseId'], 'database_id', $configTables['databases']));
+		// Expose selected database target as $database (array).
+		// If a failed update occured then show those values, else show the stored values.
+		if (isset($failedUpdate) && $failedUpdate['type'] == 'database')
+		{
+			$database=array('database'=>$failedUpdate['values']);
+		}
+		else
+		{
+			$database=array('database'=>array_column_search($post['databaseId'], 'database_id', $configTables['databases']));
+		}
 		if (!empty(current($database)))
 		{
 			// Print the form for the selected database
@@ -473,8 +499,16 @@
 	// If a schema is selected
 	if (isset($post['schemaId']))
 	{
-		// Expose selected schema target as $schema (array)
-		$schema=array('schema'=>array_column_search($post['schemaId'], 'schema_id', $configTables['schemas']));
+		// Expose selected schema target as $schema (array).
+		// If a failed update occured then show those values, else show the stored values.
+		if (isset($failedUpdate) && $failedUpdate['type'] == 'schema')
+		{
+			$schema=array('schema'=>$failedUpdate['values']);
+		}
+		else
+		{
+			$schema=array('schema'=>array_column_search($post['schemaId'], 'schema_id', $configTables['schemas']));
+		}
 		if (!empty(current($schema)))
 		{
 			// Schema selectable items (contacts, origins, updates) are exposed as $selectables (array)
@@ -518,8 +552,16 @@
 	// Loop through the tree of groups where selected group belongs
 	foreach ($groupIdsArray as $groupId)
 	{
-		// Expose current loop group target as $group (array)
-		$group=array('group'=>array_column_search($groupId, 'group_id', $configTables['groups']));
+		// Expose current loop group target as $group (array).
+		// If a failed update occured and was current loop group then show those values, else show the stored values.
+		if (isset($failedUpdate) && $failedUpdate['type'] == 'group' && $failedUpdate['id'] == $groupId)
+		{
+			$group=array('group'=>$failedUpdate['values']);
+		}
+		else
+		{
+			$group=array('group'=>array_column_search($groupId, 'group_id', $configTables['groups']));
+		}
 
 		$inheritPosts['groupId']=$groupId;
 		if (!empty(current($group)))
@@ -561,6 +603,12 @@
 
 		// Expose the type of the selected <item> as $childType (string)
 		$childType=targetType($childFullTarget);
+
+		// If a failed update occured then show those values.
+		if (isset($failedUpdate) && $failedUpdate['type'] == $childType)
+		{
+			$childFullTarget=array($childType=>$failedUpdate['values']);
+		}
 
 		// Expose the help ids available for $childType as $typeHelps (array)
 		$typeHelps=typeHelps($childType, $helps);
