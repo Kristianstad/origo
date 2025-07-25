@@ -1,7 +1,7 @@
 # origo
 https://github.com/Kristianstad/origo/pkgs/container/origo
 
-Docker image of Origo (https://github.com/origo-map). The image is built on https://github.com/Kristianstad/nginx/pkgs/container/nginx (check out for webserver settings). Listens on port 8080 internally. Files and directories in the Origo config directory are added to the Origo web directory at startup. There is also an optional management tool for Origo and metadata included in the with_php tag (path to manage tool is adm/manage.php and each created map gets their own html-file). Source code for the management tool is available in the with_php branch.
+Docker image of Origo (https://github.com/origo-map). The image is built on https://github.com/Kristianstad/nginx/pkgs/container/nginx (check out for webserver settings). Listens on port 8080 internally. Files and directories in the Origo config directory are added to the Origo web directory at startup. There is also an optional management tool for Origo and metadata included in the with_php tag. (Path to manage tool is adm/manage.php and default login is origo, origo. Each created map gets their own html-file. Source code for the management tool is available in the with_php branch.)
 
 A live demo of the Image can be found here:
 
