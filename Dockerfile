@@ -10,6 +10,7 @@ ARG POSTGRESQL_VERSION="15"
 ARG PHP_VERSION="82"
 ARG BASEIMAGE="ghcr.io/kristianstad/origo:$ORIGO_VERSION"
 ARG RUNDEPS="\
+        apache2-utils \
         postgresql$POSTGRESQL_VERSION \
         php$PHP_VERSION-fpm \
         php$PHP_VERSION-json \
