@@ -22,7 +22,7 @@ docker run --name origo -d -p 8080:8080 ghcr.io/kristianstad/origo:with_php
 * VAR_CONFIG_DIR="/etc/nginx" (Directory containing configuration files for Nginx)
 * VAR_LOG_LEVEL="info"
 * VAR_ADMUSER="origo" (Only for management tool)
-* VAR_ADMPASSW="origo" (Only for management tool)
+* VAR_ADMPASSWORD="origo" (Only for management tool)
 * VAR_FINAL_COMMAND="nginx -g 'daemon off; error_log stderr \$VAR_LOG_LEVEL;'" (Command run by VAR_LINUX_USER)
 
 ## Capabilities
