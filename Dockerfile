@@ -83,7 +83,10 @@ ENV VAR_PHP_VERSION="$PHP_VERSION" \
     VAR_param_listen_addresses="'*'" \
     VAR_param_timezone="'UTC'" \
     VAR_server15_index="index.html manage.php index.php" \
-    VAR_serversub02_location="~ \\.php\$ { fastcgi_param SCRIPT_FILENAME \\\$document_root\\\$fastcgi_script_name; fastcgi_param SCRIPT_NAME \\\$fastcgi_script_name; include fastcgi.conf; fastcgi_pass unix:\$VAR_SOCKET_FILE; fastcgi_buffers 16 32k; fastcgi_buffer_size 64k; fastcgi_busy_buffers_size 64k; }" \
+    VAR_serversub02_location="/adm { auth_basic 'Administrator’s Area'; auth_basic_user_file /etc/nginx/.htpasswd; }" \
+    VAR_serversub03_location="~ \\.php\$ { fastcgi_param SCRIPT_FILENAME \\\$document_root\\\$fastcgi_script_name; fastcgi_param SCRIPT_NAME \\\$fastcgi_script_name; include fastcgi.conf; fastcgi_pass unix:\$VAR_SOCKET_FILE; fastcgi_buffers 16 32k; fastcgi_buffer_size 64k; fastcgi_busy_buffers_size 64k; }" \
+    VAR_USER="origo" \
+    VAR_PASSWORD="origo" \
     VAR_FINAL_COMMAND="php-fpm$PHP_VERSION --force-stderr && postgres --config_file=\"\$VAR_POSTGRES_CONFIG_FILE\" & nginx -g 'daemon off; user \$VAR_LINUX_USER; error_log stderr \$VAR_LOG_LEVEL; worker_processes \$VAR_WORKER_PROCESSES; worker_rlimit_nofile \$VAR_WORKER_RLIMIT_NOFILE;'"
 
 STOPSIGNAL SIGINT
