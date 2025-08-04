@@ -9,6 +9,8 @@
 	require_once("./functions/pkColumnOfTable.php");
 	require_once("./functions/configTables.php");
 	require_once("./functions/pgArrayToPhp.php");
+	require_once("./functions/findAllParents.php");
+	require_once("./functions/assoc_array_values.php");
 	require_once("./functions/includeDirectory.php");
 
 	// Expose all functions in given folder
@@ -135,7 +137,17 @@
 			$id=$post[$type.'IdDel'];
 			if (!isIdUniqueInTable($id, $typeTablePkColumn, $typeTable))
 			{
-				$sql=deleteIdSql($id, $typeTableName);
+				$child=array($type=>$id);
+				$allParents=findAllParents($dbh, $child);
+				if (empty(assoc_array_values($allParents)))
+				{
+					$sql=deleteIdSql($id, $typeTableName);
+					unset($post[$type.'Id'], $idPosts[$type.'Id']);
+				}
+				else
+				{
+					echo '<script>window.onload=function(){alert("Radering misslyckades då '.$id.' används!\nAnvänd Info-verktyget för att ta reda på var '.$id.' används.");}</script>';
+				}
 			}
 		}
 
