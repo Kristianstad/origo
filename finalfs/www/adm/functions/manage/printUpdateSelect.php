@@ -27,7 +27,11 @@
 		HERE;
 		if (!isset($options))
 		{
-				$options=array_merge(array(""), current($configParamValues));
+			$options=array("");
+			if (is_array(current($configParamValues)))
+			{
+				$options=array_merge($options, current($configParamValues));
+			}
 		}
 		printSelectOptions($options, $selected);
 		echo '</select>';
