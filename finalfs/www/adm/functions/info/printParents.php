@@ -1,38 +1,47 @@
 <?php
 
-	require_once("./functions/findParents.php");
+	require_once("./functions/assoc_array_values.php");
 	require_once("./functions/toSwedish.php");
 
-	function printParents($potentialParents, $child)
+	function printParents($allParents)
 	{
-		$parents=findParents($potentialParents, $child);
-		$parentsTable=key($potentialParents);
-		$parentsTableSv=toSwedish($parentsTable);
-		$parentsOption=key($child).'s';
-		$parentsOptionSv=toSwedish($parentsOption);
-		$headerString="$parentsTableSv ($parentsOptionSv): ";
-		if (!empty($parents))
+		if (empty(assoc_array_values($allParents)))
 		{
-			echo "<b>$headerString</b>";
-			$first=true;
-			$parentType=rtrim($parentsTable, 's');
-			foreach ($parents as $parent)
-			{
-				if (!$first)
-				{
-					echo ', ';
-				}
-				else
-				{
-					$first=false;
-				}
-				echo '<a href="info.php?type='.$parentType.'&id='.urlencode($parent).'">'.$parent.'</a>';
-			}
-			echo "</br>";
+			return false;
 		}
 		else
 		{
-			return false;
+			foreach ($allParents as $parentTable=>$parentTableOptions)
+			{
+				if (!empty($parentTableOptions))
+				{
+					foreach ($parentTableOptions as $parentOption=>$parents)
+					{
+						if (!empty($parents))
+						{
+							$parentTableSv=toSwedish($parentTable);
+							$parentOptionSv=toSwedish($parentOption);
+							$parentType=rtrim($parentTable, 's');
+							$first=true;
+							$headerString="$parentTableSv ($parentOptionSv): ";
+							echo "<b>$headerString</b>";
+							foreach ($parents as $parent)
+							{
+								if (!$first)
+								{
+									echo ', ';
+								}
+								else
+								{
+									$first=false;
+								}
+								echo '<a href="info.php?type='.$parentType.'&id='.urlencode($parent).'">'.$parent.'</a>';
+							}
+							echo "</br>";
+						}
+					}
+				}
+			}
 		}
 	}
 
