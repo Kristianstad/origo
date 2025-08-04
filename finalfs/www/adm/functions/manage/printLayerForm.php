@@ -33,8 +33,12 @@
 		{
 			$selectables['formats']=array("GROUP");
 		}
+		elseif (!is_array($selectables['formats']))
+		{
+			$selectables['formats']=array();
+		}
 		printUpdateSelect($layer, array('type'=>$selectables['formats']), 'miniSelect', 'Typ:', in_array('type', $helps), null, 'document.getElementById("typeSet").style.display="none";');
-			
+		
 		if (empty(targetConfigParam($layer, 'type')) || !in_array($layer['layer']['type'], $selectables['formats']))
 		{
 			$spanStyle="display:none";
