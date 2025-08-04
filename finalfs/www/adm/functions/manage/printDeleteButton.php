@@ -10,6 +10,7 @@
 	{
 		$targetType=key($target);
 		$targetId=current($target);
+		/*
 		if ($targetType == 'map')
 		{
 			$inheritPosts=array();
@@ -38,6 +39,7 @@
 				}
 			}
 		}
+		*/
 		$targetTypeSwe=toSwedish($targetType);
 		echo <<<HERE
 				<form method='post' onsubmit='confirmStr="{$deleteConfirmStr}"; return confirm(confirmStr);'>
