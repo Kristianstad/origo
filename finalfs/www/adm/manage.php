@@ -148,6 +148,7 @@
 				{
 					echo '<script>window.onload=function(){alert("Radering misslyckades då '.$id.' används!\nAnvänd Info-verktyget för att ta reda på var '.$id.' används.");}</script>';
 				}
+				unset($child, $allParents);
 			}
 		}
 
