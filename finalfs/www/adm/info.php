@@ -15,11 +15,7 @@
 	require_once("./functions/pkColumnOfTable.php");
 	require_once("./functions/toSwedish.php");
 	require_once("./functions/includeDirectory.php");
-	
-	/* Required by child functions:
-	   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-		require_once("./functions/findParents.php");
-	*/
+	require_once("./functions/findAllParents.php");
 	
 	includeDirectory("./functions/info");
 	require("./constants/configSchema.php");
@@ -61,43 +57,11 @@
 				}
 			}
 		}
-		if ($childType != 'map')
+		$allParents=findAllParents($dbh, $child);
+		if (!empty(array_values($allParents)))
 		{
  			echo "<h3>Används av</h3></br>";
- 			if ($childType == 'group' || $childType == 'layer' || $childType == 'control')
-			{
-				printParents(array('maps'=>all_from_table($dbh, $configSchema, 'maps')), $child);
-			}	
-			if ($childType == 'group' || $childType == 'layer')
-			{
-				printParents(array('groups'=>all_from_table($dbh, $configSchema, 'groups')), $child);
-			}
-			if ($childType == 'layer')
-			{
-				printParents(array('layers'=>all_from_table($dbh, $configSchema, 'layers')), $child);
-				printParents(array('layers'=>all_from_table($dbh, $configSchema, 'layers')), array('export'=>current($child)));
-			}
-			if ($childType == 'source' || $childType == 'contact' || $childType == 'export' || $childType == 'update' || $childType == 'origin' || $childType == 'table')
-			{
-				printParents(array('layers'=>all_from_table($dbh, $configSchema, 'layers')), $child);
-			}
-			if ($childType == 'contact')
-			{
-				printParents(array('schemas'=>all_from_table($dbh, $configSchema, 'schemas')), $child);
-				printParents(array('tables'=>all_from_table($dbh, $configSchema, 'tables')), $child);
-			}
-			if ($childType == 'contact' || $childType == 'service' || $childType == 'tilegrid' || $childType == 'table')
-			{
-				printParents(array('sources'=>all_from_table($dbh, $configSchema, 'sources')), $child);
-			}
-			if ($childType == 'keyword')
-			{
-				printParents(array('maps'=>all_from_table($dbh, $configSchema, 'maps')), $child);
-				printParents(array('groups'=>all_from_table($dbh, $configSchema, 'groups')), $child);
-				printParents(array('layers'=>all_from_table($dbh, $configSchema, 'layers')), $child);
-				printParents(array('schemas'=>all_from_table($dbh, $configSchema, 'schemas')), $child);
-				printParents(array('tables'=>all_from_table($dbh, $configSchema, 'tables')), $child);
-			}
+			printParents($allParents);
 		}
 		echo '</div>';
 		if (strpos($_SERVER['HTTP_REFERER'], 'manage') === false)
