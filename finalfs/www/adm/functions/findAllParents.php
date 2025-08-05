@@ -1,12 +1,12 @@
 <?php
 
-	// Takes a database handle and a target, and returns an array of all direct parents.
 	require_once("./functions/manage/isTarget.php");
 	require_once("./functions/manage/makeTargetBasic.php");
 	require_once("./functions/all_from_table.php");
 	require_once("./functions/findParents.php");
 
-	function findAllParents($dbh, $target)
+	// Takes a database handle and a target, and returns an array of all direct parents.
+	function findAllParents(&$dbh, $target)
 	{
 		if (isTarget($target))
 		{
