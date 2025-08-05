@@ -5,6 +5,7 @@
 	require_once("./functions/pgArrayToPhp.php");
 	require_once("./functions/pkColumnOfTable.php");
 
+	// Takes an array of potentian parents and a target, and returns the actual parents.
 	function findParents($potentialParents, $target)
 	{
 		if (isTarget($target))
