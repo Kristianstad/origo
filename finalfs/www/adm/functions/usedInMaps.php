@@ -26,7 +26,12 @@
 			die("usedInMaps(\$dbh, $target) failed! Child not a target.");
 		}
 		$targetType=key($target);
-		if ($targetType != 'map')
+		$targetId=current($target);
+		if ($targetType == 'map')
+		{
+			$usedInMaps[]=$targetId;
+		}
+		else
 		{
 			$targetParents=findAllParents($dbh, $target);
 			foreach ($targetParents as $parentsTable=>$options)
