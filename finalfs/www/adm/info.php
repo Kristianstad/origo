@@ -60,15 +60,15 @@
 		$allParents=findAllParents($dbh, $child);
 		if (!empty(array_values($allParents)))
 		{
- 			echo "<h3>Används av</h3></br>";
+ 			echo "<h3 style='margin-top:0.5em'>Används av</h3></br>";
 			printParents($allParents);
 		}
 		echo '</div>';
 		if (strpos($_SERVER['HTTP_REFERER'], 'manage') === false)
 		{
 			echo '<button onclick="history.back()">Tillbaks</button>';
-			echo "<form action='".dirname($_SERVER["HTTP_REFERER"])."/manage.php' method='post' target='_blank' style='display:inline'><button type='submit' name='".$childType."Id' value='".$childId."'>Administrera</button></form>";
 		}
+		echo "<form action='".dirname($_SERVER["HTTP_REFERER"])."/manage.php' method='post' target='_blank' style='display:inline'><button type='submit' name='".$childType."Id' value='".$childId."'>Administrera</button></form>";
 	}
 ?>
 </body>
