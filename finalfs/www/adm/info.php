@@ -68,7 +68,7 @@
 		{
 			echo '<button onclick="history.back()">Tillbaks</button>';
 		}
-		echo "<form action='".dirname($_SERVER["DOCUMENT_URI"])."/manage.php' method='post' target='_blank' style='display:inline'><button type='submit' name='".$childType."Id' value='".$childId."'>Administrera</button></form>";
+		echo "<form action='manage.php' method='post' target='_blank' style='display:inline'><button type='submit' name='".$childType."Id' value='".$childId."'>Administrera</button></form>";
 	}
 ?>
 </body>
