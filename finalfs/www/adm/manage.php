@@ -11,6 +11,7 @@
 	require_once("./functions/pgArrayToPhp.php");
 	require_once("./functions/findAllParents.php");
 	require_once("./functions/assoc_array_values.php");
+	require_once("./functions/usedInMaps.php");
 	require_once("./functions/includeDirectory.php");
 
 	// Expose all functions in given folder
@@ -302,6 +303,11 @@
 			{
 				eval("\${$typeTableName}Categories=categories(\$configTables[\$typeTableName], \$typeTablePkColumn);");
 			}
+			if ($command == 'update' || $command == 'copy' || $command == 'operation')
+			{
+				//var_dump(findAllParents($dbh, array($type=>$id)));
+				//var_dump(usedInMaps($dbh, array($type=>$id)));
+			}
 		}
 		unset($id, $type, $typeTableName, $typeTablePkColumn, $typeTable, $command, $sql);
 	}
@@ -417,12 +423,17 @@
  *  DYNAMIC CONTENTS BASED ON SELECTED ITEM  *
  *********************************************
 */
+	// A global variable that contains the number of targets (depth) shown in the dynamic view.
+	$viewDepthGlobal=0;
+
 	// Expose field help ids (identifying fields with existing help text) as $helps (array)
 	$helps=array_column($configTables["helps"], "help_id");
 
 	// If a map is selected
 	if (isset($post['mapId']))
 	{
+		$viewDepthGlobal++;
+		
 		// Expose selected map target as $map (array).
 		// If a failed update occured then show those values, else show the stored values.
 		if (isset($failedUpdate) && $failedUpdate['type'] == 'map')
@@ -479,6 +490,8 @@
 	// If a database is selected
 	elseif (isset($post['databaseId']))
 	{
+		$viewDepthGlobal++;
+		
 		// Expose selected database target as $database (array).
 		// If a failed update occured then show those values, else show the stored values.
 		if (isset($failedUpdate) && $failedUpdate['type'] == 'database')
@@ -514,6 +527,8 @@
 	// If a schema is selected
 	if (isset($post['schemaId']))
 	{
+		$viewDepthGlobal++;
+		
 		// Expose selected schema target as $schema (array).
 		// If a failed update occured then show those values, else show the stored values.
 		if (isset($failedUpdate) && $failedUpdate['type'] == 'schema')
@@ -568,6 +583,8 @@
 	// Loop through the tree of groups where selected group belongs
 	foreach ($groupIdsArray as $groupId)
 	{
+		$viewDepthGlobal++;
+		
 		// Expose current loop group target as $group (array).
 		// If a failed update occured and was current loop group then show those values, else show the stored values.
 		if (isset($failedUpdate) && $failedUpdate['type'] == 'group' && $failedUpdate['id'] == $groupId)
@@ -615,6 +632,8 @@
 	// If any <item> is selected
 	if (!empty($idPosts))
 	{
+		$viewDepthGlobal++;
+		
 		// Expose selected <item> target as $childFullTarget (array)
 		$childFullTarget=makeTargetFull(makeBasicTarget(substr(key($idPosts), 0, -2), current($idPosts)), $configTables);
 
