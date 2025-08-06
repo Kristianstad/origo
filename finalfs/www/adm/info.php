@@ -64,7 +64,7 @@
 			printParents($allParents);
 		}
 		echo '</div>';
-		if (strpos($_SERVER['HTTP_REFERER'], 'manage') === false)
+		if (strpos($_SERVER['HTTP_REFERER'], 'info.php') !== false)
 		{
 			echo '<button onclick="history.back()">Tillbaks</button>';
 		}
