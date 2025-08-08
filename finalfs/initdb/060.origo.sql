@@ -143,6 +143,7 @@ CREATE TABLE map_configs.maps
     url character varying COLLATE pg_catalog."default",
     palette json,
     searchengineindexable boolean,
+    changed boolean,
     CONSTRAINT map_pk PRIMARY KEY (map_id)
 );
 
