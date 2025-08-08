@@ -57,17 +57,19 @@
 		echo '<div class="buttonDiv">';
 		printUpdateButton('map');
 		printCopyButton('map');
+		$id=targetId($map);
 		$url=targetConfigParam($map, 'url');
+		$changed=targetConfigParam($map, 'changed');
 		$map=makeTargetBasic($map);
 		printInfoButton($map);
-		$deleteConfirmStr="Är du säker på att du vill radera kartan ".targetId($map)."? Ingående kontroller, grupper och lager påverkas ej.";
+		$deleteConfirmStr="Är du säker på att du vill radera kartan $id? Ingående kontroller, grupper och lager påverkas ej.";
 		printDeleteButton($map, $deleteConfirmStr, $inheritPosts);
-		printConfigPreviewButton(targetId($map));
-		printWriteConfigButton(targetId($map));
-		printExportJsonButton(targetId($map));
+		printConfigPreviewButton($id);
+		printWriteConfigButton($id, $changed);
+		printExportJsonButton($id);
 		if (empty($url))
 		{
-			$url="../".str_replace('#', '%23', targetId($map)).".html";
+			$url="../".str_replace('#', '%23', $id).".html";
 		}
 		printUrlButton($url);
 		echo '</div></form></div></div>';
