@@ -305,8 +305,12 @@
 			}
 			if ($command == 'update' || $command == 'copy' || $command == 'operation')
 			{
-				//var_dump(findAllParents($dbh, array($type=>$id)));
-				//var_dump(usedInMaps($dbh, array($type=>$id)));
+				$usedInMaps=usedInMaps($dbh, array($type=>$id));
+				if (!empty($usedInMaps))
+				{
+					markMapsChanged($dbh, $usedInMaps);
+					$configTables=configTables($dbh);
+				}
 			}
 		}
 		unset($id, $type, $typeTableName, $typeTablePkColumn, $typeTable, $command, $sql);
