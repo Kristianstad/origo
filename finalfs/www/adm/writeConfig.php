@@ -1,4 +1,6 @@
 <?php
+	// OBS! Kan inte börja med <!DOCTYPE html> för då slutar swiper-pluginet att fungera i preview.
+
 	require_once("./functions/dbh.php");
 	require_once("./functions/pgArrayToPhp.php");
 	require_once("./functions/array_column_search.php");
@@ -436,6 +438,7 @@
 			{
 				symlink("$jsonFile", "$configSymlink");
 			}
+			markMapUnchanged($dbh, $mapId);
 			require("./constants/configSchema.php");
 			$layers=all_from_table($dbh, $configSchema, 'layers');
 			$sources=all_from_table($dbh, $configSchema, 'sources');
