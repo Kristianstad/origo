@@ -1,7 +1,8 @@
 <?php
 
-	require_once("./functions/array_column_search.php");
-	require_once("./functions/writeConfig/array_move.php");
+	// Uses common functions: array_column_search
+	
+	// Uses writeConfig functions: array_move
 
 	function indexweightedLayersList($layersList)
 	{
