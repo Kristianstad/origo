@@ -1,10 +1,6 @@
 <?php
 
-	require_once("./functions/manage/isTarget.php");
-	require_once("./functions/manage/makeTargetBasic.php");
-	require_once("./functions/findAllParents.php");
-	require_once("./functions/assoc_array_values.php");
-	require_once("./functions/manage/tableType.php");
+	// Uses common functions: isTarget, makeTargetBasic, findAllParents, assoc_array_values, tableType
 
 	// Takes a database handle and a target, and returns an array of maps that uses this target.
 	function usedInMaps(&$dbh, $target, $checkedTargets=array(), $usedInMaps=array())
