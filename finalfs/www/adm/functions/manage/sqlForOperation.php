@@ -1,7 +1,6 @@
 <?php
 
-	require_once("./functions/pgArrayToPhp.php");
-	require_once("./functions/pkColumnOfTable.php");
+	// Uses common functions: pgArrayToPhp, pkColumnOfTable
 
 	// Takes an operation ('add' or 'remove'), a basic child target (array), and a parent (array) as parameters.
 	// Returns a sql-query string that updates the database by adding or removing the child from the appropriate field of the given parent 
