@@ -1,8 +1,6 @@
 <?php
 
-	require_once("./functions/manage/isTarget.php");
-	require_once("./functions/manage/targetType.php");
-	require_once("./functions/manage/typeTableName.php");
+	// Uses common functions: isTarget, targetType, typeTableName
 
 	function targetTable($target)
 	{
