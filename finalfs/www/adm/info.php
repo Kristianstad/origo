@@ -7,20 +7,18 @@
 </head>
 <body>
 <?php
+	// Tell browsers to not cache response
 	header("Cache-Control: must-revalidate, max-age=0, s-maxage=0, no-cache, no-store");
-
-	require_once("./functions/dbh.php");
-	require_once("./functions/array_column_search.php");
-	require_once("./functions/all_from_table.php");
-	require_once("./functions/pkColumnOfTable.php");
-	require_once("./functions/toSwedish.php");
-	require_once("./functions/includeDirectory.php");
-	require_once("./functions/findAllParents.php");
 	
+	// Expose specific functions
+	require_once("./functions/includeDirectory.php");
+	
+	// Expose all functions in given folders
+	includeDirectory("./functions/common");
 	includeDirectory("./functions/info");
+	
 	require("./constants/configSchema.php");
 	$dbh=dbh();
-
 	$childType=$_GET['type'];
 	$childId=$_GET['id'];
 	$childTypeSv=toSwedish($childType);
