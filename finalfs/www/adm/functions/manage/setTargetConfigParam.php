@@ -1,6 +1,6 @@
 <?php
 
-	require_once("./functions/manage/isFullTarget.php");
+	// Uses manage functions: isFullTarget
 
 	// Takes a full target array, an Origo configuration parameter name (string), and a configuration parameter value.
 	// Sets the configuration parameter to the new value in the given target.
