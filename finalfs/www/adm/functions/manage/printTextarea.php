@@ -1,11 +1,8 @@
 <?php
 
-	require_once("./functions/manage/isFullTarget.php");
-	require_once("./functions/manage/targetConfigParam.php");
-	require_once("./functions/manage/targetType.php");
-	require_once("./functions/manage/targetId.php");
-	require_once("./functions/manage/printMultiselectButton.php");
-	require_once("./functions/manage/printHelpButton.php");
+	// Uses common functions: targetType
+	
+	// Uses manage functions: isFullTarget, targetConfigParam, targetId, printMultiselectButton, printHelpButton
 
 	// Takes a full target array, a config parameter name (string), a textarea css class name (string), a label (string), help available (boolean), sizePosts (array), is readonly (optional, boolean).
 	// Prints a textarea containing the configuration parameter for the given target. Class name and label for the textarea are taken from the parameter three and four. 
