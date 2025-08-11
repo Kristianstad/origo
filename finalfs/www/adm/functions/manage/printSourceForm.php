@@ -1,15 +1,7 @@
 <?php
 
-	require_once("./functions/manage/isFullTarget.php");
-	require_once("./functions/manage/sizePosts.php");
-	require_once("./functions/manage/targetConfigParam.php");
-	require_once("./functions/manage/printTextarea.php");
-	require_once("./functions/manage/printUpdateSelect.php");
-	require_once("./functions/manage/printHiddenInputs.php");
-	require_once("./functions/manage/printUpdateButton.php");
-	require_once("./functions/manage/printInfoButton.php");
-	require_once("./functions/manage/printDeleteButton.php");
-	require_once("./functions/manage/targetId.php");
+	// Uses manage functions: isFullTarget, sizePosts, targetConfigParam, printTextarea, printUpdateSelect, printHiddenInputs, printUpdateButton, printInfoButton, 
+	// printDeleteButton, targetId
 
 	// Takes a full source target (array), source selectables (array), inheritPosts (array), and helps (array).
 	// Prints form fields and buttons that are used to view and edit the configuration for the given source.
