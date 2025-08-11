@@ -1,17 +1,7 @@
 <?php
 
-	require_once("./functions/manage/isFullTarget.php");
-	require_once("./functions/manage/sizePosts.php");
-	require_once("./functions/manage/printTextarea.php");
-	require_once("./functions/manage/printUpdateSelect.php");
-	require_once("./functions/manage/targetConfigParam.php");
-	require_once("./functions/manage/printHiddenInputs.php");
-	require_once("./functions/manage/printUpdateButton.php");
-	require_once("./functions/manage/printInfoButton.php");
-	require_once("./functions/manage/printDeleteButton.php");
-	require_once("./functions/manage/printAddOperation.php");
-	require_once("./functions/manage/printRemoveOperation.php");
-	require_once("./functions/manage/targetId.php");
+	// Uses manage functions: isFullTarget, sizePosts, printTextarea, printUpdateSelect, targetConfigParam, printHiddenInputs, printUpdateButton, printInfoButton, 
+	// printDeleteButton, printAddOperation, printRemoveOperation, targetId
 
 	// Takes a full layer target (array), layer selectables (array), layer operationtables (array), layer sources (array), inheritPosts (array), and helps (array).
 	// Prints form fields and buttons that are used to:
