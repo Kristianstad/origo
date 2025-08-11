@@ -17,8 +17,8 @@
 	includeDirectory("./functions/common");
 	includeDirectory("./functions/updated");
 
-	$dbhConnectionString = "host=geodata port=5432 dbname=geodata user=titta password=titta";
-	$dbh=dbh($dbhConnectionString);
+	require("./constants/dbhConnectionStringForUpdated.php");
+	$dbh=dbh($dbhConnectionStringForUpdated);
 	$tablesWithSchema=$_GET['table'];
 	$tablesWithSchema=explode(',', $tablesWithSchema);
 	$updates=array();
