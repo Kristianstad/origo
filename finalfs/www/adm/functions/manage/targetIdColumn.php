@@ -1,8 +1,8 @@
 <?php
 
-	require_once("./functions/manage/isTarget.php");
-	require_once("./functions/manage/targetTable.php");
-	require_once("./functions/manage/targetType.php");
+	// Uses common functions: isTarget, targetType
+	
+	// Uses manage functions: targetTable
 
 	function targetIdColumn($target)
 	{
