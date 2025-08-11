@@ -1,23 +1,27 @@
 <?php
-	// OBS! Kan inte börja med <!DOCTYPE html> för då slutar swiper-pluginet att fungera i preview.
+	// Note! Can't begin with <!DOCTYPE html> because it causes the swiper-plugin to stop working in the preview.
 
-	require_once("./functions/dbh.php");
-	require_once("./functions/pgArrayToPhp.php");
-	require_once("./functions/array_column_search.php");
-	require_once("./functions/all_from_table.php");
-	require_once("./functions/configTables.php");
+	// Tell browsers to not cache response
+	header("Cache-Control: must-revalidate, max-age=0, s-maxage=0, no-cache, no-store");
+
+	// Expose specific functions
 	require_once("./functions/includeDirectory.php");
+
+	// Expose all functions in given folders
+	includeDirectory("./functions/common");
 	includeDirectory("./functions/writeConfig");
 
 	require("./constants/webRoot.php");
-	// Workaround för swiper i preview-verktyget https://github.com/SigtunaGIS/swiper-plugin/issues/41 <start>
+	
+	// Workaround for swiper in preview https://github.com/SigtunaGIS/swiper-plugin/issues/41 <start>
 	$getMapParam=explode('\\', $_GET['map'], 2);
 	$mapId = $getMapParam[0];
 	if (isset($getMapParam[1]))
 	{
 		$_GET['getJson'] = 'y';
 	}
-	// Workaround för swiper i preview-verktyget </end>
+	// Workaround for swiper in preview </end>
+	
 	$mapIdArray = explode('#', $mapId, 2);
 	$mapName = trim($mapIdArray[0]);
 	if (!empty($mapIdArray[1]))
