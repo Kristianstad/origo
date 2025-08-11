@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <?php
+	// Tell browsers to not cache response
 	header("Cache-Control: must-revalidate, max-age=0, s-maxage=0, no-cache, no-store");
 
 	if (empty($_POST['json']))
@@ -43,9 +44,11 @@
 		exit;
 	}
 
-	require_once("./functions/dbh.php");
-	require_once("./functions/configTables.php");
+	// Expose specific functions
 	require_once("./functions/includeDirectory.php");
+	
+	// Expose all functions in given folders
+	includeDirectory("./functions/common");
 	includeDirectory("./functions/read_json");
 
 	$dbh=dbh();
