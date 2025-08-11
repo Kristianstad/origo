@@ -1,9 +1,6 @@
 <?php
 
-	require_once("./functions/manage/isTarget.php");
-	require_once("./functions/manage/makeTargetBasic.php");
-	require_once("./functions/pgArrayToPhp.php");
-	require_once("./functions/pkColumnOfTable.php");
+	// Uses common functions: isTarget, makeTargetBasic, pgArrayToPhp, pkColumnOfTable
 
 	// Takes an array of potentian parents and a target, and returns the actual parents.
 	function findParents($potentialParents, $target)
