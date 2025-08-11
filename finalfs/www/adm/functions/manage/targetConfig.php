@@ -1,12 +1,8 @@
 <?php
 
-	require_once("./functions/array_column_search.php");
-	require_once("./functions/manage/isTarget.php");
-	require_once("./functions/manage/isFullTarget.php");
-	require_once("./functions/manage/targetId.php");
-	require_once("./functions/manage/targetIdColumn.php");
-	require_once("./functions/manage/targetTable.php");
-	require_once("./functions/manage/tableConfigs.php");
+	// Uses common functions: array_column_search, isTarget
+	
+	// Uses manage functions: isFullTarget, targetId, targetIdColumn, targetTable, tableConfigs
 
 	function targetConfig($target, $configTablesOrDbh=null)
 	{
