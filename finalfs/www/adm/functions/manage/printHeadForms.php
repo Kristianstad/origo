@@ -1,8 +1,8 @@
 <?php
 
-	require_once("./functions/toSwedish.php");
-	require_once("./functions/manage/printHeadForm.php");
-	require_once("./functions/manage/printMultiselectButton.php");
+	// Uses common functions: toSwedish
+	
+	// Uses manage functions: printHeadForm, printMultiselectButton
 
 	// Takes view (string), configTables (array), focusTable (string) and inheritPosts (array) as parameters.
 	// Prints a html code with a div containing a table of selection forms. 
