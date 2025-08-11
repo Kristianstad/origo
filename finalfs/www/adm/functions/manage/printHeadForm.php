@@ -1,9 +1,8 @@
 <?php
 
-	require_once("./functions/pkColumnOfTable.php");
-	require_once("./functions/toSwedish.php");
-	require_once("./functions/manage/printSelectOptions.php");
-	require_once("./functions/manage/printHiddenInputs.php");
+	// Uses common functions: pkColumnOfTable, toSwedish
+	
+	// Uses manage functions: printSelectOptions, printHiddenInputs
 
 	function printHeadForm($tableConfig, $inheritPosts)
 	{
