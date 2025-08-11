@@ -1,7 +1,8 @@
 <?php
 
-	require_once("./functions/toSwedish.php");
-	require_once("./functions/manage/printHiddenInputs.php");
+	// Uses common functions: toSwedish
+	
+	// Uses manage functions: printHiddenInputs
 
 	// Takes a basic target array, a confirmation string, and inheritPosts (array).
 	// Prints a form with a button labeled "Radera" as only visible element. 
