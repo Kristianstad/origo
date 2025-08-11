@@ -1,6 +1,6 @@
 <?php
 
-	require_once("./functions/manage/isTarget.php");
+	// Uses common functions: isTarget
 
 	// Takes a target array and returns its type (string)
 	function targetType($target)
