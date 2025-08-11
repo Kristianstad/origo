@@ -7,11 +7,14 @@
 </head>
 <body>
 <?php
+	// Tell browsers to not cache response
 	header("Cache-Control: must-revalidate, max-age=0, s-maxage=0, no-cache, no-store");
 
-	require_once("./functions/dbh.php");
+	// Expose specific functions
 	require_once("./functions/includeDirectory.php");
 
+	// Expose all functions in given folders
+	includeDirectory("./functions/common");
 	includeDirectory("./functions/updated");
 
 	$dbhConnectionString = "host=geodata port=5432 dbname=geodata user=titta password=titta";
