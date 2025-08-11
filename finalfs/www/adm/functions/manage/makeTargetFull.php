@@ -1,8 +1,8 @@
 <?php
 
-	require_once("./functions/manage/isTarget.php");
-	require_once("./functions/manage/targetType.php");
-	require_once("./functions/manage/targetConfig.php");
+	// Uses common functions: isTarget, targetType
+	
+	// Uses manage functions: targetConfig
 
 	// Takes a basic target array as first parameter and configTables (array) or database handle as second parameter.
 	// Returns a full target array
