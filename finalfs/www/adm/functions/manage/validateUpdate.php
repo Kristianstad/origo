@@ -1,7 +1,6 @@
 <?php
 
-	require_once("./functions/pkColumnOfTable.php");
-	require_once("./functions/toSwedish.php");
+	// Uses common functions: pkColumnOfTable, toSwedish
 
 	// Takes an updatePosts array and an configTables array as input parameters and passes back a third parameter as boolean.
 	// The third parameter will be set to true if all updatePosts pass as valid
