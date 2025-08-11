@@ -1,8 +1,8 @@
 <?php
 
-	require_once("./functions/pkColumnOfTable.php");
-	require_once("./functions/manage/isFullTarget.php");
-	require_once("./functions/manage/targetTable.php");
+	// Uses common functions: pkColumnOfTable
+	
+	// Uses manage functions: isFullTarget, targetTable
 
 	function targetId($target)
 	{
