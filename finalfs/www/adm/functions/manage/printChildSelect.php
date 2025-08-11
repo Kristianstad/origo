@@ -1,9 +1,8 @@
 <?php
 
-	require_once("./functions/pkColumnOfTable.php");
-	require_once("./functions/manage/printSelectOptions.php");
-	require_once("./functions/manage/printHiddenInputs.php");
-	require_once("./functions/toSwedish.php");
+	// Uses common functions: pkColumnOfTable, toSwedish
+	
+	// Uses manage functions: printSelectOptions, printHiddenInputs
 
 	// takes a full target of a type that can have children (array), a child table name (string), a css class name for th-elements (string),
 	// a heading (string), inheritPosts (array), groupLevel (optional, integer), and selectedValue (optional, string).
