@@ -1,9 +1,8 @@
 <?php
 
-	require_once("./functions/manage/isFullTarget.php");
-	require_once("./functions/manage/targetId.php");
-	require_once("./functions/manage/printSelectOptions.php");
-	require_once("./functions/manage/targetType.php");
+	// Uses common functions: targetType
+	
+	// Uses manage functions: isFullTarget, targetId, printSelectOptions
 
 	// Takes a full target array, parameter values (array), style class (string), label (string), help-exist (boolean), and select options (optional, array, needs to have equal number of elements as parameter two).
 	// Prints a drop-down selection box with option values to choose from. It's the parameter value of the chosen option that is set to be posted on form submit.
