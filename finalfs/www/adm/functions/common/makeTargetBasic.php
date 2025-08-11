@@ -1,10 +1,6 @@
 <?php
 
-	require_once("./functions/manage/isTarget.php");
-	require_once("./functions/manage/isBasicTarget.php");
-	require_once("./functions/manage/targetType.php");
-	require_once("./functions/manage/typeTableName.php");
-	require_once("./functions/pkColumnOfTable.php");
+	// Uses common functions: isTarget, isBasicTarget, targetType, typeTableName, pkColumnOfTable
 
 	// Takes a target array and returns it as a basic target array.
 	function makeTargetBasic($target)
