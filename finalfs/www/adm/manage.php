@@ -460,7 +460,7 @@
 			{
 				$inheritPosts['groupId']=$groupIdsArray[0];
 			}
-			if (isset($inheritPosts['layerId']))
+			if (isset($inheritPosts['layerId']) && !isset($inheritPosts['groupId']))
 			{
 				printChildSelect($map, 'layers', $thClass, 'Lager', $inheritPosts);
 				printChildSelect($map, 'groups', $thClass, 'Grupp', $inheritPosts);
