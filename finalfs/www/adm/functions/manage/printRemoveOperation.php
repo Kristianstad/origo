@@ -1,10 +1,8 @@
 <?php
 
-	require_once("./functions/findParents.php");
-	require_once("./functions/manage/printSelectOptions.php");
-	require_once("./functions/manage/printHiddenInputs.php");
-	require_once("./functions/manage/targetType.php");
-	require_once("./functions/toSwedish.php");
+	// Uses common functions: findParents, targetType, toSwedish
+	
+	// Uses manage functions: printSelectOptions, printHiddenInputs
 
 	function printRemoveOperation($targetToRemove, $tableToRemoveFrom, $buttontext, $inheritPosts)
 	{
