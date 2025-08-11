@@ -1,6 +1,6 @@
 <?php
 
-	require_once("./functions/all_from_table.php");
+	// Uses common functions: all_from_table
 
 	function tableConfigs($table, $configTablesOrDbh)
 	{
