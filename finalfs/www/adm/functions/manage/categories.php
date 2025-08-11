@@ -1,6 +1,6 @@
 <?php
 
-	require_once("./functions/pgArrayToPhp.php");
+	// Uses common functions: pgArrayToPhp
 
 	// Takes an Origo table configuration and the primary key- (id-) column name for the same table. 
 	// Returns an associative array with the keyword categories for the specific table. 
