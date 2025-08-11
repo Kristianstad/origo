@@ -1,6 +1,6 @@
 <?php
 
-	require_once("./functions/toSwedish.php");
+	// Uses common functions: toSwedish
 
 	// Takes a type (string) and prints a form submit-button with class="updateButton", name="<type>Button", value="copy", and the label "Spara kopia".
 	function printCopyButton($type)
