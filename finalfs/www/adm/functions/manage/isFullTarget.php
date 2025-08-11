@@ -1,6 +1,6 @@
 <?php
 
-	require_once("./functions/manage/isTarget.php");
+	// Uses common functions: isTarget
 
 	function isFullTarget($target)
 	{
