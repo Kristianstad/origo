@@ -1,8 +1,13 @@
 <!DOCTYPE html>
 <?php
+	// Tell browsers to not cache response
 	header("Cache-Control: must-revalidate, max-age=0, s-maxage=0, no-cache, no-store");
+	
+	// Expose specific functions
 	require_once("./functions/includeDirectory.php");
-	require_once("./functions/toSwedish.php");
+	
+	// Expose all functions in given folders
+	includeDirectory("./functions/common");
 ?>
 <html>
 <head>
