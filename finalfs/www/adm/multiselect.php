@@ -31,8 +31,6 @@
 </head>
 <body>
 <?php
-	require_once("./functions/dbh.php");
-	require_once("./functions/all_from_table.php");
 	$dbh=dbh();
 	$submitValue=explode(':', $_GET['table']);
 	$table=$submitValue[0];
