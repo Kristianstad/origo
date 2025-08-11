@@ -1,11 +1,15 @@
 <!DOCTYPE html>
 <?php
+	// Tell browsers to not cache response
 	header("Cache-Control: must-revalidate, max-age=0, s-maxage=0, no-cache, no-store");
-	require_once("./functions/dbh.php");
-	require_once("./functions/all_from_table.php");
-	require_once("./functions/array_column_search.php");
+	
+	// Expose specific functions
 	require_once("./functions/includeDirectory.php");
+	
+	// Expose all functions in given folders
+	includeDirectory("./functions/common");
 	includeDirectory("./functions/read_db_schemas");
+	
 	$database=$_GET['database'];
 	unset($_GET);
 	$dbh_config=dbh();
