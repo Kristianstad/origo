@@ -1,6 +1,6 @@
 <?php
 
-	require_once("./functions/manage/hasStringKeys.php");
+	// Uses manage functions: hasStringKeys
 
 	function printSelectOptions($optionValues, $selectedValue=null)
 	{
