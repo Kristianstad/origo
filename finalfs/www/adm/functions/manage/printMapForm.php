@@ -1,17 +1,7 @@
 <?php
 
-	require_once("./functions/manage/isFullTarget.php");
-	require_once("./functions/manage/sizePosts.php");
-	require_once("./functions/manage/printTextarea.php");
-	require_once("./functions/manage/printUpdateSelect.php");
-	require_once("./functions/manage/printHiddenInputs.php");
-	require_once("./functions/manage/printUpdateButton.php");
-	require_once("./functions/manage/printInfoButton.php");
-	require_once("./functions/manage/printWriteConfigButton.php");
-	require_once("./functions/manage/printExportJsonButton.php");
-	require_once("./functions/manage/printDeleteButton.php");
-	require_once("./functions/manage/targetConfigParam.php");
-	require_once("./functions/manage/targetId.php");
+	// Uses manage functions: isFullTarget, sizePosts, printTextarea, printUpdateSelect, printHiddenInputs, printUpdateButton, printInfoButton, printWriteConfigButton, 
+	// printExportJsonButton, printDeleteButton, targetConfigParam, targetId
 
 	// Takes a full map target (array), map selectables (array), inheritPosts (array), and helps (array).
 	// Prints form fields and buttons that are used to view and edit the configuration for the given map.
