@@ -1,12 +1,6 @@
 <?php
 
-	require_once("./functions/manage/isFullTarget.php");
-	require_once("./functions/manage/targetTable.php");
-	require_once("./functions/manage/targetId.php");
-	require_once("./functions/manage/updatedFullTarget.php");
-	require_once("./functions/manage/appendUpdatedColumnsToSql.php");
-	require_once("./functions/manage/targetConfig.php");
-	require_once("./functions/manage/targetIdColumn.php");
+	// Uses manage functions: isFullTarget, targetTable, targetId, updatedFullTarget, appendUpdatedColumnsToSql, targetConfig, targetIdColumn
 
 	// Takes a full target-array and an updatePosts-array and returns a sql-query string that updates
 	// the database configuration (table) for the given target with values from the updatePosts
