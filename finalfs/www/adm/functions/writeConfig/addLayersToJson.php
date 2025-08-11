@@ -1,9 +1,8 @@
 <?php
 
-	require_once("./functions/pgArrayToPhp.php");
-	require_once("./functions/array_column_search.php");
-	require_once("./functions/writeConfig/addSourcesToJson.php");
-	require_once("./functions/writeConfig/addStylesToJson.php");
+	// Uses common functions: pgArrayToPhp, array_column_search
+	
+	// Uses writeConfig functions: addSourcesToJson, addStylesToJson
 
 	function addLayersToJson($mapLayersList, &$layersMeta, $groupLayer=false)
 	{
