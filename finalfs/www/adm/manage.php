@@ -4,17 +4,10 @@
 	header("Cache-Control: must-revalidate, max-age=0, s-maxage=0, no-cache, no-store");
 
 	// Expose specific functions
-	require_once("./functions/dbh.php");
-	require_once("./functions/array_column_search.php");
-	require_once("./functions/pkColumnOfTable.php");
-	require_once("./functions/configTables.php");
-	require_once("./functions/pgArrayToPhp.php");
-	require_once("./functions/findAllParents.php");
-	require_once("./functions/assoc_array_values.php");
-	require_once("./functions/usedInMaps.php");
 	require_once("./functions/includeDirectory.php");
 
-	// Expose all functions in given folder
+	// Expose all functions in given folders
+	includeDirectory("./functions/common");
 	includeDirectory("./functions/manage");
 
 	// Expose posted data as $post (array)
