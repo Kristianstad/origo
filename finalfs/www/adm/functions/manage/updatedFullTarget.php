@@ -1,10 +1,8 @@
 <?php
 
-	require_once("./functions/manage/isFullTarget.php");
-	require_once("./functions/manage/targetConfig.php");
-	require_once("./functions/manage/isArrayColumn.php");
-	require_once("./functions/manage/makeFullTarget.php");
-	require_once("./functions/manage/targetType.php");
+	// Uses common functions: targetType
+	
+	// Uses manage functions: isFullTarget, targetConfig, isArrayColumn, makeFullTarget
 
 	function updatedFullTarget($fullTarget, $updatePosts)
 	{
