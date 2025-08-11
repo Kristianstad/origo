@@ -1,7 +1,6 @@
 <?php
 
-	require_once("./functions/assoc_array_values.php");
-	require_once("./functions/toSwedish.php");
+	// Uses common functions: assoc_array_values, toSwedish
 
 	function printParents($allParents)
 	{
