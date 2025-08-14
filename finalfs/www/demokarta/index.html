@@ -1,35 +1,37 @@
 <!DOCTYPE html>
 <html lang="sv">
-        <head>
-                <meta charset="utf-8">
-                <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-                <meta http-equiv="X-UA-Compatible" content="IE=Edge;chrome=1">
-                <title>Demokarta - Origo</title>
-                <link rel="shortcut icon" href="../img/png/logo.png">
-                <link href='css/style.css' rel='stylesheet'>
-                <script src='js/origo.min.js'></script>
-        </head>
-        <body>
-                <div id="app-wrapper"></div>
-                <script>
-                        const urlParams = new URL(document.location.href).searchParams;
-                        const map = urlParams.get('map');
-                        if (map != null)
-                        {
-                                const origo = Origo(map.replace('#', '%23') + '.json');
-                        }
-                        else
-                        {
-                                const htmlFileMatch = document.location.pathname.match(/([^\/]+)\.html$/i);
-                                if (htmlFileMatch)
-                                {
-                                        const origo = Origo(htmlFileMatch[1] + '.json');
-                                }
-                                else
-                                {
-                                        const origo = Origo('index.json');
-                                }
-                        }
-                </script>
-        </body>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+		<meta http-equiv="X-UA-Compatible" content="IE=Edge;chrome=1">
+		<meta name="robots" content="index, follow">
+		<title>Demokarta - Origo</title>
+		<link rel="shortcut icon" href="../img/png/logo.png">
+		<link href='css/style.css' rel='stylesheet'>
+		<script src='js/origo.min.js'></script>
+	</head>
+	<body>
+		<div id="app-wrapper"></div>
+		<script>
+			const urlParams = new URL(document.location.href).searchParams;
+			let origo;
+			const map = urlParams.get('map');
+			if (map != null)
+			{
+				origo = Origo(map.replace('#', '%23') + '.json');
+			}
+			else
+			{
+				const htmlFileMatch = document.location.pathname.match(/([^\/]+)\.html$/i);
+				if (htmlFileMatch)
+				{
+					origo = Origo(htmlFileMatch[1] + '.json');
+				}
+				else
+				{
+					origo = Origo('index.json');
+				}
+			}
+</script>
+</body>
 </html>
