@@ -131,7 +131,7 @@
 			"headers": {
 				"Accept": "application/geo+json"
 			},
-			"abstract": "<b>Beskrivning: </b>Lager som visar kommuner delaktiga i Origoprojektet.<br><b>Resurser: </b><br><b>Kontakt: </b><br><b>Källa: </b><a href='https://github.com/origo-map/origo' target='_blank'>Origo</a><br><br><form action='/adm/?view=Origo' method='post' target='_blank'><button type='submit' name='layerId' value='origokommuner#1' style='float:right; color:blue'>Administrera</button></form>",
+			"abstract": "<b>Beskrivning: </b>Lager som visar kommuner delaktiga i Origoprojektet.<br><b>Resurser: </b><br><b>Kontakt: </b><br><b>Källa: </b><a href='https://github.com/origo-map/origo' target='_blank'>Origo</a><br><br><form action='adm/?view=Origo' method='post' target='_blank'><button type='submit' name='layerId' value='origokommuner#1' style='float:right; color:blue'>Administrera</button></form>",
 			"attributes": [
 				{
 					"name": "name"
@@ -151,7 +151,7 @@
 			"headers": {
 				"Accept": "application/geo+json"
 			},
-			"abstract": "<form action='/adm/?view=Origo' method='post' target='_blank'><button type='submit' name='layerId' value='kommunmask#1' style='float:right; color:blue'>Administrera</button></form>"
+			"abstract": "<form action='adm/?view=Origo' method='post' target='_blank'><button type='submit' name='layerId' value='kommunmask#1' style='float:right; color:blue'>Administrera</button></form>"
 		},
 		{
 			"name": "osm",
@@ -161,7 +161,7 @@
 			"style": "osm#1-bg",
 			"queryable": false,
 			"visible": true,
-			"abstract": "<b>Beskrivning: </b>Bakgrundslager från OpenStreetMap.<br><b>Resurser: </b><br><b>Kontakt: </b><br><b>Källa: </b><a href='https://www.openstreetmap.org/' target='_blank'>OpenStreetMap</a><br><br><form action='/adm/?view=Origo' method='post' target='_blank'><button type='submit' name='layerId' value='osm#1' style='float:right; color:blue'>Administrera</button></form>"
+			"abstract": "<b>Beskrivning: </b>Bakgrundslager från OpenStreetMap.<br><b>Resurser: </b><br><b>Kontakt: </b><br><b>Källa: </b><a href='https://www.openstreetmap.org/' target='_blank'>OpenStreetMap</a><br><br><form action='adm/?view=Origo' method='post' target='_blank'><button type='submit' name='layerId' value='osm#1' style='float:right; color:blue'>Administrera</button></form>"
 		}
 	],
 	"source": {
