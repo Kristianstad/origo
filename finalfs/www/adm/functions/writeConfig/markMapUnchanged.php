@@ -4,7 +4,7 @@
 	function markMapUnchanged(&$dbh, $mapId)
 	{
 		require("./constants/configSchema.php");
-		$sql=$sql."UPDATE $configSchema.maps SET changed = 'f' WHERE map_id = '$mapId'; ";
+		$sql="UPDATE $configSchema.maps SET changed = 'f' WHERE map_id = '$mapId'; ";
 		$result=pg_query($dbh, $sql);
 		if (!$result)
 		{
