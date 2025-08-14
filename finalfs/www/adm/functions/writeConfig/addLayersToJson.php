@@ -299,7 +299,7 @@
 			{
 				$json = $json.', "abstract": "';
 			}
-			$adminForm="<form action='".parse_url($_SERVER["HTTP_REFERER"], PHP_URL_PATH)."?view=Origo' method='post' target='_blank'><button type='submit' name='layerId' value='".$layer['layer_id']."' style='float:right; color:blue'>Administrera</button></form>";
+			$adminForm="<form action='adm/?view=Origo' method='post' target='_blank'><button type='submit' name='layerId' value='".$layer['layer_id']."' style='float:right; color:blue'>Administrera</button></form>";
 			$json = $json.$adminForm.'"';
 			if (!empty($layer['attributes']) && $layer['type'] !== 'GROUP')
 			{
