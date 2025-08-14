@@ -313,10 +313,9 @@
 		}
 		if (!empty($map['js']))
 		{
-			$html=$html."\n{$map['js']}";
+			$html=$html."\n{$map['js']}\n";
 		}
 		$html=$html. <<<HERE
-		
 		</script>
 		
 		HERE;
