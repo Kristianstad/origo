@@ -442,11 +442,6 @@
 				symlink("$jsonFile", "$configSymlink");
 			}
 			markMapUnchanged($dbh, $mapId);
-			require("./constants/configSchema.php");
-			$layers=all_from_table($dbh, $configSchema, 'layers');
-			$sources=all_from_table($dbh, $configSchema, 'sources');
-			$services=all_from_table($dbh, $configSchema, 'services');
-			unset($configSchema);
 			$restrictedLayers=array();
 			foreach ($layers as $layer)
 			{
