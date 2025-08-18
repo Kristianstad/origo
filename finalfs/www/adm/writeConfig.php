@@ -445,14 +445,19 @@
 			require("./constants/configSchema.php");
 			$layers=all_from_table($dbh, $configSchema, 'layers');
 			$sources=all_from_table($dbh, $configSchema, 'sources');
+			$services=all_from_table($dbh, $configSchema, 'services');
 			unset($configSchema);
 			$restrictedLayers=array();
 			foreach ($layers as $layer)
 			{
-				$layerService=array_column_search($layer['source'], 'source_id', $sources)['service'];
-				if ($layerService == 'restricted')
+				if ($layer['type'] !== 'GROUP')
 				{
-					$restrictedLayers[]=array('name' => explode('#', $layer['layer_id'])[0], 'authorized_users' => $layer['adusers'], 'authorized_groups' => $layer['adgroups']);
+					$layerServiceId=array_column_search($layer['source'], 'source_id', $sources)['service'];
+					$layerServiceRestricted=array_column_search($layerServiceId, 'service_id', $services)['restricted'];
+					if ($layerServiceRestricted == 't')
+					{
+						$restrictedLayers[]=array('name' => explode('#', $layer['layer_id'])[0], 'authorized_users' => $layer['adusers'], 'authorized_groups' => $layer['adgroups']);
+					}
 				}
 			}
 			array_walk($restrictedLayers, function(&$restrictedLayer) {
