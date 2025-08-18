@@ -342,42 +342,46 @@
 				}
 				if (empty($styleLayer['style_config']))
 				{
-					$styleSource = array_column_search($styleLayer['source'], 'source_id', $sources);
-					$styleService = array_column_search($styleSource['service'], 'service_id', $services);
-					if (empty($styleLayer['type']))
+					if ($styleLayer['type'] !== 'GROUP')
 					{
-						$styleLayer['type'] = 'WMS';
-					}
-					if (strtoupper($styleLayer['type']) == 'WMS')
-					{
-						$styleSourceProject = trim(explode('#', $styleSource['source_id'], 2)[0]);
-						if (strpos($styleService['base_url'], '?') === false)
+						$styleSource = array_column_search($styleLayer['source'], 'source_id', $sources);
+						$styleService = array_column_search($styleSource['service'], 'service_id', $services);
+						if (empty($styleLayer['type']))
 						{
-							$paramSeparator='?';
+							$styleLayer['type'] = 'WMS';
 						}
-						else
+						if (strtoupper($styleLayer['type']) == 'WMS')
 						{
-							$paramSeparator='&';
-						}
-						if (isset($styleLayer['show_icon']) && $styleLayer['show_icon'] == 't' && empty($styleLayer['icon']))
-						{
-							$styleLayer['icon'] = $styleService['base_url'].'/'.$styleSourceProject.$paramSeparator.'SERVICE=WMS&REQUEST=GetLegendGraphic&DPI=96&FORMAT=image/png&ICONLABELSPACE=0&LAYERTITLE=TRUE&RULELABEL=FALSE&ITEMFONTSIZE=1&TRANSPARENT=TRUE&BOXSPACE=1.8&SYMBOLWIDTH=6&SYMBOLHEIGHT=6&LAYERSPACE=5&LAYERTITLESPACE=-6&LAYERFONTSIZE=0.5&LAYERFONTCOLOR=%23FFFFFF&LAYERS='.$styleLayerName;
-						}
-						if (empty($styleLayer['icon_extended']) && $group != 'background')
-						{
-							if ($styleLayer['show_icon'] == 'f')
+							$styleSourceProject = trim(explode('#', $styleSource['source_id'], 2)[0]);
+							if (strpos($styleService['base_url'], '?') === false)
 							{
-								$styleLayer['icon_extended'] = $styleService['base_url'].'/'.$styleSourceProject.$paramSeparator.'SERVICE=WMS&REQUEST=GetLegendGraphic&DPI=72&FORMAT=image/png&ICONLABELSPACE=3&LAYERTITLE=TRUE&RULELABEL=TRUE&TRANSPARENT=TRUE&BOXSPACE=1&SYMBOLWIDTH=6&SYMBOLHEIGHT=4&SYMBOLSPACE=3&LAYERSPACE=5&LAYERTITLESPACE=-5.3&LAYERFONTSIZE=0.5&LAYERFONTCOLOR=%23FFFFFF&LAYERS='.$styleLayerName;
+								$paramSeparator='?';
 							}
 							else
 							{
-								$styleLayer['icon_extended'] = $styleService['base_url'].'/'.$styleSourceProject.$paramSeparator.'SERVICE=WMS&REQUEST=GetLegendGraphic&DPI=96&FORMAT=image/png&ICONLABELSPACE=3&LAYERTITLE=TRUE&RULELABEL=TRUE&TRANSPARENT=TRUE&BOXSPACE=1&SYMBOLWIDTH=6&SYMBOLHEIGHT=4&SYMBOLSPACE=3&LAYERSPACE=5&LAYERTITLESPACE=-5.3&LAYERFONTSIZE=0.5&LAYERFONTCOLOR=%23FFFFFF&LAYERS='.$styleLayerName;
+								$paramSeparator='&';
+							}
+							if (isset($styleLayer['show_icon']) && $styleLayer['show_icon'] == 't' && empty($styleLayer['icon']))
+							{
+								$styleLayer['icon'] = $styleService['base_url'].'/'.$styleSourceProject.$paramSeparator.'SERVICE=WMS&REQUEST=GetLegendGraphic&DPI=96&FORMAT=image/png&ICONLABELSPACE=0&LAYERTITLE=TRUE&RULELABEL=FALSE&ITEMFONTSIZE=1&TRANSPARENT=TRUE&BOXSPACE=1.8&SYMBOLWIDTH=6&SYMBOLHEIGHT=6&LAYERSPACE=5&LAYERTITLESPACE=-6&LAYERFONTSIZE=0.5&LAYERFONTCOLOR=%23FFFFFF&LAYERS='.$styleLayerName;
+							}
+							if (empty($styleLayer['icon_extended']) && $group != 'background')
+							{
+								if ($styleLayer['show_icon'] == 'f')
+								{
+									$styleLayer['icon_extended'] = $styleService['base_url'].'/'.$styleSourceProject.$paramSeparator.'SERVICE=WMS&REQUEST=GetLegendGraphic&DPI=72&FORMAT=image/png&ICONLABELSPACE=3&LAYERTITLE=TRUE&RULELABEL=TRUE&TRANSPARENT=TRUE&BOXSPACE=1&SYMBOLWIDTH=6&SYMBOLHEIGHT=4&SYMBOLSPACE=3&LAYERSPACE=5&LAYERTITLESPACE=-5.3&LAYERFONTSIZE=0.5&LAYERFONTCOLOR=%23FFFFFF&LAYERS='.$styleLayerName;
+								}
+								else
+								{
+									$styleLayer['icon_extended'] = $styleService['base_url'].'/'.$styleSourceProject.$paramSeparator.'SERVICE=WMS&REQUEST=GetLegendGraphic&DPI=96&FORMAT=image/png&ICONLABELSPACE=3&LAYERTITLE=TRUE&RULELABEL=TRUE&TRANSPARENT=TRUE&BOXSPACE=1&SYMBOLWIDTH=6&SYMBOLHEIGHT=4&SYMBOLSPACE=3&LAYERSPACE=5&LAYERTITLESPACE=-5.3&LAYERFONTSIZE=0.5&LAYERFONTCOLOR=%23FFFFFF&LAYERS='.$styleLayerName;
+								}
 							}
 						}
-					}
-					elseif (strtoupper($styleLayer['type']) == 'WFS')
-					{
-						$styleLayer['label'] = $styleLayer['title'];
+						elseif (strtoupper($styleLayer['type']) == 'WFS')
+						{
+							$styleLayer['label'] = $styleLayer['title'];
+						}
+						unset($styleSource, $styleService, $styleSourceProject, $paramSeparator);
 					}
 					require("./constants/iconTtl.php");
 					if (isset($service) && isset($service['restricted']) && $service['restricted'] == 't')
