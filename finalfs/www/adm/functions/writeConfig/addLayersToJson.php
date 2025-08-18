@@ -343,10 +343,7 @@
 				if (empty($styleLayer['style_config']))
 				{
 					$styleSource = array_column_search($styleLayer['source'], 'source_id', $sources);
-					if (isset($styleSource['service']))
-					{
-						$styleService = array_column_search($styleSource['service'], 'service_id', $services);
-					}
+					$styleService = array_column_search($styleSource['service'], 'service_id', $services);
 					if (empty($styleLayer['type']))
 					{
 						$styleLayer['type'] = 'WMS';
