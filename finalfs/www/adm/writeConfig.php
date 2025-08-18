@@ -331,9 +331,11 @@
 				header("Content-Disposition: attachment;filename=$mapId.html");
 			}
 			echo "$html";
+			fastcgi_finish_request();
 		}
 		else
 		{
+			fastcgi_finish_request();
 			if ($map['searchengineindexable'] == "t")
 			{
 				$mapTitle=json_encode(trim($map['title'], " \t\n\r\0\x0B\""), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
