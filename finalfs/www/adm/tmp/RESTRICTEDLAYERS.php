@@ -1,0 +1,5 @@
+<?php
+
+	define('RESTRICTEDLAYERS', array());
+
+?>
