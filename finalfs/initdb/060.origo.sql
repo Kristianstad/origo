@@ -294,6 +294,18 @@ CREATE TABLE map_configs.keywords
     CONSTRAINT keywords_pkey PRIMARY KEY (keyword_id)
 );
 
+CREATE TABLE map_configs.news
+(
+    new_id character varying COLLATE pg_catalog."default" NOT NULL,
+    abstract character varying COLLATE pg_catalog."default",
+    text character varying COLLATE pg_catalog."default",
+    reads character varying[] COLLATE pg_catalog."default",
+    deletes character varying[] COLLATE pg_catalog."default",
+    date timestamp without time zone NOT NULL DEFAULT now(),
+    info character varying COLLATE pg_catalog."default",
+    CONSTRAINT news_pkey PRIMARY KEY (new_id)
+);
+
 CREATE TABLE map_configs.formats
 (
     format_id character varying COLLATE pg_catalog."default" NOT NULL,
