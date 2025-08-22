@@ -1,5 +1,5 @@
 <?php
-	require_once("./functions/adldap/autoload.php");
+	include_once("./functions/adldap/autoload.php");
 
 	function login()
 	{
