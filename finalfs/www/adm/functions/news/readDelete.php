@@ -1,0 +1,21 @@
+<?php
+
+	function readDelete($username, $selectedNew, $action)
+	{
+		GLOBAL $dbh;
+		require("./constants/configSchema.php");
+		$actionColumn=$action.'s';
+		$field=$selectedNew[$actionColumn];
+		$field[]=$username;
+		$field='{'.implode(',', $field).'}';
+		$newId=$selectedNew['new_id'];
+		$sql="UPDATE $configSchema.news SET $actionColumn = '$field' WHERE new_id = '$newId'";
+		$updateResult=pg_query($dbh, $sql);
+		pg_free_result($updateResult);
+		if ($action=='delete')
+		{
+			header('Location: ?action=subjects');
+		}
+	}
+
+?>
