@@ -33,7 +33,9 @@
 		'keywords'	=>'nyckelord',
 		'help'		=>'hjälp',
 		'helps'		=>'hjälp',
-		'formats'	=>'format'
+		'formats'	=>'format',
+		'new'		=>'nyhet',
+		'news'		=>'nyheter'
 	);
 
 ?>
