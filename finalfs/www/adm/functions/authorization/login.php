@@ -35,14 +35,23 @@
 			$_SESSION["user"]['id']=$user;
 			$_SESSION["user"]["mail"]= $userInfo->getEmail();
 			$_SESSION['user']["groups"] = array_map('strtolower', array_values($userInfo->getGroupNames($recursive = true)));
-			session_write_close();	
+			session_write_close();
+			$formAction=$_SERVER["PHP_SELF"];
+			if (basename($formAction) == 'authorization-loader.php')
+			{
+				$src=dirname($formAction).'/news-loader.php';
+			}
+			else
+			{
+				$src='./news.php';
+			}			
 			echo <<<HERE
 						<script>
 							sessionStorage.user_id="{$_SESSION["user"]['id']}";
 						</script>
 						<b style="color:#023f88">Du är nu inloggad!</b>
-						<button id="loginbtn" style="cursor:pointer;background:#eee;border-radius:1rem;border:#eee;width:auto;text-align:center;white-space:nowrap;padding: 0.5rem 0.75rem;font:14px Segoe UI,Roboto,Helvetica Neue,Arial,sans-serif;" type="button" onclick="sessionStorage.removeItem('user_id'); document.location.assign('./authorization.php?logout');">Logga ut</button>
-						</br><iframe src="./news.php?action=subjects" style="border:none;width:100%;height:115px;margin-top:5px;margin-bottom:10px"></iframe>
+						<button id="loginbtn" style="cursor:pointer;background:#eee;border-radius:1rem;border:#eee;width:auto;text-align:center;white-space:nowrap;padding: 0.5rem 0.75rem;font:14px Segoe UI,Roboto,Helvetica Neue,Arial,sans-serif;" type="button" onclick="sessionStorage.removeItem('user_id'); document.location.assign('{$formAction}?logout');">Logga ut</button>
+						</br><iframe src="{$src}?action=subjects" style="border:none;width:100%;height:115px;margin-top:5px;margin-bottom:10px"></iframe>
 			HERE;
 		}
 		else
