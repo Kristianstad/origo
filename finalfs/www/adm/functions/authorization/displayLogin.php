@@ -10,8 +10,9 @@
 		{
 			$getCall="";
 		}
+		$formAction=$_SERVER["PHP_SELF"];
 		echo <<<HERE
-					<form id="normal" class="general" action="./authorization.php" method="post">
+					<form id="normal" class="general" action="{$formAction}" method="post">
 						<input class="call" name="call" type="hidden" value="{$getCall}" />
 						<table border="0" cellspacing="5" cellpadding="0">
 							<tbody>
