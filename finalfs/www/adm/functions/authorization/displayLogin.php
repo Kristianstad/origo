@@ -10,7 +10,8 @@
 		{
 			$getCall="";
 		}
-		$formAction=$_SERVER["PHP_SELF"];
+		require('./constants/proxyRoot.php');
+		$formAction=$proxyRoot.$_SERVER["PHP_SELF"];
 		echo <<<HERE
 					<form id="normal" class="general" action="{$formAction}" method="post">
 						<input class="call" name="call" type="hidden" value="{$getCall}" />
