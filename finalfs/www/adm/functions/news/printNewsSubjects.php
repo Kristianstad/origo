@@ -4,7 +4,8 @@
 	{
 		if (!empty($userNews))
 		{
-			$formAction=$_SERVER["PHP_SELF"];
+			require('./constants/proxyRoot.php');
+			$formAction=$proxyRoot.$_SERVER["PHP_SELF"];
 			echo '<table>';
 			foreach ($userNews as $aNews)
 			{
