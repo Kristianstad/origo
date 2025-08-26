@@ -9,6 +9,11 @@ ARG ORIGO_VERSION="2.9.0"
 ARG POSTGRESQL_VERSION="15"
 ARG PHP_VERSION="82"
 ARG BASEIMAGE="ghcr.io/kristianstad/origo:$ORIGO_VERSION"
+ARG BUILDDEPS="composer"
+ARG BUILDCMDS=\
+"   composer require --ignore-platform-reqs adldap2/adldap2 "\
+'&& mkdir -p "$DESTDIR/www/adm/functions" '\
+'&& cp ./vendor "$DESTDIR/www/adm/functions/adldap"'
 ARG RUNDEPS="\
         apache2-utils \
         postgresql$POSTGRESQL_VERSION \
