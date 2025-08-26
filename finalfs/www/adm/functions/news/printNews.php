@@ -12,7 +12,8 @@
 
 			if ($return[0] == 'text')
 			{
-				$formAction=$_SERVER["PHP_SELF"];
+				require('./constants/proxyRoot.php');
+				$formAction=$proxyRoot.$_SERVER["PHP_SELF"];
 				echo '<html><head></head><body style="padding-bottom:50px;"><div style="height:100%;width:100%;overflow:auto;margin-bottom:50px;padding-bottom:30px;">'.$selectedNew[$return[0]];
 				echo '</br></br><button type="button" onclick="window.open(\''.$formAction.'?action=subjects\',\'_self\');">Tillbaka</button></div></body></html>';
 			}
