@@ -17,6 +17,7 @@ ARG RUNDEPS="\
         php$PHP_VERSION-opcache \
         php$PHP_VERSION-simplexml \
         php$PHP_VERSION-session \
+        php$PHP_VERSION-openssl \
         php$PHP_VERSION-pgsql"
 ARG MAKEDIRS="/etc/php$PHP_VERSION/conf.d /etc/php$PHP_VERSION/php-fpm.d /var/log/php$PHP_VERSION"
 ARG FINALCMDS=\
