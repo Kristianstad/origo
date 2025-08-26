@@ -13,7 +13,7 @@ ARG BUILDDEPS="composer"
 ARG BUILDCMDS=\
 "   composer require --ignore-platform-reqs adldap2/adldap2 "\
 '&& mkdir -p "$DESTDIR/www/adm/functions" '\
-'&& cp ./vendor "$DESTDIR/www/adm/functions/adldap"'
+'&& mv ./vendor "$DESTDIR/www/adm/functions/adldap"'
 ARG RUNDEPS="\
         apache2-utils \
         postgresql$POSTGRESQL_VERSION \
@@ -23,6 +23,7 @@ ARG RUNDEPS="\
         php$PHP_VERSION-simplexml \
         php$PHP_VERSION-session \
         php$PHP_VERSION-openssl \
+        php$PHP_VERSION-ldap \
         php$PHP_VERSION-pgsql"
 ARG MAKEDIRS="/etc/php$PHP_VERSION/conf.d /etc/php$PHP_VERSION/php-fpm.d /var/log/php$PHP_VERSION"
 ARG FINALCMDS=\
