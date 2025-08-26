@@ -36,7 +36,8 @@
 			$_SESSION["user"]["mail"]= $userInfo->getEmail();
 			$_SESSION['user']["groups"] = array_map('strtolower', array_values($userInfo->getGroupNames($recursive = true)));
 			session_write_close();
-			$formAction=$_SERVER["PHP_SELF"];
+			require('./constants/proxyRoot.php');
+			$formAction=$proxyRoot.$_SERVER["PHP_SELF"];
 			if (basename($formAction) == 'authorization-loader.php')
 			{
 				$src=dirname($formAction).'/news-loader.php';
