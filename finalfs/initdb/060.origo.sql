@@ -19,6 +19,7 @@ INSERT INTO map_configs.controls(control_id,options,abstract) VALUES ('link#1','
 INSERT INTO map_configs.controls(control_id,options,abstract) VALUES ('legend#1','{ "labelOpacitySlider": "Opacity", "useGroupIndication" : true }','Lägger till en legend i menyn och som en kartförklaring till kartan.');
 INSERT INTO map_configs.controls(control_id,options,abstract) VALUES ('position#1','{ "title": "Web Mercator", "projections": { "EPSG:4326": "WGS84", "EPSG:3006": "Sweref99 TM" } }','Kontroll för att visa koordinater. Musens position och mittposition på kartan kan växlas. Koordinater kan sökas på i mittpositionsläget.');
 INSERT INTO map_configs.controls(control_id,abstract) VALUES ('measure#1','Lägger till en mätningskontroll. Mät längd, area eller höjd (kräver tillgång till extern höjddatawebbtjänst) i kartan.');
+INSERT INTO map_configs.controls(control_id,options,abstract) VALUES ('splash#login1','{ "title": "Välkommen!", "url": "./authorization/authorization-iframe.php", "hideButton": { "visible": false }, "style": "width: 500px;height: 250px;", "hideWhenEmbedded": true }','Inloggningssida som visas när kartan öppnas.');
 
 CREATE TABLE map_configs.footers
 (
