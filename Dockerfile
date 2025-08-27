@@ -24,7 +24,47 @@ ARG RUNDEPS="\
         php$PHP_VERSION-session \
         php$PHP_VERSION-openssl \
         php$PHP_VERSION-ldap \
-        php$PHP_VERSION-pgsql"
+        php$PHP_VERSION-pgsql \
+#        php$PHP_VERSION \
+#        php$PHP_VERSION-bcmath \
+        php$PHP_VERSION-dom \
+#        php$PHP_VERSION-ctype \
+        php$PHP_VERSION-curl \
+#        php$PHP_VERSION-fileinfo \
+        php$PHP_VERSION-fpm \
+#        php$PHP_VERSION-gd \
+#        php$PHP_VERSION-iconv \
+        php$PHP_VERSION-intl \
+        php$PHP_VERSION-json \
+        php$PHP_VERSION-mbstring \
+#        php$PHP_VERSION-mcrypt \
+#        php$PHP_VERSION-mysqlnd \
+        php$PHP_VERSION-opcache \
+        php$PHP_VERSION-openssl \
+#        php$PHP_VERSION-pdo \
+#        php$PHP_VERSION-pdo_mysql \
+#        php$PHP_VERSION-pdo_pgsql \
+#        php$PHP_VERSION-pdo_sqlite \
+#        php$PHP_VERSION-phar \
+#        php$PHP_VERSION-posix \
+        php$PHP_VERSION-simplexml \
+        php$PHP_VERSION-session \
+#        php$PHP_VERSION-soap \
+#        php$PHP_VERSION-tokenizer \
+#        php$PHP_VERSION-xml \
+#        php$PHP_VERSION-xmlreader \
+#        php$PHP_VERSION-xmlwriter \
+#        php$PHP_VERSION-zip \
+        php$PHP_VERSION-pgsql \
+        php$PHP_VERSION-pecl-imagick \
+#        libpng \
+#        libpng-static \
+#        libpng-utils \
+#        libjpeg-turbo \
+#        imagemagick \
+#        curl \
+        php$PHP_VERSION-pecl-apcu \
+        php$PHP_VERSION-ldap"
 ARG MAKEDIRS="/etc/php$PHP_VERSION/conf.d /etc/php$PHP_VERSION/php-fpm.d /var/log/php$PHP_VERSION"
 ARG FINALCMDS=\
 "   cd /usr/local "\
