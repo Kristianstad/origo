@@ -25,5 +25,11 @@ docker run --name origo -d -p 8080:8080 ghcr.io/kristianstad/origo:with_php
 * VAR_ADMPASSWORD="origo" (Only for management tool)
 * VAR_FINAL_COMMAND="nginx -g 'daemon off; error_log stderr \$VAR_LOG_LEVEL;'" (Command run by VAR_LINUX_USER)
 
+### Format of runtime configuration variables (mainly used by the with_php tag)
+* VAR_wwwconf_&lt;param name&gt;: Parameter in <span>ww</span>w.conf.
+* VAR_phpini_&lt;param name&gt;: Parameter in /etc/php7/conf.d/50-setting.ini (overrides defaults set in php.ini).
+* Dot (.) is representated as double underscore (\_\_) in variable names.
+* VAR_ldapconf_&lt;param name&gt;: Parameter in /etc/ldap/ldap.conf.
+
 ## Capabilities
 Can drop all but CHOWN, SETPCAP, SETGID and SETUID.
