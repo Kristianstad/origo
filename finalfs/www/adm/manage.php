@@ -285,6 +285,7 @@
 		// if $sql has been set, then perform database operations and re-read data
 		if (!empty($sql))
 		{
+			$usedInMapsOld=usedInMaps($dbh, array($type=>$id));
 			$result=pg_query($dbh, $sql);
 			if (!$result)
 			{
@@ -298,7 +299,8 @@
 			}
 			if ($command == 'update' || $command == 'copy' || $command == 'operation')
 			{
-				$usedInMaps=usedInMaps($dbh, array($type=>$id));
+				$usedInMapsNew=usedInMaps($dbh, array($type=>$id));
+				$usedInMaps=array_unique(array_merge($usedInMapsOld, $usedInMapsNew));
 				if (!empty($usedInMaps))
 				{
 					markMapsChanged($dbh, $usedInMaps);
