@@ -86,12 +86,12 @@
 			}
 			elseif ($queryarray['REQUEST'] == 'GetLegendGraphic')
 			{
-				require('./constants/lockPng.php');
+				$lockPng=file_get_contents('../img/png/lock_yellow.png');
 				echo $lockPng;
 			}
 			elseif ($queryarray['REQUEST'] == 'GetMap')
 			{
-				require('./constants/emptyPng.php');
+				$emptyPng=file_get_contents('../img/png/empty.png');
 				echo $emptyPng;
 			}
 			else
