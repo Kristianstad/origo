@@ -1,7 +1,7 @@
 <?php
 	include_once("./functions/adldap/autoload.php");
 
-	function initUser()
+	function initUser(&$dbh)
 	{
 		if (isset($_SESSION['user']))
 		{
@@ -34,11 +34,34 @@
 				{
 					$userInfo = $provider->search()->users()->findBy('samaccountname', $user);
 				}
+				$name=$userInfo->getDisplayName();
+				$email=$userInfo->getEmail();
+				$company=$userInfo->getCompany();
+				$department=$userInfo->getDepartment();
+				$adgroups=array_map('strtolower', array_values($userInfo->getGroupNames($recursive = true)));
 				session_start();
 				$_SESSION["user"]['id']=$user;
-				$_SESSION["user"]["mail"]= $userInfo->getEmail();
-				$_SESSION['user']["groups"] = array_map('strtolower', array_values($userInfo->getGroupNames($recursive = true)));
+				$_SESSION["user"]["mail"]= $email;
+				$_SESSION['user']["groups"] = $adgroups;
 				session_write_close();
+				require("./constants/configSchema.php");
+				$adusers=all_from_table($dbh, $configSchema, 'adusers');
+				if (isIdUniqueInTable($user, 'aduser_id', $adusers))
+				{
+					$sql=insertIdSql($user, 'adusers').';';
+				}
+				else
+				{
+					$sql='';
+				}
+				$adgroupsStr='{'.implode(',', $adgroups).'}';
+				$sql=$sql."UPDATE $configSchema.adusers SET name = '$name', email = '$email', company = '$company', department = '$department', adgroups = '$adgroupsStr', lastlogin = now() WHERE aduser_id = '$user';";
+				$result=pg_query($dbh, $sql);
+				if (!$result)
+				{
+					die("Error in SQL query: " . pg_last_error());
+				}
+				unset($result);
 			}
 			else
 			{
