@@ -20,8 +20,8 @@
 	includeDirectory("./functions/authorization");
 	
 	session_start(array('read_and_close' => true));
-	includeFileConstant('RESTRICTEDLAYERS');
-	initUser();
+	$dbh=dbh();
+	initUser($dbh);
 
 	//ini_set('output_buffering', 'off');
 
