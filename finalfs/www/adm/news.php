@@ -19,12 +19,11 @@
 	includeDirectory("./functions/news");
 	
 	session_start(array('read_and_close' => true));
-	initUser();
+	$dbh=dbh();
+	initUser($dbh);
 	if (isset($_SESSION['user']) && $_SESSION['user'] !== false)
 	{
-		ignore_user_abort(true); 
-		$dbh=dbh();
-		
+		ignore_user_abort(true); 		
 		$username=$_SESSION['user']['id'];
 		$pgNewsArray=pgNewsArray();
 		$userNews=userNews($username, $pgNewsArray);
