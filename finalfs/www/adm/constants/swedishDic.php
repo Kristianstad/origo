@@ -35,7 +35,9 @@
 		'helps'		=>'hjälp',
 		'formats'	=>'format',
 		'new'		=>'nyhet',
-		'news'		=>'nyheter'
+		'news'		=>'nyheter',
+		'aduser'	=>'AD-användare',
+		'adusers'	=>'AD-användare'
 	);
 
 ?>
