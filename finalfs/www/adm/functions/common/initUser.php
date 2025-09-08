@@ -38,7 +38,8 @@
 				$email=$userInfo->getEmail();
 				$company=$userInfo->getCompany();
 				$department=$userInfo->getDepartment();
-				$adgroups=array_map('strtolower', array_values($userInfo->getGroupNames($recursive = true)));
+				require("./constants/adGroupFilter.php");
+				$adgroups=array_diff(array_map('strtolower', array_values($userInfo->getGroupNames($recursive = true))), $adGroupFilter);
 				session_start();
 				$_SESSION["user"]['id']=$user;
 				$_SESSION["user"]["mail"]= $email;
