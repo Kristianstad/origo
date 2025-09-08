@@ -307,6 +307,20 @@ CREATE TABLE map_configs.news
     CONSTRAINT news_pkey PRIMARY KEY (new_id)
 );
 
+CREATE TABLE map_configs.adusers
+(
+    aduser_id character varying COLLATE pg_catalog."default" NOT NULL,
+    name character varying COLLATE pg_catalog."default",
+    email character varying COLLATE pg_catalog."default",
+    abstract character varying COLLATE pg_catalog."default",
+    info character varying COLLATE pg_catalog."default",
+    lastlogin timestamp without time zone,
+    adgroups character varying[] COLLATE pg_catalog."default",
+    company character varying COLLATE pg_catalog."default",
+    department character varying COLLATE pg_catalog."default",
+    CONSTRAINT adusers_pkey PRIMARY KEY (aduser_id)
+);
+
 CREATE TABLE map_configs.formats
 (
     format_id character varying COLLATE pg_catalog."default" NOT NULL,
