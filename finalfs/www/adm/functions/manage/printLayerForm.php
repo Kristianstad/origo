@@ -82,9 +82,9 @@
 			if (!empty(targetConfigParam($layer, 'service_id')) && targetConfigParam($layer, 'service_restricted') == 't')
 			{
 				echo "<span><img class='yellowLock' src='../img/png/lock_yellow.png' alt='Skyddat lager' title='Skyddat lager'>";
-				printTextarea($layer, 'adusers', 'textareaLarge', 'Användare:', in_array('adusers', $helps), $sizePosts);
+				printTextarea($layer, 'adusers', 'textareaLarge', 'AD-användare:', in_array('adusers', $helps), $sizePosts);
 				echo "</span><wbr><span><img class='yellowLock' src='../img/png/lock_yellow.png' alt='Skyddat lager' title='Skyddat lager'>";
-				printTextarea($layer, 'adgroups', 'textareaLarge', 'Grupper:', in_array('adgroups', $helps), $sizePosts);
+				printTextarea($layer, 'adgroups', 'textareaLarge', 'AD-grupper:', in_array('adgroups', $helps), $sizePosts);
 				echo "</span><wbr>";
 			}
 			else
