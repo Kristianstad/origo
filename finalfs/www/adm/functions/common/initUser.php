@@ -3,7 +3,7 @@
 
 	function initUser(&$dbh)
 	{
-		if (isset($_SESSION['user']))
+		if (isset($_SESSION['user']) && isset($_SESSION['login_time_stamp']) && time()-$_SESSION["login_time_stamp"] <36000)
 		{
 			return false;
 		}
@@ -44,6 +44,7 @@
 				$_SESSION["user"]['id']=$user;
 				$_SESSION["user"]["mail"]= $email;
 				$_SESSION['user']["groups"] = $adgroups;
+				$_SESSION["login_time_stamp"] = time();
 				session_write_close();
 				require("./constants/configSchema.php");
 				$adusers=all_from_table($dbh, $configSchema, 'adusers');
@@ -68,6 +69,7 @@
 			{
 				session_start();
 				$_SESSION["user"]=false;
+				$_SESSION["login_time_stamp"] = time();
 				session_write_close();
 			}
 			return true;
