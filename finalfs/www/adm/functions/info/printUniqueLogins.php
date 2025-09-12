@@ -28,7 +28,7 @@
 		echo 'Idag, '.$today->format('Y-m-d').': '.count($todayLogins).'<br>';
 
 		// Get timestamp for first day of current week
-		$firstDayOfWeek = new DateTime('first day of this week', new DateTimeZone('Europe/Stockholm'));
+		$firstDayOfWeek = new DateTime('Monday this week', new DateTimeZone('Europe/Stockholm'));
 		$firstDayOfWeekTimestamp = $firstDayOfWeek->setTime(0, 0, 0)->getTimestamp();
 
 		// Filter logins from current week
@@ -36,7 +36,7 @@
 			return is_int($value) && $value >= $firstDayOfWeekTimestamp && $value <= $todayTimestamp;
 		});
 
-		echo 'Vecka '.strftime('%V', $firstDayOfWeek->getTimestamp()).': '.count($thisWeekLogins).'<br>';
+		echo 'Vecka '.$firstDayOfWeek->format('W').': '.count($thisWeekLogins).'<br>';
 
 		// Get timestamp for first day of current month
 		$firstDayOfMonth = new DateTime('first day of this month', new DateTimeZone('Europe/Stockholm'));
