@@ -7,6 +7,7 @@
 		$actionColumn=$action.'s';
 		$field=$selectedNew[$actionColumn];
 		$field[]=$username;
+		sort($field);
 		$field='{'.implode(',', $field).'}';
 		$newId=$selectedNew['new_id'];
 		$sql="UPDATE $configSchema.news SET $actionColumn = '$field' WHERE new_id = '$newId'";
