@@ -55,6 +55,10 @@
 				}
 			}
 		}
+		if ($childType == 'aduser')
+		{
+			printUniqueLogins(array_column($allOfChildType, 'lastlogin'));
+		}
 		$allParents=findAllParents($dbh, $child);
 		if (!empty(array_values($allParents)))
 		{
