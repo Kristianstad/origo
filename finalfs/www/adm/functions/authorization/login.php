@@ -1,7 +1,7 @@
 <?php
 	include_once("./functions/adldap/autoload.php");
 
-	function login()
+	function login(&$dbh)
 	{
 		require("./constants/adldapConfig.php");
 		require("./constants/adDomain.php");
@@ -25,17 +25,9 @@
 			$encrypted = openssl_encrypt($user, 'aes-256-cbc', $cookieKey, 0, $iv);
 			$cookiestr = base64_encode($encrypted . '::' . $iv);
 			setcookie('origo_user_id', $cookiestr, time()+60*60*24*3650, '/', '', 0, 1);
-			$search = $provider->search();
-			$userInfo = $provider->search()->users()->findBy('cn', $user);
-			if (empty($userInfo))
-			{
-				$userInfo = $provider->search()->users()->findBy('samaccountname', $user);
-			}
-			session_start();
-			$_SESSION["user"]['id']=$user;
-			$_SESSION["user"]["mail"]= $userInfo->getEmail();
-			$_SESSION['user']["groups"] = array_map('strtolower', array_values($userInfo->getGroupNames($recursive = true)));
-			session_write_close();
+			$_COOKIE['origo_user_id']=$cookiestr;
+			unset($_SESSION["user"]);
+			initUser($dbh);
 			require('./constants/proxyRoot.php');
 			$formAction=$proxyRoot.$_SERVER["PHP_SELF"];
 			if (basename($formAction) == 'authorization-loader.php')
