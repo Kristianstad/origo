@@ -6,6 +6,9 @@
 		setlocale(LC_TIME, 'sv_SE.UTF-8');
 		echo '<br><b>Antal unika AD-användare som har loggat in i någon karta</b><br>';
 		
+		// Remove empty values from $lastlogins
+		$lastlogins=array_filter($lastlogins);
+		
 		// Convert lastlogin dates to Unix timestamps (start of day)
 		$lastloginDayTimestamps = array_map(function($date) {
 			return (new DateTime(substr($date, 0, 10), new DateTimeZone('Europe/Stockholm')))
