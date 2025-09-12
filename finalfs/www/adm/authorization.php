@@ -13,7 +13,6 @@
 	
 	// Expose specific functions
 	require_once("./functions/includeDirectory.php");
-	//require_once("./functions/adldap/autoload.php");
 	
 	// Expose all functions in given folders
 	includeDirectory("./functions/common");
@@ -30,16 +29,14 @@
 		logout();
 		exit(0);
 	}
-	elseif (isset($_GET['displaylogout']) || 
-		!isset($_GET['SERVICE']) && 
-		!empty($_SESSION['user']))
+	elseif (isset($_GET['displaylogout']) || !isset($_GET['SERVICE']) && !empty($_SESSION['user']))
 	{
 		displayLogout();
 		exit(0);
 	}
 	elseif ( $_SERVER["REQUEST_METHOD"] == "POST" )
 	{
-		login();
+		login($dbh);
 		exit(0);
 	}
 	else
