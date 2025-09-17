@@ -49,7 +49,7 @@ CREATE TABLE map_configs.groups
 );
 
 INSERT INTO map_configs.groups(group_id,title,expanded,layers,abstract) VALUES ('background#1','Bakgrundskartor',true,'{osm#1}','En lagergrupp med bakgrundslager.');
-INSERT INTO map_configs.groups(group_id,title,expanded,layers,abstract) VALUES ('origosamverkan#1','Origosamverkan',true,'{kommunmask#1,origokommuner#1}','En lagergrupp som visualiserar samverkan inom Origo-projektet.');
+INSERT INTO map_configs.groups(group_id,title,expanded,layers,abstract) VALUES ('origosamverkan#1','Origosamverkan',true,'{origokommuner#1,kommunmask#1}','En lagergrupp som visualiserar samverkan inom Origo-projektet.');
 INSERT INTO map_configs.groups(group_id,layers,abstract) VALUES ('none#1','{kommunmask#1}','En lagergrupp som är dold i lagerträdet.');
 
 CREATE TABLE map_configs.layers
@@ -110,7 +110,7 @@ CREATE TABLE map_configs.layers
 );
 
 INSERT INTO map_configs.layers(layer_id,title,type,attributes,visible,style_config,source,abstract,show_meta,origin) VALUES ('origokommuner#1','Origokommuner','GEOJSON','[ { "name": "name" } ]',true,'[ [ { "label": "Origokommuner", "circle": { "radius": 10, "stroke": { "color": "rgba(0,0,0,1)", "width": 2.5 }, "fill": { "color": "rgba(255,255,255,0.9)" } } }, { "circle": { "radius": 2.5, "stroke": { "color": "rgba(0,0,0,0)", "width": 1 }, "fill": { "color": "rgba(37,129,196,1)" } } } ] ]','origo-cities.json','Lager som visar kommuner delaktiga i Origoprojektet.',true,'origo');
-INSERT INTO map_configs.layers(layer_id,title,type,visible,style_config,source,queryable,opacity,abstract,show_meta) VALUES ('kommunmask#1','Origo-mask','GEOJSON',true,'[ [ { "stroke": { "color": "rgba(0,0,0,1.0)" }, "fill": { "color": "rgba(0,0,0,1.0)" } } ] ]','origo-mask.json',false,0.25,'Lager som tonar ner de delar av kartan som inte utgör del av en Origokommun.',false);
+INSERT INTO map_configs.layers(layer_id,title,type,visible,style_config,source,queryable,opacity,abstract,show_meta) VALUES ('kommunmask#1','Origo-mask','GEOJSON',true,'[ [ { "stroke": { "color": "rgba(0,0,0,1.0)" }, "fill": { "color": "rgba(0,0,0,1.0)" } } ] ]','origo-mask.json',false,0.25,'Lager som tonar ner de delar av kartan som inte utgör del av en Origokommun.',true);
 INSERT INTO map_configs.layers(layer_id,title,type,visible,show_icon,icon,source,queryable,abstract,show_meta,origin) VALUES ('osm#1','OpenStreetMap','OSM',true,true,'img/png/osm.png','OpenStreetMap',false,'Bakgrundslager från OpenStreetMap.',true,'osm');
 
 CREATE TABLE map_configs.maps
