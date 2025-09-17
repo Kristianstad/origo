@@ -157,7 +157,7 @@
 			"headers": {
 				"Accept": "application/geo+json"
 			},
-			"abstract": "<b>Beskrivning: </b>Ett lager som tonar ner de delar av kartan som inte utgör en del av en Origokommun.<br><b>Resurser: </b><br><b>Kontakt: </b><br><b>Källa: </b><br><br><form action='/adm/?view=Origo' method='post' target='_blank'><button type='submit' name='layerId' value='kommunmask#1' style='float:right; color:blue'>Administrera</button></form>"
+			"abstract": "<b>Beskrivning: </b>Ett lager som tonar ner de delar av kartan som inte utgör en del av en Origokommun.<br><b>Resurser: </b><br><b>Kontakt: </b><br><b>Källa: </b><a href='https://github.com/origo-map/origo' target='_blank'>Origo</a><br><br><form action='/adm/?view=Origo' method='post' target='_blank'><button type='submit' name='layerId' value='kommunmask#1' style='float:right; color:blue'>Administrera</button></form>"
 		},
 		{
 			"name": "osm",
