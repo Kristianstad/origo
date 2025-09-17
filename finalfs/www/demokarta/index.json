@@ -113,10 +113,16 @@
 	],
 	"groups": [
 		{
+			"name": "origosamverkan",
+			"title": "Origosamverkan",
+			"expanded": true,
+			"abstract": "En lagergrupp som visualiserar samverkan inom Origo-projektet."
+		},
+		{
 			"name": "background",
 			"title": "Bakgrundskartor",
 			"expanded": true,
-			"abstract": "Grupp som innehåller alla bakgrundslager."
+			"abstract": "En lagergrupp med bakgrundslager."
 		}
 	],
 	"layers": [
@@ -124,14 +130,14 @@
 			"name": "origokommuner",
 			"title": "Origokommuner",
 			"type": "GEOJSON",
-			"group": "root",
+			"group": "origosamverkan",
 			"style": "origokommuner#1",
 			"visible": true,
 			"source": "data/origo-cities-3857.geojson",
 			"headers": {
 				"Accept": "application/geo+json"
 			},
-			"abstract": "<b>Beskrivning: </b>Lager som visar kommuner delaktiga i Origoprojektet.<br><b>Resurser: </b><br><b>Kontakt: </b><br><b>Källa: </b><a href='https://github.com/origo-map/origo' target='_blank'>Origo</a><br><br><form action='adm/?view=Origo' method='post' target='_blank'><button type='submit' name='layerId' value='origokommuner#1' style='float:right; color:blue'>Administrera</button></form>",
+			"abstract": "<b>Beskrivning: </b>Ett lager som visar kommuner delaktiga i Origoprojektet.<br><b>Resurser: </b><br><b>Kontakt: </b><br><b>Källa: </b><a href='https://github.com/origo-map/origo' target='_blank'>Origo</a><br><br><form action='/adm/?view=Origo' method='post' target='_blank'><button type='submit' name='layerId' value='origokommuner#1' style='float:right; color:blue'>Administrera</button></form>",
 			"attributes": [
 				{
 					"name": "name"
@@ -142,7 +148,7 @@
 			"name": "kommunmask",
 			"title": "Origo-mask",
 			"type": "GEOJSON",
-			"group": "none",
+			"group": "origosamverkan",
 			"style": "kommunmask#1",
 			"queryable": false,
 			"visible": true,
@@ -151,7 +157,7 @@
 			"headers": {
 				"Accept": "application/geo+json"
 			},
-			"abstract": "<form action='adm/?view=Origo' method='post' target='_blank'><button type='submit' name='layerId' value='kommunmask#1' style='float:right; color:blue'>Administrera</button></form>"
+			"abstract": "<b>Beskrivning: </b>Ett lager som tonar ner de delar av kartan som inte utgör en del av en Origokommun.<br><b>Resurser: </b><br><b>Kontakt: </b><br><b>Källa: </b><br><br><form action='/adm/?view=Origo' method='post' target='_blank'><button type='submit' name='layerId' value='kommunmask#1' style='float:right; color:blue'>Administrera</button></form>"
 		},
 		{
 			"name": "osm",
@@ -161,7 +167,7 @@
 			"style": "osm#1-bg",
 			"queryable": false,
 			"visible": true,
-			"abstract": "<b>Beskrivning: </b>Bakgrundslager från OpenStreetMap.<br><b>Resurser: </b><br><b>Kontakt: </b><br><b>Källa: </b><a href='https://www.openstreetmap.org/' target='_blank'>OpenStreetMap</a><br><br><form action='adm/?view=Origo' method='post' target='_blank'><button type='submit' name='layerId' value='osm#1' style='float:right; color:blue'>Administrera</button></form>"
+			"abstract": "<b>Beskrivning: </b>Ett bakgrundslager från OpenStreetMap.<br><b>Resurser: </b><br><b>Kontakt: </b><br><b>Källa: </b><a href='https://www.openstreetmap.org/' target='_blank'>OpenStreetMap</a><br><br><form action='/adm/?view=Origo' method='post' target='_blank'><button type='submit' name='layerId' value='osm#1' style='float:right; color:blue'>Administrera</button></form>"
 		}
 	],
 	"source": {
