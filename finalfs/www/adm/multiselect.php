@@ -45,7 +45,7 @@
 		$dataSortedValues=$currentValue.',';
 	}
 	$values=all_from_table($dbh, 'map_configs', $table);
-	echo "<select onChange='update(this);' data-sorted-values='$dataSortedValues' multiple>";
+	echo "<select id='selectbox' onChange='update(this);' data-sorted-values='$dataSortedValues' multiple>";
 	if ($table == 'proj4defs')
 	{
 		$idColumn='code';
@@ -68,7 +68,7 @@
 	{
 		echo '<button onClick="window.location.reload();">Återställ</button>&nbsp;';
 	}
-	echo "<button onClick='document.querySelector(\"#selection\").innerHTML=null;document.querySelector(\"#selection\").value=null;'>Töm</button>&nbsp;";
+	echo "<button onClick='document.querySelector(\"#selection\").innerHTML=null;document.querySelector(\"#selection\").value=null;document.querySelector(\"#selectbox\").setAttribute(\"data-sorted-values\", \"\");'>Töm</button>&nbsp;";
 	echo '<button onclick="copyTextById('."'selection');".'">Kopiera text</button>';
 ?>
 </body>
