@@ -69,7 +69,10 @@
 		echo '<button onClick="window.location.reload();">Återställ</button>&nbsp;';
 	}
 	echo "<button onClick='document.querySelector(\"#selection\").innerHTML=null;document.querySelector(\"#selection\").value=null;document.querySelector(\"#selectbox\").setAttribute(\"data-sorted-values\", \"\");'>Töm</button>&nbsp;";
-	echo '<button onclick="copyTextById('."'selection');".'">Kopiera text</button>';
+	if (!empty($_SERVER['HTTPS']) || (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == '443') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https') || (isset($_SERVER['HTTP_X_FORWARDED_PORT']) && $_SERVER['HTTP_X_FORWARDED_PORT'] == '443'))
+	{
+		echo '<button onclick="copyTextById('."'selection');".'">Kopiera text</button>';
+	}
 ?>
 </body>
 </html>
