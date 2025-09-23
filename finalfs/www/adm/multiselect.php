@@ -13,17 +13,6 @@
 <head>
 	<script>
 		<?php includeDirectory("./js-functions/multiselect"); ?>
-        // Initialize event listeners
-        $(document).ready(function() {
-            document.addEventListener('mousedown', handleMouseDown);
-            $('#clear-button').on('click', function() {
-                $('#selection').val('').text('');
-                $('select[multiple]').val([]).trigger('change');
-            });
-            $('#reset-button').on('click', function() {
-                window.location.reload();
-            });
-        });
 	</script>
 	<style>
 		<?php require("./styles/multiselect.css"); ?>
