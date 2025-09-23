@@ -73,6 +73,7 @@
 	{
 		echo '<button onclick="copyTextById('."'selection');".'">Kopiera text</button>';
 	}
+	echo "<script>selectOptionsByValues('selectbox', '$dataSortedValues');</script>";
 ?>
 </body>
 </html>
