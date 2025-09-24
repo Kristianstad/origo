@@ -403,8 +403,8 @@ $layersValues = "'" . (array_key_exists('name', $layer) ? $layer['name'] : null)
     . (array_key_exists('title', $layer) ? $layer['title'] : null) . "', '"
     . (array_key_exists('format', $layer) ? $layer['format'] : null) . "', '"
     . (array_key_exists('type', $layer) ? $layer['type'] : null) . "', "
-    . (array_key_exists('attributes', $layer) ? pg_escape_literal(json_encode($layer['attributes'], JSON_PRETTY_PRINT)) : 'NULL') . ", "
-    . (array_key_exists('abstract', $layer) ? pg_escape_literal(str_replace(array('"'), '\"', str_replace(array("\r\n", "\r", "\n"), "<br />", $layer['abstract']))) : 'NULL') . ", '"
+    . (array_key_exists('attributes', $layer) ? pg_escape_literal(json_encode($layer['attributes'], JSON_PRETTY_PRINT)) : pg_escape_literal('')) . ", "
+    . (array_key_exists('abstract', $layer) ? pg_escape_literal(str_replace(array('"'), '\"', str_replace(array("\r\n", "\r", "\n"), "<br />", $layer['abstract']))) : pg_escape_literal('')) . ", '"
     . $layerQueryable . "', '"
     . (array_key_exists('featureinfoLayer', $layer) ? $layer['featureinfoLayer'] : null) . "', '"
     . (array_key_exists('opacity', $layer) ? $layer['opacity'] : null) . "', '"
@@ -412,12 +412,12 @@ $layersValues = "'" . (array_key_exists('name', $layer) ? $layer['name'] : null)
     . $layerSource . "', "
     . pg_escape_literal($layerStyleConfig) . ", "
     . $layerShowicon . ", '"
-    . (array_key_exists('icon', $layer) ? $layer['icon'] : null) . "', "
+    . $layerIcon . "', "
     . pg_escape_literal($layerStyleFilter) . ", '"
-    . (array_key_exists('extendedIcon', $layer) ? $layer['extendedIcon'] : null) . "', '"
-    . (array_key_exists('layers', $layer) ? $layer['layers'] : null) . "', '"
+    . $layerExtendedIcon . "', '"
+    . $layerLayers . "', '"
     . (array_key_exists('layerType', $layer) ? $layer['layerType'] : null) . "', '"
-    . (array_key_exists('clusterStyle', $layer) ? $layer['clusterStyle'] : null) . "', '"
+    . $layerClusterStyle . "', '"
     . (array_key_exists('attribution', $layer) ? $layer['attribution'] : null) . "'";
 		
 		if (!empty($layer['maxScale']))
