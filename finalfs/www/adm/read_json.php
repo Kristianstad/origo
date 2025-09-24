@@ -397,25 +397,76 @@ if ($_POST['layers'] == 'yes')
 		{
 			$layerShowicon='true';
 		}
-		$layersColumns='layer_id, title, format, type, attributes, abstract, queryable, featureinfolayer, opacity, visible, source, style_config, show_icon, icon, style_filter, icon_extended, layers, layertype, clusterstyle, attribution';
-		$layersValues="'".$layer['name']."$importId', '".$layer['title']."', '".$layer['format']."', '".$layer['type']."', ".pg_escape_literal(json_encode($layer['attributes'], JSON_PRETTY_PRINT)).", ".pg_escape_literal(str_replace(array('"'), '\"', str_replace(array("\r\n", "\r", "\n"), "<br />", $layer['abstract']))).", '$layerQueryable', '".$layer['featureinfoLayer']."', '".$layer['opacity']."', '$layerVisible', '$layerSource', ".pg_escape_literal($layerStyleConfig).", $layerShowicon, '$layerIcon', ".pg_escape_literal($layerStyleFilter).", '$layerExtendedIcon', '$layerLayers', '".$layer['layerType']."', '$layerClusterStyle', '".$layer['attribution']."'";
-		if (!empty($layer['maxScale']))
-		{
-			$layersColumns=$layersColumns.', maxscale';
-			$layersValues=$layersValues.", '".$layer['maxScale']."'";
-		}
-		if (!empty($layer['minScale']))
-		{
-			$layersColumns=$layersColumns.', minscale';
-			$layersValues=$layersValues.", '".$layer['minScale']."'";
-		}
-		if (!empty($layer['clusterOptions']) && $layer['clusterOptions'] !== '[]')
-		{
-			$layersColumns=$layersColumns.', clusteroptions';
-			$layersValues=$layersValues.", ".pg_escape_literal(json_encode($layer['clusterOptions'], JSON_PRETTY_PRINT));
-		}
-		$sql="INSERT INTO map_configs.layers($layersColumns) VALUES ($layersValues)";
-		$result=pg_query($dbh, $sql);
+// Define the base columns
+$layersColumns = 'layer_id, title, format, type, attributes, abstract, queryable, featureinfolayer, opacity, visible, source, style_config, show_icon, icon, style_filter, icon_extended, layers, layertype, clusterstyle, attribution';
+$params = [];
+$placeholders = [];
+$paramIndex = 1;
+
+// Prepare base values with checks for undefined keys
+$placeholders[] = '$' . $paramIndex++;
+$params[] = isset($layer['name']) ? $layer['name'] . $importId : ''; // layer_id
+$placeholders[] = '$' . $paramIndex++;
+$params[] = isset($layer['title']) ? $layer['title'] : ''; // title
+$placeholders[] = '$' . $paramIndex++;
+$params[] = isset($layer['format']) ? $layer['format'] : ''; // format
+$placeholders[] = '$' . $paramIndex++;
+$params[] = isset($layer['type']) ? $layer['type'] : ''; // type
+$placeholders[] = '$' . $paramIndex++;
+$params[] = isset($layer['attributes']) ? json_encode($layer['attributes'], JSON_PRETTY_PRINT) : null; // attributes
+$placeholders[] = '$' . $paramIndex++;
+$params[] = isset($layer['abstract']) ? str_replace(["\r\n", "\r", "\n"], "<br />", $layer['abstract']) : null; // abstract
+$placeholders[] = '$' . $paramIndex++;
+$params[] = isset($layer['queryable']) ? $layer['queryable'] : ''; // queryable
+$placeholders[] = '$' . $paramIndex++;
+$params[] = isset($layer['featureinfoLayer']) ? $layer['featureinfoLayer'] : ''; // featureinfolayer
+$placeholders[] = '$' . $paramIndex++;
+$params[] = isset($layer['opacity']) ? $layer['opacity'] : ''; // opacity
+$placeholders[] = '$' . $paramIndex++;
+$params[] = isset($layer['visible']) ? $layer['visible'] : ''; // visible
+$placeholders[] = '$' . $paramIndex++;
+$params[] = isset($layer['source']) ? $layer['source'] : ''; // source
+$placeholders[] = '$' . $paramIndex++;
+$params[] = isset($layer['styleConfig']) ? $layer['styleConfig'] : null; // style_config
+$placeholders[] = '$' . $paramIndex++;
+$params[] = isset($layer['showicon']) ? $layer['showicon'] : false; // show_icon
+$placeholders[] = '$' . $paramIndex++;
+$params[] = isset($layer['icon']) ? $layer['icon'] : ''; // icon
+$placeholders[] = '$' . $paramIndex++;
+$params[] = isset($layer['styleFilter']) ? $layer['styleFilter'] : null; // style_filter
+$placeholders[] = '$' . $paramIndex++;
+$params[] = isset($layer['extendedIcon']) ? $layer['extendedIcon'] : ''; // icon_extended
+$placeholders[] = '$' . $paramIndex++;
+$params[] = isset($layer['layers']) ? $layer['layers'] : ''; // layers
+$placeholders[] = '$' . $paramIndex++;
+$params[] = isset($layer['layerType']) ? $layer['layerType'] : ''; // layertype
+$placeholders[] = '$' . $paramIndex++;
+$params[] = isset($layer['clusterStyle']) ? $layer['clusterStyle'] : ''; // clusterstyle
+$placeholders[] = '$' . $paramIndex++;
+$params[] = isset($layer['attribution']) ? $layer['attribution'] : ''; // attribution
+
+// Handle optional columns
+if (!empty($layer['maxScale'])) {
+    $layersColumns .= ', maxscale';
+    $placeholders[] = '$' . $paramIndex++;
+    $params[] = $layer['maxScale'];
+}
+if (!empty($layer['minScale'])) {
+    $layersColumns .= ', minscale';
+    $placeholders[] = '$' . $paramIndex++;
+    $params[] = $layer['minScale'];
+}
+if (!empty($layer['clusterOptions']) && $layer['clusterOptions'] !== '[]') {
+    $layersColumns .= ', clusteroptions';
+    $placeholders[] = '$' . $paramIndex++;
+    $params[] = json_encode($layer['clusterOptions'], JSON_PRETTY_PRINT);
+}
+
+// Construct the SQL query with placeholders
+$sql = "INSERT INTO map_configs.layers ($layersColumns) VALUES (" . implode(', ', $placeholders) . ")";
+
+// Execute the query with parameters
+$result = pg_query_params($dbh, $sql, $params);
 		if (!$result)
 		{
 			var_dump($sql);
