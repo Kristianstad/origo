@@ -348,6 +348,10 @@ if ($_POST['layers'] == 'yes')
 			{
 				$noneLayer=true;
 			}
+			else
+			{
+				$noneLayer=false;
+			}
 			if (isset($groupsLayers[$layer['group']]) && is_array($groupsLayers[$layer['group']]))
 			{
 				$groupsLayers[$layer['group']][]=$layer['name']."$importId";
