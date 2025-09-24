@@ -399,26 +399,26 @@ if ($_POST['layers'] == 'yes')
 		}
 		$layersColumns='layer_id, title, format, type, attributes, abstract, queryable, featureinfolayer, opacity, visible, source, style_config, show_icon, icon, style_filter, icon_extended, layers, layertype, clusterstyle, attribution';
 		
-$layersValues = "'" . (isset($layer['name']) ? $layer['name'] . $importId : 'NULL') . "', " .
-                "'" . (isset($layer['title']) ? $layer['title'] : 'NULL') . "', " .
-                "'" . (isset($layer['format']) ? $layer['format'] : 'NULL') . "', " .
-                "'" . (isset($layer['type']) ? $layer['type'] : 'NULL') . "', " .
-                (isset($layer['attributes']) ? pg_escape_literal(json_encode($layer['attributes'], JSON_PRETTY_PRINT)) : 'NULL') . ", " .
-                (isset($layer['abstract']) ? pg_escape_literal(str_replace(['"'], '\"', str_replace(["\r\n", "\r", "\n"], "<br />", $layer['abstract']))) : 'NULL') . ", " .
-                "'" . (isset($layer['queryable']) ? $layer['queryable'] : 'NULL') . "', " .
-                "'" . (isset($layer['featureinfoLayer']) ? $layer['featureinfoLayer'] : 'NULL') . "', " .
-                "'" . (isset($layer['opacity']) ? $layer['opacity'] : 'NULL') . "', " .
-                "'" . (isset($layer['visible']) ? $layer['visible'] : 'NULL') . "', " .
-                "'" . (isset($layer['source']) ? $layer['source'] : 'NULL') . "', " .
-                (isset($layer['styleConfig']) ? pg_escape_literal($layer['styleConfig']) : 'NULL') . ", " .
-                (isset($layer['showicon']) ? $layer['showicon'] : 'NULL') . ", " .
-                "'" . (isset($layer['icon']) ? $layer['icon'] : 'NULL') . "', " .
-                (isset($layer['styleFilter']) ? pg_escape_literal($layer['styleFilter']) : 'NULL') . ", " .
-                "'" . (isset($layer['extendedIcon']) ? $layer['extendedIcon'] : 'NULL') . "', " .
-                "'" . (isset($layer['layers']) ? $layer['layers'] : 'NULL') . "', " .
-                "'" . (isset($layer['layerType']) ? $layer['layerType'] : 'NULL') . "', " .
-                "'" . (isset($layer['clusterStyle']) ? $layer['clusterStyle'] : 'NULL') . "', " .
-                "'" . (isset($layer['attribution']) ? $layer['attribution'] : 'NULL') . "'";
+		$layersValues = "'" . (array_key_exists('name', $layer) ? $layer['name'] : '') . "$importId', '"
+    . (array_key_exists('title', $layer) ? $layer['title'] : '') . "', '"
+    . (array_key_exists('format', $layer) ? $layer['format'] : '') . "', '"
+    . (array_key_exists('type', $layer) ? $layer['type'] : '') . "', "
+    . (array_key_exists('attributes', $layer) ? pg_escape_literal(json_encode($layer['attributes'], JSON_PRETTY_PRINT)) : pg_escape_literal('{}')) . ", "
+    . (array_key_exists('abstract', $layer) ? pg_escape_literal(str_replace(array('"'), '\"', str_replace(array("\r\n", "\r", "\n"), "<br />", $layer['abstract']))) : pg_escape_literal('')) . ", '"
+    . ($layerQueryable ?? '') . "', '"
+    . (array_key_exists('featureinfoLayer', $layer) ? $layer['featureinfoLayer'] : '') . "', '"
+    . (array_key_exists('opacity', $layer) ? $layer['opacity'] : '') . "', '"
+    . ($layerVisible ?? '') . "', '"
+    . ($layerSource ?? '') . "', "
+    . (isset($layerStyleConfig) ? pg_escape_literal($layerStyleConfig) : pg_escape_literal('')) . ", "
+    . ($layerShowicon ?? 'false') . ", '"
+    . (array_key_exists('icon', $layer) ? $layer['icon'] : '') . "', "
+    . (isset($layerStyleFilter) ? pg_escape_literal($layerStyleFilter) : pg_escape_literal('')) . ", '"
+    . (array_key_exists('extendedIcon', $layer) ? $layer['extendedIcon'] : '') . "', '"
+    . (array_key_exists('layers', $layer) ? $layer['layers'] : '') . "', '"
+    . (array_key_exists('layerType', $layer) ? $layer['layerType'] : '') . "', '"
+    . (array_key_exists('clusterStyle', $layer) ? $layer['clusterStyle'] : '') . "', '"
+    . (array_key_exists('attribution', $layer) ? $layer['attribution'] : '') . "'";
 		
 		if (!empty($layer['maxScale']))
 		{
