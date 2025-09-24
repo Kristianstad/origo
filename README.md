@@ -1,12 +1,12 @@
 # origo
 https://github.com/Kristianstad/origo/pkgs/container/origo
 
-Docker image of Origo (https://github.com/origo-map). The image is built on https://github.com/Kristianstad/nginx/pkgs/container/nginx (check out for webserver settings). Listens on port 8080 internally. Files and directories in the Origo config directory are added to the Origo web directory at startup. There is also an optional management tool for Origo and metadata included in the with_php tag. (Path to manage tool is adm/manage.php and default login is origo, origo. Each created map gets their own html-file. Source code for the management tool is available in the with_php branch.)
+Docker image of Origo (https://github.com/origo-map). The image is built on https://github.com/Kristianstad/nginx/pkgs/container/nginx (check out for webserver settings). Listens on port 8080 internally. Files and directories in the Origo config directory are added to the Origo web directory at startup. There is also an optional management tool for Origo and metadata included in the -adm tag. (Path to manage tool is adm/manage.php and default login is origo, origo. Each created map gets their own html-file. Source code for the management tool is available in the with_php branch.)
 
 Try out the image in [Play with Docker](https://labs.play-with-docker.com/):
 ```
 1. +ADD NEW INSTANCE
-2. docker run -p 8080:8080 ghcr.io/kristianstad/origo:with_php
+2. docker run -p 8080:8080 ghcr.io/kristianstad/origo:2.9.0-adm
 3. OPEN PORT 8080
 ```
 
@@ -14,7 +14,7 @@ Try out the image in [Play with Docker](https://labs.play-with-docker.com/):
 ### If you just need Origo
 docker run --name origo -d -p 8080:8080 ghcr.io/kristianstad/origo:2.9.0
 ### If you also want Kristianstad's management tool for Origo and metadata
-docker run --name origo -d -p 8080:8080 ghcr.io/kristianstad/origo:with_php
+docker run --name origo -d -p 8080:8080 ghcr.io/kristianstad/origo:2.9.0-adm
 
 ## Environment variables
 ### Runtime variables with default value
