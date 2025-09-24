@@ -403,9 +403,9 @@ $params = [];
 $placeholders = [];
 $paramIndex = 1;
 
-// Prepare base values with checks for undefined keys
+// Prepare base values with checks for undefined keys and variables
 $placeholders[] = '$' . $paramIndex++;
-$params[] = isset($layer['name']) ? $layer['name'] . $importId : ''; // layer_id
+$params[] = isset($layer['name']) ? $layer['name'] . (isset($importId) ? $importId : '') : ''; // layer_id
 $placeholders[] = '$' . $paramIndex++;
 $params[] = isset($layer['title']) ? $layer['title'] : ''; // title
 $placeholders[] = '$' . $paramIndex++;
@@ -417,31 +417,31 @@ $params[] = isset($layer['attributes']) ? json_encode($layer['attributes'], JSON
 $placeholders[] = '$' . $paramIndex++;
 $params[] = isset($layer['abstract']) ? str_replace(["\r\n", "\r", "\n"], "<br />", $layer['abstract']) : null; // abstract
 $placeholders[] = '$' . $paramIndex++;
-$params[] = isset($layer['queryable']) ? $layer['queryable'] : ''; // queryable
+$params[] = isset($layerQueryable) ? filter_var($layerQueryable, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) : false; // queryable (boolean)
 $placeholders[] = '$' . $paramIndex++;
 $params[] = isset($layer['featureinfoLayer']) ? $layer['featureinfoLayer'] : ''; // featureinfolayer
 $placeholders[] = '$' . $paramIndex++;
 $params[] = isset($layer['opacity']) ? $layer['opacity'] : ''; // opacity
 $placeholders[] = '$' . $paramIndex++;
-$params[] = isset($layer['visible']) ? $layer['visible'] : ''; // visible
+$params[] = isset($layerVisible) ? filter_var($layerVisible, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) : false; // visible (boolean)
 $placeholders[] = '$' . $paramIndex++;
-$params[] = isset($layer['source']) ? $layer['source'] : ''; // source
+$params[] = isset($layerSource) ? $layerSource : ''; // source
 $placeholders[] = '$' . $paramIndex++;
-$params[] = isset($layer['styleConfig']) ? $layer['styleConfig'] : null; // style_config
+$params[] = isset($layerStyleConfig) ? $layerStyleConfig : null; // style_config
 $placeholders[] = '$' . $paramIndex++;
-$params[] = isset($layer['showicon']) ? $layer['showicon'] : false; // show_icon
+$params[] = isset($layerShowicon) ? filter_var($layerShowicon, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) : false; // show_icon (boolean)
 $placeholders[] = '$' . $paramIndex++;
-$params[] = isset($layer['icon']) ? $layer['icon'] : ''; // icon
+$params[] = isset($layerIcon) ? $layerIcon : ''; // icon
 $placeholders[] = '$' . $paramIndex++;
-$params[] = isset($layer['styleFilter']) ? $layer['styleFilter'] : null; // style_filter
+$params[] = isset($layerStyleFilter) ? $layerStyleFilter : null; // style_filter
 $placeholders[] = '$' . $paramIndex++;
-$params[] = isset($layer['extendedIcon']) ? $layer['extendedIcon'] : ''; // icon_extended
+$params[] = isset($layerExtendedIcon) ? $layerExtendedIcon : ''; // icon_extended
 $placeholders[] = '$' . $paramIndex++;
-$params[] = isset($layer['layers']) ? $layer['layers'] : ''; // layers
+$params[] = isset($layerLayers) ? $layerLayers : ''; // layers
 $placeholders[] = '$' . $paramIndex++;
 $params[] = isset($layer['layerType']) ? $layer['layerType'] : ''; // layertype
 $placeholders[] = '$' . $paramIndex++;
-$params[] = isset($layer['clusterStyle']) ? $layer['clusterStyle'] : ''; // clusterstyle
+$params[] = isset($layerClusterStyle) ? $layerClusterStyle : ''; // clusterstyle
 $placeholders[] = '$' . $paramIndex++;
 $params[] = isset($layer['attribution']) ? $layer['attribution'] : ''; // attribution
 
@@ -467,11 +467,12 @@ $sql = "INSERT INTO map_configs.layers ($layersColumns) VALUES (" . implode(', '
 
 // Execute the query with parameters
 $result = pg_query_params($dbh, $sql, $params);
-		if (!$result)
-		{
-			var_dump($sql);
-			die("Error in SQL query: " . pg_last_error());
-		}
+if ($result === false) {
+    error_log("Query failed: " . pg_last_error($dbh));
+    // Handle error (e.g., throw exception or return error message)
+    throw new Exception("Database query failed: " . pg_last_error($dbh));
+}
+
 	}
 }
 
