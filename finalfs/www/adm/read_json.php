@@ -405,7 +405,7 @@ $paramIndex = 1;
 
 // Prepare base values with checks for undefined keys and variables
 $placeholders[] = '$' . $paramIndex++;
-$params[] = isset($layer['name']) ? $layer['name'] . (isset($importId) ? $importId : '') : ''; // layer_id
+$params[] = isset($layer['name']) && isset($importId) ? $layer['name'] . $importId : ''; // layer_id
 $placeholders[] = '$' . $paramIndex++;
 $params[] = isset($layer['title']) ? $layer['title'] : ''; // title
 $placeholders[] = '$' . $paramIndex++;
@@ -462,15 +462,22 @@ if (!empty($layer['clusterOptions']) && $layer['clusterOptions'] !== '[]') {
     $params[] = json_encode($layer['clusterOptions'], JSON_PRETTY_PRINT);
 }
 
+// Debug: Log SQL and parameters
+error_log("SQL: $sql");
+error_log("Params: " . print_r($params, true));
+error_log("layerQueryable: " . var_export($layerQueryable, true));
+error_log("layerVisible: " . var_export($layerVisible, true));
+error_log("layerShowicon: " . var_export($layerShowicon, true));
+
 // Construct the SQL query with placeholders
 $sql = "INSERT INTO map_configs.layers ($layersColumns) VALUES (" . implode(', ', $placeholders) . ")";
 
 // Execute the query with parameters
 $result = pg_query_params($dbh, $sql, $params);
 if ($result === false) {
-    error_log("Query failed: " . pg_last_error($dbh));
-    // Handle error (e.g., throw exception or return error message)
-    throw new Exception("Database query failed: " . pg_last_error($dbh));
+    $error = pg_last_error($dbh);
+    error_log("Query failed: $error");
+    throw new Exception("Database query failed: $error");
 }
 
 	}
