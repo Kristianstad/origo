@@ -242,10 +242,10 @@ if ($_POST['layers'] == 'yes')
 
 			if (count($layerStyle[0]) > 1)
 			{
-				if (count($layerStyle[0]) === 2 && (!empty($layerStyle[0][0]['icon']['src'])) && (!empty($layerStyle[0][1]['icon']['src'])) && ($layerStyle[0][0]['extendedLegend'] || $layerStyle[0][1]['extendedLegend']))
+				if (count($layerStyle[0]) === 2 && (!empty($layerStyle[0][0]['icon']['src'])) && (!empty($layerStyle[0][1]['icon']['src'])) && (!empty($layerStyle[0][0]['extendedLegend']) || !empty($layerStyle[0][1]['extendedLegend'])))
 				{
 					$layerStyleConfig='[]';
-					if ($layerStyle[0][0]['extendedLegend'])
+					if (!empty($layerStyle[0][0]['extendedLegend']))
 					{
 						$layerExtendedIcon=$layerStyle[0][0]['icon']['src'];
 						$layerIcon=$layerStyle[0][1]['icon']['src'];
@@ -255,9 +255,9 @@ if ($_POST['layers'] == 'yes')
 						$layerExtendedIcon=$layerStyle[0][1]['icon']['src'];
 						$layerIcon=$layerStyle[0][0]['icon']['src'];
 					}
-					if ($layerStyle[0][0]['filter'] || $layerStyle[0][1]['filter'])
+					if (!empty($layerStyle[0][0]['filter']) || !empty($layerStyle[0][1]['filter']))
 					{
-						if ($layerStyle[0][0]['filter'])
+						if (!empty($layerStyle[0][0]['filter']))
 						{
 							$layerStyleFilter=$layerStyle[0][0]['filter'];
 						}
@@ -339,7 +339,7 @@ if ($_POST['layers'] == 'yes')
 			{
 				$noneLayer=true;
 			}
-			if (is_array($groupsLayers[$layer['group']]))
+			if (isset($groupsLayers[$layer['group']]) && is_array($groupsLayers[$layer['group']]))
 			{
 				$groupsLayers[$layer['group']][]=$layer['name']."$importId";
 			}
