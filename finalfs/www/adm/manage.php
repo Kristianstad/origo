@@ -456,7 +456,7 @@
 			printMapForm($map, $selectables, $inheritPosts, typeHelps("map", $helps));
 			
 			// Print child select dialogs for layers, groups and controls if any exists for selected map
-			echo '<table><tr>';
+			echo '<hr class="childSelectHr"><table><tr>';
 			$thClass='thFirst';
 			if (!empty($groupIdsArray))
 			{
@@ -480,7 +480,7 @@
 				printChildSelect($map, 'layers', $thClass, 'Lager', $inheritPosts);
 				printChildSelect($map, 'controls', $thClass, 'Kontroll', $inheritPosts);
 			}
-			echo '</tr></table><hr>';
+			echo '</tr></table>';
 			unset($selectables, $thClass);
 		}
 		unset($map, $idPosts['mapId']);
@@ -514,10 +514,10 @@
 			$database['database']['schemas']='{'.implode(',', $databaseSchemas).'}';
 
 			// Print child select dialog for schemas if any exists for selected database
-			echo '<table><tr>';
+			echo '<hr class="childSelectHr"><table><tr>';
 			$thClass='thFirst';
 			printChildSelect($database, 'schemas', $thClass, 'Schema', $inheritPosts);
-			echo '</tr></table><hr>';
+			echo '</tr></table>';
 			unset($databaseSchemas, $thClass);
 		}
 		unset($database, $idPosts['databaseId']);
@@ -558,10 +558,10 @@
 			$schema['schema']['tables']='{'.implode(',', $schemaTables).'}';
 			
 			// Print child select dialog for tables if any exists for selected schema
-			echo '<table><tr>';
+			echo '<hr class="childSelectHr"><table><tr>';
 			$thClass='thFirst';
 			printChildSelect($schema, 'tables', $thClass, 'Tabell', $inheritPosts);
-			echo '</tr></table><hr>';
+			echo '</tr></table>';
 			unset($schemaTables, $thClass);
 		}
 		unset($schema, $idPosts['schemaId']);
@@ -609,7 +609,7 @@
 			printGroupForm($group, array('maps'=>$configTables['maps'], 'groups'=>$configTables['groups']), $inheritPosts, typeHelps("group", $helps));
 			
 			// Print child select dialogs for layers and/or groups if any exists for the current loop group
-			echo '<table><tr>';
+			echo '<hr class="overflowHr"><table><tr>';
 			$thClass='thFirst';
 			if ($groupLevel == $totGroupLevels && isset($inheritPosts['layerId']))
 			{
@@ -621,7 +621,7 @@
 				printChildSelect($group, 'groups', $thClass, 'Grupp', $inheritPosts, $groupLevel, $parent);
 				printChildSelect($group, 'layers', $thClass, 'Lager', $inheritPosts, $groupLevel);
 			}
-			echo '</tr></table><hr>';
+			echo '</tr></table>';
 			$groupLevel++;
 		}
 		unset($group);
