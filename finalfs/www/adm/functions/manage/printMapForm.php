@@ -44,6 +44,7 @@
 		printTextarea($map, 'keywords', 'textareaLarge', 'Nyckelord:', in_array('keywords', $helps), $sizePosts);
 		printTextarea($map, 'info', 'textareaLarge', 'Info:', in_array('info', $helps), $sizePosts);
 		printHiddenInputs($inheritPosts);
+		echo '<hr class="dashedHr">';
 		echo '<div class="buttonDiv">';
 		printUpdateButton('map');
 		printCopyButton('map');
