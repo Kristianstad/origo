@@ -16,7 +16,7 @@
 		hr				{ margin-right:0.5em; border-style:solid; color:#607d8b }
 		.childSelectHr	{ margin-bottom:1.8em; position:relative; top:0.4em }
 		.overflowHr		{ overflow:visible }
-		.dashedHr		{ border-style:dashed; border-width:1px 0 0 0; color:#607d8b; margin-top:1em; margin-bottom:1em }
+		.dashedHr		{ border-style:dashed; border-width:1px 0 0 0; margin-top:1em; margin-bottom:1em }
 		table			{ border-spacing:0; clear:left; min-height:2em; border-collapse:collapse; margin-bottom:1em }
 		tr				{ border: none }
 		th				{ width:16em; text-align:left; vertical-align:top; background-color:#607d8b; padding-bottom:1em; padding-left:0.5em; color:#cfd8dc; border-left:dashed 1px #cfd8dc; border-right:dashed 1px #cfd8dc }
@@ -47,9 +47,9 @@
 		.textareaMedium	{ width:13em }
 		.textareaSmall	{ width:4em }
 		.textareaXSmall	{ width:2em; resize:none }
-		iframe			{ width:calc(100% - 0.5em); height:50px; max-height:20vh; border-width:1px; border-color:white; padding-bottom:0.3em; padding-top:0.3em; margin-bottom:0.5em }
+		iframe			{ width:calc(100% - 0.5em); height:50px; max-height:20vh; border-style:solid none none none; border-width:2px; border-color:#607d8b; padding-bottom:0.3em; padding-top:0.3em; margin-bottom:0.5em }
 		.printXFormDiv	{ float:left; line-height:2; margin-bottom:2.5em }
-		.headFormsDiv	{ width:calc( 100vw - 1.1em ); overflow-x:auto; margin-bottom:0.8em }
+		.headFormsDiv	{ width:calc( 100vw - 1.25em ); overflow-x:auto; margin-bottom:0.8em }
 		.headFormsTable	{ margin-bottom:2px }
 		.headFormDiv1	{ width:16em; white-space:nowrap; display:inline-block }
 		.headFormDiv2	{ width:100%; white-space:nowrap; display:inline-block }
