@@ -1,56 +1,59 @@
-		html			{ width:100%; height:100%; font-family:OpenSans,"Droid Sans",Verdana,"DejaVu Sans","Bitstream Vera Sans",sans-serif; font-size:clamp(7px, 0.9vw, 12px); line-height:2; overflow-x:hidden }
-		body			{ background-color:#7fb1b3 }
-		button			{ height:1.7em; font-family:inherit; font-size:inherit; box-sizing:border-box; border-width:1px; border-style:solid; padding:0.1em; position:relative; top:-0.4em; margin-left:2px; white-space:nowrap; background-color:powderblue; border-radius:0.5em; cursor:pointer }
-		button.change	{ background-color:lightpink }
-		button:Active	{ background-color:#d8f0f3; -webkit-box-shadow:inset 0px 0px 5px #c1c1c1; -moz-box-shadow:inset 0px 0px 5px #c1c1c1; box-shadow:inset 0px 0px 5px #c1c1c1; outline:none }
-		.buttonDiv		{ display:flex; position:absolute; right:1em; line-height:1.5; margin-top:0.5em }
-		.exportButtonDiv { position:absolute; right:0; margin-top:2.4rem; margin-right:2rem }
+		html			{ width:100%; height:100%; overflow-x:hidden }
+		body			{ line-height:2; font-family:'Roboto',sans-serif; font-size:clamp(7px, 0.9vw, 12px); background-color:#cfd8dc; padding:0.1em 0.5em 0.5em 0.5em; color:#212121; margin:0 }
+		button, .btn	{ height:1.7em; font-family:inherit; font-size:inherit; border:none; padding:0.2em; position:relative; margin-left:0.1em; white-space:nowrap; background-color:#455a64; color:#FFFFFF; border-radius:0.25em; cursor:pointer; transition:background-color 0.3s ease; vertical-align:middle }
+		button.change	{ background-color:#00bcd4 }
+		button:hover, .btn:hover { background-color: #0097a7 }
+		button:active	{ background-color:#b2ebf2; box-shadow:inset 0 0 0.3125em #c1c1c1; outline:none }
+		.buttonDiv		{ display:flex; position:absolute; right:0.8em; line-height:1.5; margin-top:0.24em }
+		.exportButtonDiv { position:absolute; right:0; margin-top:2.4em; margin-right:2em }
 		.headButton		{ width:4em }
-		.topButton		{ border-width:1px; border-style:solid; line-height:1.3; margin-left:0.1em; margin-right:0.2em; margin-bottom:0.3em; margin-top:0.5em; white-space:nowrap; background-color:powderblue; float:left }
+		.topButton		{ margin-left:0.1em; margin-right:0.2em; margin-bottom:0.3em; margin-top:0.5em; float:left }
 		.updateButton	{ margin-right:0.2em }
-		.deleteButton	{ margin-right:0.2em; color:red }
+		.deleteButton	{ margin-right:0.2em; color:#ffcdd2; font-weight:bold }
 		.largeMultiselectButton { }
 		.smallMultiselectButton { margin-left:-0.3em; margin-right:0.1em; height:unset; border-style:none; padding:0.1em 0.2em; vertical-align:middle }
 		.smallHelpButton { margin-left:-0.3em; padding:0.1em 0.3em; height:unset; border-style:none; vertical-align:middle }
-		hr				{ margin-right:0.5em; margin-bottom: 1em; }
-		.dashedHr		{ border-style:dashed; border-width:1px 0 0 0; border-color:lightgray }
-		table			{ border-spacing:0; clear:left; min-height:2em }
-		th				{ width:16em; text-align:left; vertical-align:top }
-		.thLeft			{ padding-bottom:0; padding-right:0.5em; border-right:dashed 1px lightgray }
-		.thMiddle		{ padding-bottom:0; padding-left:0.5em; padding-right:0.5em; border-right:dashed 1px lightgray }
-		.thRight		{ padding-bottom:0; padding-left:0.5em }
+		hr				{ margin-right:0.5em; border-style:solid; color:#607d8b }
+		.childSelectHr	{ margin-bottom:1.8em; position:relative; top:0.4em }
+		.overflowHr		{ overflow:visible }
+		.dashedHr		{ border-style:dashed; border-width:1px 0 0 0; color:#607d8b; margin-top:1em; margin-bottom:1em }
+		table			{ border-spacing:0; clear:left; min-height:2em; border-collapse:collapse; margin-bottom:1em }
+		tr				{ border: none }
+		th				{ width:16em; text-align:left; vertical-align:top; background-color:#607d8b; padding-bottom:1em; padding-left:0.5em; color:#cfd8dc; border-left:dashed 1px #cfd8dc; border-right:dashed 1px #cfd8dc }
+		.thLeft			{ padding-bottom:0.5em; padding-right:0.5em }
+		.thMiddle		{ padding-bottom:0.5em; padding-left:0.5em; padding-right:0.5em }
+		.thRight		{ padding-bottom:0.5em; padding-left:0.5em; padding-right: 0.5em }
 		.thFirst		{ white-space:nowrap; padding-right:0.5em }
-		.thNext			{ white-space:nowrap; padding-left:0.5em; padding-right:0.5em; border-left:dashed 1px lightgray }
-		h3				{ margin-block-start:0.6em; margin-block-end:0.5em; font-size:clamp(9px, 1vw, 14px) }
-		.h3NoFocus		{ color:lightgray; margin-block-start:0 }
-		.h3Focus		{ margin-block-start:0 }
-		.h3Lightgray	{ color:lightgray }
-		.h3Black		{ color:black }
-		select			{ font-family:inherit; font-size:inherit; box-sizing:border-box; padding:0.1em; position:relative; top:-0.4em; border-radius:0.5em; height:1.8rem }
+		.thNext			{ white-space:nowrap; padding-left:0.5em; padding-right:0.5em }
+		h3				{ margin-block-start:0.1em; margin-block-end:0.1em; font-size:clamp(9px, 1vw, 14px) }
+		.h3NoFocus		{ margin-block-start:0 }
+		.h3Focus		{ margin-block-start:0; color:#212121 }
+		.h3Lightgray	{ }
+		.h3Black		{ color:#212121 }
+		select			{ font-family:inherit; font-size:inherit; box-sizing:border-box; padding:0.2em; position:relative; line-height:1.4; border:0.0625em solid #BDBDBD; vertical-align:middle; border-radius:0.25em  }
 		.headSelect		{ width:100%; max-width:calc(100% - 4.5em) }
 		.addSelect		{ width:12em }
 		.bodySelect		{ position:relative; max-width:200px }
-		label			{ vertical-align: text-bottom; margin-right:-0.2em; margin-left:0.4em }
-		input			{ font-family:inherit; font-size:inherit; box-sizing:border-box; padding:0.1em; position:relative; line-height:1.4; border-width:1px; border-style:solid; top:-0.4em; vertical-align:middle; border-radius:0.5em }
+		label			{ vertical-align:middle; margin-right:-0.2em; margin-left:0.4em }
+		input			{ font-family:inherit; font-size:inherit; box-sizing:border-box; padding:0.2em; position:relative; line-height:1.4; border:0.0625em solid #BDBDBD; vertical-align:middle; border-radius:0.25em }
 		.headInput		{ width:100%; max-width:calc(100% - 4.5em); margin-bottom:0.2em }
 		form			{ margin:0; margin-block-end:0 }
 		.headForm		{ display:inline-block; width:100% }
 		.bodyForm		{ width:100vw }
-		.addForm		{ display:flex; padding:0.1em; float:left; margin-right:1em }
-		.operationForm	{ display:flex; padding:0.5em; float:left; margin-right:1em; margin-bottom:1em }
-		textarea		{ font-family:inherit; font-size:inherit; box-sizing:border-box; padding:0.1em; position:relative; line-height:1.3; border-radius:0.5em }
+		.addForm		{ float:left; margin-right:1em }
+		textarea		{ font-family:inherit; font-size:inherit; box-sizing:border-box; padding:0.2em 0.5em; position:relative; line-height:1.4; border:0.0625em solid #BDBDBD; vertical-align:middle; border-radius:0.25em }
 		.textareaXLarge	{ width:66em }
 		.textareaLarge	{ width:33em }
 		.textareaMedium	{ width:13em }
 		.textareaSmall	{ width:4em }
 		.textareaXSmall	{ width:2em; resize:none }
-		iframe			{ width:calc(100% - 0.5em); height:50px; max-height:20vh; border-style:dashed none none none; border-width:1px; border-color:lightgray; padding-bottom:0.3em; padding-top:0.3em; margin-bottom:0.5rem }
-		.printXFormDiv	{ float:left; line-height:2 }
-		.headFormsDiv	{ width:calc( 100vw - 2rem ); overflow-x:auto; margin-bottom:0.8em; border-bottom:dashed 1px lightgray; border-top:dashed 1px lightgray }
-		.headFormsTable	{ margin-bottom: 2px }
+		iframe			{ width:calc(100% - 0.5em); height:50px; max-height:20vh; border-width:1px; border-color:white; padding-bottom:0.3em; padding-top:0.3em; margin-bottom:0.5em }
+		.printXFormDiv	{ float:left; line-height:2; margin-bottom:2.5em }
+		.headFormsDiv	{ width:calc( 100vw - 1.1em ); overflow-x:auto; margin-bottom:0.8em }
+		.headFormsTable	{ margin-bottom:2px }
 		.headFormDiv1	{ width:16em; white-space:nowrap; display:inline-block }
 		.headFormDiv2	{ width:100%; white-space:nowrap; display:inline-block }
 		.headFormDiv3	{ width:100%; white-space:nowrap; display:inline-block; margin-top:2px }
-		.addRemoveDiv	{ clear:both; padding-top:0.5em; padding-bottom:0; max-width:calc(100% - 29em) }
+		.addRemoveDiv	{ position:relative; top:-2.5em; clear:both; max-width:calc(100% - 29em) }
 		.optionSpan		{ white-space:nowrap }
 		.yellowLock		{ margin-right:-0.4em }
