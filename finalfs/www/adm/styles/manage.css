@@ -36,12 +36,13 @@
 		.bodySelect		{ position:relative; max-width:200px }
 		label			{ vertical-align:middle; margin-right:-0.2em; margin-left:0.4em }
 		input			{ font-family:inherit; font-size:inherit; box-sizing:border-box; padding:0.2em; position:relative; line-height:1.4; border:0.0625em solid #BDBDBD; vertical-align:middle; border-radius:0.25em }
-		input[type='radio'] { accent-color: #455a64 }
+		input[type='radio'] { accent-color: #455a64; margin-top:0; margin-bottom:0 }
 		.headInput		{ width:100%; max-width:calc(100% - 4.5em); margin-bottom:0.2em }
 		form			{ margin:0; margin-block-end:0 }
 		.headForm		{ display:inline-block; width:100% }
 		.bodyForm		{ width:100vw }
 		.addForm		{ float:left; margin-right:1em }
+		.viewsForm		{ margin-top:0.2em }
 		textarea		{ font-family:inherit; font-size:inherit; box-sizing:border-box; padding:0.2em 0.5em; position:relative; line-height:1.4; border:0.0625em solid #BDBDBD; vertical-align:middle; border-radius:0.25em }
 		.textareaXLarge	{ width:66em }
 		.textareaLarge	{ width:33em }
@@ -60,3 +61,4 @@
 		.addRemoveDiv	{ position:relative; top:-2.5em; clear:both; max-width:calc(100% - 29em) }
 		.optionSpan		{ white-space:nowrap }
 		.yellowLock		{ margin-right:-0.4em }
+		.viewsSpan		{ vertical-align:middle }
