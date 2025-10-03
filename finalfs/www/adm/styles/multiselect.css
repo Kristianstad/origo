@@ -9,3 +9,5 @@
 		::-webkit-scrollbar { width: 6px }
 		::-webkit-scrollbar-track { background: #cfd8dc; border-radius: 3px }
 		::-webkit-scrollbar-thumb { background: #455a64; border-radius: 3px }
+		::-moz-selection { color:#FFFFFF; background:#00bcd4 }
+		::selection		{ color:#FFFFFF; background: #00bcd4 }
