@@ -9,7 +9,7 @@
 		{
 			$view=key($views);
 		}
-		echo "<form>";
+		echo "<form class='viewsForm'>";
 		foreach ($views as $k => $v)
 		{
 			echo "<input title='Välj visningsvy' type='radio' name='view' value='$k' onchange='this.form.submit();'";
@@ -17,7 +17,7 @@
 			{
 				echo " checked='checked'";
 			}
-			echo ">$k";
+			echo "><span class='viewsSpan'>$k</span>";
 		}
 		echo "</form>";
 	}
