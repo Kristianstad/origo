@@ -35,8 +35,8 @@
 		.addSelect		{ width:12em }
 		.bodySelect		{ position:relative; max-width:200px }
 		label			{ vertical-align:middle; margin-right:-0.2em; margin-left:0.4em }
-		input			{ font-family:inherit; font-size:inherit; box-sizing:border-box; padding:0.2em; position:relative; line-height:1.4; border:0.0625em solid #BDBDBD; vertical-align:middle; border-radius:0.25em; background-color:#FFFFFF; color:#212121 }
-		input[type='radio'] { accent-color: #455a64; margin-top:0; margin-bottom:0 }
+		input			{ accent-color: #455a64; font-family:inherit; font-size:inherit; box-sizing:border-box; padding:0.2em; position:relative; line-height:1.4; border:0.0625em solid #BDBDBD; vertical-align:middle; border-radius:0.25em; background-color:#FFFFFF; color:#212121 }
+		input[type='radio'] { margin-top:0; margin-bottom:0 }
 		.headInput		{ width:100%; max-width:calc(100% - 4.5em); margin-bottom:0.2em }
 		form			{ margin:0; margin-block-end:0 }
 		.headForm		{ display:inline-block; width:100% }
@@ -65,3 +65,5 @@
 		::-webkit-scrollbar { width: 6px }
 		::-webkit-scrollbar-track { background: #cfd8dc; border-radius: 3px }
 		::-webkit-scrollbar-thumb { background: #455a64; border-radius: 3px }
+		::-moz-selection { color:#FFFFFF; background:#00bcd4 }
+		::selection		{ color:#FFFFFF; background: #00bcd4 }
