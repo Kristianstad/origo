@@ -30,12 +30,12 @@
 		.h3Focus		{ margin-block-start:0; color:#212121 }
 		.h3Lightgray	{ }
 		.h3Black		{ color:#212121 }
-		select			{ font-family:inherit; font-size:inherit; box-sizing:border-box; padding:0.2em; position:relative; line-height:1.4; border:0.0625em solid #BDBDBD; vertical-align:middle; border-radius:0.25em; background-color:#FFFFFF }
+		select			{ font-family:inherit; font-size:inherit; box-sizing:border-box; padding:0.2em; position:relative; line-height:1.4; border:0.0625em solid #BDBDBD; vertical-align:middle; border-radius:0.25em; background-color:#FFFFFF; scrollbar-color:#455a64 #FFFFFF; scrollbar-width:thin; color:#212121 }
 		.headSelect		{ width:100%; max-width:calc(100% - 4.5em) }
 		.addSelect		{ width:12em }
 		.bodySelect		{ position:relative; max-width:200px }
 		label			{ vertical-align:middle; margin-right:-0.2em; margin-left:0.4em }
-		input			{ font-family:inherit; font-size:inherit; box-sizing:border-box; padding:0.2em; position:relative; line-height:1.4; border:0.0625em solid #BDBDBD; vertical-align:middle; border-radius:0.25em; background-color:#FFFFFF }
+		input			{ font-family:inherit; font-size:inherit; box-sizing:border-box; padding:0.2em; position:relative; line-height:1.4; border:0.0625em solid #BDBDBD; vertical-align:middle; border-radius:0.25em; background-color:#FFFFFF; color:#212121 }
 		input[type='radio'] { accent-color: #455a64; margin-top:0; margin-bottom:0 }
 		.headInput		{ width:100%; max-width:calc(100% - 4.5em); margin-bottom:0.2em }
 		form			{ margin:0; margin-block-end:0 }
@@ -43,7 +43,7 @@
 		.bodyForm		{ width:100vw }
 		.addForm		{ float:left; margin-right:1em }
 		.viewsForm		{ margin-top:0.2em }
-		textarea		{ font-family:inherit; font-size:inherit; box-sizing:border-box; padding:0.2em 0.5em; position:relative; line-height:1.4; border:0.0625em solid #BDBDBD; vertical-align:middle; border-radius:0.25em; background-color:#FFFFFF }
+		textarea		{ font-family:inherit; font-size:inherit; box-sizing:border-box; padding:0.2em 0.5em; position:relative; line-height:1.4; border:0.0625em solid #BDBDBD; vertical-align:middle; border-radius:0.25em; background-color:#FFFFFF; scrollbar-color:#455a64 #FFFFFF; scrollbar-width:thin; color:#212121 }
 		.textareaXLarge	{ width:66em }
 		.textareaLarge	{ width:33em }
 		.textareaMedium	{ width:13em }
