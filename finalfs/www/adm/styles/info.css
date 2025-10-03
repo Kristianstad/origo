@@ -9,3 +9,6 @@
 		select		{ font-family:inherit; font-size:inherit; padding:0.1em; position:relative; box-sizing:border-box; background-color:#FFFFFF; scrollbar-color:#455a64 #FFFFFF; scrollbar-width:thin; color:#212121 }
 		font		{ font-family:'Roboto',sans-serif!important; font-size:clamp(7px, 0.9vw, 12px)!important }
 		a			{ color:#212121 }
+		::-webkit-scrollbar { width: 6px }
+		::-webkit-scrollbar-track { background: #cfd8dc; border-radius: 3px }
+		::-webkit-scrollbar-thumb { background: #455a64; border-radius: 3px }
