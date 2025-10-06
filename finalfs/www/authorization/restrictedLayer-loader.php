@@ -1,4 +1,4 @@
 <?php
 			chdir('../adm/');
-			require ('../adm/restrictedLayer.php');
+			require ('restrictedLayer.php');
 ?>
