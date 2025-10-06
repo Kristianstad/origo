@@ -6,7 +6,7 @@
 	<body>
 		<?php
 			chdir('../adm/');
-			require ('../adm/authorization.php');
+			require ('authorization.php');
 		?>
 	</body>
 </html>
