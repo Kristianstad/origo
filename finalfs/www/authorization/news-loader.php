@@ -6,7 +6,7 @@
 	<body>
 		<?php
 			chdir('../adm/');
-			require ('../adm/news.php');
+			require ('news.php');
 		?>
 	</body>
 </html>
