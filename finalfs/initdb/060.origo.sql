@@ -4,6 +4,7 @@ CREATE TABLE map_configs.controls
 (
     control_id character varying COLLATE pg_catalog."default" NOT NULL,
     options json,
+    js character varying COLLATE pg_catalog."default",
     info character varying COLLATE pg_catalog."default",
     abstract character varying COLLATE pg_catalog."default",
     CONSTRAINT controls_pkey PRIMARY KEY (control_id)
@@ -528,3 +529,4 @@ INSERT INTO map_configs.helps(help_id,abstract) VALUES ('new:date','<b>Nyhet > S
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('new:reads','<b>Nyhet > Läst av</b><br>En kommaseparerad lista av AD-användare som har klickat på nyhetens beskrivning i nyhetslistan. För användare i listan visas beskrivningen inte längre i fetstil.');
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('new:deletes','<b>Nyhet > Raderad av</b><br>En kommaseparerad lista av AD-användare som har klickat på nyhetens radera-ikon i nyhetslistan. För användare i listan visas nyheten inte längre i nyhetslistan.');
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('new:info','<b>Nyhet > Info</b><br>Fält för administrativ information, rörande nyheten, som inte passar in någon annanstans.');
+INSERT INTO map_configs.helps(help_id,abstract) VALUES ('control:js','<b>Kontroll > JS</b><br>Javascript-kod som inkluderas direkt i kartans html-dokument (hamnar efter kartspecifik JS). Förutom variabeln "origo" så är även konstanten "urlParams" redan definierade.');
