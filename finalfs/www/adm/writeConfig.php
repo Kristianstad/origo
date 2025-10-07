@@ -48,7 +48,15 @@
 	$map = array_column_search($mapId, 'map_id', $maps);
 	$json = '{ ';
 	$mapControls = pgArrayToPhp($map['controls']);
-	addControlsToJson($mapControls);
+	if (isset($map['js']))
+	{
+		$mapJs=$map['js'];
+	}
+	else
+	{
+		$mapJs='';
+	}
+	addControlsToJson($mapControls, $mapJs);
 	$json = $json.', ';
 	// PageSettings <start>
 	$json = $json.'"pageSettings": {';
@@ -311,9 +319,9 @@
 
 			HERE;
 		}
-		if (!empty($map['js']))
+		if (!empty($mapJs))
 		{
-			$html=$html."\n{$map['js']}\n";
+			$html=$html."\n{$mapJs}\n";
 		}
 		$html=$html. <<<HERE
 		</script>
