@@ -322,6 +322,15 @@ CREATE TABLE map_configs.adusers
     CONSTRAINT adusers_pkey PRIMARY KEY (aduser_id)
 );
 
+CREATE TABLE map_configs.mapstates
+(
+    mapstate_id character varying COLLATE pg_catalog."default" NOT NULL,
+    abstract character varying COLLATE pg_catalog."default",
+    info character varying COLLATE pg_catalog."default",
+    lastuse timestamp without time zone,
+    CONSTRAINT mapstates_pkey PRIMARY KEY (mapstate_id)
+);
+
 CREATE TABLE map_configs.formats
 (
     format_id character varying COLLATE pg_catalog."default" NOT NULL,
