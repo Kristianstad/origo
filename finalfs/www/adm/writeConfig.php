@@ -47,7 +47,6 @@
 	extract($configTables);
 	$map = array_column_search($mapId, 'map_id', $maps);
 	$json = '{ ';
-	$mapControls = pgArrayToPhp($map['controls']);
 	if (isset($map['js']))
 	{
 		$mapJs=$map['js'];
@@ -56,7 +55,11 @@
 	{
 		$mapJs='';
 	}
-	addControlsToJson($mapControls, $mapJs);
+	if (!empty($map['controls']))
+	{
+		$mapControls = pgArrayToPhp($map['controls']);
+		addControlsToJson($mapControls, $mapJs);
+	}
 	$json = $json.', ';
 	// PageSettings <start>
 	$json = $json.'"pageSettings": {';
@@ -220,8 +223,22 @@
 			$html = $html."\n\t\t<script type=\"application/ld+json\" src=\"structured-data".$mapNumber.".json\"></script>";
 		}
 		*/
-		$cssFiles = pgArrayToPhp($map['css_files']);
-		foreach ($cssFiles as $file)
+		$mapCssFiles = pgArrayToPhp($map['css_files']);
+		$mapJsFiles = pgArrayToPhp($map['js_files']);
+		if (isset($map['css']))
+		{
+			$mapCss=$map['css'];
+		}
+		else
+		{
+			$mapCss='';
+		}
+		if (!empty($map['plugins']))
+		{
+			$mapPlugins = pgArrayToPhp($map['plugins']);
+			addPlugins($mapPlugins, $mapCssFiles, $mapJsFiles, $mapCss, $mapJs);
+		}
+		foreach ($mapCssFiles as $file)
 		{
 			if (filter_var($file, FILTER_VALIDATE_URL))
 			{
@@ -246,9 +263,9 @@
 				$html=$html."\n\t\t<link href='$file' rel='stylesheet'>";
 			}
 		}
-		if (!empty($map['css']))
+		if (!empty($mapCss))
 		{
-			$css=$map['css'];
+			$css=$mapCss;
 			// Remove comments
  			$css = preg_replace('!/\*[^*]*\*+([^/][^*]*\*+)*/!', '', $css);
  			// Remove spaces before and after selectors, braces, and colons
@@ -258,8 +275,7 @@
 			$html=$html."\n\t\t<style>$css</style>";
 			unset($css);
 		}
-		$jsFiles = pgArrayToPhp($map['js_files']);
-		foreach ($jsFiles as $file)
+		foreach ($mapJsFiles as $file)
 		{
 			if (filter_var($file, FILTER_VALIDATE_URL))
 			{
