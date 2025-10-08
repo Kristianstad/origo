@@ -730,11 +730,11 @@
 			unset($selectables, $databaseId, $connectionString);
 		}
 		
-		//  Else, if a control is selected
-		elseif ($childType == 'control')
+		//  Else, if a control or plugin is selected
+		elseif ($childType == 'control' || $childType == 'plugin')
 		{
-			// Print the form for the selected control
-			printControlForm($childFullTarget, array("maps"=>$configTables["maps"]), $inheritPosts, $typeHelps);
+			// Print the form for the selected control/plugin
+			eval('print'.ucfirst($childType).'Form($childFullTarget, array("maps"=>$configTables["maps"]), $inheritPosts, $typeHelps);');
 		}
 		
 		// Else, if <item> of other type is selected
