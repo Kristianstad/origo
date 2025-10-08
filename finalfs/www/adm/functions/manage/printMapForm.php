@@ -19,6 +19,7 @@
 		printTextarea($map, 'layers', 'textareaLarge', 'Lager:', in_array('layers', $helps), $sizePosts);
 		printTextarea($map, 'groups', 'textareaLarge', 'Grupper:', in_array('groups', $helps), $sizePosts);
 		printTextarea($map, 'controls', 'textareaLarge', 'Kontroller:', in_array('controls', $helps), $sizePosts);
+		printTextarea($map, 'plugins', 'textareaLarge', 'Plugins:', in_array('plugins', $helps), $sizePosts);
 		printTextarea($map, 'proj4defs', 'textareaMedium', 'Proj4defs:', in_array('proj4defs', $helps), $sizePosts);
 		printUpdateSelect($map, array('footer'=>$selectables['footers']), 'bodySelect', 'Sidfot:', in_array('footer', $helps));
 		printTextarea($map, 'featureinfooptions', 'textareaMedium', 'FeatureInfoOptions:', in_array('featureinfooptions', $helps), $sizePosts);
