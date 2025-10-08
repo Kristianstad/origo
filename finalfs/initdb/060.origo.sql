@@ -22,6 +22,18 @@ INSERT INTO map_configs.controls(control_id,options,abstract) VALUES ('position#
 INSERT INTO map_configs.controls(control_id,abstract) VALUES ('measure#1','Lägger till en mätningskontroll. Mät längd, area eller höjd (kräver tillgång till extern höjddatawebbtjänst) i kartan.');
 INSERT INTO map_configs.controls(control_id,options,abstract) VALUES ('splash#login1','{ "title": "Välkommen!", "url": "./authorization/authorization-iframe.php", "hideButton": { "visible": false }, "style": "width: 500px;height: 250px;", "hideWhenEmbedded": true }','Inloggningssida som visas när kartan öppnas.');
 
+CREATE TABLE map_configs.plugins
+(
+    plugin_id character varying COLLATE pg_catalog."default" NOT NULL,
+    info character varying COLLATE pg_catalog."default",
+    abstract character varying COLLATE pg_catalog."default",
+    js character varying COLLATE pg_catalog."default",
+    css character varying COLLATE pg_catalog."default",
+    css_files character varying[] COLLATE pg_catalog."default",
+    js_files character varying[] COLLATE pg_catalog."default",
+    CONSTRAINT plugins_pkey PRIMARY KEY (plugin_id)
+);
+
 CREATE TABLE map_configs.footers
 (
     footer_id character varying COLLATE pg_catalog."default" NOT NULL,
