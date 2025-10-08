@@ -19,7 +19,7 @@
 		$allParents=array();
 		if ($targetType != 'map')
 		{
- 			if ($targetType == 'group' || $targetType == 'layer' || $targetType == 'control' || $targetType == 'keyword')
+ 			if ($targetType == 'group' || $targetType == 'layer' || $targetType == 'control' || $targetType == 'keyword' || $targetType == 'plugin')
 			{
 				$allParents['maps']['maps']=findParents(array('maps'=>all_from_table($dbh, $configSchema, 'maps')), $target);
 			}	
