@@ -2,7 +2,7 @@
 
 	// Uses common functions: pgArrayToPhp, array_column_search
 
-	function addControlsToJson($mapControls=null, &$mapJs='')
+	function addControlsToJson($mapControls=null, &$mapCss='', &$mapJs='')
 	{
 		GLOBAL $json, $map, $controls;
 		if (!isset($mapControls))
@@ -29,6 +29,10 @@
 				$json = $json.', "options": '.$control['options'];
 			}
 			$json = $json.' }';
+			if (!empty($control['css']))
+			{
+				$mapCss=$mapCss.$control['css'];
+			}
 			if (!empty($control['js']))
 			{
 				$mapJs=$mapJs.$control['js'];
