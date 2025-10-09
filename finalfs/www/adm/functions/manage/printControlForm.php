@@ -16,6 +16,7 @@
 		printTextarea($control, 'control_id', 'textareaMedium', 'Id:', in_array('control_id', $helps), $sizePosts);
 		printTextarea($control, 'abstract', 'textareaLarge', 'Beskrivning:', in_array('abstract', $helps), $sizePosts);
 		printTextarea($control, 'options', 'textareaLarge', 'Inställningar:', in_array('options', $helps), $sizePosts);
+		printTextarea($control, 'css', 'textareaLarge', 'CSS:', in_array('css', $helps), $sizePosts);
 		printTextarea($control, 'js', 'textareaLarge', 'JS:', in_array('js', $helps), $sizePosts);
 		printTextarea($control, 'info', 'textareaLarge', 'Info:', in_array('info', $helps), $sizePosts);
 		printHiddenInputs($inheritPosts);
