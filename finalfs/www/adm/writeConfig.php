@@ -47,6 +47,14 @@
 	extract($configTables);
 	$map = array_column_search($mapId, 'map_id', $maps);
 	$json = '{ ';
+	if (isset($map['css']))
+	{
+		$mapCss=$map['css'];
+	}
+	else
+	{
+		$mapCss='';
+	}
 	if (isset($map['js']))
 	{
 		$mapJs=$map['js'];
@@ -58,7 +66,7 @@
 	if (!empty($map['controls']))
 	{
 		$mapControls = pgArrayToPhp($map['controls']);
-		addControlsToJson($mapControls, $mapJs);
+		addControlsToJson($mapControls, $mapCss, $mapJs);
 	}
 	$json = $json.', ';
 	// PageSettings <start>
@@ -225,14 +233,6 @@
 		*/
 		$mapCssFiles = pgArrayToPhp($map['css_files']);
 		$mapJsFiles = pgArrayToPhp($map['js_files']);
-		if (isset($map['css']))
-		{
-			$mapCss=$map['css'];
-		}
-		else
-		{
-			$mapCss='';
-		}
 		if (!empty($map['plugins']))
 		{
 			$mapPlugins = pgArrayToPhp($map['plugins']);
