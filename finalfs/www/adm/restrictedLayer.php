@@ -95,6 +95,11 @@
 				$emptyPng=file_get_contents('../img/png/empty.png');
 				echo $emptyPng;
 			}
+			elseif ($queryarray['REQUEST'] == 'GetFeatureInfo')
+			{
+				header('Content-Type: application/json; charset=utf-8');
+				echo '{"features":[],"type":"FeatureCollection"}';
+			}
 			else
 			{
 				finishError500('saknar rättigheter');
