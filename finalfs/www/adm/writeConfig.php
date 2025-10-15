@@ -298,7 +298,11 @@
 			<body>
 				<div id="app-wrapper"></div>
 				<script>
-					const urlParams = new URL(document.location.href).searchParams;
+					const urlParams = new URLSearchParams(window.location.search);
+					const hashParams = new URLSearchParams(window.location.hash.slice(1));
+					function getUrlParam(param) {
+						return urlParams.get(param) ?? hashParams.get(param);
+					}
 					let origo;
 		HERE;
 		//const origoConfig = {$json}; Funkar ej med mapstate?
