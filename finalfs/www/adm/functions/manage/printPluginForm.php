@@ -19,6 +19,7 @@
 		printTextarea($plugin, 'css', 'textareaLarge', 'CSS:', in_array('css', $helps), $sizePosts);
 		printTextarea($plugin, 'js_files', 'textareaLarge', 'JS-filer:', in_array('js_files', $helps), $sizePosts);
 		printTextarea($plugin, 'js', 'textareaLarge', 'JS:', in_array('js', $helps), $sizePosts);
+		printTextarea($plugin, 'onload', 'textareaLarge', 'Origo.on(load)-JS:', in_array('onload', $helps), $sizePosts);
 		printTextarea($plugin, 'info', 'textareaLarge', 'Info:', in_array('info', $helps), $sizePosts);
 		printHiddenInputs($inheritPosts);
 		echo '<hr class="dashedHr">';
