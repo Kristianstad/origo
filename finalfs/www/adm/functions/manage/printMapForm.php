@@ -41,6 +41,7 @@
 		printTextarea($map, 'css', 'textareaLarge', 'CSS:', in_array('css', $helps), $sizePosts);
 		printTextarea($map, 'js_files', 'textareaLarge', 'JS-filer:', in_array('js_files', $helps), $sizePosts);
 		printTextarea($map, 'js', 'textareaLarge', 'JS:', in_array('js', $helps), $sizePosts);
+		printTextarea($map, 'onload', 'textareaLarge', 'Origo.on(load)-JS:', in_array('onload', $helps), $sizePosts);
 		printTextarea($map, 'abstract', 'textareaLarge', 'Beskrivning:', in_array('abstract', $helps), $sizePosts);
 		printTextarea($map, 'keywords', 'textareaLarge', 'Nyckelord:', in_array('keywords', $helps), $sizePosts);
 		printTextarea($map, 'info', 'textareaLarge', 'Info:', in_array('info', $helps), $sizePosts);
