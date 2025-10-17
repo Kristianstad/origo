@@ -18,6 +18,7 @@
 		printTextarea($control, 'options', 'textareaLarge', 'Inställningar:', in_array('options', $helps), $sizePosts);
 		printTextarea($control, 'css', 'textareaLarge', 'CSS:', in_array('css', $helps), $sizePosts);
 		printTextarea($control, 'js', 'textareaLarge', 'JS:', in_array('js', $helps), $sizePosts);
+		printTextarea($control, 'onload', 'textareaLarge', 'Origo.on(load)-JS:', in_array('onload', $helps), $sizePosts);
 		printTextarea($control, 'info', 'textareaLarge', 'Info:', in_array('info', $helps), $sizePosts);
 		printHiddenInputs($inheritPosts);
 		echo '<hr class="dashedHr">';
