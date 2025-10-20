@@ -2,7 +2,7 @@
 
 	// Uses common functions: pgArrayToPhp, array_column_search
 
-	function addPlugins($mapPlugins=null, &$mapCssFiles=array(), &$mapJsFiles=array(), &$mapCss='', &$mapJs='')
+	function addPlugins($mapPlugins=null, &$mapCssFiles=array(), &$mapJsFiles=array(), &$mapCss='', &$mapJs='', &$mapOnload='')
 	{
 		GLOBAL $map, $plugins;
 		if (!isset($mapPlugins))
@@ -15,6 +15,10 @@
 			if (!empty($plugin['js']))
 			{
 				$mapJs=$mapJs.$plugin['js'];
+			}
+			if (!empty($plugin['onload']))
+			{
+				$mapOnload=$mapOnload."\n".$plugin['onload'];
 			}
 			if (!empty($plugin['css']))
 			{
