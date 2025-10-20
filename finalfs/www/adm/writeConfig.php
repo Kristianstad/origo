@@ -63,10 +63,18 @@
 	{
 		$mapJs='';
 	}
+	if (isset($map['onload']))
+	{
+		$mapOnload=$map['onload'];
+	}
+	else
+	{
+		$mapOnload='';
+	}
 	if (!empty($map['controls']))
 	{
 		$mapControls = pgArrayToPhp($map['controls']);
-		addControlsToJson($mapControls, $mapCss, $mapJs);
+		addControlsToJson($mapControls, $mapCss, $mapJs, $mapOnload);
 	}
 	$json = $json.', ';
 	// PageSettings <start>
@@ -236,7 +244,7 @@
 		if (!empty($map['plugins']))
 		{
 			$mapPlugins = pgArrayToPhp($map['plugins']);
-			addPlugins($mapPlugins, $mapCssFiles, $mapJsFiles, $mapCss, $mapJs);
+			addPlugins($mapPlugins, $mapCssFiles, $mapJsFiles, $mapCss, $mapJs, $mapOnload);
 		}
 		foreach ($mapCssFiles as $file)
 		{
@@ -342,6 +350,41 @@
 		if (!empty($mapJs))
 		{
 			$html=$html."\n{$mapJs}\n";
+		}
+		if (!empty($mapOnload))
+		{
+			$mapOnload=fixDuplicateDeclarations($mapOnload);
+/*
+			$mapOnloadInit = <<<HERE
+			function defineConst(name, value) {
+				try {
+					if (typeof window[name] === 'undefined') {
+						window[name] = value;
+					} else {
+						setVariable(name, value, 'let');
+					}
+				} catch (e) {
+					console.error('Error defining const ' + name + ':', e.message);
+				}
+			}
+			
+			function setVariable(name, value, type = 'let') {
+				try {
+					if (typeof window[name] === 'undefined') {
+						window[name] = value;
+					} else if (type !== 'const') {
+						window[name] = value;
+					}
+				} catch (e) {
+					console.error('Error setting ' + type + ' ' + name + ':', e.message);
+				}
+			}
+			
+			
+			HERE;
+			$mapOnload=$mapOnloadInit.$mapOnload;
+*/
+			$html=$html."\norigo.on('load', function (viewer) {\n{$mapOnload}\n});\n";
 		}
 		$html=$html. <<<HERE
 		</script>
