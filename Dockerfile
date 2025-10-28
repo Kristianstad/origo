@@ -14,7 +14,7 @@ ARG BUILDCMDS=\
 "   composer require --ignore-platform-reqs adldap2/adldap2 "\
 '&& mkdir -p "$DESTDIR/www/adm/functions" '\
 '&& mv ./vendor "$DESTDIR/www/adm/functions/adldap" '\
-'&& composer require --ignore-platform-reqs matthiasmullie/minify "\
+'&& composer require --ignore-platform-reqs matthiasmullie/minify '\
 '&& mv ./vendor "$DESTDIR/www/adm/functions/minify"'
 ARG RUNDEPS="\
         apache2-utils \
