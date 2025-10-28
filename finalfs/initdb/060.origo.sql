@@ -365,7 +365,7 @@ updateDropdown();',
   padding: 0.5rem; /* Unified padding for all buttons */
   font-size: 16px;
   cursor: pointer;
-  border-style: none; /* Remove border */
+  border: none;
   background-color: #f5f5f5;
   color: #000;
   border-radius: 50%; /* Circular buttons */
@@ -424,7 +424,8 @@ updateDropdown();',
   padding: 2px 16px;
   font-size: 16px;
   cursor: pointer;
-  border-style: none; /* Remove border */
+  border: none;
+  outline: none;
   background-color: #f5f5f5;
   color: #000;
   border-radius: 2em;
@@ -448,7 +449,7 @@ updateDropdown();',
 .top-bar input {
   padding: 2px 16px;
   font-size: 16px;
-  border-style: none; /* Remove border */
+  border: none;
   background-color: #f5f5f5;
   color: #000;
   border-radius: 2em;
@@ -495,14 +496,14 @@ updateDropdown();',
   .top-bar button {
     padding: 0.5rem;
     font-size: 14px;
-    border-style: none;
+    border: none;
     min-width: 30px; /* Adjusted for smaller icons */
   }
 
   .top-bar select {
     padding: 2px 12px;
     font-size: 14px;
-    border-style: none;
+    border: none;
     border-radius: 2em;
     max-width: 130px; /* Balances group widths */
   }
@@ -518,7 +519,7 @@ updateDropdown();',
   .top-bar input {
     padding: 2px 12px;
     font-size: 14px;
-    border-style: none;
+    border: none;
     border-radius: 2em;
     max-width: 130px; /* Balances group widths */
   }
