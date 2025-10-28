@@ -688,6 +688,7 @@ CREATE TABLE map_configs.maps
     embedded boolean,
     abstract character varying COLLATE pg_catalog."default",
     keywords character varying[] COLLATE pg_catalog."default",
+    plugins character varying[] COLLATE pg_catalog."default",
     css character varying COLLATE pg_catalog."default",
     title character varying COLLATE pg_catalog."default",
     icon character varying COLLATE pg_catalog."default" DEFAULT '../img/png/logo.png'::character varying,
