@@ -11,9 +11,12 @@ ARG PHP_VERSION="82"
 ARG BASEIMAGE="ghcr.io/kristianstad/origo:$ORIGO_VERSION"
 ARG BUILDDEPS="composer"
 ARG BUILDCMDS=\
-"   composer require --ignore-platform-reqs adldap2/adldap2 "\
+"   mkdir composerdir "\
+"&& cd composerdir "\
+"&& composer require --ignore-platform-reqs adldap2/adldap2 "\
 '&& mkdir -p "$DESTDIR/www/adm/functions" '\
 '&& mv ./vendor "$DESTDIR/www/adm/functions/adldap" '\
+'&& rm -rf * '\
 '&& composer require --ignore-platform-reqs matthiasmullie/minify '\
 '&& mv ./vendor "$DESTDIR/www/adm/functions/minify"'
 ARG RUNDEPS="\
