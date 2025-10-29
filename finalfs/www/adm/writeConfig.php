@@ -281,6 +281,7 @@
 			$html=$html."\n\t\t<style>$minifiedCss</style>";
 			unset($cssMinifier, $minifiedCss);
 		}
+		unset($mapCss);
 		foreach ($mapJsFiles as $file)
 		{
 			if (filter_var($file, FILTER_VALIDATE_URL))
@@ -358,7 +359,7 @@
 		$jsMinifier = new Minify\JS($mapJs);
 		$minifiedJs=$jsMinifier->minify();
 		$html=$html."\n{$minifiedJs}\n";
-		unset($jsMinifier, $minifiedJs);
+		unset($mapJs, $jsMinifier, $minifiedJs);
 		if (!empty($mapOnload))
 		{
 			$mapOnload=fixDuplicateDeclarations($mapOnload);
@@ -398,6 +399,7 @@
 			$html=$html."\n{$minifiedOnload}\n";
 			unset($onloadMinifier, $minifiedOnload);
 		}
+		unset($mapOnload);
 		$html=$html. <<<HERE
 				</script>
 		
