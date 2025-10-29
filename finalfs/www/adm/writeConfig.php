@@ -5,11 +5,14 @@
 	header("Cache-Control: must-revalidate, max-age=0, s-maxage=0, no-cache, no-store");
 
 	// Expose specific functions
+	require_once("./functions/minify/autoload.php");
 	require_once("./functions/includeDirectory.php");
 
 	// Expose all functions in given folders
 	includeDirectory("./functions/common");
 	includeDirectory("./functions/writeConfig");
+
+	use MatthiasMullie\Minify;
 
 	require("./constants/webRoot.php");
 	
@@ -273,15 +276,10 @@
 		}
 		if (!empty($mapCss))
 		{
-			$css=$mapCss;
-			// Remove comments
- 			$css = preg_replace('!/\*[^*]*\*+([^/][^*]*\*+)*/!', '', $css);
- 			// Remove spaces before and after selectors, braces, and colons
- 			$css = preg_replace('/\s*([{}|:;,])\s+/', '$1', $css);
- 			// Remove remaining spaces and line breaks
- 			$css = str_replace(array("\r\n", "\r", "\n", "\t", '  ', '    ', '    '), '',$css);
-			$html=$html."\n\t\t<style>$css</style>";
-			unset($css);
+			$cssMinifier = new Minify\CSS($mapCss);
+			$minifiedCss=$cssMinifier->minify();
+			$html=$html."\n\t\t<style>$minifiedCss</style>";
+			unset($cssMinifier, $minifiedCss);
 		}
 		foreach ($mapJsFiles as $file)
 		{
@@ -306,6 +304,8 @@
 			<body>
 				<div id="app-wrapper"></div>
 				<script>
+		HERE;
+		$mapJsInit=<<<HERE
 					const urlParams = new URLSearchParams(window.location.search);
 					const hashParams = new URLSearchParams(window.location.hash.slice(1));
 					function getUrlParam(param) {
@@ -316,7 +316,7 @@
 		//const origoConfig = {$json}; Funkar ej med mapstate?
 		if (isset($_GET['getHtml']) && $_GET['getHtml'] == 'y')
 		{
-			$html=$html. <<<HERE
+			$mapJsInit=$mapJsInit. <<<HERE
 
 						const origoConfig = {$json};
 						origo = Origo(origoConfig);
@@ -325,7 +325,7 @@
 		}
 		else
 		{
-			$html=$html. <<<HERE
+			$mapJsInit=$mapJsInit. <<<HERE
 
 						const map = urlParams.get('map');
 						if (map != null)
@@ -349,8 +349,16 @@
 		}
 		if (!empty($mapJs))
 		{
-			$html=$html."\n{$mapJs}\n";
+			$mapJs=$mapJsInit.$mapJs;
 		}
+		else
+		{
+			$mapJs=$mapJsInit;
+		}
+		$jsMinifier = new Minify\JS($mapJs);
+		$minifiedJs=$jsMinifier->minify();
+		$html=$html."\n{$minifiedJs}\n";
+		unset($jsMinifier, $minifiedJs);
 		if (!empty($mapOnload))
 		{
 			$mapOnload=fixDuplicateDeclarations($mapOnload);
@@ -384,16 +392,20 @@
 			HERE;
 			$mapOnload=$mapOnloadInit.$mapOnload;
 */
-			$html=$html."\norigo.on('load', function (viewer) {\n{$mapOnload}\n});\n";
+			$mapOnload="\norigo.on('load', function (viewer) {\n{$mapOnload}\n});\n";
+			$onloadMinifier = new Minify\JS($mapOnload);
+			$minifiedOnload=$onloadMinifier->minify();
+			$html=$html."\n{$minifiedOnload}\n";
+			unset($onloadMinifier, $minifiedOnload);
 		}
 		$html=$html. <<<HERE
-		</script>
+				</script>
 		
 		HERE;
 		if (isset($_GET['getHtml']) && $_GET['getHtml'] == 'y')
 		{
 			$html=$html. <<<HERE
-			</body>
+				</body>
 			</html>
 			HERE;
 			if (isset($_GET['download']) && $_GET['download'] == 'y')
@@ -478,9 +490,9 @@
 				HERE;
 				$structuredDataJson=json_encode(json_decode($structuredDataJson), JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);
 				$html=$html. <<<HERE
-				<script type="application/ld+json">
+						<script type="application/ld+json">
 				{$structuredDataJson}
-				</script>
+						</script>
 				
 				HERE;
 				$structuredDataJson=json_format($structuredDataJson);
@@ -499,7 +511,7 @@
 				file_put_contents($sitemapFile, $sitemapStr);
 			}
 			$html=$html. <<<HERE
-			</body>
+				</body>
 			</html>
 			HERE;
 			file_put_contents($htmlFile, $html);
