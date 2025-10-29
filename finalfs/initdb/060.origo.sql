@@ -472,7 +472,7 @@ updateDropdown();',
   top: 0;
   left: 50%;
   transform: translateX(-50%);
-  height: 20px;
+  height: 3px;
   z-index: 999;
 }
 
