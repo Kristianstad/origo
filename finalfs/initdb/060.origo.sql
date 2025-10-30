@@ -879,6 +879,18 @@ if (hideallmodules == "true")
 	origo.api().getControlByName("geoposition").hide();
 	origo.api().getControlByName("measure").hide();
 }');
+INSERT INTO map_configs.plugins(plugin_id,abstract,onload) VALUES ('urlcenter#1', 'Panorerar i kartan till centrumkoordinaten angiven i url-parametern center. Koordinaten kan anges i EPSG:3008 (center=191815,6211237) eller EPSG:4326 (center=14.16883,56.02806). Hash-parametern center fungerar som standard i Origo (utan detta plugin) men då endast med koordinat i kartans projektion.',
+'const center = getUrlParam(''center'');
+if (center != null)
+{
+	let view = origo.api().getMap().getView();
+	let jsoncenter = JSON.parse("[" + center + "]");
+	if (center.charAt(2) == ''.'')
+	{
+		jsoncenter = origo.api().getMapUtils().transformCoordinate(jsoncenter,''EPSG:4326'',''EPSG:3008'');
+	}
+	view.setCenter(jsoncenter);
+}');
 
 CREATE TABLE map_configs.footers
 (
