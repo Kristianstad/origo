@@ -48,9 +48,9 @@ topBar.className = ''top-bar no-transition'';
 /* Create clear button with SVG icon */
 const clearButton = document.createElement(''button'');
 clearButton.className = ''clear-button'';
-clearButton.title = ''Släck alla lager''; /* Updated clear button tooltip */
+clearButton.title = ''Släck alla lager'';
 const clearSvgIcon = document.createElementNS(''http://www.w3.org/2000/svg'', ''svg'');
-clearSvgIcon.setAttribute(''width'', ''18''); /* Smaller icon size */
+clearSvgIcon.setAttribute(''width'', ''18'');
 clearSvgIcon.setAttribute(''height'', ''18'');
 const clearUseIcon = document.createElementNS(''http://www.w3.org/2000/svg'', ''use'');
 clearUseIcon.setAttributeNS(''http://www.w3.org/1999/xlink'', ''xlink:href'', ''#ic_visibility_off_24px'');
@@ -64,15 +64,13 @@ clearButton.onclick = () => {
 
 /* Create dropdown for loading saved layers */
 const loadSelect = document.createElement(''select'');
-loadSelect.title = ''Välj lagerfavorit att tända''; /* Updated */
-loadSelect.innerHTML = ''<option value="">Tänd lagerfavorit...</option>''; /* Updated default text */
+loadSelect.title = ''Välj lagerfavorit att tända'';
+loadSelect.innerHTML = ''<option value="">Tänd lagerfavorit...</option>'';
 
-/* Update select color based on selected option */
 const updateSelectColor = () => {
   loadSelect.style.color = loadSelect.value === '''' ? ''#ccc'' : ''#000'';
 };
 
-/* Load saved IDs into dropdown using document-specific prefix */
 const updateDropdown = () => {
   const savedIds = JSON.parse(localStorage.getItem(docPrefix + ''savedLayersIds'') || ''[]'');
   loadSelect.innerHTML = ''<option value="">Tänd lagerfavorit...</option>'';
@@ -85,7 +83,6 @@ const updateDropdown = () => {
   updateSelectColor();
 };
 
-/* Load layers when a save is selected and reset to default */
 loadSelect.onchange = () => {
   const id = loadSelect.value;
   if (id) {
@@ -95,7 +92,6 @@ loadSelect.onchange = () => {
         if (item) origo.api().getLayer(item).setVisible(true);
       });
     }
-    /* Reset dropdown to default option */
     loadSelect.value = '''';
     updateSelectColor();
   }
@@ -104,15 +100,15 @@ loadSelect.onchange = () => {
 /* Create input for save ID */
 const saveInput = document.createElement(''input'');
 saveInput.type = ''text'';
-saveInput.placeholder = ''Lagerfavorit''; /* Updated */
-saveInput.title = ''Ange lagerfavorit att skapa, skriva över eller radera''; /* "en" borttagen */
+saveInput.placeholder = ''Lagerfavorit'';
+saveInput.title = ''Ange lagerfavorit att skapa, skriva över eller radera'';
 
 /* Create save button with SVG icon */
 const saveButton = document.createElement(''button'');
 saveButton.className = ''save-button'';
-saveButton.title = ''Spara/skriv över angiven lagerfavorit''; /* Updated */
+saveButton.title = ''Spara/skriv över angiven lagerfavorit'';
 const saveSvgIcon = document.createElementNS(''http://www.w3.org/2000/svg'', ''svg'');
-saveSvgIcon.setAttribute(''width'', ''18''); /* Smaller icon size */
+saveSvgIcon.setAttribute(''width'', ''18'');
 saveSvgIcon.setAttribute(''height'', ''18'');
 const saveUseIcon = document.createElementNS(''http://www.w3.org/2000/svg'', ''use'');
 saveUseIcon.setAttributeNS(''http://www.w3.org/1999/xlink'', ''xlink:href'', ''#ic_save_24px'');
@@ -121,13 +117,11 @@ saveButton.appendChild(saveSvgIcon);
 saveButton.onclick = () => {
   const id = saveInput.value.trim();
   if (id) {
-    /* Save comma-separated list of visible layer names, excluding background, rit, and measure */
     const layersList = origo.api().getLayersByProperty(''visible'', true)
       .filter((layer) => layer.get(''group'') != ''background'' && layer.get(''group'') != ''rit'' && layer.get(''name'') != ''measure'')
       .map(layer => layer.getProperties()[''name''])
       .join('','');
     localStorage.setItem(docPrefix + ''savedLayers_'' + id, layersList);
-    /* Update saved IDs list */
     const savedIds = JSON.parse(localStorage.getItem(docPrefix + ''savedLayersIds'') || ''[]'');
     if (!savedIds.includes(id)) {
       savedIds.push(id);
@@ -141,9 +135,9 @@ saveButton.onclick = () => {
 /* Create delete button with SVG icon */
 const deleteButton = document.createElement(''button'');
 deleteButton.className = ''delete-button'';
-deleteButton.title = ''Radera angiven lagerfavorit''; /* Updated */
+deleteButton.title = ''Radera angiven lagerfavorit'';
 const deleteSvgIcon = document.createElementNS(''http://www.w3.org/2000/svg'', ''svg'');
-deleteSvgIcon.setAttribute(''width'', ''18''); /* Smaller icon size */
+deleteSvgIcon.setAttribute(''width'', ''18'');
 deleteSvgIcon.setAttribute(''height'', ''18'');
 const deleteUseIcon = document.createElementNS(''http://www.w3.org/2000/svg'', ''use'');
 deleteUseIcon.setAttributeNS(''http://www.w3.org/1999/xlink'', ''xlink:href'', ''#ic_delete_24px'');
@@ -152,7 +146,6 @@ deleteButton.appendChild(deleteSvgIcon);
 deleteButton.onclick = () => {
   const id = saveInput.value.trim();
   if (id) {
-    /* Remove the saved layers and update IDs list */
     localStorage.removeItem(docPrefix + ''savedLayers_'' + id);
     const savedIds = JSON.parse(localStorage.getItem(docPrefix + ''savedLayersIds'') || ''[]'');
     const updatedIds = savedIds.filter(savedId => savedId !== id);
@@ -168,18 +161,14 @@ leftGroup.className = ''group-container'';
 const rightGroup = document.createElement(''div'');
 rightGroup.className = ''group-container'';
 
-/* Append elements to their respective groups */
 leftGroup.appendChild(clearButton);
 leftGroup.appendChild(loadSelect);
 rightGroup.appendChild(saveInput);
 rightGroup.appendChild(saveButton);
 rightGroup.appendChild(deleteButton);
 
-/* Append groups to top-bar */
 topBar.appendChild(leftGroup);
 topBar.appendChild(rightGroup);
-
-/* Append top-bar to body */
 document.body.appendChild(topBar);
 
 /* Create hover trigger area */
@@ -187,7 +176,6 @@ const hoverTrigger = document.createElement(''div'');
 hoverTrigger.className = ''hover-trigger'';
 document.body.appendChild(hoverTrigger);
 
-/* Match trigger width and position to top-bar, accounting for wrapping */
 const updateTrigger = () => {
   const barRect = topBar.getBoundingClientRect();
   hoverTrigger.style.width = `${barRect.width}px`;
@@ -195,84 +183,81 @@ const updateTrigger = () => {
   hoverTrigger.style.transform = ''translateX(-50%)'';
 };
 
-/* Update trigger on load, resize, and after dropdown or save/delete updates */
 updateTrigger();
 window.addEventListener(''resize'', updateTrigger);
 
-/* Remove no-transition class after initial load to enable animations */
 setTimeout(() => {
   topBar.className = topBar.className.replace(''no-transition'', '''');
 }, 0);
 
-/* Auto-hide functionality with hover and delay */
+/* Auto-hide functionality */
 let hideTimeout = null;
 let lastMouseX = null;
 let lastMouseY = null;
 
-/* Track mouse position for rapid movements */
 document.addEventListener(''mousemove'', (event) => {
   lastMouseX = event.clientX;
   lastMouseY = event.clientY;
 });
 
-/* Show top-bar and clear hide timeout */
-const showTopBar = () => {
-  clearTimeout(hideTimeout);
-  topBar.classList.remove(''hidden'');
+/* Funktion: Dölj top-bar och flytta upp .top-center */
+const hideTopBarAndResetCenter = () => {
+  topBar.classList.add(''hidden'');
+  document.querySelector(''.o-ui .top-center'')?.classList.remove(''top-bar-visible'');
 };
 
-/* Hide top-bar with delay, checking focus and mouse position */
+/* Funktion: Visa top-bar och flytta ner .top-center */
+const showTopBarAndPushCenter = () => {
+  clearTimeout(hideTimeout);
+  topBar.classList.remove(''hidden'');
+  document.querySelector(''.o-ui .top-center'')?.classList.add(''top-bar-visible'');
+};
+
+/* Show top-bar */
+const showTopBar = showTopBarAndPushCenter;
+
+/* Hide top-bar with delay */
 const hideTopBar = (event) => {
-  /* Skip if mouse moves to top-bar or hover-trigger */
   if (event && event.relatedTarget && (topBar.contains(event.relatedTarget) || hoverTrigger.contains(event.relatedTarget))) {
     return;
   }
-  /* Skip if input, buttons, or select is focused */
   if (document.activeElement === saveInput || document.activeElement === saveButton || 
       document.activeElement === loadSelect || document.activeElement === clearButton ||
       document.activeElement === deleteButton) {
     return;
   }
   hideTimeout = setTimeout(() => {
-    /* Check if mouse is over top-bar or hover-trigger using current position */
     if (lastMouseX !== null && lastMouseY !== null) {
       const mouseOverElement = document.elementFromPoint(lastMouseX, lastMouseY);
       if (mouseOverElement && (topBar.contains(mouseOverElement) || hoverTrigger.contains(mouseOverElement))) {
         return;
       }
     }
-    /* Skip hiding if input, buttons, or select is focused */
     if (document.activeElement === saveInput || document.activeElement === saveButton || 
         document.activeElement === loadSelect || document.activeElement === clearButton ||
         document.activeElement === deleteButton) {
       return;
     }
-    topBar.classList.add(''hidden'');
+    hideTopBarAndResetCenter();
   }, 1000);
 };
 
-/* Cancel hide on mouseenter for buttons, select, and input */
+/* Cancel hide on mouseenter */
 clearButton.addEventListener(''mouseenter'', showTopBar);
 loadSelect.addEventListener(''mouseenter'', showTopBar);
 saveInput.addEventListener(''mouseenter'', showTopBar);
 saveButton.addEventListener(''mouseenter'', showTopBar);
 deleteButton.addEventListener(''mouseenter'', showTopBar);
-
-/* Cancel hide on mousemove over top-bar */
 topBar.addEventListener(''mousemove'', showTopBar);
-
-/* Prevent hide on mousedown for select and input */
 loadSelect.addEventListener(''mousedown'', showTopBar);
 saveInput.addEventListener(''mousedown'', showTopBar);
-
-/* Ensure top-bar stays visible when input, buttons, or select is focused */
 saveInput.addEventListener(''focus'', showTopBar);
 saveButton.addEventListener(''focus'', showTopBar);
 loadSelect.addEventListener(''focus'', showTopBar);
 clearButton.addEventListener(''focus'', showTopBar);
 deleteButton.addEventListener(''focus'', showTopBar);
 
-/* Touch event handling for drag gestures */
+/* Touch handling */
 let touchStartY = null;
 let touchStartedInTrigger = false;
 
@@ -289,41 +274,40 @@ document.addEventListener(''touchend'', (event) => {
   const touchEndY = touch.clientY;
   const isSmallScreen = window.innerWidth <= 768;
   const topThreshold = isSmallScreen ? 15 : 20;
+
   if (touchStartedInTrigger && touchEndY > touchStartY) {
     event.preventDefault();
-    showTopBar();
+    showTopBarAndPushCenter();
   } else if (touchEndY <= topThreshold && touchStartY > touchEndY && document.activeElement !== saveInput) {
     event.preventDefault();
     clearTimeout(hideTimeout);
-    topBar.classList.add(''hidden'');
+    hideTopBarAndResetCenter();
   }
   touchStartY = null;
   touchStartedInTrigger = false;
 });
 
-/* Mouse-based events */
+/* Mouse events */
 hoverTrigger.addEventListener(''mouseenter'', showTopBar);
 topBar.addEventListener(''mouseenter'', showTopBar);
 topBar.addEventListener(''mouseleave'', hideTopBar);
 document.addEventListener(''mouseleave'', hideTopBar);
 
-/* Hide top-bar immediately on click outside, unless saveInput is focused */
+/* Klick utanför → omedelbar döljning */
 document.addEventListener(''click'', (event) => {
   if (!topBar.contains(event.target) && document.activeElement !== saveInput) {
     clearTimeout(hideTimeout);
-    topBar.classList.add(''hidden'');
+    hideTopBarAndResetCenter();
   }
 });
 
-/* Update hover-trigger after dropdown, save, or delete changes */
+/* Update trigger after changes */
 loadSelect.addEventListener(''change'', updateTrigger);
 saveButton.addEventListener(''click'', updateTrigger);
 deleteButton.addEventListener(''click'', updateTrigger);
 
-/* Initially hide the top-bar */
+/* Initially hide */
 topBar.className = ''top-bar hidden no-transition'';
-
-/* Initialize dropdown with existing saves */
 updateDropdown();',
 '.o-ui .top-center {
   top: 1rem;
