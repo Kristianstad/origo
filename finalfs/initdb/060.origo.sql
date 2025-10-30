@@ -325,7 +325,16 @@ topBar.className = ''top-bar hidden no-transition'';
 
 /* Initialize dropdown with existing saves */
 updateDropdown();',
-'.top-bar {
+'.o-ui .top-center {
+  top: 1rem;
+  transition: top 0.3s ease-in-out;
+}
+
+.o-ui .top-center.top-bar-visible {
+  top: 3.5rem;
+}
+
+.top-bar {
   position: fixed;
   top: 0;
   left: 50%;
