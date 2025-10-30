@@ -868,6 +868,17 @@ if (bl != null)
 		origo.api().getLayer(bl).setVisible(true);
 	}
 }');
+INSERT INTO map_configs.plugins(plugin_id,abstract,onload) VALUES ('urlhideallmodules#1', 'Gömmer de flesta (alla?) kontroller om urlen innehåller parametern hideallmodules=true.',
+'const hideallmodules = getUrlParam(''hideallmodules'');
+if (hideallmodules == "true")
+{
+	origo.api().getControlByName("search").hide();
+	origo.api().getControlByName("home").hide();
+	origo.api().getControlByName("mapmenu").hide();
+	origo.api().getControlByName("legend").hide();
+	origo.api().getControlByName("geoposition").hide();
+	origo.api().getControlByName("measure").hide();
+}');
 
 CREATE TABLE map_configs.footers
 (
