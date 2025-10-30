@@ -739,7 +739,7 @@ if (poim) {
 		console.warn("Event listener: Element with ID ''hjl'' not found.");
 	}
 }');
-INSERT INTO map_configs.plugins(plugin_id,abstract,onload) VALUES ('urlmarker#1', 'Lägger till en eller flera markers i kartan utefter givna url-parametrar. Url-parametrar som kan ges är xyi<nummer>=<x-koordinat>,<y-koordinat>,<infotext> (tex. xyi1=14.1529,56.0354,txt1&xyi2=14.2529,56.1354,p2). Det finns även några legacy-parametrar, xym och diainfo (tex. xym=14.0953039,56.0017954&diainfo=Vä%20bibliotek). Koordinater anges i EPSG:4326 eller EPSG:3008. Sätter man bara ut en marker kommer denna att visas med info-popup om man inte även anger parametern hideSearchInfo=true. Urlmarker kan kombineras med urlzoomtolayer, men då måste urlzoomtolayer läggas efter urlmarker i plugins-listan.',
+INSERT INTO map_configs.plugins(plugin_id,abstract,onload) VALUES ('urlmarker#1', 'Lägger till en eller flera markers i kartan utefter givna url-parametrar. Url-parametrar som kan ges är xyi<nummer>=<x-koordinat>,<y-koordinat>,<infotext> (tex. xyi1=14.1529,56.0354,txt1&xyi2=14.2529,56.1354,p2). Det finns även några legacy-parametrar, xym och diainfo (tex. xym=14.0953039,56.0017954&diainfo=Vä%20bibliotek). Koordinater anges i EPSG:4326 eller EPSG:3008. Sätter man bara ut en marker kommer denna att visas med info-popup om man inte även anger parametern hideSearchInfo=true. Urlmarker kan kombineras med pluginet urlzoomtolayer (ange zoomToLayer=markerLayer), men då måste urlzoomtolayer läggas efter urlmarker i plugins-listan.',
 'const xym = getUrlParam(''xym'');
 const xyiarray=[];
 if (xym != null)
@@ -844,6 +844,28 @@ if (xyiarray.length > 0)
 				}
 			}, hideTimeoutDuration);
 		});
+	}
+}');
+INSERT INTO map_configs.plugins(plugin_id,abstract,onload) VALUES ('urllayers#1', 'Tänder overlay-lager listade i url-parametern ol och/eller ett bakgrundslager angivet som url-parametern bl. Lagren måste finnas i kartan och anges utan hash-suffix (tex. ol=nyko,deso&bl=turistkarta_nedtonad).',
+'let ol = getUrlParam(''ol'');
+const bl = getUrlParam(''bl'');
+if (ol != null)
+{
+	ol = ol.split(",");
+	for (let element of ol) {
+		if (origo.api().getLayer(element))
+		{
+			origo.api().getLayer(element).setVisible(true);
+		}
+	}
+}
+if (bl != null)
+{
+	let currentbl = origo.api().getLayersByProperty(''group'',''background'').filter((layer) => layer.get(''visible''))[0];
+	if (bl != currentbl.values_[''name''] && origo.api().getLayer(bl))
+	{
+		currentbl.setVisible(false);
+		origo.api().getLayer(bl).setVisible(true);
 	}
 }');
 
