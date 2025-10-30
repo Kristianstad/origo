@@ -891,6 +891,13 @@ if (center != null)
 	}
 	view.setCenter(jsoncenter);
 }');
+INSERT INTO map_configs.plugins(plugin_id,abstract,onload) VALUES ('queryzoom#1', 'Zoomar i kartan efter query-parametern zoom, tex. ?zoom=5 (hash-parametern #zoom fungerar som standard i Origo).',
+'const zoom = getUrlParam(''zoom'');
+if (zoom != null)
+{
+	let view = origo.api().getMap().getView();
+	view.setZoom(zoom);
+}');
 
 CREATE TABLE map_configs.footers
 (
