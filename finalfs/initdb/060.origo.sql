@@ -41,14 +41,59 @@ INSERT INTO map_configs.plugins(plugin_id,abstract,onload,css) VALUES ('layerfav
 '/* Generate document-specific prefix for localStorage keys */
 const docPrefix = location.pathname.replace(/[\\/\\]/g, ''_'') + ''_'';
 
-/* Create top-bar dynamically */
+/* AUTOSLÄCK-LÄGE */
+let autoClearMode = JSON.parse(localStorage.getItem(docPrefix + ''autoClearMode'') || ''false'');
+
+/* LÅST-LÄGE */
+let lockedMode = JSON.parse(localStorage.getItem(docPrefix + ''lockedMode'') || ''false'');
+
+/* Släckningsfunktion */
+const performClear = () => {
+  origo.api().getLayersByProperty(''visible'', true)
+    .filter((layer) => layer.get(''group'') != ''background'' && layer.get(''group'') != ''rit'' && layer.get(''name'') != ''measure'')
+    .forEach(layer => layer.setVisible(false));
+};
+
+/* Uppdatera släckknappens utseende */
+const updateClearButtonAppearance = () => {
+  if (autoClearMode) {
+    clearButton.classList.add(''auto-clear-active'');
+    clearButton.title = ''Släck alla lager - Autosläck PÅ'';
+  } else {
+    clearButton.classList.remove(''auto-clear-active'');
+    clearButton.title = ''Släck alla lager - Autosläck AV'';
+  }
+};
+
+/* Spara Autosläck */
+const saveAutoClearMode = () => {
+  localStorage.setItem(docPrefix + ''autoClearMode'', JSON.stringify(autoClearMode));
+};
+
+/* Spara Låst-läge */
+const saveLockedMode = () => {
+  localStorage.setItem(docPrefix + ''lockedMode'', JSON.stringify(lockedMode));
+};
+
+/* Skapa top-bar */
 const topBar = document.createElement(''div'');
 topBar.className = ''top-bar no-transition'';
 
-/* Create clear button with SVG icon */
+/* LÅSIKON – till vänster om släckknappen */
+const lockButton = document.createElement(''button'');
+lockButton.className = ''lock-button'';
+lockButton.title = ''Autostäng verktygsfältet Lagerfavoriter'';
+const lockSvg = document.createElementNS(''http://www.w3.org/2000/svg'', ''svg'');
+lockSvg.setAttribute(''width'', ''18'');
+lockSvg.setAttribute(''height'', ''18'');
+lockSvg.setAttribute(''viewBox'', ''0 0 24 24'');
+const lockPath = document.createElementNS(''http://www.w3.org/2000/svg'', ''path'');
+lockSvg.appendChild(lockPath);
+lockButton.appendChild(lockSvg);
+
+/* Släckknapp */
 const clearButton = document.createElement(''button'');
 clearButton.className = ''clear-button'';
-clearButton.title = ''Släck alla lager'';
 const clearSvgIcon = document.createElementNS(''http://www.w3.org/2000/svg'', ''svg'');
 clearSvgIcon.setAttribute(''width'', ''18'');
 clearSvgIcon.setAttribute(''height'', ''18'');
@@ -56,13 +101,41 @@ const clearUseIcon = document.createElementNS(''http://www.w3.org/2000/svg'', ''
 clearUseIcon.setAttributeNS(''http://www.w3.org/1999/xlink'', ''xlink:href'', ''#ic_visibility_off_24px'');
 clearSvgIcon.appendChild(clearUseIcon);
 clearButton.appendChild(clearSvgIcon);
+
+/* Enkelklick: släck */
 clearButton.onclick = () => {
-  origo.api().getLayersByProperty(''visible'', true)
-    .filter((layer) => layer.get(''group'') != ''background'' && layer.get(''group'') != ''rit'' && layer.get(''name'') != ''measure'')
-    .map(layer => layer.setVisible(false));
+  performClear();
 };
 
-/* Create dropdown for loading saved layers */
+/* Dubbelklick / långtryck: toggla Autosläck */
+let clickCount = 0;
+let clickTimer = null;
+clearButton.addEventListener(''click'', (e) => {
+  clickCount++;
+  if (clickCount === 1) {
+    clickTimer = setTimeout(() => clickCount = 0, 300);
+  } else if (clickCount === 2) {
+    clearTimeout(clickTimer);
+    clickCount = 0;
+    autoClearMode = !autoClearMode;
+    saveAutoClearMode();
+    updateClearButtonAppearance();
+  }
+});
+
+/* Långtryck på touch */
+let longPressTimer = null;
+clearButton.addEventListener(''touchstart'', (e) => {
+  e.preventDefault();
+  longPressTimer = setTimeout(() => {
+    autoClearMode = !autoClearMode;
+    saveAutoClearMode();
+    updateClearButtonAppearance();
+  }, 500);
+});
+clearButton.addEventListener(''touchend'', () => clearTimeout(longPressTimer));
+
+/* Dropdown */
 const loadSelect = document.createElement(''select'');
 loadSelect.title = ''Välj lagerfavorit att tända'';
 loadSelect.innerHTML = ''<option value="">Tänd lagerfavorit...</option>'';
@@ -75,10 +148,10 @@ const updateDropdown = () => {
   const savedIds = JSON.parse(localStorage.getItem(docPrefix + ''savedLayersIds'') || ''[]'');
   loadSelect.innerHTML = ''<option value="">Tänd lagerfavorit...</option>'';
   savedIds.forEach(id => {
-    const option = document.createElement(''option'');
-    option.value = id;
-    option.textContent = id;
-    loadSelect.appendChild(option);
+    const opt = document.createElement(''option'');
+    opt.value = id;
+    opt.textContent = id;
+    loadSelect.appendChild(opt);
   });
   updateSelectColor();
 };
@@ -86,24 +159,20 @@ const updateDropdown = () => {
 loadSelect.onchange = () => {
   const id = loadSelect.value;
   if (id) {
-    const savedLayers = localStorage.getItem(docPrefix + ''savedLayers_'' + id) || '''';
-    if (savedLayers) {
-      savedLayers.split('','').forEach(item => {
-        if (item) origo.api().getLayer(item).setVisible(true);
-      });
-    }
+    if (autoClearMode) performClear();
+    const saved = localStorage.getItem(docPrefix + ''savedLayers_'' + id) || '''';
+    saved.split('','').forEach(name => name && origo.api().getLayer(name)?.setVisible(true));
     loadSelect.value = '''';
     updateSelectColor();
   }
 };
 
-/* Create input for save ID */
+/* Input + Save + Delete */
 const saveInput = document.createElement(''input'');
 saveInput.type = ''text'';
 saveInput.placeholder = ''Lagerfavorit'';
 saveInput.title = ''Ange lagerfavorit att skapa, skriva över eller radera'';
 
-/* Create save button with SVG icon */
 const saveButton = document.createElement(''button'');
 saveButton.className = ''save-button'';
 saveButton.title = ''Spara/skriv över angiven lagerfavorit'';
@@ -116,23 +185,20 @@ saveSvgIcon.appendChild(saveUseIcon);
 saveButton.appendChild(saveSvgIcon);
 saveButton.onclick = () => {
   const id = saveInput.value.trim();
-  if (id) {
-    const layersList = origo.api().getLayersByProperty(''visible'', true)
-      .filter((layer) => layer.get(''group'') != ''background'' && layer.get(''group'') != ''rit'' && layer.get(''name'') != ''measure'')
-      .map(layer => layer.getProperties()[''name''])
-      .join('','');
-    localStorage.setItem(docPrefix + ''savedLayers_'' + id, layersList);
-    const savedIds = JSON.parse(localStorage.getItem(docPrefix + ''savedLayersIds'') || ''[]'');
-    if (!savedIds.includes(id)) {
-      savedIds.push(id);
-      localStorage.setItem(docPrefix + ''savedLayersIds'', JSON.stringify(savedIds));
-    }
-    updateDropdown();
-    saveInput.value = '''';
+  if (!id) return;
+  const layers = origo.api().getLayersByProperty(''visible'', true)
+    .filter(l => l.get(''group'') !== ''background'' && l.get(''group'') !== ''rit'' && l.get(''name'') !== ''measure'')
+    .map(l => l.getProperties().name).join('','');
+  localStorage.setItem(docPrefix + ''savedLayers_'' + id, layers);
+  const ids = JSON.parse(localStorage.getItem(docPrefix + ''savedLayersIds'') || ''[]'');
+  if (!ids.includes(id)) {
+    ids.push(id);
+    localStorage.setItem(docPrefix + ''savedLayersIds'', JSON.stringify(ids));
   }
+  updateDropdown();
+  saveInput.value = '''';
 };
 
-/* Create delete button with SVG icon */
 const deleteButton = document.createElement(''button'');
 deleteButton.className = ''delete-button'';
 deleteButton.title = ''Radera angiven lagerfavorit'';
@@ -145,22 +211,21 @@ deleteSvgIcon.appendChild(deleteUseIcon);
 deleteButton.appendChild(deleteSvgIcon);
 deleteButton.onclick = () => {
   const id = saveInput.value.trim();
-  if (id) {
-    localStorage.removeItem(docPrefix + ''savedLayers_'' + id);
-    const savedIds = JSON.parse(localStorage.getItem(docPrefix + ''savedLayersIds'') || ''[]'');
-    const updatedIds = savedIds.filter(savedId => savedId !== id);
-    localStorage.setItem(docPrefix + ''savedLayersIds'', JSON.stringify(updatedIds));
-    updateDropdown();
-    saveInput.value = '''';
-  }
+  if (!id) return;
+  localStorage.removeItem(docPrefix + ''savedLayers_'' + id);
+  const ids = JSON.parse(localStorage.getItem(docPrefix + ''savedLayersIds'') || ''[]'');
+  localStorage.setItem(docPrefix + ''savedLayersIds'', JSON.stringify(ids.filter(x => x !== id)));
+  updateDropdown();
+  saveInput.value = '''';
 };
 
-/* Create containers for left and right groups */
+/* Grupper */
 const leftGroup = document.createElement(''div'');
 leftGroup.className = ''group-container'';
 const rightGroup = document.createElement(''div'');
 rightGroup.className = ''group-container'';
 
+leftGroup.appendChild(lockButton);
 leftGroup.appendChild(clearButton);
 leftGroup.appendChild(loadSelect);
 rightGroup.appendChild(saveInput);
@@ -171,7 +236,7 @@ topBar.appendChild(leftGroup);
 topBar.appendChild(rightGroup);
 document.body.appendChild(topBar);
 
-/* Create hover trigger area */
+/* Hover-trigger */
 const hoverTrigger = document.createElement(''div'');
 hoverTrigger.className = ''hover-trigger'';
 document.body.appendChild(hoverTrigger);
@@ -190,96 +255,87 @@ setTimeout(() => {
   topBar.className = topBar.className.replace(''no-transition'', '''');
 }, 0);
 
-/* Auto-hide functionality */
+/* Uppdatera lås-ikon */
+const updateLockButton = () => {
+  if (lockedMode) {
+    /* LÅST – stängt hänglås */
+    lockPath.setAttribute(''d'', ''M18 8h-1V6c0-2.76-2.24-5-5-5s-5 2.24-5 5v2H6c-1.1 0-2 .9-2 2v10c0 1.1 .9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z'');
+    lockButton.classList.add(''locked'');
+    lockButton.title = ''Aktivera autostäng för verktygsfältet Lagerfavoriter'';
+  } else {
+    /* OLÅST – öppen bygel */
+    lockPath.setAttribute(''d'', ''M19 10h-1V7c0-2.76-2.24-5-5-5s-5 2.24-5 5h2c0-1.66 1.34-3 3-3s3 1.34 3 3v3H5c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-8c0-1.1-.9-2-2-2zm-7 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z'');
+    lockButton.classList.remove(''locked'');
+    lockButton.title = ''Lås fast verktygsfältet Lagerfavoriter'';
+  }
+};
+
+/* Klick på lås-ikon */
+lockButton.onclick = () => {
+  lockedMode = !lockedMode;
+  saveLockedMode();
+  updateLockButton();
+  if (lockedMode) showTopBarAndPushCenter();
+};
+
+/* AUTO-DÖLJ */
 let hideTimeout = null;
 let lastMouseX = null;
 let lastMouseY = null;
+document.addEventListener(''mousemove'', e => { lastMouseX = e.clientX; lastMouseY = e.clientY; });
 
-document.addEventListener(''mousemove'', (event) => {
-  lastMouseX = event.clientX;
-  lastMouseY = event.clientY;
-});
-
-/* Funktion: Dölj top-bar och flytta upp .top-center */
 const hideTopBarAndResetCenter = () => {
+  if (lockedMode) return;
   topBar.classList.add(''hidden'');
   document.querySelector(''.o-ui .top-center'')?.classList.remove(''top-bar-visible'');
 };
 
-/* Funktion: Visa top-bar och flytta ner .top-center */
 const showTopBarAndPushCenter = () => {
   clearTimeout(hideTimeout);
   topBar.classList.remove(''hidden'');
   document.querySelector(''.o-ui .top-center'')?.classList.add(''top-bar-visible'');
 };
 
-/* Show top-bar */
 const showTopBar = showTopBarAndPushCenter;
 
-/* Hide top-bar with delay */
-const hideTopBar = (event) => {
-  if (event && event.relatedTarget && (topBar.contains(event.relatedTarget) || hoverTrigger.contains(event.relatedTarget))) {
-    return;
-  }
-  if (document.activeElement === saveInput || document.activeElement === saveButton || 
-      document.activeElement === loadSelect || document.activeElement === clearButton ||
-      document.activeElement === deleteButton) {
-    return;
-  }
+const hideTopBar = e => {
+  if (lockedMode) return;
+  if (e?.relatedTarget && (topBar.contains(e.relatedTarget) || hoverTrigger.contains(e.relatedTarget))) return;
+  if ([saveInput, saveButton, loadSelect, clearButton, deleteButton, lockButton].includes(document.activeElement)) return;
   hideTimeout = setTimeout(() => {
-    if (lastMouseX !== null && lastMouseY !== null) {
-      const mouseOverElement = document.elementFromPoint(lastMouseX, lastMouseY);
-      if (mouseOverElement && (topBar.contains(mouseOverElement) || hoverTrigger.contains(mouseOverElement))) {
-        return;
-      }
-    }
-    if (document.activeElement === saveInput || document.activeElement === saveButton || 
-        document.activeElement === loadSelect || document.activeElement === clearButton ||
-        document.activeElement === deleteButton) {
-      return;
-    }
+    if (lastMouseX !== null && document.elementFromPoint(lastMouseX, lastMouseY)?.closest(''.top-bar, .hover-trigger'')) return;
     hideTopBarAndResetCenter();
   }, 1000);
 };
 
-/* Cancel hide on mouseenter */
-clearButton.addEventListener(''mouseenter'', showTopBar);
-loadSelect.addEventListener(''mouseenter'', showTopBar);
-saveInput.addEventListener(''mouseenter'', showTopBar);
-saveButton.addEventListener(''mouseenter'', showTopBar);
-deleteButton.addEventListener(''mouseenter'', showTopBar);
-topBar.addEventListener(''mousemove'', showTopBar);
+/* Händelser */
+[clearButton, loadSelect, saveInput, saveButton, deleteButton, lockButton].forEach(el => {
+  el.addEventListener(''mouseenter'', showTopBar);
+  el.addEventListener(''focus'', showTopBar);
+});
 loadSelect.addEventListener(''mousedown'', showTopBar);
 saveInput.addEventListener(''mousedown'', showTopBar);
-saveInput.addEventListener(''focus'', showTopBar);
-saveButton.addEventListener(''focus'', showTopBar);
-loadSelect.addEventListener(''focus'', showTopBar);
-clearButton.addEventListener(''focus'', showTopBar);
-deleteButton.addEventListener(''focus'', showTopBar);
+topBar.addEventListener(''mousemove'', showTopBar);
+lockButton.addEventListener(''mouseenter'', showTopBar);
 
-/* Touch handling */
 let touchStartY = null;
 let touchStartedInTrigger = false;
-
-document.addEventListener(''touchstart'', (event) => {
-  const touch = event.touches[0];
-  touchStartY = touch.clientY;
-  const triggerRect = hoverTrigger.getBoundingClientRect();
-  touchStartedInTrigger = touch.clientY >= triggerRect.top && touch.clientY <= triggerRect.bottom &&
-                          touch.clientX >= triggerRect.left && touch.clientX <= triggerRect.right;
+document.addEventListener(''touchstart'', e => {
+  const t = e.touches[0];
+  touchStartY = t.clientY;
+  const r = hoverTrigger.getBoundingClientRect();
+  touchStartedInTrigger = t.clientY >= r.top && t.clientY <= r.bottom && t.clientX >= r.left && t.clientX <= r.right;
 });
-
-document.addEventListener(''touchend'', (event) => {
-  const touch = event.changedTouches[0];
-  const touchEndY = touch.clientY;
-  const isSmallScreen = window.innerWidth <= 768;
-  const topThreshold = isSmallScreen ? 15 : 20;
-
-  if (touchStartedInTrigger && touchEndY > touchStartY) {
-    event.preventDefault();
+document.addEventListener(''touchend'', e => {
+  if (lockedMode) return;
+  const t = e.changedTouches[0];
+  const endY = t.clientY;
+  const threshold = window.innerWidth <= 768 ? 15 : 20;
+  if (touchStartedInTrigger && endY > touchStartY) {
+    e.preventDefault();
     showTopBarAndPushCenter();
-  } else if (touchEndY <= topThreshold && touchStartY > touchEndY && document.activeElement !== saveInput) {
-    event.preventDefault();
+  } else if (endY <= threshold && touchStartY > endY && document.activeElement !== saveInput) {
+    e.preventDefault();
     clearTimeout(hideTimeout);
     hideTopBarAndResetCenter();
   }
@@ -287,28 +343,34 @@ document.addEventListener(''touchend'', (event) => {
   touchStartedInTrigger = false;
 });
 
-/* Mouse events */
 hoverTrigger.addEventListener(''mouseenter'', showTopBar);
 topBar.addEventListener(''mouseenter'', showTopBar);
 topBar.addEventListener(''mouseleave'', hideTopBar);
 document.addEventListener(''mouseleave'', hideTopBar);
 
-/* Klick utanför → omedelbar döljning */
-document.addEventListener(''click'', (event) => {
-  if (!topBar.contains(event.target) && document.activeElement !== saveInput) {
+document.addEventListener(''click'', e => {
+  if (lockedMode) return;
+  if (!topBar.contains(e.target) && document.activeElement !== saveInput) {
     clearTimeout(hideTimeout);
     hideTopBarAndResetCenter();
   }
 });
 
-/* Update trigger after changes */
-loadSelect.addEventListener(''change'', updateTrigger);
-saveButton.addEventListener(''click'', updateTrigger);
-deleteButton.addEventListener(''click'', updateTrigger);
+[loadSelect, saveButton, deleteButton].forEach(el => el.addEventListener(''change'', updateTrigger));
+[saveButton, deleteButton].forEach(el => el.addEventListener(''click'', updateTrigger));
 
-/* Initially hide */
+/* Initiera */
 topBar.className = ''top-bar hidden no-transition'';
-updateDropdown();',
+updateDropdown();
+updateClearButtonAppearance();
+updateLockButton();
+
+/* VISA TOP-BAR DIREKT OM LÅST */
+if (lockedMode) {
+  setTimeout(() => {
+    showTopBarAndPushCenter();
+  }, 50); // Liten fördröjning för att säkerställa DOM-uppdatering
+}',
 '.o-ui .top-center {
   top: 1rem;
   transition: top 0.3s ease-in-out;
@@ -523,7 +585,7 @@ updateDropdown();',
   }
 
   .hover-trigger {
-    height: 15px;
+    height: 30px;
   }
 }
 
@@ -564,6 +626,75 @@ updateDropdown();',
   .top-bar input:focus {
     outline: none; /* Remove focus outline */
     border: none; /* Ensure no border on focus */
+  }
+}
+
+/* Inverterade färger när Autosläck är PÅ */
+.top-bar button.clear-button.auto-clear-active {
+  background-color: #333 !important;
+  color: #fff;
+}
+
+.top-bar button.clear-button.auto-clear-active svg {
+  fill: #fff !important;
+}
+
+.top-bar button.clear-button.auto-clear-active:hover {
+  background-color: #555 !important;
+}
+
+/* .top-center (oförändrat) */
+.o-ui .top-center {
+  top: 1rem;
+  transition: top 0.3s ease-in-out;
+}
+.o-ui .top-center.top-bar-visible {
+  top: 3.5rem;
+}
+
+/* LÅSIKON – till vänster om släckknappen */
+.top-bar .lock-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0.5rem;
+  font-size: 16px;
+  cursor: pointer;
+  border: none;
+  background-color: #f5f5f5;
+  color: #000;
+  border-radius: 50%;
+  box-sizing: border-box;
+  min-width: 34px;
+}
+
+.top-bar .lock-button:hover {
+  background-color: #e0e0e0;
+}
+
+.top-bar .lock-button svg {
+  width: 18px;
+  height: 18px;
+  fill: #4a4a4a;
+}
+
+/* INVERTERADE FÄRGER I LÅST LÄGE */
+.top-bar .lock-button.locked {
+  background-color: #333 !important;
+}
+
+.top-bar .lock-button.locked svg {
+  fill: #fff !important;
+}
+
+.top-bar .lock-button.locked:hover {
+  background-color: #555 !important;
+}
+
+/* DÖLJ LÅSKNAPP PÅ SMÅ SKÄRMAR */
+@media screen and (max-width: 768px) {
+  .top-bar .lock-button {
+    display: none !important;
   }
 }');
 INSERT INTO map_configs.plugins(plugin_id,abstract,onload) VALUES ('urlzoomtolayer#1', 'Zoomar till lagret angiven i url-parametern zoomToLayer. Lagret måste finnas i kartan och tänds automatiskt, namnet anges utan hash-suffix. För att zooma till markers sätt zoomToLayer=markerLayer (obs! denna plugin måste läggas efter den/de plugins som skapar markers).',
