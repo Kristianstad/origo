@@ -5,7 +5,7 @@
 ARG SaM_REPO=${SaM_REPO:-ghcr.io/kristianstad/secure_and_minimal}
 ARG ALPINE_VERSION=${ALPINE_VERSION:-3.22}
 ARG IMAGETYPE="application"
-ARG ORIGO_VERSION="snapshot251120"
+ARG ORIGO_VERSION="snapshot251119"
 ARG POSTGRESQL_VERSION="15"
 ARG PHP_VERSION="82"
 ARG BASEIMAGE="ghcr.io/kristianstad/origo:$ORIGO_VERSION"
