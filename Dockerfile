@@ -11,7 +11,7 @@ ARG BASEIMAGE="ghcr.io/kristianstad/nginx:$NGINX_VERSION"
 ARG CONTENTIMAGE1="node:alpine$ALPINE_VERSION"
 ARG CONTENTDESTINATION1="/"
 #ARG CLONEGITS="https://github.com/origo-map/origo.git"
-ARG CLONEGITS="https://github.com/origo-map/origo.git -b hutest"
+ARG CLONEGITS="https://github.com/origo-map/origo.git -b snapshot251119"
 #ARG DOWNLOADS="https://github.com/origo-map/origo/archive/refs/tags/v$ORIGO_VERSION.zip"
 ARG BUILDDEPS="python3 py3-libsass"
 ARG BUILDCMDS=\
@@ -19,7 +19,7 @@ ARG BUILDCMDS=\
 "   cd origo "\
 "&& rm -rf node_modules package-lock.json "\
 "&& npm install "\
-"&& npm --depth 8 update "\
+#"&& npm --depth 8 update "\
 "&& npm run prebuild-sass "\
 "&& npm run build "\
 "&& sed -i 's/origo.js/origo.min.js/' build/index.html "\
