@@ -1125,7 +1125,7 @@ INSERT INTO map_configs.layers(layer_id,title,type,visible,show_icon,icon,source
 CREATE TABLE map_configs.maps
 (
     map_id character varying COLLATE pg_catalog."default" NOT NULL,
-    controls character varying[] COLLATE pg_catalog."default" NOT NULL DEFAULT '{home#1,mapmenu#1,sharemap#1,geoposition#1,print#1,about#1,link#1,legend#1,position#1,measure#1}'::character varying[],
+    controls character varying[] COLLATE pg_catalog."default" DEFAULT '{home#1,mapmenu#1,sharemap#1,geoposition#1,print#1,about#1,link#1,legend#1,position#1,measure#1}'::character varying[],
     mapgrid boolean NOT NULL DEFAULT true,
     projectioncode character varying COLLATE pg_catalog."default" NOT NULL DEFAULT 'EPSG:3857'::character varying,
     extent box NOT NULL DEFAULT '(-20026376.39,-20048966.10),(20026376.39,20048966.10)'::box,
