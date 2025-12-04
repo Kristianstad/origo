@@ -1339,6 +1339,9 @@ CREATE TABLE map_configs.mapstates
     abstract character varying COLLATE pg_catalog."default",
     info character varying COLLATE pg_catalog."default",
     lastuse timestamp without time zone,
+	state json,
+    created timestamp without time zone,
+    preserve boolean,
     CONSTRAINT mapstates_pkey PRIMARY KEY (mapstate_id)
 );
 
