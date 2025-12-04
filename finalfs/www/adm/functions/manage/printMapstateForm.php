@@ -13,8 +13,12 @@
 		$sizePosts=sizePosts($inheritPosts);
 		echo '<div><div class="printXFormDiv"><form method="post">';
 		printTextarea($mapstate, 'mapstate_id', 'textareaMedium', 'Id:', in_array('mapstate_id', $helps), $sizePosts, true);
-		printTextarea($mapstate, 'lastuse', 'textareaMedium', 'Senast använd:', in_array('lastuse', $helps), $sizePosts, true);
 		printTextarea($mapstate, 'abstract', 'textareaLarge', 'Beskrivning:', in_array('abstract', $helps), $sizePosts);
+		printTextarea($mapstate, 'mapurl', 'textareaLarge', 'Kart-url:', in_array('mapurl', $helps), $sizePosts);
+		printTextarea($mapstate, 'state', 'textareaLarge', 'Mapstate:', in_array('state', $helps), $sizePosts);
+		printTextarea($mapstate, 'created', 'textareaMedium', 'Skapad:', in_array('created', $helps), $sizePosts, true);
+		printTextarea($mapstate, 'lastuse', 'textareaMedium', 'Senast använd:', in_array('lastuse', $helps), $sizePosts, true);
+		printUpdateSelect($mapstate, array('preserve'=>array("f", "t")), 'miniSelect', 'Rensas ej:', in_array('preserve', $helps));
 		printTextarea($mapstate, 'info', 'textareaLarge', 'Info:', in_array('info', $helps), $sizePosts);
 		printHiddenInputs($inheritPosts);
 		echo '<div class="buttonDiv">';
@@ -26,5 +30,3 @@
 		printDeleteButton($mapstate, $deleteConfirmStr, $inheritPosts);
 		echo '</div></form></div></div>';
 	}
-
-?>
