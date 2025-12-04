@@ -19,6 +19,18 @@ function createMapState($dbh): never
     }
 
     $state_json = pg_escape_literal($dbh, json_encode($input, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+	
+    $referer = $_SERVER['HTTP_REFERER'] ?? null;
+
+    if ($referer !== null) {
+        $referer = parse_url($referer, PHP_URL_SCHEME) . '://' .
+                   parse_url($referer, PHP_URL_HOST) .
+                   parse_url($referer, PHP_URL_PATH);
+    }
+
+    $referer_literal = $referer === null 
+        ? 'NULL' 
+        : pg_escape_literal($dbh, $referer);
 
     // Generera UUID v4 i PHP – kompatibelt med character varying
     $new_id = sprintf(
@@ -32,7 +44,7 @@ function createMapState($dbh): never
 
     $table = getMapStatesTable();
 
-    $sql = "INSERT INTO $table (mapstate_id, state, created) VALUES ('$new_id', $state_json, NOW()) RETURNING mapstate_id";
+    $sql = "INSERT INTO $table (mapstate_id, state, created, mapurl) VALUES ('$new_id', $state_json, NOW(), $referer_literal) RETURNING mapstate_id";
 
     $result = pg_query($dbh, $sql);
 
@@ -43,7 +55,6 @@ function createMapState($dbh): never
     }
 
     $row = pg_fetch_assoc($result);
-    // VIKTIGT: Origo förväntar sig "mapStateId", inte "id"
     echo json_encode(['mapStateId' => $row['mapstate_id']]);
     exit;
 }
