@@ -1,0 +1,49 @@
+<?php
+// www/adm/functions/mapstate/createMapState.php
+// Returns mapStateId – exactly as Origo frontend expects
+
+function createMapState($dbh): never
+{
+    $input = json_decode(file_get_contents('php://input'), true);
+
+    if ($input === null && json_last_error() !== JSON_ERROR_NONE) {
+        http_response_code(400);
+        echo json_encode(['error' => 'Ogiltig JSON']);
+        exit;
+    }
+
+    if (!is_array($input)) {
+        http_response_code(400);
+        echo json_encode(['error' => 'Ogiltigt karttillstånd']);
+        exit;
+    }
+
+    $state_json = pg_escape_literal($dbh, json_encode($input, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+
+    // Generera UUID v4 i PHP – kompatibelt med character varying
+    $new_id = sprintf(
+        '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
+        mt_rand(0, 0xffff), mt_rand(0, 0xffff),
+        mt_rand(0, 0xffff),
+        mt_rand(0, 0x0fff) | 0x4000,
+        mt_rand(0, 0x3fff) | 0x8000,
+        mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
+    );
+
+    $table = getMapStatesTable();
+
+    $sql = "INSERT INTO $table (mapstate_id, state, created) VALUES ('$new_id', $state_json, NOW()) RETURNING mapstate_id";
+
+    $result = pg_query($dbh, $sql);
+
+    if (!$result) {
+        http_response_code(500);
+        echo json_encode(['error' => 'Kunde inte spara mapstate']);
+        exit;
+    }
+
+    $row = pg_fetch_assoc($result);
+    // VIKTIGT: Origo förväntar sig "mapStateId", inte "id"
+    echo json_encode(['mapStateId' => $row['mapstate_id']]);
+    exit;
+}
