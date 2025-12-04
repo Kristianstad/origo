@@ -313,41 +313,9 @@
 						return urlParams.get(param) ?? hashParams.get(param);
 					}
 					let origo;
+					let origoConfig = {$json};
+					origo = Origo(origoConfig);
 		HERE;
-		//const origoConfig = {$json}; Funkar ej med mapstate?
-		if (isset($_GET['getHtml']) && $_GET['getHtml'] == 'y')
-		{
-			$mapJsInit=$mapJsInit. <<<HERE
-
-						const origoConfig = {$json};
-						origo = Origo(origoConfig);
-
-			HERE;
-		}
-		else
-		{
-			$mapJsInit=$mapJsInit. <<<HERE
-
-						const map = urlParams.get('map');
-						if (map != null)
-						{
-							origo = Origo(map.replace('#', '%23') + '.json');
-						}
-						else
-						{
-							const htmlFileMatch = document.location.pathname.match(/([^\/]+)\.html$/i);
-							if (htmlFileMatch)
-							{
-								origo = Origo(htmlFileMatch[1] + '.json');
-							}
-							else
-							{
-								origo = Origo('index.json');
-							}
-						}
-
-			HERE;
-		}
 		if (!empty($mapJs))
 		{
 			$mapJs=$mapJsInit.$mapJs;
@@ -549,4 +517,3 @@
 			defineFileConstant('RESTRICTEDLAYERS', $restrictedLayers);
 		}
 	}
-?>
