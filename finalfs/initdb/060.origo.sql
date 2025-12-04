@@ -1342,6 +1342,7 @@ CREATE TABLE map_configs.mapstates
 	state json,
     created timestamp without time zone,
     preserve boolean,
+	mapurl character varying COLLATE pg_catalog."default",
     CONSTRAINT mapstates_pkey PRIMARY KEY (mapstate_id)
 );
 
