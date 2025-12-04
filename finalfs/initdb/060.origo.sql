@@ -1233,7 +1233,7 @@ div.ol-swipe.ol-unselectable.ol-control button {
 
 /*# sourceMappingURL=swiper.css.map */
 ',
-'/plugins/swiper/swiper.min.js'
+'/plugins/swiper/js/swiper.min.js'
 );
 
 CREATE TABLE map_configs.footers
