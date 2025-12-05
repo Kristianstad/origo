@@ -98,9 +98,9 @@ ENV VAR_PHP_VERSION="$PHP_VERSION" \
     VAR_param_timezone="'UTC'" \
     VAR_server15_index="index.html manage.php index.php" \
 # Radera nedanstående rader efter nästa kristianstad/nginx-uppdatering
-    VAR_server17_gzip_static="on" \
-    VAR_server18_brotli="on" \
-    VAR_server19_brotli_static="on"
+    VAR_server17_brotli="on" \
+    VAR_server18_brotli_static="on" \
+    VAR_server19_gzip_static="on" \
 #
     VAR_serversub02_location="/adm { auth_basic 'Administrator’s Area'; auth_basic_user_file /etc/nginx/.htpasswd; }" \
     VAR_serversub03_location="~ \\.php\$ { fastcgi_param SCRIPT_FILENAME \\\$document_root\\\$fastcgi_script_name; fastcgi_param SCRIPT_NAME \\\$fastcgi_script_name; include fastcgi.conf; fastcgi_pass unix:\$VAR_SOCKET_FILE; fastcgi_buffers 32 32k; fastcgi_buffer_size 16k; fastcgi_busy_buffers_size 64k; }" \
