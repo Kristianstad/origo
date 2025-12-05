@@ -52,9 +52,9 @@ COPY --from=build /finalfs /
 # =========================================================================
 ENV VAR_ORIGO_CONFIG_DIR="/etc/origo" \
 # Radera nedanstående rader efter nästa kristianstad/nginx-uppdatering
-    VAR_server17_gzip_static="on" \
-    VAR_server18_brotli="on" \
-    VAR_server19_brotli_static="on"
+    VAR_server17_brotli="on" \
+    VAR_server18_brotli_static="on" \
+    VAR_server19_gzip_static="on"
 
 # Generic template (don't edit) <BEGIN>
 USER starter
