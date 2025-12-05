@@ -96,7 +96,7 @@ ENV VAR_PHP_VERSION="$PHP_VERSION" \
     VAR_param_unix_socket_directories="'/var/run/postgresql'" \
     VAR_param_listen_addresses="'*'" \
     VAR_param_timezone="'UTC'" \
-    VAR_server15_index="index.html manage.php index.php" \
+    VAR_server16_index="index.html manage.php index.php" \
 # Radera nedanstående rader efter nästa kristianstad/nginx-uppdatering
     VAR_server17_brotli="on" \
     VAR_server18_brotli_static="on" \
