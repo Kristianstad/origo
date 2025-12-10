@@ -16,7 +16,7 @@
 		}
 		require("./constants/multiselectables.php");
 		$configParamValue=targetConfigParam($fullTarget, $configParam);
-		if (preg_match('/^\{(("[[:alnum:]åäöÅÄÖ=\-\+#_\:\.\/\?\&]+([[:space:]][[:alnum:]åäöÅÄÖ=\-\+#_\:\.\/\?\&]+)*"|[[:alnum:]åäöÅÄÖ=\-\+#_\:\.\/\?\&]*),?)*\}$/', $configParamValue))
+		if (preg_match('/^\{(("[[:alnum:]åäöÅÄÖ=\-\+#_\:\.\/\?\&\(\)]+([[:space:]][[:alnum:]åäöÅÄÖ=\-\+#_\:\.\/\?\&\(\)]+)*"|[[:alnum:]åäöÅÄÖ=\-\+#_\:\.\/\?\&\(\)]*),?)*\}$/', $configParamValue))
 		{
 			$configParamValue=str_replace('"', '', trim($configParamValue, '{}'));
 		}
@@ -67,5 +67,3 @@
 		}
 		echo '</span><wbr>';
 	}
-
-?>
