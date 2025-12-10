@@ -3,10 +3,10 @@
 # =========================================================================
 # ARGs (can be passed to Build/Final) <BEGIN>
 ARG SaM_REPO=${SaM_REPO:-ghcr.io/kristianstad/secure_and_minimal}
-ARG ALPINE_VERSION=${ALPINE_VERSION:-3.21}
+ARG ALPINE_VERSION=${ALPINE_VERSION:-3.22}
 ARG IMAGETYPE="application"
-ARG ORIGO_VERSION="2.9.0"
-ARG NGINX_VERSION="1.26.3"
+ARG ORIGO_VERSION="2.10.0"
+ARG NGINX_VERSION="1.28.0-r3"
 ARG BASEIMAGE="ghcr.io/kristianstad/nginx:$NGINX_VERSION"
 ARG CONTENTIMAGE1="node:alpine$ALPINE_VERSION"
 ARG CONTENTDESTINATION1="/"
@@ -50,11 +50,7 @@ COPY --from=build /finalfs /
 # =========================================================================
 # Final
 # =========================================================================
-ENV VAR_ORIGO_CONFIG_DIR="/etc/origo" \
-# Radera nedanstående rader efter nästa kristianstad/nginx-uppdatering
-    VAR_server17_brotli="on" \
-    VAR_server18_brotli_static="on" \
-    VAR_server19_gzip_static="on"
+ENV VAR_ORIGO_CONFIG_DIR="/etc/origo"
 
 # Generic template (don't edit) <BEGIN>
 USER starter
