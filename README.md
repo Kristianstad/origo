@@ -12,9 +12,9 @@ Try out the image in [Play with Docker](https://labs.play-with-docker.com/):
 
 ## Docker run examples
 ### If you just need Origo
-docker run --name origo -d -p 8080:8080 ghcr.io/kristianstad/origo:2.9.0
+docker run --name origo -d -p 8080:8080 ghcr.io/kristianstad/origo:2.10.0
 ### If you also want Kristianstad's management tool for Origo and metadata
-docker run --name origo -d -p 8080:8080 ghcr.io/kristianstad/origo:2.9.0-adm
+docker run --name origo -d -p 8080:8080 ghcr.io/kristianstad/origo:2.10.0-adm
 
 ## Environment variables
 ### Runtime variables with default value
