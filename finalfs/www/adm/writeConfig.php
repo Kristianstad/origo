@@ -249,31 +249,8 @@
 			$mapPlugins = pgArrayToPhp($map['plugins']);
 			addPlugins($mapPlugins, $mapCssFiles, $mapJsFiles, $mapCss, $mapJs, $mapOnload);
 		}
-		foreach ($mapCssFiles as $file)
-		{
-			if (filter_var($file, FILTER_VALIDATE_URL))
-			{
-				$css=file_get_contents($file);
-				if ($css === false)
-				{
-					require_once("./constants/proxyRoot.php");
-					echo '<script>alert("Filen '.$file.' kunde inte läsas! Ingen konfiguration skriven."); window.location.href="'.$proxyRoot.$_SERVER["REQUEST_URI"].'&badJson=y";</script>';
-					exit;
-				}
-				// Remove comments
- 				$css = preg_replace('!/\*[^*]*\*+([^/][^*]*\*+)*/!', '', $css);
- 				// Remove spaces before and after selectors, braces, and colons
- 				$css = preg_replace('/\s*([{}|:;,])\s+/', '$1', $css);
- 				// Remove remaining spaces and line breaks
- 				$css = str_replace(array("\r\n", "\r", "\n", "\t", '  ', '    ', '    '), '',$css);
-				$html=$html."\n\t\t<style>$css</style>";
-				unset($css);
-			}
-			else
-			{
-				$html=$html."\n\t\t<link href='$file' rel='stylesheet'>";
-			}
-		}
+
+		$html=$html.renderCssTags($mapCssFiles);
 		if (!empty($mapCss))
 		{
 			$cssMinifier = new Minify\CSS($mapCss);
@@ -282,24 +259,7 @@
 			unset($cssMinifier, $minifiedCss);
 		}
 		unset($mapCss);
-		foreach ($mapJsFiles as $file)
-		{
-			if (filter_var($file, FILTER_VALIDATE_URL))
-			{
-				$js=file_get_contents($file);
-				if ($js === false)
-				{
-					require_once("./constants/proxyRoot.php");
-					echo '<script>alert("Filen '.$file.' kunde inte läsas! Ingen konfiguration skriven."); window.location.href="'.$proxyRoot.$_SERVER["REQUEST_URI"].'&badJson=y";</script>';
-					exit;
-				}
-				$html=$html."\n\t\t<script>".$js."</script>";
-			}
-			else
-			{
-				$html=$html."\n\t\t<script src='$file'></script>";
-			}
-		}
+		$html=$html.renderJavaScriptTags($mapJsFiles);
 		$html=$html."\n". <<<HERE
 			</head>
 			<body>
