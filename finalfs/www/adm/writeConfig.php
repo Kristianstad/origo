@@ -41,9 +41,6 @@
 		mkdir("$configDir");
 		chmod("$configDir", 0770);
 	}
-	$htmlFile = "$configDir/index$mapNumber.html";
-	$jsonFile = "$configDir/index$mapNumber.json";
-	$sitemapFile = "$configDir/sitemap.xml";
 	ignore_user_abort(true);
 	$dbh=dbh();
 	$configTables=configTables($dbh);
@@ -438,24 +435,16 @@
 				  </url>
 				</urlset>
 				HERE;
+				$sitemapFile = "$configDir/sitemap.xml";
 				file_put_contents($sitemapFile, $sitemapStr);
 			}
 			$html=$html. <<<HERE
 				</body>
 			</html>
 			HERE;
-			file_put_contents($htmlFile, $html);
-			file_put_contents($jsonFile, $jsonPretty);
-			$htmlSymlink="$webRoot/$mapId.html";
-			$configSymlink="$webRoot/$mapId.json";
-			if (!file_exists("$htmlSymlink") && !is_link("$htmlSymlink"))
-			{
-				symlink("$htmlFile", "$htmlSymlink");
-			}
-			if (!file_exists("$configSymlink") && !is_link("$configSymlink"))
-			{
-				symlink("$jsonFile", "$configSymlink");
-			}
+			$filepathWithoutSuffix="$configDir/index$mapNumber";
+			publishMapFiles($filepathWithoutSuffix, $html, $jsonPretty, $mapId);
+			unset($filepathWithoutSuffix, $html, $jsonPretty);
 			markMapUnchanged($dbh, $mapId);
 			$restrictedLayers=array();
 			foreach ($layers as $layer)
