@@ -1,6 +1,5 @@
+<!DOCTYPE html>
 <?php
-	// Note! Can't begin with <!DOCTYPE html> because it causes the swiper-plugin to stop working in the preview.
-
 	// Tell browsers to not cache response
 	header("Cache-Control: must-revalidate, max-age=0, s-maxage=0, no-cache, no-store");
 
