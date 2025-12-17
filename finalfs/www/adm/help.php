@@ -4,6 +4,13 @@
 	<style>
 		<?php require("./styles/help.css"); ?>
 	</style>
+	<script>
+		window.onload = function() {
+			if (window.parent !== window) { // Make sure we are in an iframe
+				window.parent.postMessage({ action: 'resize' }, window.location.origin);
+			}
+		};
+	</script>
 </head>
 <body>
 	<?php
@@ -34,7 +41,7 @@
 				<a href="https://jsonchecker.com/" target="_blank">JSON Checker</a>
 			HERE;
 		}
-		echo "<br><button type=\"button\" onclick=\"window.parent.postMessage({}, window.location.origin);\">Stäng</button>";
+		echo "<br><button type=\"button\" onclick=\"window.parent.postMessage({ action: 'close' }, window.location.origin);\">Stäng</button>";
 	?>
 </body>
 </html>
