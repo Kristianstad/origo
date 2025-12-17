@@ -50,11 +50,11 @@
 		.textareaSmall	{ width:4em }
 		.textareaXSmall	{ width:2em; resize:none }
 		iframe			{ width:calc(100% - 0.5em); height:50px; max-height:20vh; border-style:solid none none none; border-width:2px; border-color:#607d8b; padding-bottom:0.3em; padding-top:0.3em; margin-bottom:0.5em }
-		.printXFormDiv	{ float:left; line-height:2; margin-bottom:2.5em }
+		.printXFormDiv	{ float:left; line-height:2.1; margin-bottom:2.5em }
 		.headFormsDiv	{ width:calc( 100vw - 1.25em ); overflow-x:hidden; margin-bottom:0.8em; scrollbar-color:#455a64 #FFFFFF; scrollbar-width:thin; scrollbar-gutter:stable; }
 		@-moz-document url-prefix() { .headFormsDiv { overflow-x:auto } }
 		.headFormsDiv:hover	{ overflow-x:auto }
-		.headFormsTable	{ margin-bottom:2px }
+		.headFormsTable	{ margin-bottom:0 }
 		.headFormDiv1	{ width:16em; white-space:nowrap; display:inline-block }
 		.headFormDiv2	{ width:100%; white-space:nowrap; display:inline-block }
 		.headFormDiv3	{ width:100%; white-space:nowrap; display:inline-block; margin-top:2px }
