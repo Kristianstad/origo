@@ -60,7 +60,8 @@
 		echo '<button onClick="window.location.reload();">Återställ</button>&nbsp;';
 	}
 	echo "<button onClick='document.querySelector(\"#selection\").innerHTML=null;document.querySelector(\"#selection\").value=null;document.querySelector(\"#selectbox\").setAttribute(\"data-sorted-values\", \"\");document.querySelector(\"#selectbox\").value=\"\";document.querySelector(\"#selectbox\")?.querySelectorAll(\"option\").forEach(o => o.removeAttribute(\"selected\"));'>Töm</button>&nbsp;";
-	echo "<button type=\"button\" onclick=\"sendSelectionAndClose('".$textareaId."');\">Använd värde</button>";
+	echo "<button type=\"button\" onclick=\"sendSelectionAndClose('".$textareaId."');\">Använd värde</button>&nbsp;";
+	echo "<button type=\"button\" onclick=\"closeTopFrame();\">Stäng</button>";
 	echo "<script>selectOptionsByValues('selectbox', '$dataSortedValues');</script>";
 ?>
 </body>
