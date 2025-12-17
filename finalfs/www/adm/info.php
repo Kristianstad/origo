@@ -68,9 +68,10 @@
 		echo '</div>';
 		if (strpos($_SERVER['HTTP_REFERER'], 'info.php') !== false)
 		{
-			echo '<button style="margin-left:0.3em" onclick="history.back()">Tillbaks</button>';
+			echo '&nbsp;<button onclick="history.back()">Tillbaks</button>';
 		}
-		echo "<form action='manage.php' method='post' target='_blank' style='display:inline;margin-left:0.2em'><button type='submit' name='".$childType."Id' value='".$childId."'>Administrera</button></form>";
+		echo "&nbsp;<form action='manage.php' method='post' target='_blank' style='display:inline'><button type='submit' name='".$childType."Id' value='".$childId."'>Administrera</button></form>";
+		echo "&nbsp;<button type=\"button\" onclick=\"window.parent.postMessage({}, window.location.origin);\">Stäng</button>";
 	}
 ?>
 </body>
