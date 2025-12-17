@@ -380,7 +380,7 @@
 	<?php printViewSwitcher($view); ?>
 
 	<!-- Initialize iframes "topFrame" and "hiddenFrame", start hidden -->
-	<iframe id="topFrame" name="topFrame" style="display:none" onload="javascript:(function(o){o.style.height=o.contentWindow.document.body.parentElement.scrollHeight+'px';}(this));"></iframe>
+	<iframe id="topFrame" name="topFrame" style="display:none" onload="javascript:(function(o){resizeIframe(o);}(this));"></iframe>
 	<iframe id="hiddenFrame" name="hiddenFrame" style="display:none"></iframe>
 
 	<!-- Initialize form "multiselectForm" and set its target to topFrame -->
@@ -755,8 +755,8 @@
 		/* Change the appearance of the "Uppdatera" button on form edit. */
 		formChangeButton();
 		
-		/* Detect field changes made with the multiselect tool and frame close commands */
-		initMultiselectAndFrameCloseMessageListener();
+		/* Detect field changes made with the multiselect tool, frame close and resize commands */
+		initMessageListener();
 	</script>
 </body>
 </html>
