@@ -754,6 +754,9 @@
 		
 		/* Change the appearance of the "Uppdatera" button on form edit. */
 		formChangeButton();
+		
+		/* Detect field changes made with the multiselect tool */
+		initMultiselectMessageListener();
 	</script>
 </body>
 </html>
