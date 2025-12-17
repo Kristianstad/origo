@@ -1,4 +1,4 @@
-function initMultiselectAndFrameCloseMessageListener() {
+function initMessageListener() {
     function handleMessage(event) {
         if (event.origin !== window.location.origin) {
             console.warn('Ignored postMessage from untrusted origin:', event.origin);
@@ -8,9 +8,18 @@ function initMultiselectAndFrameCloseMessageListener() {
             console.warn('Ignored invalid postMessage data format');
             return;
         }
-        const { targetId, value } = event.data;
+        const { targetId, value, action } = event.data;
         if (typeof targetId !== 'string' || targetId === '') {
-			toggleTopFrame('');
+			if (action === 'close') {
+				toggleTopFrame('');
+			} else if (action === 'resize') {
+				const topframe = document.getElementById('topFrame');
+				if (topframe) {
+					resizeIframe(topframe);
+				}
+			} else {
+				console.warn('Ignored postMessage missing valid targetId');
+			}
             return;
         }
         if (typeof value !== 'string') {
@@ -29,7 +38,9 @@ function initMultiselectAndFrameCloseMessageListener() {
             console.warn('Target textarea not found:', targetId);
 			return;
         }
-		toggleTopFrame('');
+		if (action === 'close') {
+			toggleTopFrame('');
+		}
     }
     window.addEventListener('message', handleMessage);
 }
