@@ -17,6 +17,13 @@
 	<style>
 		<?php require("./styles/multiselect.css"); ?>
 	</style>
+	<script>
+		window.onload = function() {
+			if (window.parent !== window) { // Make sure we are in an iframe
+				window.parent.postMessage({ action: 'resize' }, window.location.origin);
+			}
+		};
+	</script>
 </head>
 <body>
 <?php
