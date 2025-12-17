@@ -21,7 +21,9 @@
 <body>
 <?php
 	$dbh=dbh();
-	$submitValue=explode(':', $_GET['table']);
+	$submitValue=explode('::', $_GET['table'], 2);
+	$textareaId=$submitValue[0];
+	$submitValue=explode(':', $submitValue[1], 2);
 	$table=$submitValue[0];
 	if (empty($submitValue[1]))
 	{
@@ -58,10 +60,7 @@
 		echo '<button onClick="window.location.reload();">Återställ</button>&nbsp;';
 	}
 	echo "<button onClick='document.querySelector(\"#selection\").innerHTML=null;document.querySelector(\"#selection\").value=null;document.querySelector(\"#selectbox\").setAttribute(\"data-sorted-values\", \"\");document.querySelector(\"#selectbox\").value=\"\";document.querySelector(\"#selectbox\")?.querySelectorAll(\"option\").forEach(o => o.removeAttribute(\"selected\"));'>Töm</button>&nbsp;";
-	if (!empty($_SERVER['HTTPS']) || (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == '443') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https') || (isset($_SERVER['HTTP_X_FORWARDED_PORT']) && $_SERVER['HTTP_X_FORWARDED_PORT'] == '443'))
-	{
-		echo '<button onclick="copyTextById('."'selection');".'">Kopiera text</button>';
-	}
+	echo "<button type=\"button\" onclick=\"sendSelectionAndClose('".$textareaId."');\">Använd värde</button>";
 	echo "<script>selectOptionsByValues('selectbox', '$dataSortedValues');</script>";
 ?>
 </body>
