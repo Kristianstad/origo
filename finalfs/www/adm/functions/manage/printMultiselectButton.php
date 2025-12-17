@@ -1,6 +1,6 @@
 <?php
 
-	function printMultiselectButton($configParam, $value=null, $buttonText='Flervalsverktyg', $buttonClass='largeMultiselectButton')
+	function printMultiselectButton($configParam, $value=null, $textareaId, $buttonText='+', $buttonClass='smallMultiselectButton')
 	{
 		require("./constants/tableAliases.php");
 		if (!empty($tableAliases[$configParam]))
@@ -13,10 +13,8 @@
 			$buttonValue=$buttonValue.":$value";
 		}
 		echo <<<HERE
-			<button title="Visa/dölj flervalsverktyg" form="multiselectForm" onclick="toggleTopFrame('{$buttonValue}');" type="submit" name="table" value="{$buttonValue}" class="{$buttonClass}">
+			<button id="{$textareaId}:multiselect" title="Visa/dölj flervalsverktyg" form="multiselectForm" onclick="toggleTopFrame('{$buttonValue}');" type="submit" name="table" value="{$textareaId}::{$buttonValue}" class="{$buttonClass}">
 				{$buttonText}
 			</button>
 		HERE;
 	}
-
-?>
