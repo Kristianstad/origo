@@ -59,8 +59,8 @@
 		HERE;
 		if (in_array($configParam, $multiselectables))
 		{
-		$textareaId = $targetId . $ucConfigParam; // GROK: här är varför detta behövs – explicit textarea-id för multiselect-kommunikation
-		printMultiselectButton($configParam, $configParamValue, $textareaId, '+', 'smallMultiselectButton');
+			$textareaId = $targetId . $ucConfigParam;
+			printMultiselectButton($configParam, $configParamValue, $textareaId, '+', 'smallMultiselectButton');
 		}
 		if ($help)
 		{
