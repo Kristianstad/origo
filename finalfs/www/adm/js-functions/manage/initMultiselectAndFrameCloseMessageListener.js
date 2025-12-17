@@ -1,4 +1,4 @@
-function initMultiselectMessageListener() {
+function initMultiselectAndFrameCloseMessageListener() {
     function handleMessage(event) {
         if (event.origin !== window.location.origin) {
             console.warn('Ignored postMessage from untrusted origin:', event.origin);
@@ -10,7 +10,7 @@ function initMultiselectMessageListener() {
         }
         const { targetId, value } = event.data;
         if (typeof targetId !== 'string' || targetId === '') {
-            console.warn('Ignored postMessage missing valid targetId');
+			toggleTopFrame('');
             return;
         }
         if (typeof value !== 'string') {
@@ -25,10 +25,11 @@ function initMultiselectMessageListener() {
 			let multiselectButtonValue = multiselectButton.getAttribute('value');
 			multiselectButtonValue = multiselectButtonValue.replace(/^([^:]*::[^:]*).*$/, '$1:' + value);
 			multiselectButton.setAttribute('value', multiselectButtonValue)
-			toggleTopFrame('');
         } else {
             console.warn('Target textarea not found:', targetId);
+			return;
         }
+		toggleTopFrame('');
     }
     window.addEventListener('message', handleMessage);
 }
