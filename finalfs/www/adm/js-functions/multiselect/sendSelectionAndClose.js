@@ -4,5 +4,5 @@ function sendSelectionAndClose(targetId) {
 		return;
 	}
 	const value = getCurrentSelection();
-	window.parent.postMessage({ targetId: targetId, value: value }, window.location.origin);
+	window.parent.postMessage({ targetId: targetId, value: value, action: 'close' }, window.location.origin);
 }
