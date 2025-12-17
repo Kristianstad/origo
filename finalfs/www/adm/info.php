@@ -4,6 +4,13 @@
 	<style>
 		<?php require("./styles/info.css"); ?>
 	</style>
+	<script>
+		window.onload = function() {
+			if (window.parent !== window) { // Make sure we are in an iframe
+				window.parent.postMessage({ action: 'resize' }, window.location.origin);
+			}
+		};
+	</script>
 </head>
 <body>
 <?php
@@ -71,7 +78,7 @@
 			echo '&nbsp;<button onclick="history.back()">Tillbaks</button>';
 		}
 		echo "&nbsp;<form action='manage.php' method='post' target='_blank' style='display:inline'><button type='submit' name='".$childType."Id' value='".$childId."'>Administrera</button></form>";
-		echo "&nbsp;<button type=\"button\" onclick=\"window.parent.postMessage({}, window.location.origin);\">Stäng</button>";
+		echo "&nbsp;<button type=\"button\" onclick=\"window.parent.postMessage({ action: 'close' }, window.location.origin);\">Stäng</button>";
 	}
 ?>
 </body>
