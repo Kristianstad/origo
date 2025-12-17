@@ -2,7 +2,7 @@
 
 	// Uses common functions: toSwedish
 	
-	// Uses manage functions: printHeadForm, printMultiselectButton
+	// Uses manage functions: printHeadForm
 
 	// Takes view (string), configTables (array), focusTable (string) and inheritPosts (array) as parameters.
 	// Prints a html code with a div containing a table of selection forms. 
@@ -10,7 +10,6 @@
 	function printHeadForms($view, $configTables, $focusTable, $inheritPosts)
 	{
 		require("./constants/views.php");
-		require("./constants/multiselectables.php");
 		if (empty($view))
 		{
 			$view=key($views);
@@ -36,7 +35,7 @@
 		echo <<<HERE
 			<div class="headFormsDiv">
 				<table class="headFormsTable">
-					<tr style="height:7rem">
+					<tr style="height:6.5rem">
 		HERE;
 		$i=1;
 		$l=count($forms);
@@ -71,12 +70,7 @@
 			}
 			echo "<h3 class='$focusClass'>".ucfirst(toSwedish($tableType))."</h3>";
 			printHeadForm(array($tableName=>$table), $tmpInheritPosts);
-			echo "</div>";
-			if (in_array($tableName, $multiselectables))
-			{
-				printMultiselectButton($tableName);
-			}
-			echo '</th>';
+			echo "</div></th>";
 		}
 		echo <<<HERE
 					</tr>
@@ -84,5 +78,3 @@
 			</div>
 		HERE;
 	}
-
-?>
