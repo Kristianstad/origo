@@ -35,7 +35,7 @@
 		echo <<<HERE
 			<div class="headFormsDiv">
 				<table class="headFormsTable">
-					<tr style="height:6.5rem">
+					<tr>
 		HERE;
 		$i=1;
 		$l=count($forms);
