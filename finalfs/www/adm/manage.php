@@ -380,7 +380,7 @@
 	<?php printViewSwitcher($view); ?>
 
 	<!-- Initialize iframes "topFrame" and "hiddenFrame", start hidden -->
-	<iframe id="topFrame" name="topFrame" style="display:none" onload="javascript:(function(o){resizeIframe(o);}(this));"></iframe>
+	<iframe id="topFrame" name="topFrame" style="display:none"></iframe>
 	<iframe id="hiddenFrame" name="hiddenFrame" style="display:none"></iframe>
 
 	<!-- Initialize form "multiselectForm" and set its target to topFrame -->
