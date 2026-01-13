@@ -4,7 +4,7 @@ function resizeIframe(iframe) {
     }
     iframe.style.height = '1px';
     requestAnimationFrame(function() {
-        const newHeight = iframe.contentWindow.document.body.parentElement.scrollHeight;
+        const newHeight = iframe.contentWindow.document.body.parentElement.scrollHeight+1;
         iframe.style.height = newHeight + 'px';
     });
 }
