@@ -41,7 +41,7 @@
 				<a href="https://jsonchecker.com/" target="_blank">JSON Checker</a>
 			HERE;
 		}
-		echo "<br><button type=\"button\" onclick=\"window.parent.postMessage({ action: 'close' }, window.location.origin);\">Stäng</button>";
+		echo "<br style=\"clear:both\"><button type=\"button\" onclick=\"window.parent.postMessage({ action: 'close' }, window.location.origin);\">Stäng</button>";
 	?>
 </body>
 </html>
