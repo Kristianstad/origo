@@ -140,7 +140,7 @@
 				}
 				else
 				{
-					echo '<script>window.onload=function(){alert("Radering misslyckades då '.$id.' används!\nAnvänd Info-verktyget för att ta reda på var '.$id.' används.");}</script>';
+					$errorAlert='window.onload=function(){alert("Radering misslyckades då '.$id.' används!\nAnvänd Info-verktyget för att ta reda på var '.$id.' används.");}';
 				}
 				unset($child, $allParents);
 			}
@@ -234,7 +234,7 @@
 						$failedUpdate['values'][lcfirst(substr($key, 6))]=$value;
 					}
 				}
-				unset($updatePosts, $updateValid);
+				unset($updateValid);
 			}
 			
 			// If $command is 'operation', then $sql will contain an sql-query to update a specific field in the configuration database to add or remove a given $id of $type from a given map or group
@@ -289,26 +289,37 @@
 			$result=pg_query($dbh, $sql);
 			if (!$result)
 			{
-				die("Error in SQL query: " . pg_last_error());
-			}
-			unset($result);
-			$configTables=configTables($dbh);
-			if ($command != 'operation' && in_array($typeTableName, $keywordCategorized))
-			{
-				eval("\${$typeTableName}Categories=categories(\$configTables[\$typeTableName], \$typeTablePkColumn);");
-			}
-			if ($command == 'update' || $command == 'copy' || $command == 'operation')
-			{
-				$usedInMapsNew=usedInMaps($dbh, array($type=>$id));
-				$usedInMaps=array_unique(array_merge($usedInMapsOld, $usedInMapsNew));
-				if (!empty($usedInMaps))
+				$errorAlert='window.onload=function(){alert("Misslyckades att skriva till databas!\n\n'.str_replace('"', '\"', str_replace(["\r","\n"], '\n', pg_last_error())).'");}'."\n";
+				$failedUpdate['type']=$type;
+				$failedUpdate['id']=$id;
+				$failedUpdate['values']=array();
+				foreach ($updatePosts as $key=>$value)
 				{
-					markMapsChanged($dbh, $usedInMaps);
-					$configTables=configTables($dbh);
+					$failedUpdate['values'][lcfirst(substr($key, 6))]=$value;
 				}
 			}
+			else
+			{
+				$configTables=configTables($dbh);
+				if ($command != 'operation' && in_array($typeTableName, $keywordCategorized))
+				{
+					eval("\${$typeTableName}Categories=categories(\$configTables[\$typeTableName], \$typeTablePkColumn);");
+				}
+				if ($command == 'update' || $command == 'copy' || $command == 'operation')
+				{
+					$usedInMapsNew=usedInMaps($dbh, array($type=>$id));
+					$usedInMaps=array_unique(array_merge($usedInMapsOld, $usedInMapsNew));
+					if (!empty($usedInMaps))
+					{
+						markMapsChanged($dbh, $usedInMaps);
+						$configTables=configTables($dbh);
+					}
+					unset($usedInMapsNew, $usedInMaps);
+				}
+			}
+			unset($usedInMapsOld, $result);
 		}
-		unset($id, $type, $typeTableName, $typeTablePkColumn, $typeTable, $command, $sql);
+		unset($updatePosts, $id, $type, $typeTableName, $typeTablePkColumn, $typeTable, $command, $sql);
 	}
 
 	// Some common information needs to be passed on every time a form is posted, this info is aggregated in $inheritPosts (array)
@@ -388,9 +399,15 @@
 	
 	<!-- Print a row of selection forms. What columns shown depends on the selected view -->
 	<?php printHeadForms($view, $configTables, $focusTable, $inheritPosts); ?>
-	
+
 	<script>
 		<?php
+
+			// Alert if error
+			if (!empty($errorAlert))
+			{
+				echo $errorAlert;
+			}
 
 			// Run the prepared js-code stored in $updateSelects
 			echo $updateSelects;
