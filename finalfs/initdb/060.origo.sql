@@ -38,7 +38,7 @@ CREATE TABLE map_configs.plugins
 );
 
 INSERT INTO map_configs.plugins(plugin_id,abstract,onload,css_files,js_files) VALUES ('layerfavorites#1', 'Ett verktyg för att spara och tända lagerkombinationer som används ofta. Verktyget kommer man åt genom att föra muspekaren längst upp i kartrfönstret, strax ovanför sökfältet (kan dras ner på pekplattor). Tänd lagerkombinationen som du vill spara med hjälp av lagerträdet, ge lagerfavoriten ett unikt namn och klicka på spara. Sedan kan du enkelt och snabbt tända lagerkombinationen när du vill.', 'initLayerFavoritesToolbar();', '{include(plugins/layer_favorites_toolbar/css/layer_favorites_toolbar.min.css)}', '{include(plugins/layer_favorites_toolbar/js/layer_favorites_toolbar.min.js)}');
-INSERT INTO map_configs.plugins(plugin_id,abstract,onload) VALUES ('urlzoomtolayer#1', 'Zoomar till lagret angiven i url-parametern zoomToLayer. Lagret måste finnas i kartan och tänds automatiskt, namnet anges utan hash-suffix. För att zooma till markers sätt zoomToLayer=markerLayer (obs! denna plugin måste läggas efter den/de plugins som skapar markers).',
+INSERT INTO map_configs.plugins(plugin_id,abstract,onload) VALUES ('urlzoomtolayer#1', 'Zoomar till lagret angiven i url-parametern zoomToLayer. Lagret måste finnas i kartan och tänds automatiskt, namnet anges utan hash-suffix. För att fungera med ett WMS-lager behöver detta ha ett fördefinierat extent. För att zooma till markers sätt zoomToLayer=markerLayer (obs! denna plugin måste läggas efter den/de plugins som skapar markers).',
 'const zoomToLayer = getUrlParam(''zoomToLayer'');
 if (zoomToLayer != null)
 {
