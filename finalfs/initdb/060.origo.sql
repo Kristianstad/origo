@@ -52,7 +52,7 @@ if (zoomToLayer != null)
 		function zoomLoop(zoomMaxAttempts, zoomAttempt = 1 ) {
 			setTimeout(() => {
 				if (zoomAttempt <= zoomMaxAttempts) {
-					const extent = layer.getSource().getExtent();
+					const extent = layer.getExtent() ?? layer.getSource().getExtent();
 					if (extent && Array.isArray(extent) && extent.length === 4 && extent.every(coord => Number.isFinite(coord))) {
 						/*console.log(''Valid extent:'', extent);*/
 						origo.api().zoomToExtent(Origo.ol.geom.Polygon.fromExtent(extent));
