@@ -38,38 +38,7 @@ CREATE TABLE map_configs.plugins
 );
 
 INSERT INTO map_configs.plugins(plugin_id,abstract,onload,css_files,js_files) VALUES ('layerfavorites#1', 'Ett verktyg för att spara och tända lagerkombinationer som används ofta. Verktyget kommer man åt genom att föra muspekaren längst upp i kartrfönstret, strax ovanför sökfältet (kan dras ner på pekplattor). Tänd lagerkombinationen som du vill spara med hjälp av lagerträdet, ge lagerfavoriten ett unikt namn och klicka på spara. Sedan kan du enkelt och snabbt tända lagerkombinationen när du vill.', 'initLayerFavoritesToolbar();', '{include(plugins/layer_favorites_toolbar/css/layer_favorites_toolbar.min.css)}', '{include(plugins/layer_favorites_toolbar/js/layer_favorites_toolbar.min.js)}');
-INSERT INTO map_configs.plugins(plugin_id,abstract,onload) VALUES ('urlzoomtolayer#1', 'Zoomar till lagret angiven i url-parametern zoomToLayer. Lagret måste finnas i kartan och tänds automatiskt, namnet anges utan hash-suffix. För att fungera med ett WMS-lager behöver detta ha ett fördefinierat extent. För att zooma till markers sätt zoomToLayer=markerLayer (obs! denna plugin måste läggas efter den/de plugins som skapar markers).',
-'const zoomToLayer = getUrlParam(''zoomToLayer'');
-if (zoomToLayer != null)
-{
-	let layer;
-	if (!(layer=origo.api().getLayer(zoomToLayer)))
-	{
-		console.error(''zoomToLayer '' + zoomToLayer + '' does not exist!'');
-	}
-	else
-	{
-		function zoomLoop(zoomMaxAttempts, zoomAttempt = 1 ) {
-			setTimeout(() => {
-				if (zoomAttempt <= zoomMaxAttempts) {
-					const extent = layer.getExtent() ?? layer.getSource().getExtent();
-					if (extent && Array.isArray(extent) && extent.length === 4 && extent.every(coord => Number.isFinite(coord))) {
-						/*console.log(''Valid extent:'', extent);*/
-						origo.api().zoomToExtent(Origo.ol.geom.Polygon.fromExtent(extent));
-					} else {
-						zoomLoop(zoomMaxAttempts, zoomAttempt + 1);
-					}
-				} else {
-					console.error(''zoomToLayer: Extent not available after max attempts'');
-				}
-			}, 100);
-		}
-
-		origo.api().getMap().getView().setZoom(0);
-		layer.setVisible(true);	
-		zoomLoop(100);
-	}
-}');
+INSERT INTO map_configs.plugins(plugin_id,abstract,onload,js_files) VALUES ('urlzoomtolayer#1', 'Zoomar till lagret angiven i url-parametern zoomToLayer. Lagret måste finnas i kartan och tänds automatiskt, namnet anges utan hash-suffix. För att fungera med ett WMS-lager behöver detta ha ett fördefinierat extent. För att zooma till markers sätt zoomToLayer=markerLayer (obs! denna plugin måste läggas efter den/de plugins som skapar markers).', 'urlzoomtolayer();', '{include(plugins/urlzoomtolayer/js/urlzoomtolayer.min.js)}');
 INSERT INTO map_configs.plugins(plugin_id,abstract,onload,js_files) VALUES ('urlsearch#1', 'Söker mha sökkontrollen på url-parametern poi eller poim (tex poi=tivoligatan%205). Sätt parametern hideSearchInfo=true för att dölja textrutan med sökresultatet. Man kan även ange en specifik zoomnivå med parametern zoom. (poim är ett legacy-namn och har exakt samma funktion som poi).', 'urlsearch();', '{include(plugins/urlsearch/js/urlsearch.min.js)}');
 INSERT INTO map_configs.plugins(plugin_id,abstract,onload,js_files) VALUES ('urlmarker#1', 'Lägger till en eller flera markers i kartan utefter givna url-parametrar. Url-parametrar som kan ges är xyi<nummer>=<x-koordinat>,<y-koordinat>,<infotext> (tex. xyi1=14.1529,56.0354,txt1&xyi2=14.2529,56.1354,p2). Det finns även några legacy-parametrar, xym och diainfo (tex. xym=14.0953039,56.0017954&diainfo=Vä%20bibliotek). Koordinater anges i EPSG:4326 eller EPSG:3008. Sätter man bara ut en marker kommer denna att visas med info-popup om man inte även anger parametern hideSearchInfo=true. Urlmarker kan kombineras med pluginet urlzoomtolayer (ange zoomToLayer=markerLayer), men då måste urlzoomtolayer läggas efter urlmarker i plugins-listan.', 'urlmarker();', '{include(plugins/urlmarker/js/urlmarker.min.js)}');
 INSERT INTO map_configs.plugins(plugin_id,abstract,onload) VALUES ('urllayers#1', 'Tänder overlay-lager listade i url-parametern ol och/eller ett bakgrundslager angivet som url-parametern bl. Lagren måste finnas i kartan och anges utan hash-suffix (tex. ol=nyko,deso&bl=turistkarta_nedtonad).',
