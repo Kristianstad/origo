@@ -17,8 +17,10 @@ ARG BUILDDEPS="python3 py3-libsass"
 ARG BUILDCMDS=\
 "   cd origo-$ORIGO_VERSION "\
 #"   cd origo "\
+"&& echo \"import OLCesium from 'olcs/OLCesium'; window.OLCesium = OLCesium;\" >> origo.js "\
 "&& rm -rf node_modules package-lock.json "\
 "&& npm install "\
+"&& npm install olcs "\
 #"&& npm --depth 8 update "\
 "&& npm run prebuild-sass "\
 "&& npm run build "\
