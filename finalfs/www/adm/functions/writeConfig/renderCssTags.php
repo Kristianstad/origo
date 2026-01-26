@@ -26,7 +26,6 @@ function renderCssTags(array $items): string
                 $url     = $proxyRoot . $_SERVER["REQUEST_URI"] . (str_contains($_SERVER["REQUEST_URI"], '?') ? '&' : '?') . 'badJson=y';
                 echo '<script>';
                 echo 'alert("CSS-filen ' . $escaped . ' kunde inte läsas! Ingen konfiguration skriven.");';
-                echo 'window.location.href="' . htmlspecialchars($url, ENT_QUOTES, 'UTF-8') . '";';
                 echo '</script>';
                 exit;
             }
