@@ -238,6 +238,10 @@
 			$html = $html."\n\t\t<script type=\"application/ld+json\" src=\"structured-data".$mapNumber.".json\"></script>";
 		}
 		*/
+		$html=$html."\n". <<<HERE
+			</head>
+			<body>
+		HERE;
 		$mapCssFiles = pgArrayToPhp($map['css_files']);
 		$mapJsFiles = pgArrayToPhp($map['js_files']);
 		if (!empty($map['plugins']))
@@ -257,8 +261,6 @@
 		unset($mapCss);
 		$html=$html.renderJavaScriptTags($mapJsFiles);
 		$html=$html."\n". <<<HERE
-			</head>
-			<body>
 				<div id="app-wrapper"></div>
 				<script>
 		HERE;
