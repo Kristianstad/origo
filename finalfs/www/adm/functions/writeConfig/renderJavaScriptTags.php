@@ -22,7 +22,6 @@ function renderJavaScriptTags(array $items): string
                 $escaped = htmlspecialchars($resource, ENT_QUOTES, 'UTF-8');
                 $url = $proxyRoot . $_SERVER["REQUEST_URI"] . (strpos($_SERVER["REQUEST_URI"], '?') !== false ? '&' : '?') . 'badJson=y';
                 echo '<script>alert("Filen ' . $escaped . ' kunde inte läsas! Ingen konfiguration skriven.");';
-                echo 'window.location.href="' . htmlspecialchars($url, ENT_QUOTES, 'UTF-8') . '";';
                 echo '</script>';
                 exit;
             }
