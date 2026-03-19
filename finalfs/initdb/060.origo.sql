@@ -438,6 +438,8 @@ CREATE TABLE map_configs.formats
 
 INSERT INTO map_configs.formats(format_id,abstract) VALUES ('GEOJSON','GeoJSON-format');
 INSERT INTO map_configs.formats(format_id,abstract) VALUES ('OSM','OpenStreetMap-format');
+INSERT INTO map_configs.formats(format_id,abstract) VALUES ('WMS','Web Map Service, https://www.ogc.org/standards/wms/');
+INSERT INTO map_configs.formats(format_id,abstract) VALUES ('WFS','Web Feature Service, https://www.ogc.org/standards/wfs/');
 
 CREATE TABLE map_configs.helps
 (
