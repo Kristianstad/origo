@@ -48,7 +48,7 @@
 		.textareaLarge	{ width:33em }
 		.textareaMedium	{ width:13em }
 		.textareaSmall	{ width:4em }
-		.textareaXSmall	{ width:2em; resize:none }
+		.textareaXSmall	{ width:2.5em; resize:none }
 		iframe			{ width:calc(100% - 0.5em); height:50px; max-height:80vh; border-style:solid none none none; border-width:2px; border-color:#607d8b; padding-bottom:0.3em; padding-top:0.3em; margin-bottom:0.5em }
 		.printXFormDiv	{ float:left; line-height:2.1; margin-bottom:2.5em }
 		.headFormsDiv	{ width:calc( 100vw - 1.25em ); overflow-x:hidden; margin-bottom:0.8em; scrollbar-color:#455a64 #FFFFFF; scrollbar-width:thin; scrollbar-gutter:stable; }
