@@ -37,6 +37,7 @@
 		else
 		{
 			echo <<<HERE
+				<a href="../Origo_admin_tutorial_swedish.pdf" target="_blank">Origo admin tutorial</a><br>
 				<a href="https://origo-map.github.io/origo-documentation/latest/#origo-map" target="_blank">Origo-dokumentation</a><br>
 				<a href="https://jsonchecker.com/" target="_blank">JSON Checker</a>
 			HERE;
