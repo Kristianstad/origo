@@ -12,6 +12,8 @@ Try out the image in [Iximiuz Labs](https://labs.iximiuz.com/playgrounds):
 4. To access the admin tool add "/adm" to the url and login with origo, origo.
 ```
 
+A swedish tutorial of the management tool is available [Here](https://raw.githubusercontent.com/Kristianstad/origo/refs/heads/with_php/Origo_admin_tutorial_swedish.pptx).
+
 ## Docker run examples
 ### If you just need Origo
 docker run --name origo -d -p 8080:8080 ghcr.io/kristianstad/origo:2.10.0
