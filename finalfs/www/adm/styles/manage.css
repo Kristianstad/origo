@@ -44,10 +44,10 @@
 		.addForm		{ float:left; margin-right:1em }
 		.viewsForm		{ margin-top:0.2em }
 		textarea		{ font-family:inherit; font-size:inherit; box-sizing:border-box; padding:0.2em 0.5em; position:relative; line-height:1.4; border:0.0625em solid #BDBDBD; vertical-align:middle; border-radius:0.25em; background-color:#FFFFFF; scrollbar-color:#455a64 #FFFFFF; scrollbar-width:thin; color:#212121 }
-		.textareaXLarge	{ width:66em }
-		.textareaLarge	{ width:33em }
-		.textareaMedium	{ width:13em }
-		.textareaSmall	{ width:4em }
+		.textareaXLarge	{ width:66.5em }
+		.textareaLarge	{ width:33.5em }
+		.textareaMedium	{ width:13.5em }
+		.textareaSmall	{ width:4.5em }
 		.textareaXSmall	{ width:2.5em; resize:none }
 		iframe			{ width:calc(100% - 0.5em); height:50px; max-height:80vh; border-style:solid none none none; border-width:2px; border-color:#607d8b; padding-bottom:0.3em; padding-top:0.3em; margin-bottom:0.5em }
 		.printXFormDiv	{ float:left; line-height:2.1; margin-bottom:2.5em }
