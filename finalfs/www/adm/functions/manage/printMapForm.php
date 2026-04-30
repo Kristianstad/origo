@@ -67,5 +67,3 @@
 		printUrlButton($url);
 		echo '</div></form></div></div>';
 	}
-
-?>
