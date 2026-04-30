@@ -24,10 +24,20 @@
 			$iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length('aes-256-cbc'));
 			$encrypted = openssl_encrypt($user, 'aes-256-cbc', $cookieKey, 0, $iv);
 			$cookiestr = base64_encode($encrypted . '::' . $iv);
-			setcookie('origo_user_id', $cookiestr, time()+60*60*24*3650, '/', '', 0, 1);
+			setcookie('origo_user_id', $cookiestr, time()+60*60*24*3650, '/', '.kristianstad.se', true, true);
 			$_COOKIE['origo_user_id']=$cookiestr;
 			unset($_SESSION["user"]);
 			initUser($dbh);
+			
+			// NY KOD: stöd för return_to från forwardauth.php
+			$return_to = $_POST['return_to'] ?? $_GET['return_to'] ?? '';
+			if (!empty($return_to) && filter_var($return_to, FILTER_VALIDATE_URL))
+			{
+				header('Location: ' . $return_to);
+				fastcgi_finish_request();
+				exit(0);
+			}
+			
 			require('./constants/proxyRoot.php');
 			$formAction=$proxyRoot.$_SERVER["PHP_SELF"];
 			if (basename($formAction) == 'authorization-loader.php')
@@ -55,5 +65,3 @@
 		fastcgi_finish_request();
 		exit(0);
 	}
-
-?>
