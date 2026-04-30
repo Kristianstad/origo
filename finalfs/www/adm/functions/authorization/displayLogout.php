@@ -13,7 +13,7 @@
 		{
 			$src='./news.php';
 		}
-		echo <<<HERE
+		$content = <<<HERE
 					<script>
 						sessionStorage.user_id="{$user}";
 					</script>
@@ -21,8 +21,5 @@
 					<button id="loginbtn" style="cursor:pointer;background:#eee;border-radius:1rem;border:#eee;width:auto;text-align:center;white-space:nowrap;padding: 0.5rem 0.75rem;font:14px Segoe UI,Roboto,Helvetica Neue,Arial,sans-serif;" type="button" onclick="sessionStorage.removeItem('user_id'); document.location.assign('{$formAction}?logout');">Logga ut</button>
 					</br><iframe src="{$src}?action=subjects" style="border:none;width:100%;margin-top:5px;margin-bottom:10px"></iframe>
 		HERE;
-		fastcgi_finish_request();
-		exit(0);
+		displayWithHtml($content);
 	}
-
-?>
