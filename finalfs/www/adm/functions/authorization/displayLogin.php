@@ -2,19 +2,22 @@
 
 	function displayLogin()
 	{
-		if (!empty($_GET["call"]))
-		{
-			$getCall=$_GET["call"];
+		// Hämta return_to från GET eller POST
+		$return_to = $_GET['return_to'] ?? $_POST['return_to'] ?? '';
+
+		// Validera URL för säkerhet
+		if (!empty($return_to) && !filter_var($return_to, FILTER_VALIDATE_URL)) {
+			$return_to = '';
 		}
-		else
-		{
-			$getCall="";
-		}
+		
+		$getCall = $_GET["call"] ?? "";
 		require('./constants/proxyRoot.php');
-		$formAction=$proxyRoot.$_SERVER["PHP_SELF"];
-		echo <<<HERE
+		$formAction = $proxyRoot . $_SERVER["PHP_SELF"];
+
+		$content = <<<HERE
 					<form id="normal" class="general" action="{$formAction}" method="post">
 						<input class="call" name="call" type="hidden" value="{$getCall}" />
+						<input type="hidden" name="return_to" value="{$return_to}" />
 						<table border="0" cellspacing="5" cellpadding="0">
 							<tbody>
 								<tr>
@@ -36,8 +39,6 @@
 						</table>
 					</form>
 		HERE;
-		fastcgi_finish_request();
-		exit(0);
-	}
 
-?>
+		displayWithHtml($content);
+	}
