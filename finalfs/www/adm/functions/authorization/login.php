@@ -24,7 +24,7 @@
 			$iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length('aes-256-cbc'));
 			$encrypted = openssl_encrypt($user, 'aes-256-cbc', $cookieKey, 0, $iv);
 			$cookiestr = base64_encode($encrypted . '::' . $iv);
-			setcookie('origo_user_id', $cookiestr, time()+60*60*24*3650, '/', '.kristianstad.se', true, true);
+			setcookie('origo_user_id', $cookiestr, time()+60*60*24*3650, '/', '', true, true);
 			$_COOKIE['origo_user_id']=$cookiestr;
 			unset($_SESSION["user"]);
 			initUser($dbh);
