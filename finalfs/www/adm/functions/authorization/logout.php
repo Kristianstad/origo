@@ -2,7 +2,7 @@
 
 	function logout()
 	{
-		setcookie('origo_user_id', '', time()-3600, '/', '', 0, 1);
+		setcookie('origo_user_id', '', time()-3600, '/', '.kristianstad.se', true, true);
 		session_start();
 		$_SESSION['user'] = false;
 		session_write_close();
@@ -11,5 +11,3 @@
 		fastcgi_finish_request();
 		exit(0);
 	}
-
-?>
