@@ -20,11 +20,22 @@
 			//Key
 			require("./constants/cookieKey.php");
 			//To Encrypt:
-			//$cookiestr = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_128, $cookieKey, $user, MCRYPT_MODE_ECB));
 			$iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length('aes-256-cbc'));
 			$encrypted = openssl_encrypt($user, 'aes-256-cbc', $cookieKey, 0, $iv);
 			$cookiestr = base64_encode($encrypted . '::' . $iv);
-			setcookie('origo_user_id', $cookiestr, time()+60*60*24*3650, '/', '', true, true);
+			$cookieLifetime = 60*60*24*30;   // 30 dagar (ändra efter behov)
+			setcookie(
+				'origo_user_id', 
+				$cookiestr, 
+				[
+					'expires'  => time() + $cookieLifetime,
+					'path'     => '/',
+					'domain'   => '',
+					'secure'   => true,
+					'httponly' => true,
+					'samesite' => 'Strict'
+				]
+			);
 			$_COOKIE['origo_user_id']=$cookiestr;
 			unset($_SESSION["user"]);
 			initUser($dbh);
