@@ -14,11 +14,17 @@ ARG BUILDCMDS=\
 "   mkdir composerdir "\
 "&& cd composerdir "\
 "&& composer require --ignore-platform-reqs adldap2/adldap2 "\
-'&& mkdir -p "$DESTDIR/www/adm/functions" '\
-'&& mv ./vendor "$DESTDIR/www/adm/functions/adldap" '\
+'&& mkdir -p "$DESTDIR/www/composer" '\
+'&& mv ./vendor "$DESTDIR/www/composer/adldap" '\
 '&& rm -rf * '\
 '&& composer require --ignore-platform-reqs matthiasmullie/minify '\
-'&& mv ./vendor "$DESTDIR/www/adm/functions/minify"'
+'&& mv ./vendor "$DESTDIR/www/composer/minify" '\
+'&& rm -rf * '\
+'&& composer require --ignore-platform-reqs thenetworg/oauth2-azure '\
+'&& mv ./vendor "$DESTDIR/www/composer/oauth2-azure" '\
+'&& rm -rf * '\
+'&& composer require --ignore-platform-reqs league/oauth2-client '\
+'&& mv ./vendor "$DESTDIR/www/composer/oauth2-client"'
 ARG RUNDEPS="\
         apache2-utils \
         postgresql$POSTGRESQL_VERSION \
