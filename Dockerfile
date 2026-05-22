@@ -3,11 +3,12 @@
 # =========================================================================
 # ARGs (can be passed to Build/Final) <BEGIN>
 ARG SaM_REPO=${SaM_REPO:-ghcr.io/kristianstad/secure_and_minimal}
-ARG ALPINE_VERSION=${ALPINE_VERSION:-3.22}
+ARG ALPINE_VERSION=${ALPINE_VERSION:-3.23}
+ARG ORIGO_VERSION=${ORIGO_VERSION:-2.10.0}
+ARG NGINX_VERSION=${NGINX_VERSION:-1.28.3}
+ARG POSTGRESQL_VERSION=${POSTGRESQL_VERSION:-18}
+ARG PHP_VERSION=${PHP_VERSION:-85}
 ARG IMAGETYPE="application"
-ARG ORIGO_VERSION="2.10.0"
-ARG POSTGRESQL_VERSION="15"
-ARG PHP_VERSION="82"
 ARG BASEIMAGE="ghcr.io/kristianstad/origo:$ORIGO_VERSION"
 ARG BUILDDEPS="composer"
 ARG BUILDCMDS=\
@@ -57,29 +58,34 @@ ARG LINUXUSEROWNED="/var/log/php$PHP_VERSION /www/demokarta /www/demokarta/index
 # ARGs (can be passed to Build/Final) </END>
 
 # Generic template (don't edit) <BEGIN>
-FROM ${CONTENTIMAGE1:-scratch} as content1
-FROM ${CONTENTIMAGE2:-scratch} as content2
-FROM ${CONTENTIMAGE3:-scratch} as content3
-FROM ${CONTENTIMAGE4:-scratch} as content4
-FROM ${CONTENTIMAGE5:-scratch} as content5
-FROM ${BASEIMAGE:-$SaM_REPO:base-$ALPINE_VERSION} as base
-FROM ${INITIMAGE:-scratch} as init
+FROM ${CONTENTIMAGE1:-scratch} AS content1
+FROM ${CONTENTIMAGE2:-scratch} AS content2
+FROM ${CONTENTIMAGE3:-scratch} AS content3
+FROM ${CONTENTIMAGE4:-scratch} AS content4
+FROM ${CONTENTIMAGE5:-scratch} AS content5
+FROM ${BASEIMAGE:-$SaM_REPO:base-$ALPINE_VERSION} AS base
+FROM ${INITIMAGE:-scratch} AS init
 # Generic template (don't edit) </END>
 
 # =========================================================================
 # Build
 # =========================================================================
 # Generic template (don't edit) <BEGIN>
-FROM ${BUILDIMAGE:-$SaM_REPO:build-$ALPINE_VERSION} as build
-FROM ${BASEIMAGE:-$SaM_REPO:base-$ALPINE_VERSION} as final
+FROM ${BUILDIMAGE:-$SaM_REPO:build-$ALPINE_VERSION} AS build
+FROM ${BASEIMAGE:-$SaM_REPO:base-$ALPINE_VERSION} AS final
 COPY --from=build /finalfs /
 # Generic template (don't edit) </END>
 
 # =========================================================================
 # Final
 # =========================================================================
+# Re-declare ARGs
+ARG ALPINE_VERSION
+ARG ORIGO_VERSION
+ARG NGINX_VERSION
 ARG POSTGRESQL_VERSION
 ARG PHP_VERSION
+
 ARG POSTGRES_CONFIG_DIR="/etc/postgres"
 
 ENV VAR_PHP_VERSION="$PHP_VERSION" \
@@ -116,3 +122,7 @@ STOPSIGNAL SIGINT
 USER starter
 ONBUILD USER root
 # Generic template (don't edit) </END>
+
+LABEL org.opencontainers.image.version="${ORIGO_VERSION}" \
+      org.opencontainers.image.title="origo with php" \
+      org.opencontainers.image.description="Origo ${ORIGO_VERSION} based on secure_and_minimal ${ALPINE_VERSION} + nginx ${NGINX_VERSION}"
