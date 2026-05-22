@@ -1,5 +1,5 @@
 <?php
-	include_once("./functions/adldap/autoload.php");
+	require_once '../../composer/adldap2/autoload.php';
 
 	function initUser(&$dbh)
 	{
