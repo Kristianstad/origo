@@ -4,7 +4,7 @@
 	header("Cache-Control: must-revalidate, max-age=0, s-maxage=0, no-cache, no-store");
 
 	// Expose specific functions
-	require_once("./functions/minify/autoload.php");
+	require_once('../../composer/minify/autoload.php');
 	require_once("./functions/includeDirectory.php");
 
 	// Expose all functions in given folders
