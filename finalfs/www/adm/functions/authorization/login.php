@@ -1,5 +1,5 @@
 <?php
-	require_once '../../composer/adldap2/autoload.php';
+	require_once('../../composer/adldap2/autoload.php');
 
 	function login(&$dbh)
 	{
