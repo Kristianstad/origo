@@ -16,7 +16,7 @@ ARG BUILDCMDS=\
 "&& cd composerdir "\
 "&& composer require --ignore-platform-reqs adldap2/adldap2 "\
 '&& mkdir -p "$DESTDIR/www/composer" '\
-'&& mv ./vendor "$DESTDIR/www/composer/adldap" '\
+'&& mv ./vendor "$DESTDIR/www/composer/adldap2" '\
 '&& rm -rf * '\
 '&& composer require --ignore-platform-reqs matthiasmullie/minify '\
 '&& mv ./vendor "$DESTDIR/www/composer/minify" '\
