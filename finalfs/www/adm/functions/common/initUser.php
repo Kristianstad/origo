@@ -9,15 +9,26 @@
 		}
 		else
 		{
+			require('./constants/cookieConfig.php');
+		
 			// === SMART COOKIE FÖRLÄNGNING ===
 			if (isset($_SESSION['user']['id']) && isset($_COOKIE['origo_user_id'])) {
 				
-				$cookieName = 'origo_user_id';
-				$lifetime   = 60*60*24*30;           // 30 dagar (ändra efter behov)
+				$cookieName = $cookieConfig['cookieName'];
+				$cookieLifetime   = $cookieConfig['cookieLifetime'];
+				$setcookieOptions =
+				[
+							'expires'  => time() + $cookieLifetime,
+							'path'     => $cookieConfig['cookiePath'],
+							'domain'   => $cookieConfig['cookieDomain'],
+							'secure'   => $cookieConfig['cookieSecure'],
+							'httponly' => $cookieConfig['cookieHttpOnly'],
+							'samesite' => $cookieConfig['cookieSameSite']
+				];
 
 				// Förläng endast om cookien är mer än halva livslängden gammal
 				// (dvs. om den har mindre än 15 dagar kvar)
-				$refreshThreshold = $lifetime / 2;   
+				$refreshThreshold = $cookieLifetime / 2;   
 
 				// Kolla om cookien har en expires-tid via header (approximativt)
 				if (!isset($_COOKIE['origo_user_id_last_refresh']) || 
@@ -26,28 +37,14 @@
 					setcookie(
 						$cookieName,
 						$_COOKIE[$cookieName],
-						[
-							'expires'  => time() + $lifetime,
-							'path'     => '/',
-							'domain'   => '',
-							'secure'   => true,
-							'httponly' => true,
-							'samesite' => 'Strict'
-						]
+						$setcookieOptions
 					);
 
 					// Sätt en extra cookie så vi vet när vi senast förlängde
 					setcookie(
 						'origo_user_id_last_refresh',
 						time(),
-						[
-							'expires'  => time() + $lifetime,
-							'path'     => '/',
-							'domain'   => '',
-							'secure'   => true,
-							'httponly' => true,
-							'samesite' => 'Strict'
-						]
+						$setcookieOptions
 					);
 				}
 			}
@@ -62,9 +59,9 @@
 				{
 					$origoUserId=$_POST['origo_user_id'];
 				}
-				require("./constants/cookieKey.php");
 				//$decoded=base64_decode($_COOKIE['origo_user_id']);
 				list($encrypted_data, $iv) = explode('::', base64_decode($origoUserId), 2);
+				$cookieKey=$cookieConfig['cookieKey'];
 				//$user=trim(mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $cookieKey, $decoded, MCRYPT_MODE_ECB));
 				$user = openssl_decrypt($encrypted_data, 'aes-256-cbc', $cookieKey, 0, $iv);
 				require("./constants/adldapConfig.php");
