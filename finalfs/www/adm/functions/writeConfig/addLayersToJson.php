@@ -384,22 +384,10 @@
 						unset($styleSource, $styleService, $styleSourceProject, $paramSeparator);
 					}
 					require("./constants/iconTtl.php");
-					if (isset($service) && isset($service['restricted']) && $service['restricted'] == 't')
-					{
-						$restricted=true;
-					}
-					else
-					{
-						$restricted=false;
-					}
 					if (isset($styleLayer['show_icon']) && $styleLayer['show_icon'] == 't' && !empty($styleLayer['icon']))
 					{
 						if ($iconTtl != '-1')
 						{
-							if ($restricted)
-							{
-								$iconTtl='0';
-							}
 							if (strpos($styleLayer['icon'], '?') === false)
 							{
 								$styleLayer['icon'] = $styleLayer['icon'].'?';
@@ -431,7 +419,7 @@
 					}
 					if ($styleLayer['show_iconext'] != 'f' && !empty($styleLayer['icon_extended']))
 					{
-						if ($iconTtl != '0' && !$restricted)
+						if ($iconTtl != '0')
 						{
 							if (strpos($styleLayer['icon_extended'], '?') === false)
 							{
