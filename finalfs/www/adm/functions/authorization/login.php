@@ -17,26 +17,30 @@
 		}
 		if ($authUser)
 		{
-			//Key
-			require("./constants/cookieKey.php");
+			require('./constants/cookieConfig.php');
+			$cookieKey=$cookieConfig['cookieKey'];
+			
 			//To Encrypt:
 			$iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length('aes-256-cbc'));
 			$encrypted = openssl_encrypt($user, 'aes-256-cbc', $cookieKey, 0, $iv);
 			$cookiestr = base64_encode($encrypted . '::' . $iv);
-			$cookieLifetime = 60*60*24*30;   // 30 dagar (ändra efter behov)
+			$cookieName = $cookieConfig['cookieName'];
+			$cookieLifetime = $cookieConfig['cookieLifetime'];
+			$setcookieOptions =
+			[
+				'expires'  => time() + $cookieLifetime,
+				'path'     => $cookieConfig['cookiePath'],
+				'domain'   => $cookieConfig['cookieDomain'],
+				'secure'   => $cookieConfig['cookieSecure'],
+				'httponly' => $cookieConfig['cookieHttpOnly'],
+				'samesite' => $cookieConfig['cookieSameSite']
+			];
 			setcookie(
-				'origo_user_id', 
+				$cookieName, 
 				$cookiestr, 
-				[
-					'expires'  => time() + $cookieLifetime,
-					'path'     => '/',
-					'domain'   => '',
-					'secure'   => true,
-					'httponly' => true,
-					'samesite' => 'Strict'
-				]
+				$setcookieOptions
 			);
-			$_COOKIE['origo_user_id']=$cookiestr;
+			$_COOKIE[$cookieName]=$cookiestr;
 			unset($_SESSION["user"]);
 			initUser($dbh);
 			
