@@ -15,15 +15,15 @@
 			if (isset($_SESSION['user']['id']) && isset($_COOKIE['origo_user_id'])) {
 				
 				$cookieName = $cookieConfig['cookieName'];
-				$cookieLifetime   = $cookieConfig['cookieLifetime'];
+				$cookieLifetime = $cookieConfig['cookieLifetime'];
 				$setcookieOptions =
 				[
-							'expires'  => time() + $cookieLifetime,
-							'path'     => $cookieConfig['cookiePath'],
-							'domain'   => $cookieConfig['cookieDomain'],
-							'secure'   => $cookieConfig['cookieSecure'],
-							'httponly' => $cookieConfig['cookieHttpOnly'],
-							'samesite' => $cookieConfig['cookieSameSite']
+					'expires'  => time() + $cookieLifetime,
+					'path'     => $cookieConfig['cookiePath'],
+					'domain'   => $cookieConfig['cookieDomain'],
+					'secure'   => $cookieConfig['cookieSecure'],
+					'httponly' => $cookieConfig['cookieHttpOnly'],
+					'samesite' => $cookieConfig['cookieSameSite']
 				];
 
 				// Förläng endast om cookien är mer än halva livslängden gammal
