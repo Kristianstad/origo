@@ -566,6 +566,7 @@ if ($_POST['map'] == 'yes')
 	}
 	$sql="INSERT INTO map_configs.maps($mapColumns) VALUES ($mapValues)";
 	$result=pg_query($dbh, $sql);
+	pg_close($dbh);
 	if (!$result)
 	{
 		die("Error in SQL query: " . pg_last_error());
