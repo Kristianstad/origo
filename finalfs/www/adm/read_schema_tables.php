@@ -26,10 +26,14 @@
 			$result=pg_query($dbh_config, $sql);
 			if (!$result)
 			{
+				pg_close($dbh);
+				pg_close($dbh_config);
 				die("Error in SQL query: " . pg_last_error());
 			}
 			unset($result);
 		}
 	}
 	pg_flush($dbh);
+	pg_close($dbh);
+	pg_close($dbh_config);
 ?>
