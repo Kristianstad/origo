@@ -1,7 +1,7 @@
 <?php
 	require_once('../../composer/adldap2/autoload.php');
 
-	function initUser(&$dbh)
+	function initUser(&$dbh=false)
 	{
 		if (isset($_SESSION['user']) && isset($_SESSION['login_time_stamp']) && time()-$_SESSION["login_time_stamp"] <36000)
 		{
@@ -87,6 +87,15 @@
 				$_SESSION["login_time_stamp"] = time();
 				session_write_close();
 				require("./constants/configSchema.php");
+				if (!$dbh)
+				{
+					$dbclose=true;
+					$dbh=dbh();
+				}
+				else
+				{
+					$dbclose=false;
+				}
 				$adusers=all_from_table($dbh, $configSchema, 'adusers');
 				if (isIdUniqueInTable($user, 'aduser_id', $adusers))
 				{
@@ -101,9 +110,14 @@
 				$result=pg_query($dbh, $sql);
 				if (!$result)
 				{
+					pg_close($dbh);
 					die("Error in SQL query: " . pg_last_error());
 				}
 				unset($result);
+				if ($dbclose)
+				{
+					pg_close($dbh);
+				}
 			}
 			else
 			{
