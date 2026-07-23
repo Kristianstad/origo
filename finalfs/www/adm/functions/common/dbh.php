@@ -7,7 +7,7 @@
 		{
 			require_once("./constants/dbhConnectionString.php");
 		}
-		$dbh = pg_connect($dbhConnectionString);
+		$dbh = pg_connect($dbhConnectionString, PGSQL_CONNECT_FORCE_NEW);
 		if (!$dbh)
 		{
 			echo '{"save_status":"Error in connection"}';
@@ -18,5 +18,3 @@
 			return $dbh;
 		}
  	 }
- 	 
-?>
