@@ -30,6 +30,7 @@
 			$updates[$updated[0]]=$updated[1];
 		}
 	}
+	pg_close($dbh);
 	arsort($updates);
 	$updated=key($updates);
 	$updated=substr($updated, 0, 10);
