@@ -80,6 +80,7 @@
 		echo "&nbsp;<form action='manage.php' method='post' target='_blank' style='display:inline'><button type='submit' name='".$childType."Id' value='".$childId."'>Administrera</button></form>";
 		echo "&nbsp;<button type=\"button\" onclick=\"window.parent.postMessage({ action: 'close' }, window.location.origin);\">Stäng</button>";
 	}
+	pg_close($dbh);
 ?>
 </body>
 </html>
