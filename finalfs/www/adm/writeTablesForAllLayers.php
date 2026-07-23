@@ -34,11 +34,13 @@
 					$result=pg_query($dbh, "UPDATE $configSchema.layers SET tables = '$tables' WHERE layer_id = '$layerId'");
 					if (!$result)
 					{
+						pg_close($dbh);
 						die("Error in SQL query: " . pg_last_error());
 					}
 				}
 			}
 		}
 	}
+	pg_close($dbh);
 
 ?>
