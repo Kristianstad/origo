@@ -54,13 +54,13 @@
 		{
 			testUnread($username, $userNews);
 		}
-		pg_close($dbh);
 		ignore_user_abort(false); 
 	}
 	else
 	{
 		echo '<b style="color:#000000">Ej inloggad!</b>';
 	}
+	pg_close($dbh);
 ?>
 </body>
 </html>
