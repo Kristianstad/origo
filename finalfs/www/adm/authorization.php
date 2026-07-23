@@ -16,20 +16,18 @@
 	if (isset($_GET['logout']))
 	{
 		logout();
-		exit(0);
 	}
 	elseif (isset($_GET['displaylogout']) || !isset($_GET['SERVICE']) && !empty($_SESSION['user']))
 	{
 		displayLogout();
-		exit(0);
 	}
 	elseif ($_SERVER["REQUEST_METHOD"] == "POST")
 	{
 		login($dbh);
-		exit(0);
 	}
 	else
 	{
 		displayLogin();
-		exit(0);
 	}
+	pg_close($dbh);
+	exit(0);
