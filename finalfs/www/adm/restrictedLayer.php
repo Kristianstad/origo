@@ -11,9 +11,7 @@
 	
 	session_start(array('read_and_close' => true));
 	includeFileConstant('RESTRICTEDLAYERS');
-	$dbh=dbh();
-	initUser($dbh);
-	pg_close($dbh);
+	initUser();
 	//ini_set('output_buffering', 'off');
 	if (isset($_SERVER['QUERY_STRING']))
 	{
@@ -107,5 +105,3 @@
 			}
 		}
 	}
-
-?>
