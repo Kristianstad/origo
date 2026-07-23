@@ -47,7 +47,7 @@ function publishMapFiles(
     }
 
     // 4. Create public symlinks
-    $base = rtrim($webRoot, '/') . '/';
+    $base = rtrim($webRoot, '/') . '/maps/';
 
     createSymlinkIfNotExists($htmlFile, $base . $mapId . '.html');
     createSymlinkIfNotExists($jsonFile, $base . $mapId . '.json');
