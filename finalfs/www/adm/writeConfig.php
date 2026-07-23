@@ -34,7 +34,7 @@
 	{
 		$mapNumber = '';
 	}
-	$configDir="$webRoot/$mapName";
+	$configDir="$webRoot/maps/$mapName";
 	if (!file_exists("$configDir"))
 	{
 		mkdir("$configDir");
@@ -230,14 +230,14 @@
 		if (isset($_GET['getHtml']) && $_GET['getHtml'] == 'y')
 		{
 			require("./constants/previewBase.php");
-			$html = $html."\n\t\t<base href='$previewBase'>";
+			$base=rtrim($previewBase,'/').'/';
 		}
-		/*
-		elseif ($map['searchengineindexable'] == "t")
+		else
 		{
-			$html = $html."\n\t\t<script type=\"application/ld+json\" src=\"structured-data".$mapNumber.".json\"></script>";
+			$base=rtrim($proxyRoot,'/').'/';
 		}
-		*/
+		$html = $html."\n\t\t<base href='$base'>";
+		unset($base);
 		$html=$html."\n". <<<HERE
 			</head>
 			<body>
