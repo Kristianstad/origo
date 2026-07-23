@@ -13,6 +13,7 @@
 	includeFileConstant('RESTRICTEDLAYERS');
 	$dbh=dbh();
 	initUser($dbh);
+	pg_close($dbh);
 	//ini_set('output_buffering', 'off');
 	if (isset($_SERVER['QUERY_STRING']))
 	{
