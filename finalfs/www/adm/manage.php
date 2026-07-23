@@ -321,6 +321,7 @@
 		}
 		unset($updatePosts, $id, $type, $typeTableName, $typeTablePkColumn, $typeTable, $command, $sql);
 	}
+	pg_close($dbh);
 
 	// Some common information needs to be passed on every time a form is posted, this info is aggregated in $inheritPosts (array)
 	// $inheritPosts is set to include $idPosts, $sizePosts, $post['groupIds'] and $categoryPosts
