@@ -31,4 +31,6 @@
 		}
 	}
 	pg_flush($dbh);
+	pg_close($dbh);
+	pg_close($dbh_config);
 ?>
