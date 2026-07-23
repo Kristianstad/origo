@@ -43,6 +43,7 @@
 		$dataSortedValues=$currentValue.',';
 	}
 	$values=all_from_table($dbh, 'map_configs', $table);
+	pg_close($dbh);
 	echo "<select id='selectbox' onChange='update(this);' data-sorted-values='$dataSortedValues' multiple>";
 	if ($table == 'proj4defs')
 	{
