@@ -110,6 +110,7 @@
 		{
 			require_once("./constants/proxyRoot.php");
 			echo '<script>alert("Projektionsutbredning saknas! Ingen konfiguration skriven."); window.location.href="'.$proxyRoot.$_SERVER["REQUEST_URI"].'&badJson=y";</script>';
+			pg_close($dbh);
 			exit;
 		}
 	}
@@ -195,12 +196,14 @@
 		header('Content-Type: application/octet-stream');
 		header("Content-Disposition: attachment;filename=$mapId.json");
 		echo "$json";
+		pg_close($dbh);
 		exit;
 	}
 	if (json_decode($json) === null)
 	{
 		require_once("./constants/proxyRoot.php");
 		echo '<script>alert("Fel i Json! Ingen konfiguration skriven."); window.location.href="'.$proxyRoot.$_SERVER["REQUEST_URI"].'&badJson=y";</script>';
+		pg_close($dbh);
 		exit;
 	}
 	$json=json_encode(json_decode($json), JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);
@@ -467,3 +470,4 @@
 			defineFileConstant('RESTRICTEDLAYERS', $restrictedLayers);
 		}
 	}
+	pg_close($dbh);
