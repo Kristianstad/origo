@@ -1,7 +1,7 @@
 <?php
 	require_once('../../composer/adldap2/autoload.php');
 
-	function initUser(&$dbh=false)
+	function initUserLdap(&$dbh=false)
 	{
 		if (isset($_SESSION['user']) && isset($_SESSION['login_time_stamp']) && time()-$_SESSION["login_time_stamp"] <36000)
 		{
