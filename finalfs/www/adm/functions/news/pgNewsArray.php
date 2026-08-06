@@ -1,8 +1,7 @@
 <?php
 
-	function pgNewsArray()
+	function pgNewsArray(&$dbh)
 	{
-		GLOBAL $dbh;
 		require("./constants/configSchema.php");
 		if (!$dbh)
 		{
@@ -12,5 +11,3 @@
 		return pg_fetch_all($result);
 		pg_free_result($result);
 	}
-
-?>
