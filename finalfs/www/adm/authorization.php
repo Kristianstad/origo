@@ -10,8 +10,12 @@
 	includeDirectory("./functions/authorization");
 	
 	session_start(array('read_and_close' => true));
-	$dbh=dbh();
-	initUser($dbh);
+	require('./constants/authMethod.php');
+	if ($authMethod == 'ldap')
+	{
+		$dbh=dbh();
+		initUserLdap($dbh);
+	}
 
 	if (isset($_GET['logout']))
 	{
@@ -23,11 +27,18 @@
 	}
 	elseif ($_SERVER["REQUEST_METHOD"] == "POST")
 	{
+		if ($authMethod != 'ldap')
+		{
+			$dbh=dbh();
+		}
 		login($dbh);
 	}
 	else
 	{
 		displayLogin();
 	}
-	pg_close($dbh);
+	if (isset($dbh))
+	{
+		pg_close($dbh);
+	}
 	exit(0);
