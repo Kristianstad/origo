@@ -19,13 +19,21 @@
 	includeDirectory("./functions/news");
 	
 	session_start(array('read_and_close' => true));
-	$dbh=dbh();
-	initUser($dbh);
+	require('./constants/authMethod.php');
+	if ($authMethod == 'ldap')
+	{
+		$dbh=dbh();
+		initUserLdap($dbh);
+	}
 	if (isset($_SESSION['user']) && $_SESSION['user'] !== false)
 	{
 		ignore_user_abort(true); 		
 		$username=$_SESSION['user']['id'];
-		$pgNewsArray=pgNewsArray();
+		if ($authMethod != 'ldap')
+		{
+			$dbh=dbh();
+		}
+		$pgNewsArray=pgNewsArray($dbh);
 		$userNews=userNews($username, $pgNewsArray);
 		if (!empty($_GET['newId']))
 		{
@@ -60,7 +68,10 @@
 	{
 		echo '<b style="color:#000000">Ej inloggad!</b>';
 	}
-	pg_close($dbh);
+	if (isset($dbh))
+	{
+		pg_close($dbh);
+	}
 ?>
 </body>
 </html>
