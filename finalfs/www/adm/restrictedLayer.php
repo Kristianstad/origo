@@ -11,7 +11,11 @@
 	
 	session_start(array('read_and_close' => true));
 	includeFileConstant('RESTRICTEDLAYERS');
-	initUser();
+	require('./constants/authMethod.php');
+	if ($authMethod == 'ldap')
+	{
+		initUserLdap();
+	}
 	//ini_set('output_buffering', 'off');
 	if (isset($_SERVER['QUERY_STRING']))
 	{
