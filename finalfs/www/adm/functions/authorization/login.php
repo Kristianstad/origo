@@ -42,7 +42,11 @@
 			);
 			$_COOKIE[$cookieName]=$cookiestr;
 			unset($_SESSION["user"]);
-			initUser($dbh);
+			require('./constants/authMethod.php');
+			if ($authMethod == 'ldap')
+			{
+				initUserLdap($dbh);
+			}
 			
 			// NY KOD: stöd för return_to från forwardauth.php
 			$return_to = $_POST['return_to'] ?? $_GET['return_to'] ?? '';
