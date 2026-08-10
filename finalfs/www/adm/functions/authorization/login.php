@@ -32,13 +32,12 @@ function login(&$dbh)
             $provider = $ad->connect();
             $authUser = $provider->auth()->attempt("$user@$adDomain", $passwd);
         } catch (Exception $e) {
-            // Logga felet internt, visa aldrig detaljer för användaren
             error_log('LDAP auth error: ' . $e->getMessage());
             $authUser = false;
         }
     }
 
-    // Nolla lösenordet så fort det inte behövs längre
+    // Nolla lösenordet
     $passwd = null;
     unset($passwd);
 
@@ -51,14 +50,7 @@ function login(&$dbh)
         setcookie(
             $cookieConfig['cookieName'],
             $cookiestr,
-            [
-                'expires'  => time() + $cookieConfig['cookieLifetime'],
-                'path'     => $cookieConfig['cookiePath'],
-                'domain'   => $cookieConfig['cookieDomain'],
-                'secure'   => $cookieConfig['cookieSecure'],
-                'httponly' => $cookieConfig['cookieHttpOnly'],
-                'samesite' => $cookieConfig['cookieSameSite'],
-            ]
+            getCookieOptions(time() + $cookieConfig['cookieLifetime'])
         );
 
         // Rensa eventuell gammal session-data och initiera användaren
