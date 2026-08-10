@@ -1,53 +1,53 @@
 <?php
-	// Tell browsers to not cache response
-	header("Cache-Control: must-revalidate, max-age=0, s-maxage=0, no-cache, no-store");
-	
-	// Expose specific functions
-	require_once("./functions/includeDirectory.php");
-	
-	// Expose all functions in given folders
-	includeDirectory("./functions/common");
-	includeDirectory("./functions/authorization");
+// Tell browsers to not cache response
+header("Cache-Control: must-revalidate, max-age=0, s-maxage=0, no-cache, no-store");
 
-	require('./constants/cookieConfig.php');
-	session_start([
-		'read_and_close'  => true,
-		'cookie_domain'   => $cookieConfig['cookieDomain'],
-		'cookie_path'     => $cookieConfig['cookiePath'],
-		'cookie_secure'   => $cookieConfig['cookieSecure'],
-		'cookie_httponly' => $cookieConfig['cookieHttpOnly'],
-		'cookie_samesite' => $cookieConfig['cookieSameSite']
-	]);	
+// Expose specific functions
+require_once("./functions/includeDirectory.php");
 
-	require('./constants/authMethod.php');
-	if ($authMethod == 'ldap')
-	{
-		$dbh=dbh();
-		initUserLdap($dbh);
-	}
+// Expose all functions in given folders
+includeDirectory("./functions/common");
+includeDirectory("./functions/authorization");
 
-	if (isset($_GET['logout']))
-	{
-		logout();
-	}
-	elseif (isset($_GET['displaylogout']) || !isset($_GET['SERVICE']) && !empty($_SESSION['user']))
-	{
-		displayLogout();
-	}
-	elseif ($_SERVER["REQUEST_METHOD"] == "POST")
-	{
-		if ($authMethod != 'ldap')
-		{
-			$dbh=dbh();
-		}
-		login($dbh);
-	}
-	else
-	{
-		displayLogin();
-	}
-	if (isset($dbh))
-	{
-		pg_close($dbh);
-	}
-	exit(0);
+require './constants/cookieConfig.php';
+require './constants/authMethod.php';
+
+// Starta sessionen – VI MÅSTE KUNNA SKRIVA till den
+session_start([
+    'cookie_domain'   => $cookieConfig['cookieDomain'],
+    'cookie_path'     => $cookieConfig['cookiePath'],
+    'cookie_secure'   => $cookieConfig['cookieSecure'],
+    'cookie_httponly' => $cookieConfig['cookieHttpOnly'],
+    'cookie_samesite' => $cookieConfig['cookieSameSite'],
+]);
+
+$dbh = null;
+
+if ($authMethod === 'ldap') {
+    $dbh = dbh();
+    initUserLdap($dbh);
+}
+
+if (isset($_GET['logout'])) {
+    logout();
+}
+elseif (isset($_GET['displaylogout']) || (!isset($_GET['SERVICE']) && !empty($_SESSION['user']))) {
+    displayLogout();
+}
+elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if ($authMethod !== 'ldap') {
+        $dbh = dbh();
+    }
+    login($dbh);
+}
+else {
+    displayLogin();
+}
+
+session_write_close();
+
+if (isset($dbh) && $dbh) {
+    pg_close($dbh);
+}
+
+exit(0);
