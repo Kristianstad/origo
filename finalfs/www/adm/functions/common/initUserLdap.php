@@ -1,131 +1,157 @@
 <?php
-	require_once('../../composer/adldap2/autoload.php');
+require_once('../../composer/adldap2/autoload.php');
 
-	function initUserLdap(&$dbh=false)
-	{
-		if (isset($_SESSION['user']) && isset($_SESSION['login_time_stamp']) && time()-$_SESSION["login_time_stamp"] <36000)
-		{
-			return false;
-		}
-		else
-		{
-			require('./constants/cookieConfig.php');
-		
-			// === SMART COOKIE FÖRLÄNGNING ===
-			if (isset($_SESSION['user']['id']) && isset($_COOKIE['origo_user_id'])) {
-				
-				$cookieName = $cookieConfig['cookieName'];
-				$cookieLifetime = $cookieConfig['cookieLifetime'];
-				$setcookieOptions =
-				[
-					'expires'  => time() + $cookieLifetime,
-					'path'     => $cookieConfig['cookiePath'],
-					'domain'   => $cookieConfig['cookieDomain'],
-					'secure'   => $cookieConfig['cookieSecure'],
-					'httponly' => $cookieConfig['cookieHttpOnly'],
-					'samesite' => $cookieConfig['cookieSameSite']
-				];
+function initUserLdap(&$dbh = false)
+{
+    // Om användaren redan är inloggad och sessionen inte är för gammal → hoppa över
+    if (
+        isset($_SESSION['user']['id']) &&
+        isset($_SESSION['login_time_stamp']) &&
+        (time() - $_SESSION['login_time_stamp']) < 36000
+    ) {
+        return false;
+    }
 
-				// Förläng endast om cookien är mer än halva livslängden gammal
-				// (dvs. om den har mindre än 15 dagar kvar)
-				$refreshThreshold = $cookieLifetime / 2;   
+    require './constants/cookieConfig.php';
+    require './constants/adldapConfig.php';
+    require './constants/adGroupFilter.php';
+    require './constants/configSchema.php';
 
-				// Kolla om cookien har en expires-tid via header (approximativt)
-				if (!isset($_COOKIE['origo_user_id_last_refresh']) || 
-					(time() - ($_COOKIE['origo_user_id_last_refresh'] ?? 0)) > $refreshThreshold) {
-					
-					setcookie(
-						$cookieName,
-						$_COOKIE[$cookieName],
-						$setcookieOptions
-					);
+    $cookieName     = $cookieConfig['cookieName'];
+    $cookieLifetime = $cookieConfig['cookieLifetime'];
 
-					// Sätt en extra cookie så vi vet när vi senast förlängde
-					setcookie(
-						'origo_user_id_last_refresh',
-						time(),
-						$setcookieOptions
-					);
-				}
-			}
-			
-			if (isset($_COOKIE['origo_user_id']) || isset($_POST['origo_user_id']))
-			{
-				if (isset($_COOKIE['origo_user_id']))
-				{
-					$origoUserId=$_COOKIE['origo_user_id'];
-				}
-				else
-				{
-					$origoUserId=$_POST['origo_user_id'];
-				}
-				//$decoded=base64_decode($_COOKIE['origo_user_id']);
-				list($encrypted_data, $iv) = explode('::', base64_decode($origoUserId), 2);
-				$cookieKey=$cookieConfig['cookieKey'];
-				//$user=trim(mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $cookieKey, $decoded, MCRYPT_MODE_ECB));
-				$user = openssl_decrypt($encrypted_data, 'aes-256-cbc', $cookieKey, 0, $iv);
-				require("./constants/adldapConfig.php");
-				$ad = new Adldap\Adldap();
-				$ad->addProvider($adldapConfig);
-				$provider = $ad->connect();
-				$search = $provider->search();
-				$userInfo = $provider->search()->users()->findBy('cn', $user);
-				if (empty($userInfo))
-				{
-					$userInfo = $provider->search()->users()->findBy('samaccountname', $user);
-				}
-				$name=$userInfo->getDisplayName();
-				$email=$userInfo->getEmail();
-				$company=$userInfo->getCompany();
-				$department=$userInfo->getDepartment();
-				require("./constants/adGroupFilter.php");
-				$adgroups=array_diff(array_map('strtolower', array_values($userInfo->getGroupNames($recursive = true))), $adGroupFilter);
-				session_start();
-				$_SESSION["user"]['id']=$user;
-				$_SESSION["user"]["mail"]= $email;
-				$_SESSION['user']["groups"] = $adgroups;
-				$_SESSION["login_time_stamp"] = time();
-				session_write_close();
-				require("./constants/configSchema.php");
-				if (!$dbh)
-				{
-					$dbclose=true;
-					$dbh=dbh();
-				}
-				else
-				{
-					$dbclose=false;
-				}
-				$adusers=all_from_table($dbh, $configSchema, 'adusers');
-				if (isIdUniqueInTable($user, 'aduser_id', $adusers))
-				{
-					$sql=insertIdSql($user, 'adusers').';';
-				}
-				else
-				{
-					$sql='';
-				}
-				$adgroupsStr='{'.implode(',', $adgroups).'}';
-				$sql=$sql."UPDATE $configSchema.adusers SET name = '$name', email = '$email', company = '$company', department = '$department', adgroups = '$adgroupsStr', lastlogin = now() WHERE aduser_id = '$user';";
-				$result=pg_query($dbh, $sql);
-				if (!$result)
-				{
-					pg_close($dbh);
-					die("Error in SQL query: " . pg_last_error());
-				}
-				unset($result);
-				if ($dbclose)
-				{
-					pg_close($dbh);
-				}
-			}
-			else
-			{
-				session_start();
-				$_SESSION["user"]=false;
-				$_SESSION["login_time_stamp"] = time();
-				session_write_close();
-			}
-			return true;
-		}
-	}
+    // === Smart cookie-förlängning ===
+    if (isset($_SESSION['user']['id']) && isset($_COOKIE[$cookieName])) {
+        $refreshThreshold = $cookieLifetime / 2;
+        $lastRefresh = (int)($_COOKIE[$cookieName . '_last_refresh'] ?? 0);
+
+        if ((time() - $lastRefresh) > $refreshThreshold) {
+            $options = getCookieOptions(time() + $cookieLifetime);
+
+            // Förläng den riktiga cookien
+            setcookie($cookieName, $_COOKIE[$cookieName], $options);
+
+            // Spara när vi senast förlängde
+            setcookie($cookieName . '_last_refresh', (string)time(), $options);
+        }
+    }
+
+    // === Försök hämta och dekryptera cookie ===
+    $origoUserId = $_COOKIE[$cookieName] ?? $_POST[$cookieName] ?? null;
+
+    if ($origoUserId === null) {
+        clearAuthSession();
+        return true;
+    }
+
+    // Dekryptera
+    $decoded = base64_decode($origoUserId, true);
+    if ($decoded === false || strpos($decoded, '::') === false) {
+        clearAuthSession();
+        return true;
+    }
+
+    list($encrypted_data, $iv) = explode('::', $decoded, 2);
+
+    $user = openssl_decrypt($encrypted_data, 'aes-256-cbc', $cookieConfig['cookieKey'], 0, $iv);
+
+    // Enkel validering av användarnamn
+    if ($user === false || !preg_match('/^[a-z0-9._-]{2,64}$/i', $user)) {
+        clearAuthSession();
+        return true;
+    }
+
+    $user = strtolower($user);
+
+    // === Hämta användarinfo från LDAP ===
+    try {
+        $ad = new Adldap\Adldap();
+        $ad->addProvider($adldapConfig);
+        $provider = $ad->connect();
+
+        $userInfo = $provider->search()->users()->findBy('cn', $user);
+        if (empty($userInfo)) {
+            $userInfo = $provider->search()->users()->findBy('samaccountname', $user);
+        }
+
+        if (empty($userInfo)) {
+            clearAuthSession();
+            return true;
+        }
+
+        $name       = $userInfo->getDisplayName() ?? '';
+        $email      = $userInfo->getEmail() ?? '';
+        $company    = $userInfo->getCompany() ?? '';
+        $department = $userInfo->getDepartment() ?? '';
+        $adgroups   = array_diff(
+            array_map('strtolower', array_values($userInfo->getGroupNames(true))),
+            $adGroupFilter
+        );
+    } catch (Exception $e) {
+        error_log('LDAP error in initUserLdap: ' . $e->getMessage());
+        clearAuthSession();
+        return true;
+    }
+
+    // === Sätt session ===
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+
+    $_SESSION['user'] = [
+        'id'     => $user,
+        'mail'   => $email,
+        'groups' => $adgroups,
+    ];
+    $_SESSION['login_time_stamp'] = time();
+    session_write_close();
+
+    // === Uppdatera databasen (parametriserad SQL) ===
+    $dbclose = false;
+    if (!$dbh) {
+        $dbh = dbh();
+        $dbclose = true;
+    }
+
+    $adgroupsStr = '{' . implode(',', $adgroups) . '}';
+
+    // Kolla om användaren redan finns
+    $checkSql = "SELECT 1 FROM {$configSchema}.adusers WHERE aduser_id = $1";
+    $checkResult = pg_query_params($dbh, $checkSql, [$user]);
+
+    if ($checkResult && pg_num_rows($checkResult) === 0) {
+        $insertSql = "INSERT INTO {$configSchema}.adusers (aduser_id) VALUES ($1)";
+        pg_query_params($dbh, $insertSql, [$user]);
+    }
+
+    // Uppdatera alltid
+    $updateSql = "
+        UPDATE {$configSchema}.adusers
+        SET name = $1,
+            email = $2,
+            company = $3,
+            department = $4,
+            adgroups = $5,
+            lastlogin = now()
+        WHERE aduser_id = $6
+    ";
+
+    $result = pg_query_params($dbh, $updateSql, [
+        $name,
+        $email,
+        $company,
+        $department,
+        $adgroupsStr,
+        $user
+    ]);
+
+    if (!$result) {
+        error_log('SQL error in initUserLdap: ' . pg_last_error($dbh));
+    }
+
+    if ($dbclose) {
+        pg_close($dbh);
+    }
+
+    return true;
+}
