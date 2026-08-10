@@ -18,9 +18,20 @@
 	includeDirectory("./functions/common");
 	includeDirectory("./functions/news");
 	
-	session_start(array('read_and_close' => true));
-	require('./constants/authMethod.php');
-	if ($authMethod == 'ldap')
+	require './constants/cookieConfig.php';
+	require './constants/authMethod.php';
+
+	session_start([
+		'cookie_domain'   => $cookieConfig['cookieDomain'],
+		'cookie_path'     => $cookieConfig['cookiePath'],
+		'cookie_secure'   => $cookieConfig['cookieSecure'],
+		'cookie_httponly' => $cookieConfig['cookieHttpOnly'],
+		'cookie_samesite' => $cookieConfig['cookieSameSite'],
+	// 'read_and_close' => true   ← kan behållas om du vill, men testa först utan
+	]);
+
+	$dbh = null;
+	if ($authMethod === 'ldap')
 	{
 		$dbh=dbh();
 		initUserLdap($dbh);
@@ -29,7 +40,7 @@
 	{
 		ignore_user_abort(true); 		
 		$username=$_SESSION['user']['id'];
-		if ($authMethod != 'ldap')
+		if ($authMethod !== 'ldap')
 		{
 			$dbh=dbh();
 		}
@@ -41,24 +52,24 @@
 			$selectedNew= selectNew($userNews, $newId);
 		}
 		$action=$_GET['action'];
-		if ($action == 'list')
+		if ($action === 'list')
 		{
 			printNewsList($userNews);
 		}
-		elseif ($action == 'load' && !empty($selectedNew))
+		elseif ($action === 'load' && !empty($selectedNew))
 		{
 			$return=explode(',', $_GET['return']);
 			printNews($username, $selectedNew, $return);
 		}
-		elseif (($action == 'delete' || $action == 'read') && !empty($selectedNew) && !in_array($username, $selectedNew[$action.'s']))
+		elseif (($action === 'delete' || $action === 'read') && !empty($selectedNew) && !in_array($username, $selectedNew[$action.'s']))
 		{
 			readDelete($username, $selectedNew, $action);
 		}
-		elseif ($action == 'subjects')
+		elseif ($action === 'subjects')
 		{
 			printNewsSubjects($username, $userNews);
 		}
-		elseif ($action == 'unread')
+		elseif ($action === 'unread')
 		{
 			testUnread($username, $userNews);
 		}
@@ -68,7 +79,7 @@
 	{
 		echo '<b style="color:#000000">Ej inloggad!</b>';
 	}
-	if (isset($dbh))
+	if (isset($dbh) && $dbh)
 	{
 		pg_close($dbh);
 	}
