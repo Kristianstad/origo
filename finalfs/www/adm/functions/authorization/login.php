@@ -94,6 +94,4 @@ HTML;
         echo '<b style="color:#ff0000">Felaktig inloggning!</b><br>';
         displayLogin();
     }
-
-    exit;
 }
