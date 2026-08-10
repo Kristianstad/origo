@@ -42,6 +42,4 @@ function logout()
     // === 3. Visa meddelande ===
     echo '<b>Du är nu utloggad!</b><br>';
     displayLogin();
-
-    exit;
 }
