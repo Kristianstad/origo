@@ -1,86 +1,107 @@
 <?php
-	require_once('../../composer/adldap2/autoload.php');
+require_once('../../composer/adldap2/autoload.php');
 
-	function login(&$dbh)
-	{
-		require("./constants/adldapConfig.php");
-		require("./constants/adDomain.php");
-		$ad = new Adldap\Adldap();
-		$ad->addProvider($adldapConfig);
-		$provider = $ad->connect();
-		$user = strtolower($_POST['user']);
-		$passwd = $_POST['passwd'];
-		$authUser=false;
-		if (!empty($user) && !empty($passwd))
-		{
-			$authUser = $provider->auth()->attempt("$user@$adDomain", "$passwd");
-		}
-		if ($authUser)
-		{
-			require('./constants/cookieConfig.php');
-			$cookieKey=$cookieConfig['cookieKey'];
-			
-			//To Encrypt:
-			$iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length('aes-256-cbc'));
-			$encrypted = openssl_encrypt($user, 'aes-256-cbc', $cookieKey, 0, $iv);
-			$cookiestr = base64_encode($encrypted . '::' . $iv);
-			$cookieName = $cookieConfig['cookieName'];
-			$cookieLifetime = $cookieConfig['cookieLifetime'];
-			$setcookieOptions =
-			[
-				'expires'  => time() + $cookieLifetime,
-				'path'     => $cookieConfig['cookiePath'],
-				'domain'   => $cookieConfig['cookieDomain'],
-				'secure'   => $cookieConfig['cookieSecure'],
-				'httponly' => $cookieConfig['cookieHttpOnly'],
-				'samesite' => $cookieConfig['cookieSameSite']
-			];
-			setcookie(
-				$cookieName, 
-				$cookiestr, 
-				$setcookieOptions
-			);
-			$_COOKIE[$cookieName]=$cookiestr;
-			unset($_SESSION["user"]);
-			require('./constants/authMethod.php');
-			if ($authMethod == 'ldap')
-			{
-				initUserLdap($dbh);
-			}
-			
-			// NY KOD: stöd för return_to från forwardauth.php
-			$return_to = $_POST['return_to'] ?? $_GET['return_to'] ?? '';
-			if (!empty($return_to) && filter_var($return_to, FILTER_VALIDATE_URL))
-			{
-				header('Location: ' . $return_to);
-				fastcgi_finish_request();
-				exit(0);
-			}
-			
-			require('./constants/proxyRoot.php');
-			$formAction=$proxyRoot.$_SERVER["PHP_SELF"];
-			if (basename($formAction) == 'authorization-loader.php')
-			{
-				$src=dirname($formAction).'/news-loader.php';
-			}
-			else
-			{
-				$src='./news.php';
-			}			
-			echo <<<HERE
-						<script>
-							sessionStorage.user_id="{$_SESSION["user"]['id']}";
-						</script>
-						<b style="color:#023f88">Du är nu inloggad!</b>
-						<button id="loginbtn" style="cursor:pointer;background:#eee;border-radius:1rem;border:#eee;width:auto;text-align:center;white-space:nowrap;padding: 0.5rem 0.75rem;font:14px Segoe UI,Roboto,Helvetica Neue,Arial,sans-serif;" type="button" onclick="sessionStorage.removeItem('user_id'); document.location.assign('{$formAction}?logout');">Logga ut</button>
-						</br><iframe src="{$src}?action=subjects" style="border:none;width:100%;height:115px;margin-top:5px;margin-bottom:10px"></iframe>
-			HERE;
-		}
-		else
-		{
-			echo '<b style="color:#ff0000">Felaktig inloggning!</b><br>';
-			displayLogin();
-		}
-		fastcgi_finish_request();
-		exit(0);
-	}
+function login(&$dbh)
+{
+    require './constants/adldapConfig.php';
+    require './constants/adDomain.php';
+    require './constants/cookieConfig.php';
+    require './constants/authMethod.php';
+    require './constants/proxyRoot.php';
+
+    // Se till att sessionen är startad
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start([
+            'cookie_domain'   => $cookieConfig['cookieDomain'],
+            'cookie_path'     => $cookieConfig['cookiePath'],
+            'cookie_secure'   => $cookieConfig['cookieSecure'],
+            'cookie_httponly' => $cookieConfig['cookieHttpOnly'],
+            'cookie_samesite' => $cookieConfig['cookieSameSite'],
+        ]);
+    }
+
+    $user   = strtolower(trim($_POST['user'] ?? ''));
+    $passwd = $_POST['passwd'] ?? '';
+
+    $authUser = false;
+
+    if ($user !== '' && $passwd !== '') {
+        try {
+            $ad = new Adldap\Adldap();
+            $ad->addProvider($adldapConfig);
+            $provider = $ad->connect();
+            $authUser = $provider->auth()->attempt("$user@$adDomain", $passwd);
+        } catch (Exception $e) {
+            // Logga felet internt, visa aldrig detaljer för användaren
+            error_log('LDAP auth error: ' . $e->getMessage());
+            $authUser = false;
+        }
+    }
+
+    // Nolla lösenordet så fort det inte behövs längre
+    $passwd = null;
+    unset($passwd);
+
+    if ($authUser) {
+        // --- Skapa krypterad cookie ---
+        $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length('aes-256-cbc'));
+        $encrypted = openssl_encrypt($user, 'aes-256-cbc', $cookieConfig['cookieKey'], 0, $iv);
+        $cookiestr = base64_encode($encrypted . '::' . $iv);
+
+        setcookie(
+            $cookieConfig['cookieName'],
+            $cookiestr,
+            [
+                'expires'  => time() + $cookieConfig['cookieLifetime'],
+                'path'     => $cookieConfig['cookiePath'],
+                'domain'   => $cookieConfig['cookieDomain'],
+                'secure'   => $cookieConfig['cookieSecure'],
+                'httponly' => $cookieConfig['cookieHttpOnly'],
+                'samesite' => $cookieConfig['cookieSameSite'],
+            ]
+        );
+
+        // Rensa eventuell gammal session-data och initiera användaren
+        unset($_SESSION['user']);
+        if ($authMethod === 'ldap') {
+            initUserLdap($dbh);
+        }
+
+        // --- Säker hantering av return_to ---
+        $return_to = $_POST['return_to'] ?? $_GET['return_to'] ?? '';
+        if ($return_to !== '' && isSafeReturnUrl($return_to)) {
+            header('Location: ' . $return_to);
+            exit;
+        }
+
+        // --- Visa inloggad-vy ---
+        $formAction = $proxyRoot . $_SERVER['PHP_SELF'];
+        $src = (basename($formAction) === 'authorization-loader.php')
+            ? dirname($formAction) . '/news-loader.php'
+            : './news.php';
+
+        $userId = htmlspecialchars($_SESSION['user']['id'] ?? '', ENT_QUOTES, 'UTF-8');
+
+        echo <<<HTML
+<script>
+sessionStorage.user_id = "{$userId}";
+</script>
+<b style="color:#023f88">Du är nu inloggad!</b>
+<button id="loginbtn"
+        style="cursor:pointer;background:#eee;border-radius:1rem;border:#eee;width:auto;text-align:center;white-space:nowrap;padding:0.5rem 0.75rem;font:14px Segoe UI,Roboto,Helvetica Neue,Arial,sans-serif;"
+        type="button"
+        onclick="sessionStorage.removeItem('user_id'); document.location.assign('{$formAction}?logout');">
+    Logga ut
+</button>
+<br>
+<iframe src="{$src}?action=subjects"
+        style="border:none;width:100%;height:115px;margin-top:5px;margin-bottom:10px"></iframe>
+HTML;
+
+    } else {
+        echo '<b style="color:#ff0000">Felaktig inloggning!</b><br>';
+        displayLogin();
+    }
+
+    exit;
+}
