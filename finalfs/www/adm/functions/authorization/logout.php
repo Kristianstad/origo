@@ -5,17 +5,10 @@ function logout()
 
     $cookieName = $cookieConfig['cookieName'];
 
-    // === 1. Förstör sessionen ordentligt ===
-    if (session_status() === PHP_SESSION_NONE) {
-        session_start([
-            'cookie_domain'   => $cookieConfig['cookieDomain'],
-            'cookie_path'     => $cookieConfig['cookiePath'],
-            'cookie_secure'   => $cookieConfig['cookieSecure'],
-            'cookie_httponly' => $cookieConfig['cookieHttpOnly'],
-            'cookie_samesite' => $cookieConfig['cookieSameSite'],
-        ]);
-    }
+    // Se till att sessionen är skrivbar
+    ensureSessionWritable();
 
+    // === 1. Förstör sessionen ordentligt ===
     $_SESSION = [];
 
     // Ta bort PHP-session-cookien
@@ -35,7 +28,6 @@ function logout()
 
     // === 2. Ta bort autentiseringscookien + refresh-cookien ===
     $options = getCookieOptions(time() - 3600);
-
     setcookie($cookieName, '', $options);
     setcookie($cookieName . '_last_refresh', '', $options);
 
