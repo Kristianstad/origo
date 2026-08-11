@@ -22,12 +22,12 @@
 	require './constants/authMethod.php';
 
 	session_start([
+		'read_and_close'  => true,
 		'cookie_domain'   => $cookieConfig['cookieDomain'],
 		'cookie_path'     => $cookieConfig['cookiePath'],
 		'cookie_secure'   => $cookieConfig['cookieSecure'],
 		'cookie_httponly' => $cookieConfig['cookieHttpOnly'],
-		'cookie_samesite' => $cookieConfig['cookieSameSite'],
-	// 'read_and_close' => true   ← kan behållas om du vill, men testa först utan
+		'cookie_samesite' => $cookieConfig['cookieSameSite']
 	]);
 
 	$dbh = null;
