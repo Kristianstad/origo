@@ -9,17 +9,10 @@ require_once("./functions/includeDirectory.php");
 includeDirectory("./functions/common");
 includeDirectory("./functions/authorization");
 
-require './constants/cookieConfig.php';
 require './constants/authMethod.php';
 
 // Starta sessionen – VI MÅSTE KUNNA SKRIVA till den
-session_start([
-    'cookie_domain'   => $cookieConfig['cookieDomain'],
-    'cookie_path'     => $cookieConfig['cookiePath'],
-    'cookie_secure'   => $cookieConfig['cookieSecure'],
-    'cookie_httponly' => $cookieConfig['cookieHttpOnly'],
-    'cookie_samesite' => $cookieConfig['cookieSameSite'],
-]);
+ensureSessionWritable();
 
 $dbh = null;
 
