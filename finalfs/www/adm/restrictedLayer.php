@@ -9,17 +9,32 @@
 	includeDirectory("./functions/common");
 	includeDirectory("./functions/restrictedLayer");
 	
-	session_start(array('read_and_close' => true));
+	require './constants/cookieConfig.php';
+	require './constants/authMethod.php';
+
+	session_start([
+		'read_and_close'  => true,
+		'cookie_domain'   => $cookieConfig['cookieDomain'],
+		'cookie_path'     => $cookieConfig['cookiePath'],
+		'cookie_secure'   => $cookieConfig['cookieSecure'],
+		'cookie_httponly' => $cookieConfig['cookieHttpOnly'],
+		'cookie_samesite' => $cookieConfig['cookieSameSite']
+	]);
 	includeFileConstant('RESTRICTEDLAYERS');
-	require('./constants/authMethod.php');
-	if ($authMethod == 'ldap')
+	if ($authMethod === 'ldap')
 	{
+		// Om du vill uppdatera lastlogin även härifrån:
+		// $dbh = dbh();
+		// initUserLdap($dbh);
+		// pg_close($dbh);
+
+		// Annars räcker det med:
 		initUserLdap();
 	}
 	//ini_set('output_buffering', 'off');
 	if (isset($_SERVER['QUERY_STRING']))
 	{
-		$tmpfil='/tmp/'.uniqid(null, true);
+		//$tmpfil='/tmp/'.uniqid(null, true);
 		$_SERVER['QUERY_STRING']=str_replace('&?', '&', $_SERVER['QUERY_STRING']);
 		$_SERVER['QUERY_STRING']=str_replace('?', '&', $_SERVER['QUERY_STRING']);
 		parse_str($_SERVER['QUERY_STRING'], $queryarray);
@@ -28,7 +43,7 @@
 		unset ($queryarray['PATH']);
 		require("./constants/restrictedServiceUrl.php");
 		$call=$restrictedServiceUrl.$path."?".$_SERVER['QUERY_STRING'];
-		if ($queryarray['REQUEST'] == 'GetCapabilities' || (!isset($queryarray['FORMAT']) && !isset($queryarray['INFO_FORMAT']) && $queryarray['OUTPUTFORMAT'] == 'geojson'))
+		if ($queryarray['REQUEST'] === 'GetCapabilities' || (!isset($queryarray['FORMAT']) && !isset($queryarray['INFO_FORMAT']) && $queryarray['OUTPUTFORMAT'] === 'geojson'))
 		{
 			header('Content-Type: text/xml; charset=utf-8');
 		}
@@ -88,17 +103,17 @@
 				$content=file_get_contents($call, false, $context);
 				echo $content;
 			}
-			elseif ($queryarray['REQUEST'] == 'GetLegendGraphic')
+			elseif ($queryarray['REQUEST'] === 'GetLegendGraphic')
 			{
 				$lockPng=file_get_contents('../img/png/lock_yellow.png');
 				echo $lockPng;
 			}
-			elseif ($queryarray['REQUEST'] == 'GetMap')
+			elseif ($queryarray['REQUEST'] === 'GetMap')
 			{
 				$emptyPng=file_get_contents('../img/png/empty.png');
 				echo $emptyPng;
 			}
-			elseif ($queryarray['REQUEST'] == 'GetFeatureInfo')
+			elseif ($queryarray['REQUEST'] === 'GetFeatureInfo')
 			{
 				header('Content-Type: application/json; charset=utf-8');
 				echo '{"features":[],"type":"FeatureCollection"}';
