@@ -19,8 +19,9 @@ function initUserLdap(&$dbh = false)
 
     $cookieName     = $cookieConfig['cookieName'];
     $cookieLifetime = $cookieConfig['cookieLifetime'];
-
+	
     // === Smart cookie-förlängning ===
+	// Körs bara om vi redan har en giltig session-användare
     if (isset($_SESSION['user']['id']) && isset($_COOKIE[$cookieName])) {
         $refreshThreshold = $cookieLifetime / 2;
         $lastRefresh = (int)($_COOKIE[$cookieName . '_last_refresh'] ?? 0);
@@ -93,10 +94,8 @@ function initUserLdap(&$dbh = false)
         return true;
     }
 
-    // === Sätt session ===
-    if (session_status() === PHP_SESSION_NONE) {
-        session_start();
-    }
+    // === Skriv till session (fungerar även efter read_and_close) ===
+    ensureSessionWritable();
 
     $_SESSION['user'] = [
         'id'     => $user,
@@ -113,44 +112,46 @@ function initUserLdap(&$dbh = false)
         $dbclose = true;
     }
 
-    $adgroupsStr = '{' . implode(',', $adgroups) . '}';
+	if ($dbh) {
+		$adgroupsStr = '{' . implode(',', $adgroups) . '}';
 
-    // Kolla om användaren redan finns
-    $checkSql = "SELECT 1 FROM {$configSchema}.adusers WHERE aduser_id = $1";
-    $checkResult = pg_query_params($dbh, $checkSql, [$user]);
+		// Kolla om användaren redan finns
+		$checkSql = "SELECT 1 FROM {$configSchema}.adusers WHERE aduser_id = $1";
+		$checkResult = pg_query_params($dbh, $checkSql, [$user]);
 
-    if ($checkResult && pg_num_rows($checkResult) === 0) {
-        $insertSql = "INSERT INTO {$configSchema}.adusers (aduser_id) VALUES ($1)";
-        pg_query_params($dbh, $insertSql, [$user]);
-    }
+		if ($checkResult && pg_num_rows($checkResult) === 0) {
+			$insertSql = "INSERT INTO {$configSchema}.adusers (aduser_id) VALUES ($1)";
+			pg_query_params($dbh, $insertSql, [$user]);
+		}
 
-    // Uppdatera alltid
-    $updateSql = "
-        UPDATE {$configSchema}.adusers
-        SET name = $1,
-            email = $2,
-            company = $3,
-            department = $4,
-            adgroups = $5,
-            lastlogin = now()
-        WHERE aduser_id = $6
-    ";
+		$updateSql = "
+			UPDATE {$configSchema}.adusers
+			SET name = $1,
+				email = $2,
+				company = $3,
+				department = $4,
+				adgroups = $5,
+				lastlogin = now()
+			WHERE aduser_id = $6
+		";
 
-    $result = pg_query_params($dbh, $updateSql, [
-        $name,
-        $email,
-        $company,
-        $department,
-        $adgroupsStr,
-        $user
-    ]);
+		$result = pg_query_params($dbh, $updateSql, [
+			$name,
+			$email,
+			$company,
+			$department,
+			$adgroupsStr,
+			$user
+		]);
 
-    if (!$result) {
-        error_log('SQL error in initUserLdap: ' . pg_last_error($dbh));
-    }
+		if (!$result) {
+			error_log('SQL error in initUserLdap: ' . pg_last_error($dbh));
+		}
 
-    if ($dbclose) {
-        pg_close($dbh);
+		if ($dbclose) {
+			pg_close($dbh);
+			$dbh = false;
+		}
     }
 
     return true;
