@@ -1,13 +1,15 @@
 <?php
 /**
  * Hjälpfunktion för att rensa auth-session. Används av initUserLdap.
+ * $writable = true  → försök spara ändringen
+ * $writable = false → bara rensa i minnet för aktuell request
  */
-function clearAuthSession(): void
+function clearAuthSession(bool $writable = true): void
 {
-    if (session_status() === PHP_SESSION_NONE) {
-        session_start();
-    }
     $_SESSION['user'] = false;
     $_SESSION['login_time_stamp'] = time();
-    session_write_close();
+
+    if ($writable && session_status() === PHP_SESSION_ACTIVE) {
+        session_write_close();
+    }
 }
