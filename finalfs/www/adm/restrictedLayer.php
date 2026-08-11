@@ -23,18 +23,11 @@
 	includeFileConstant('RESTRICTEDLAYERS');
 	if ($authMethod === 'ldap')
 	{
-		// Om du vill uppdatera lastlogin även härifrån:
-		// $dbh = dbh();
-		// initUserLdap($dbh);
-		// pg_close($dbh);
-
-		// Annars räcker det med:
 		initUserLdap();
 	}
 	//ini_set('output_buffering', 'off');
 	if (isset($_SERVER['QUERY_STRING']))
 	{
-		//$tmpfil='/tmp/'.uniqid(null, true);
 		$_SERVER['QUERY_STRING']=str_replace('&?', '&', $_SERVER['QUERY_STRING']);
 		$_SERVER['QUERY_STRING']=str_replace('?', '&', $_SERVER['QUERY_STRING']);
 		parse_str($_SERVER['QUERY_STRING'], $queryarray);
