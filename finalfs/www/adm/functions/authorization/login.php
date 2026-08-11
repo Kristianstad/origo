@@ -9,16 +9,8 @@ function login(&$dbh)
     require './constants/authMethod.php';
     require './constants/proxyRoot.php';
 
-    // Se till att sessionen är startad
-    if (session_status() === PHP_SESSION_NONE) {
-        session_start([
-            'cookie_domain'   => $cookieConfig['cookieDomain'],
-            'cookie_path'     => $cookieConfig['cookiePath'],
-            'cookie_secure'   => $cookieConfig['cookieSecure'],
-            'cookie_httponly' => $cookieConfig['cookieHttpOnly'],
-            'cookie_samesite' => $cookieConfig['cookieSameSite'],
-        ]);
-    }
+    // Se till att sessionen är skrivbar
+    ensureSessionWritable();
 
     $user   = strtolower(trim($_POST['user'] ?? ''));
     $passwd = $_POST['passwd'] ?? '';
@@ -37,7 +29,7 @@ function login(&$dbh)
         }
     }
 
-    // Nolla lösenordet
+    // Nolla lösenordet så fort det inte behövs
     $passwd = null;
     unset($passwd);
 
@@ -55,18 +47,24 @@ function login(&$dbh)
 
         // Rensa eventuell gammal session-data och initiera användaren
         unset($_SESSION['user']);
+
         if ($authMethod === 'ldap') {
-            initUserLdap($dbh);
+            initUserLdap($dbh);   // skriver + stänger sessionen
         }
 
         // --- Säker hantering av return_to ---
         $return_to = $_POST['return_to'] ?? $_GET['return_to'] ?? '';
         if ($return_to !== '' && isSafeReturnUrl($return_to)) {
+            // Sessionen är redan stängd av initUserLdap(), men vi tar det säkra före det osäkra
+            if (session_status() === PHP_SESSION_ACTIVE) {
+                session_write_close();
+            }
             header('Location: ' . $return_to);
             exit;
         }
 
         // --- Visa inloggad-vy ---
+        // Observera: även om sessionen är stängd finns datan kvar i $_SESSION i denna request
         $formAction = $proxyRoot . $_SERVER['PHP_SELF'];
         $src = (basename($formAction) === 'authorization-loader.php')
             ? dirname($formAction) . '/news-loader.php'
