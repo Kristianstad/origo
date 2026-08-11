@@ -55,10 +55,18 @@ function login(&$dbh)
         // --- Säker hantering av return_to ---
         $return_to = $_POST['return_to'] ?? $_GET['return_to'] ?? '';
         if ($return_to !== '' && isSafeReturnUrl($return_to)) {
+			
             // Sessionen är redan stängd av initUserLdap(), men vi tar det säkra före det osäkra
             if (session_status() === PHP_SESSION_ACTIVE) {
                 session_write_close();
             }
+			
+			// Stäng db-kopplingen om den finns
+			if (isset($dbh) && $dbh) {
+				pg_close($dbh);
+				$dbh = false;
+			}
+	
             header('Location: ' . $return_to);
             exit;
         }
