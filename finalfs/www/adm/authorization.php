@@ -44,7 +44,10 @@ else {
     displayLogin();
 }
 
-session_write_close();
+if (session_status() === PHP_SESSION_ACTIVE)
+{
+	session_write_close();
+}
 
 if (isset($dbh) && $dbh) {
     pg_close($dbh);
