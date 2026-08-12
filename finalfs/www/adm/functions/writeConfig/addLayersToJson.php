@@ -386,17 +386,31 @@
 					require("./constants/iconTtl.php");
 					if (isset($styleLayer['show_icon']) && $styleLayer['show_icon'] == 't' && !empty($styleLayer['icon']))
 					{
+						if (isset($service) && isset($service['restricted']) && $service['restricted'] == 't')
+						{
+							$restricted = true;
+						}
+						else
+						{
+							$restricted = false;
+						}
+
+						$params = [];
+
 						if ($iconTtl != '-1')
 						{
-							if (strpos($styleLayer['icon'], '?') === false)
-							{
-								$styleLayer['icon'] = $styleLayer['icon'].'?';
-							}
-							else
-							{
-								$styleLayer['icon'] = $styleLayer['icon'].'&';
-							}
-							$styleLayer['icon'] = $styleLayer['icon'].'ttl='.$iconTtl;
+							$params[] = 'ttl=' . $iconTtl;
+						}
+
+						if ($restricted)
+						{
+							$params[] = 'restricted=t';
+						}
+
+						if (!empty($params))
+						{
+							$separator = (strpos($styleLayer['icon'], '?') === false) ? '?' : '&';
+							$styleLayer['icon'] .= $separator . implode('&', $params);
 						}
 					}
 					else
