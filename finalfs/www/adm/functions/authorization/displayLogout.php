@@ -3,7 +3,11 @@
 function displayLogout()
 {
     // Säkerställ att användaren faktiskt är inloggad
-    if (empty($_SESSION['user']['id'])) {
+    if (
+        empty($_SESSION['user']) ||
+        !is_array($_SESSION['user']) ||
+        empty($_SESSION['user']['id'])
+    ) {
         displayLogin();
         return;
     }
