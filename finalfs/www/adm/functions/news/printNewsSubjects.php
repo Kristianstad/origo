@@ -32,5 +32,3 @@
 			echo 'Det finns inga nyheter.';
 		}
 	}
-
-?>
