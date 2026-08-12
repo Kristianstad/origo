@@ -10,7 +10,6 @@
 	includeDirectory("./functions/restrictedLayer");
 	
 	require './constants/authMethod.php';
-
 	readAndCloseSession();
 	includeFileConstant('RESTRICTEDLAYERS');
 	if ($authMethod === 'ldap')
@@ -73,20 +72,28 @@
 		}
 		if ($unrestricted)
 		{
-			$opts=array('http'=>array('protocol_version'=>1.1, 'method'=>"GET",'header'=>$headers));
+			$opts=array('http'=>array('protocol_version'=>1.1, 'method'=>"GET",'header'=>$headers, 'ignore_errors'=>true));
 			$context=stream_context_create($opts);
-			$content=file_get_contents($call, false, $context);
-			echo $content;
+			$result=fetchWithStatus($call, $context);
+			if ($result['status'] > 0)
+			{
+				http_response_code($result['status']);
+			}
+			echo $result['content'];
 		}
 		else
 		{
 			header('Restricted: 1');
 			if (empty(array_diff($callLayers, authorization_names_filter($callLayers))))
 			{
-				$opts=array('http'=>array('protocol_version'=>1.1, 'method'=>"GET",'header'=>$headers));
+				$opts=array('http'=>array('protocol_version'=>1.1, 'method'=>"GET",'header'=>$headers, 'ignore_errors'=>true));
 				$context=stream_context_create($opts);
-				$content=file_get_contents($call, false, $context);
-				echo $content;
+				$result=fetchWithStatus($call, $context);
+				if ($result['status'] > 0)
+				{
+					http_response_code($result['status']);
+				}
+				echo $result['content'];
 			}
 			elseif ($queryarray['REQUEST'] === 'GetLegendGraphic')
 			{
