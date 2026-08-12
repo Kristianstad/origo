@@ -10,5 +10,3 @@
 		$userNewsList=array_column($userNews, 'new_id');
 		echo json_encode($userNewsList);
 	}
-
-?>
