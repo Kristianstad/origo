@@ -4,19 +4,23 @@
  */
 
 require_once("./functions/includeDirectory.php");
-//includeDirectory("./functions/common");
+includeDirectory("./functions/common");
 includeDirectory("./functions/forwardauth");
 
-require('./constants/cookieConfig.php');
+ensureSessionWritable();
 
-session_start([
-	'read_and_close'  => false,
-	'cookie_domain'   => $cookieConfig['cookieDomain'],
-	'cookie_path'     => $cookieConfig['cookiePath'],
-	'cookie_secure'   => $cookieConfig['cookieSecure'],
-	'cookie_httponly' => $cookieConfig['cookieHttpOnly'],
-	'cookie_samesite' => $cookieConfig['cookieSameSite']
-]);
+/*
+error_log(sprintf(
+    "azure-callback: sid=%s cookie=%s host=%s state_session=%s state_get=%s match=%s keys=%s",
+    session_id(),
+    $_COOKIE['PHPSESSID'] ?? 'saknas',
+    $_SERVER['HTTP_HOST'] ?? '-',
+    $_SESSION['oauth2state'] ?? 'saknas',
+    $_GET['state'] ?? 'saknas',
+    (isset($_SESSION['oauth2state'], $_GET['state']) && $_SESSION['oauth2state'] === $_GET['state']) ? 'ja' : 'nej',
+    implode(',', array_keys($_SESSION))
+));
+*/
 
 $provider = getAzureProvider();
 
@@ -26,7 +30,7 @@ if (isset($_GET['error'])) {
     exit(1);
 }
 
-if (!isset($_GET['code']) || !isset($_SESSION['oauth2state']) || $_GET['state'] !== $_SESSION['oauth2state']) {
+if (!isset($_GET['code']) || !isset($_SESSION['oauth2state']) || !isset($_GET['state']) || $_GET['state'] !== $_SESSION['oauth2state']) {
     
     $return_to = $_SESSION['return_to'] ?? null;
     $had_session = !empty($_SESSION);
@@ -52,9 +56,12 @@ if (!isset($_GET['code']) || !isset($_SESSION['oauth2state']) || $_GET['state'] 
 try {
     $token = $provider->getAccessToken('authorization_code', ['code' => $_GET['code']]);
     $azureUser = $provider->getResourceOwner($token);
-    $graphToken = getGraphToken($token);
-    $groups = getAzureGroups($graphToken);
-    $adUser = strtolower(getOnPremisesSamAccountName($graphToken) ?? $azureUser->getId());
+    //$graphToken = getGraphToken($token);
+    //$groups = getAzureGroups($graphToken);
+    //$adUser = strtolower(getOnPremisesSamAccountName($graphToken) ?? $azureUser->getId());
+	$groups = getAzureGroups($token);
+	$adUser = strtolower(getOnPremisesSamAccountName($token) ?? $azureUser->getId());
+	//error_log("AD-user: ".$adUser." Grupper: ".json_encode($groups));
 
 	require('./constants/forwardauthSessionConfig.php');
 
