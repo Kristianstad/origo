@@ -10,19 +10,22 @@ header("Pragma: no-cache");
 header("Expires: 0");
 
 require_once("./functions/includeDirectory.php");
-//includeDirectory("./functions/common");
+includeDirectory("./functions/common");
 includeDirectory("./functions/forwardauth");
 
-require('./constants/cookieConfig.php');
+ensureSessionWritable();
 
-session_start([
-    'read_and_close'  => false,
-    'cookie_domain'   => $cookieConfig['cookieDomain'],
-    'cookie_path'     => $cookieConfig['cookiePath'],
-    'cookie_secure'   => $cookieConfig['cookieSecure'],
-    'cookie_httponly' => $cookieConfig['cookieHttpOnly'],
-    'cookie_samesite' => $cookieConfig['cookieSameSite']
-]);
+/*
+error_log(sprintf(
+    "forwardauth: sid=%s cookie=%s host=%s uri=%s has_user=%s has_state=%s",
+    session_id(),
+    $_COOKIE['PHPSESSID'] ?? 'saknas',
+    $_SERVER['HTTP_HOST'] ?? '-',
+    $_SERVER['REQUEST_URI'] ?? '-',
+    isset($_SESSION['user']) ? 'ja' : 'nej',
+    isset($_SESSION['oauth2state']) ? 'ja' : 'nej'
+));
+*/
 
 $required_groups = $_GET['required_group'] ?? '';
 
