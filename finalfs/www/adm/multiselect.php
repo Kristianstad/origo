@@ -1,21 +1,62 @@
-<!DOCTYPE html>
 <?php
-	// Tell browsers to not cache response
-	header("Cache-Control: must-revalidate, max-age=0, s-maxage=0, no-cache, no-store");
-	
-	// Expose specific functions
-	require_once("./functions/includeDirectory.php");
-	
-	// Expose all functions in given folders
-	includeDirectory("./functions/common");
-?>
+// Tell browsers to not cache response
+header("Cache-Control: must-revalidate, max-age=0, s-maxage=0, no-cache, no-store");
+
+// Expose specific functions
+require_once("./functions/includeDirectory.php");
+
+// Expose all functions in given folders
+includeDirectory("./functions/common");
+
+$dbh = dbh();
+$submitValue = explode('::', $_GET['table'] ?? '', 2);
+$textareaId = $submitValue[0] ?? '';
+$submitValue = explode(':', $submitValue[1] ?? '', 2);
+$table = $submitValue[0] ?? '';
+
+if (empty($submitValue[1])) {
+    $currentValue = '';
+    $dataSortedValues = '';
+} else {
+    $currentValue = $submitValue[1];
+    $dataSortedValues = $currentValue . ',';
+}
+
+$values = all_from_table($dbh, 'map_configs', $table);
+pg_close($dbh);
+
+if ($table == 'proj4defs') {
+    $idColumn = 'code';
+} else {
+    $idColumn = rtrim($table, 's') . '_id';
+}
+
+$header = ucfirst(toSwedish($table));
+
+// Escape for safe HTML output
+$textareaIdEsc       = htmlspecialchars($textareaId, ENT_QUOTES, 'UTF-8');
+$currentValueEsc     = htmlspecialchars($currentValue, ENT_QUOTES, 'UTF-8');
+$dataSortedValuesEsc = htmlspecialchars($dataSortedValues, ENT_QUOTES, 'UTF-8');
+$headerEsc           = htmlspecialchars($header, ENT_QUOTES, 'UTF-8');
+
+// === Början av sidan ===
+echo <<<HTML
+<!DOCTYPE html>
 <html>
 <head>
 	<script>
-		<?php includeDirectory("./js-functions/multiselect"); ?>
+HTML;
+
+includeDirectory("./js-functions/multiselect");
+
+echo <<<HTML
 	</script>
 	<style>
-		<?php require("./styles/multiselect.css"); ?>
+HTML;
+
+require("./styles/multiselect.css");
+
+echo <<<HTML
 	</style>
 	<script>
 		window.onload = function() {
@@ -26,51 +67,29 @@
 	</script>
 </head>
 <body>
-<?php
-	$dbh=dbh();
-	$submitValue=explode('::', $_GET['table'], 2);
-	$textareaId=$submitValue[0];
-	$submitValue=explode(':', $submitValue[1], 2);
-	$table=$submitValue[0];
-	if (empty($submitValue[1]))
-	{
-		$currentValue='';
-		$dataSortedValues='';
-	}
-	else
-	{
-		$currentValue=$submitValue[1];
-		$dataSortedValues=$currentValue.',';
-	}
-	$values=all_from_table($dbh, 'map_configs', $table);
-	pg_close($dbh);
-	echo "<select id='selectbox' onChange='update(this);' data-sorted-values='$dataSortedValues' multiple>";
-	if ($table == 'proj4defs')
-	{
-		$idColumn='code';
-	}
-	else
-	{
-		$idColumn=rtrim($table, 's').'_id';
-	}
-	foreach (array_column($values, $idColumn) as $option)
-	{
-		$options="<option value='$option'";
-		$options="$options>$option</option>";
-		echo $options;
-	}
-	echo '</select>';
-	$header=ucfirst(toSwedish($table));
-	echo '<h3>'.$header.'</h3>';
-	echo "<textarea readonly id='selection'>$currentValue</textarea>";
-	if (!empty($currentValue))
-	{
-		echo '<button onClick="window.location.reload();">Återställ</button>&nbsp;';
-	}
-	echo "<button onClick='document.querySelector(\"#selection\").innerHTML=null;document.querySelector(\"#selection\").value=null;document.querySelector(\"#selectbox\").setAttribute(\"data-sorted-values\", \"\");document.querySelector(\"#selectbox\").value=\"\";document.querySelector(\"#selectbox\")?.querySelectorAll(\"option\").forEach(o => o.removeAttribute(\"selected\"));'>Töm</button>&nbsp;";
-	echo "<button type=\"button\" onclick=\"sendSelectionAndClose('".$textareaId."');\">Använd värde</button>&nbsp;";
-	echo "<button type=\"button\" onclick=\"closeTopFrame();\">Stäng</button>";
-	echo "<script>selectOptionsByValues('selectbox', '$dataSortedValues');makeSelectToggleOnly('selectbox');</script>";
-?>
+<select id="selectbox" onChange="update(this);" data-sorted-values="{$dataSortedValuesEsc}" multiple>
+HTML;
+
+foreach (array_column($values, $idColumn) as $option) {
+    $optionEsc = htmlspecialchars($option, ENT_QUOTES, 'UTF-8');
+    echo "<option value='{$optionEsc}'>{$optionEsc}</option>";
+}
+
+echo <<<HTML
+</select>
+<h3>{$headerEsc}</h3>
+<textarea readonly id="selection">{$currentValueEsc}</textarea>
+HTML;
+
+if (!empty($currentValue)) {
+    echo '<button onClick="window.location.reload();">Återställ</button>&nbsp;';
+}
+
+echo <<<HTML
+<button onClick='document.querySelector("#selection").innerHTML=null;document.querySelector("#selection").value=null;document.querySelector("#selectbox").setAttribute("data-sorted-values", "");document.querySelector("#selectbox").value="";document.querySelector("#selectbox")?.querySelectorAll("option").forEach(o => o.removeAttribute("selected"));'>Töm</button>&nbsp;
+<button type="button" onclick="sendSelectionAndClose('{$textareaIdEsc}');">Använd värde</button>&nbsp;
+<button type="button" onclick="closeTopFrame();">Stäng</button>
+<script>selectOptionsByValues('selectbox', '{$dataSortedValuesEsc}');makeSelectToggleOnly('selectbox');</script>
 </body>
 </html>
+HTML;
