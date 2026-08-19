@@ -31,6 +31,7 @@
 				}
 				$type = array_column_search($source['service'], 'service_id', $services, 'type');
 				$url = array_column_search($source['service'], 'service_id', $services, 'base_url');
+				$restricted = array_column_search($source['service'], 'service_id', $services, 'restricted');
 				$sourceProject = trim(explode('#', $source['source_id'], 2)[0]);
 				if (strpos($sourceId, '@wfs') !== false)
 				{
@@ -40,30 +41,20 @@
 				{
 					$wfsSource = false;
 				}
-				$url = rtrim($url, '/').'/'.$sourceProject;
-				$sourceColumns = array_keys($source);
-				$queryColumns = array();
-				if (!$wfsSource)
-				{
-					foreach ($sourceColumns as $column)
-					{
-						if (in_array($column, $sourcesQueryColumns) && !empty($source[$column]))
-						{
-							$queryColumns[] = $column;
+				$url = rtrim($url, '/') . '/' . $sourceProject;
+				$queryParams = [];
+				if (!$wfsSource) {
+					foreach (array_keys($source) as $column) {
+						if (in_array($column, $sourcesQueryColumns) && !empty($source[$column])) {
+							$queryParams[$column] = pgBoolToText($source[$column]);
 						}
 					}
-					foreach ($queryColumns as $query)
-					{
-						if (strpos($url, '?') === false)
-						{
-							$url = $url.'?';
-						}
-						else
-						{
-							$url = $url.'&';
-						}
-						$url = $url.$query.'='.pgBoolToText($source[$query]);
-					}
+				}
+				if ($restricted === 't') {
+					$queryParams['restricted'] = 't';
+				}
+				if (!empty($queryParams)) {
+					$url .= '?' . http_build_query($queryParams);
 				}
 				$json = $json.'"'.$sourceId.'": { "url": "'.$url.'"';
 				if ($wfsSource)
@@ -107,5 +98,3 @@
 		}
 		$json = $json.' }';
 	}
-
-?>
