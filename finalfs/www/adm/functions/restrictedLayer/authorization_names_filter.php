@@ -4,5 +4,3 @@
 	{
 		return array_column(authorization_filter($layerNames), 'name');
 	}
-
-?>
