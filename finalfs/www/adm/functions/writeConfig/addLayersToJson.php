@@ -384,29 +384,25 @@
 						unset($styleSource, $styleService, $styleSourceProject, $paramSeparator);
 					}
 					require("./constants/iconTtl.php");
+					if (isset($service) && isset($service['restricted']) && $service['restricted'] == 't')
+					{
+						$restricted = true;
+					}
+					else
+					{
+						$restricted = false;
+					}
 					if (isset($styleLayer['show_icon']) && $styleLayer['show_icon'] == 't' && !empty($styleLayer['icon']))
 					{
-						if (isset($service) && isset($service['restricted']) && $service['restricted'] == 't')
-						{
-							$restricted = true;
-						}
-						else
-						{
-							$restricted = false;
-						}
-
 						$params = [];
-
 						if ($iconTtl != '-1')
 						{
 							$params[] = 'ttl=' . $iconTtl;
 						}
-
 						if ($restricted)
 						{
 							$params[] = 'restricted=t';
 						}
-
 						if (!empty($params))
 						{
 							$separator = (strpos($styleLayer['icon'], '?') === false) ? '?' : '&';
@@ -422,28 +418,57 @@
 							$json = $json.', "hasThemeLegend":true';
 							if ($styleLayer['thematicstyling'] == 't')
 							{
-								$json = $json.', "thematicStyling":true';
-								$json = $json.', "legendParams" : { "FORMAT" : "image/png", "LAYERTITLE" : true, "SHOWRULEDETAILS": true, "TRANSPARENT" : true }';
+								$json .= ', "thematicStyling":true';
+								$legendParams = [
+									'FORMAT'         => 'image/png',
+									'LAYERTITLE'     => true,
+									'SHOWRULEDETAILS'=> true,
+									'TRANSPARENT'    => true
+								];
+								if ($iconTtl !== '-1') {
+									$legendParams['ttl'] = $iconTtl;
+								}
+								$json .= ', "legendParams": ' . json_encode($legendParams);
 							}
 							else
 							{
-								$json = $json.', "legendParams" : { "FORMAT" : "image/png", "LAYERTITLE" : true, "ICONLABELSPACE" : 3, "RULELABEL" : true, "TRANSPARENT" : true, "BOXSPACE" : 3, "SYMBOLWIDTH" : 6, "SYMBOLHEIGHT" : 4, "SYMBOLSPACE" : 2, "LAYERSPACE" : 5, "LAYERTITLESPACE" : -7, "LAYERFONTSIZE" : 0.5, "LAYERFONTCOLOR" : "#FFFFFF", "ITEMFONTSIZE" : 8 }';
+								$legendParams = [
+									'FORMAT'          => 'image/png',
+									'LAYERTITLE'      => true,
+									'ICONLABELSPACE'  => 3,
+									'RULELABEL'       => true,
+									'TRANSPARENT'     => true,
+									'BOXSPACE'        => 3,
+									'SYMBOLWIDTH'     => 6,
+									'SYMBOLHEIGHT'    => 4,
+									'SYMBOLSPACE'     => 2,
+									'LAYERSPACE'      => 5,
+									'LAYERTITLESPACE' => -7,
+									'LAYERFONTSIZE'   => 0.5,
+									'LAYERFONTCOLOR'  => '#FFFFFF',
+									'ITEMFONTSIZE'    => 8
+								];
+								if ($iconTtl !== '-1') {
+									$legendParams['ttl'] = $iconTtl;
+								}
+								if ($restricted) {
+									$legendParams['restricted'] = 't';
+								}
+								$json .= ', "legendParams": ' . json_encode($legendParams);
 							}
 						}
 					}
-					if ($styleLayer['show_iconext'] != 'f' && !empty($styleLayer['icon_extended']))
-					{
-						if ($iconTtl != '0')
-						{
-							if (strpos($styleLayer['icon_extended'], '?') === false)
-							{
-								$styleLayer['icon_extended'] = $styleLayer['icon_extended'].'?';
-							}
-							else
-							{
-								$styleLayer['icon_extended'] = $styleLayer['icon_extended'].'&';
-							}
-							$styleLayer['icon_extended'] = $styleLayer['icon_extended'].'ttl='.$iconTtl;
+					if ($styleLayer['show_iconext'] != 'f' && !empty($styleLayer['icon_extended'])) {
+						$queryParams = [];
+						if ($iconTtl !== '-1') {
+							$queryParams['ttl'] = $iconTtl;
+						}
+						if ($restricted) {
+							$queryParams['restricted'] = 't';
+						}
+						if (!empty($queryParams)) {
+							$separator = (strpos($styleLayer['icon_extended'], '?') === false) ? '?' : '&';
+							$styleLayer['icon_extended'] .= $separator . http_build_query($queryParams);
 						}
 					}
 				}
