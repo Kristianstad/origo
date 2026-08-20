@@ -22,7 +22,70 @@ INSERT INTO map_configs.controls(control_id,options,abstract) VALUES ('link#1','
 INSERT INTO map_configs.controls(control_id,options,abstract) VALUES ('legend#1','{ "labelOpacitySlider": "Opacity", "useGroupIndication" : true }','Lägger till en legend i menyn och som en kartförklaring till kartan.');
 INSERT INTO map_configs.controls(control_id,options,abstract) VALUES ('position#1','{ "title": "Web Mercator", "projections": { "EPSG:4326": "WGS84", "EPSG:3006": "Sweref99 TM" } }','Kontroll för att visa koordinater. Musens position och mittposition på kartan kan växlas. Koordinater kan sökas på i mittpositionsläget.');
 INSERT INTO map_configs.controls(control_id,abstract) VALUES ('measure#1','Lägger till en mätningskontroll. Mät längd, area eller höjd (kräver tillgång till extern höjddatawebbtjänst) i kartan.');
-INSERT INTO map_configs.controls(control_id,options,abstract) VALUES ('splash#login1','{ "title": "Välkommen!", "url": "./authorization/authorization-iframe.php", "hideButton": { "visible": false }, "style": "width: 500px;height: 250px;", "hideWhenEmbedded": true }','Inloggningssida som visas när kartan öppnas.');
+INSERT INTO map_configs.controls(control_id,options,onload,abstract) VALUES ('splash#login1','{ "title": "Välkommen!", "url": "./authorization/authorization-iframe.php", "hideButton": { "visible": false }, "style": "width: 500px;height: 250px;", "hideWhenEmbedded": true }',
+'/* Kod som känner av när inloggningsrutan klickas bort och som uppdaterar vissa ikoner i lagerträdet. */
+const startObserving = (domNode, classToLookFor) => {
+  const observer = new MutationObserver(mutations => {
+    mutations.forEach(function (mutation) {
+      const elementAdded = Array.from(mutation.addedNodes).some(
+        element => {
+          if (element.classList) {
+            return element.classList.contains(classToLookFor);
+          } else {
+            return false;
+          }
+        },
+      );
+      if (elementAdded) {
+		observer.disconnect();
+		startObserving2(document.body, ''o-splash'');
+      }
+    });
+  });
+  observer.observe(domNode, {
+    childList: true,
+    attributes: true,
+    characterData: true,
+    subtree: true,
+  });
+  return observer;
+};
+const startObserving2 = (domNode, classToLookFor) => {
+  const observer2 = new MutationObserver(mutations => {
+    mutations.forEach(function (mutation) {
+      const elementRemoved = Array.from(
+        mutation.removedNodes,
+      ).some(element => {
+        if (element.classList) {
+          return element.classList.contains(classToLookFor);
+        } else {
+          return false;
+        }
+      });
+      if (elementRemoved) {
+        const images=document.images;
+        for (let i = 0; i < images.length; i++) {
+          if (images[i].src.includes(''restricted=t'')) {
+            const sep = images[i].src.includes(''?'') ? ''&'' : ''?'';
+            images[i].src = images[i].src.includes(''time='')
+              ? images[i].src.replace(/\\btime=[^&]*/, ''time='' + new Date().getTime())
+              : images[i].src + sep + ''time='' + new Date().getTime();
+          }
+        }
+		observer2.disconnect();
+      }
+    });
+  });
+  observer2.observe(domNode, {
+    childList: true,
+    attributes: true,
+    characterData: true,
+    subtree: true,
+  });
+  return observer2;
+};
+startObserving(document.body, ''o-splash'');',
+'Inloggningssida som visas när kartan öppnas.');
 
 CREATE TABLE map_configs.plugins
 (
