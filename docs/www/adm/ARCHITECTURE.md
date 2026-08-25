@@ -41,3 +41,13 @@ den finns i `constants/`-mappen — varje modul måste själv inkludera de
 konstantfiler den behöver. Vid dokumentation av en modul listar vi därför
 bara de konstanter som modulen faktiskt `require`:ar, inte alla som finns
 i mappen (se `constants.md` för fullständig, växande referens).
+
+## JS-filer
+
+Vissa moduler har klientlogik i `adm/js-functions/<modul>/`, laddad
+inline i en `<script>`-tagg via samma `includeDirectory()`-funktion som
+används för PHP (se ovan) – d.v.s. alla `.js`-filer i mappen klistras in
+i sidans HTML vid varje sidladdning, inte som separata `<script src="...">`-
+taggar. JS-funktioner dokumenteras i respektive modul-`.md` tillsammans
+med PHP-delen, i ett eget avsnitt "JS-filer och funktioner", eftersom de
+utgör samma funktionella helhet (PHP renderar, JS hanterar interaktion).
