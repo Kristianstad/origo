@@ -15,7 +15,7 @@ forwardauth.php  (anropas av Traefik/reverse proxy för VARJE skyddad request)
       ├─ sparar return_to (dit användaren ska tillbaka efter inloggning)
       ├─ getAzureAuthUrl()  → bygger Azure-inloggnings-URL + sparar oauth2state
       └─ 302 redirect till Azure-inloggningen
- */
+*/
 
 header("Cache-Control: no-cache, no-store, must-revalidate");
 header("Pragma: no-cache");
