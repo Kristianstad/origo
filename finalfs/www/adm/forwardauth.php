@@ -1,8 +1,20 @@
 <?php
-/**
- * Traefik ForwardAuth med Azure AD (Entra ID) + gruppkrav
- * 
- * ?required_group=Grupp1,Grupp2,Grupp3  → Användaren måste vara medlem i minst EN av grupperna
+/*
+Traefik ForwardAuth med Azure AD (Entra ID) + gruppkrav
+?required_group=Grupp1,Grupp2,Grupp3  → Användaren måste vara medlem i minst EN av grupperna
+
+forwardauth.php  (anropas av Traefik/reverse proxy för VARJE skyddad request)
+ ├─ includeDirectory("./functions/common")
+ ├─ includeDirectory("./functions/forwardauth")
+ ├─ ensureSessionWritable()                        [common]
+ ├─ OM giltig session finns (user.id + expires_at > now):
+ │    ├─ gruppkontroll mot ?required_group=A,B,C  (OR-logik)
+ │    ├─ sliding expiration (förlänger sessionen)
+ │    └─ svarar 200 (Traefik släpper igenom requesten) eller 403
+ └─ OM ingen giltig session:
+      ├─ sparar return_to (dit användaren ska tillbaka efter inloggning)
+      ├─ getAzureAuthUrl()  → bygger Azure-inloggnings-URL + sparar oauth2state
+      └─ 302 redirect till Azure-inloggningen
  */
 
 header("Cache-Control: no-cache, no-store, must-revalidate");
