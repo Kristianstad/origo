@@ -107,3 +107,15 @@ med filer som delvis dubblerar `adm/functions/export/` och
 `adm/constants/` (se flaggning i export.md när den skrivs) — `export/`
 verkar alltså vara mer än bara en tunn loader, till skillnad från övriga
 toppnivåmappar. Värt extra uppmärksamhet vid loader-genomgången.
+
+## Extern exportpipeline (FME Server)
+
+Export-modulen (se `export.md`) lämnar över tunga
+formatkonverteringsjobb till en extern **FME Server**-instans via dess
+REST-API, snarare än att göra konverteringen i PHP. Flödet är
+asynkront: PHP-scriptet svarar direkt till användaren, fortsätter sedan
+i bakgrunden (`fastcgi_finish_request()`) för att hämta rådata från
+kartservrar och skicka den vidare till FME, som i sin tur mejlar
+resultatet till användaren när jobbet är klart. Detta innebär att
+felsökning av en misslyckad export kan behöva involvera loggar på
+FME-servern, inte bara PHP-loggar.
