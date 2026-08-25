@@ -135,21 +135,6 @@ värden bryts ut.*
   varje anrop, men resulterar i praktiken i tom sträng vilket händelsevis
   fungerar (`STYLES=` tomt är giltigt för WMS). Ofarlig bugg, men värd
   att känna till.
-- **Otydligt villkor i `export.php`:**
-```php
-  if (!empty($data['J']) && !empty($layerNames) && $exportFormat != "intresse" && $exportFormat != "nnh_csv" && $exportFormat != "stmp_csv" && $exportFormat != "tl_bak" || $exportFormat != 'bas_tiff') {
-```
-  Saknar parenteser runt AND-kedjan, vilket gör att `||
-  $exportFormat != 'bas_tiff'` läses som ett eget villkor kopplat med
-  OR till hela AND-kedjan – i praktiken gör detta att villkoret nästan
-  alltid är sant (eftersom det är ovanligt att `$exportFormat` *inte*
-  är `'bas_tiff'`... vänta, om `$exportFormat != 'bas_tiff'` är sant för
-  alla format UTOM `bas_tiff`, blir hela uttrycket sant för nästan alla
-  format oavsett vad AND-kedjan säger). **Detta är sannolikt en bugg**
-  – troligen var avsikten `... && $exportFormat != 'bas_tiff')` som en
-  femte AND-betingelse, inte en separat OR. Bör verifieras och rättas,
-  då det påverkar om ritade lagerobjekt (`J`/`RN`) skickas med i
-  exporten eller ej.
 - **`$groupName` (från `?group=`) läses men används aldrig synligt** i
   den kod vi ser. Antingen dödkod eller använt av kod vi inte sett –
   flaggat för uppföljning.
