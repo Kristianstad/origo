@@ -1,8 +1,26 @@
 <?php
-
-	// Uses common functions: pgArrayToPhp, array_column_search
-	
-	// Uses writeConfig functions: addSourcesToJson, addStylesToJson
+/*
+addLayersToJson($mapLayersList, &$layersMeta, $groupLayer=false)
+ ├─ för varje lager i listan:
+ │    ├─ slår upp lagrets fullständiga data (array_column_search)
+ │    ├─ bygger $layersMeta[] (används för SEO-strukturerad data i writeConfig.php)
+ │    ├─ sätter en rad standardvärden (type, style_layer, queryable, visible, legend)
+ │    ├─ bygger lagrets grundläggande JSON-fält (name, title, type, group, format, etc.)
+ │    ├─ typ-specifik logik: GEOJSON / WMS / WFS (olika fält beroende på typ)
+ │    ├─ bygger ihop en "abstract"-beskrivning (HTML!) av flera källor:
+ │    │    tabellbeskrivningar, kontakt, källa/ursprung, uppdateringsdatum,
+ │    │    en inbäddad "Administrera"-knapp-formulär
+ │    ├─ OM lagret är en GRUPP → rekursivt anrop till addLayersToJson() för dess undergrupper
+ │    ├─ bygger legend-/ikon-URL:er mot bakomliggande WMS-tjänst (GetLegendGraphic)
+ │    │    med olika DPI/symbolstorlekar beroende på om det är "kompakt" eller
+ │    │    "utökad" legend, samt hanterar "tematisk stil" (thematicStyling)
+ │    └─ samlar ihop unika källor ($mapSources) och stilar ($mapStyles) som
+ │         används av hela kartan (konsumeras sedan av addSourcesToJson/addStylesToJson)
+ └─ (endast vid toppnivå, ej rekursivt anrop) avslutar med att anropa
+      addSourcesToJson() och addStylesToJson() – alltså är addLayersToJson()
+      den funktion som "startar" hela resten av JSON-genereringen för
+      källor och stilar, inte writeConfig.php direkt
+*/
 
 	function addLayersToJson($mapLayersList, &$layersMeta, $groupLayer=false)
 	{
