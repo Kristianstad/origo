@@ -1,4 +1,17 @@
 <?php
+/*
+read_db_schemas.php
+ ├─ includeDirectory("./functions/common")
+ ├─ includeDirectory("./functions/read_db_schemas")
+ ├─ läser $_GET['database'], sedan unset($_GET) direkt (se notering nedan)
+ ├─ dbh()                                    [common] → ansluter till KONFIGURATIONS-databasen
+ ├─ all_from_table(...) + array_column_search(...)  [common] → slår upp anslutningssträng för $database
+ ├─ dbh($connectionString)                   [common] → ansluter till DEN EXTERNA databasen
+ ├─ schemaNamesFromDb($dbh)                  [read_db_schemas] → listar scheman i den externa databasen
+ └─ för varje schema: INSERT ... ON CONFLICT DO NOTHING i konfigurationsdatabasens schemas-tabell
+      (parameteriserad SQL via pg_query_params)
+*/
+
 // Tell browsers to not cache response
 header("Cache-Control: must-revalidate, max-age=0, s-maxage=0, no-cache, no-store");
 
