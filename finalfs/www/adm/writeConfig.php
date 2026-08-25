@@ -1,4 +1,36 @@
 <?php
+/*
+writeConfig.php
+ ├─ laddar composer-biblioteket "minify" (MatthiasMullie\Minify) för CSS/JS
+ ├─ includeDirectory("./functions/common")
+ ├─ includeDirectory("./functions/writeConfig")
+ ├─ tolkar $_GET['map'] (mapId, ev. med "\"-separerad extra data – "swiper"-workaround)
+ ├─ configTables($dbh)                       [common] → hämtar ALLA konfigtabeller på en gång, extract() till lokala variabler
+ ├─ bygger upp $json som en STRÄNG (inte en PHP-array!) bit för bit:
+ │    ├─ addControlsToJson()      [writeConfig] → kartkontroller (zoom, mätverktyg etc.)
+ │    ├─ pageSettings (footer, mapGrid, embedded)
+ │    ├─ projektion, extent, center, zoom, upplösningar
+ │    ├─ proj4Defs (koordinatsystem-definitioner)
+ │    ├─ groupDepth() + getArrayValuesRecursively() + indexweightedLayersList()  [writeConfig]
+ │    │     → bygger och sorterar den fullständiga, platta listan av lager (rekursivt genom grupper)
+ │    ├─ addGroupsToJson()        [writeConfig] → grupphierarki
+ │    └─ addLayersToJson()        [writeConfig, EJ SEDD ÄNNU] → själva lagerlistan + metadata
+ ├─ validerar den hopbyggda JSON-strängen med json_decode()
+ ├─ formaterar den snyggt med json_format()  [writeConfig]
+ └─ två huvudlägen beroende på $_GET['getJson']/$_GET['getHtml']:
+      ├─ getJson=y  → returnera bara JSON-konfigurationen (nedladdningsbar)
+      └─ annars     → generera fullständig HTML-sida:
+           ├─ addPlugins()              [writeConfig] → plugin-JS/CSS
+           ├─ renderCssTags()/renderJavaScriptTags()  [writeConfig, EJ SEDDA ÄNNU]
+           ├─ minifiera CSS/JS med Minify-biblioteket
+           ├─ fixDuplicateDeclarations() [writeConfig] → JS-transformation, se nedan
+           ├─ (om sökmotorindexerbar) bygger strukturerad data (schema.org JSON-LD) + sitemap.xml
+           ├─ publishMapFiles()          [writeConfig, EJ SEDD ÄNNU] → skriver till disk
+           ├─ markMapUnchanged()         [writeConfig] → nollställer "ändrad"-flaggan i databasen
+           └─ bygger RESTRICTEDLAYERS-konstanten (!) baserat på tjänsternas restricted-flagga
+                → defineFileConstant('RESTRICTEDLAYERS', ...)  [common]
+*/
+
 // Tell browsers to not cache response
 header("Cache-Control: must-revalidate, max-age=0, s-maxage=0, no-cache, no-store");
 
