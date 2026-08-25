@@ -20,5 +20,5 @@
 | `findAllParents($dbh, $child)` | `findAllParents.php` | Hittar rekursivt alla objekt som refererar till ett givet objekt | info |
 | `assoc_array_values($array)` | `assoc_array_values.php` | Kontrollerar/hämtar faktiska värden i en nästlad associativ array | info |
 | `includeDirectory($path)` | *(i adm/functions/, ej i common/)* | Laddar alla `.php`-filer i angiven mapp med `require_once` | alla moduler |
-| `ensureSessionWritable()` | `ensureSessionWritable.php` | Säkerställer att sessionen är öppen/skrivbar innan skrivning (troligen löser sessionslåsproblem) | authorization |
+| `ensureSessionWritable()` | `ensureSessionWritable.php` | Säkerställer att sessionen är öppen/skrivbar innan skrivning | authorization, forwardauth |
 | `getCookieOptions($expiryTimestamp)` | `getCookieOptions.php` | Bygger array med cookie-inställningar (path, domain, secure, httponly, samesite) för ett givet utgångsdatum | authorization |
