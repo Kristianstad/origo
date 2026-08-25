@@ -25,3 +25,19 @@ ihop finns ingen risk att "glömma ett include" om vi flyttar en funktion
 mellan filer i `common/` — men om vi bryter ut delar av `common/` till en
 egen undermapp måste vi uppdatera `includeDirectory()`-anropet i *varje*
 entry point-fil som behöver den nya mappen.
+
+## Konstanter kontra common-funktioner – laddningssätt
+
+Till skillnad från `functions/common/`, som laddas i sin helhet via
+`includeDirectory()` (se ovan), laddas filer i `adm/constants/` **individuellt**
+med explicit `require`/`require_once` där just den konstanten behövs, t.ex.:
+
+```php
+require("./constants/configSchema.php");
+```
+
+Det betyder att en konstant **inte** är automatiskt tillgänglig bara för att
+den finns i `constants/`-mappen — varje modul måste själv inkludera de
+konstantfiler den behöver. Vid dokumentation av en modul listar vi därför
+bara de konstanter som modulen faktiskt `require`:ar, inte alla som finns
+i mappen (se `constants.md` för fullständig, växande referens).
