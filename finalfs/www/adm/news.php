@@ -1,4 +1,23 @@
 <?php
+/*
+news.php
+ ├─ includeDirectory("./functions/common")   → laddar ALLA filer i common
+ ├─ includeDirectory("./functions/news")     → laddar samtliga 8 funktionsfiler nedan
+ ├─ readAndCloseSession()                    [common]
+ ├─ dbh()                                    [common] – öppnar Postgres-anslutning
+ ├─ initUserLdap($dbh)                       [common] – bara om authMethod === 'ldap'
+ ├─ pgNewsArray($dbh)                        → hämtar ALLA nyheter från databasen
+ ├─ userNews($username, $pgNewsArray)        → filtrerar bort nyheter användaren raderat
+ ├─ selectNew($userNews, $newId)             → plockar ut EN nyhet ur listan (om newId angivet)
+ └─ switch på $action:
+     ├─ 'list'      → printNewsList($userNews)
+     ├─ 'load'      → printNews($username, $selectedNew, $return)
+     ├─ 'delete'    → readDelete($username, $selectedNew, 'delete')
+     ├─ 'read'      → readDelete($username, $selectedNew, 'read')
+     ├─ 'subjects'  → printNewsSubjects($username, $userNews)  → anropar printNews() internt
+     └─ 'unread'    → testUnread($username, $userNews)
+*/
+
 header("Cache-Control: must-revalidate, max-age=0, s-maxage=0, no-cache, no-store");
 
 require_once("./functions/includeDirectory.php");
