@@ -96,9 +96,7 @@ skriver `maps.changed = 'f'` (via `markMapUnchanged`).
 | `renderCssTags.php` | `renderCssTags(array $items): string` | Bygger HTML för CSS-inkludering: `include(sökväg)`-syntax läses in och minifieras som inline `<style>`, annars renderas som vanlig `<link rel="stylesheet">` |
 | `renderJavaScriptTags.php` | `renderJavaScriptTags(array $items): string` | Bygger HTML för JS-inkludering: stödjer `include(...)`/`include_minify(...)` (minifieras) och `include_nominify(...)` (lämnas oförändrad, för redan minifierade bundles), annars renderas som vanlig `<script src="...">` |
 | `saveFile.php` | `saveFile(string $path, string $content): bool` | Enkel, defensiv wrapper runt `file_put_contents()` |
-
-## Filer som ännu inte granskats
-`addLayersToJson.php`
+| `addLayersToJson.php` | `addLayersToJson($mapLayersList, &$layersMeta, $groupLayer=false)` | Den mest centrala och komplexa funktionen i modulen (506 rader). Bygger JSON för varje lager: grundfält, typspecifik logik (WMS/WFS/GEOJSON), en sammansatt HTML-"abstract"-beskrivning, legend-/ikon-URL:er mot bakomliggande WMS-tjänst, hantering av klusterstilar. Rekursiv för GROUP-lager. Samlar även ihop `$mapSources`/`$mapStyles` och avslutar (vid toppnivåanrop) med att trigga `addSourcesToJson()`/`addStylesToJson()` |
 
 ## Kända begränsningar / observationer (preliminära – gäller granskade filer)
 
