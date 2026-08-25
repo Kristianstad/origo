@@ -130,3 +130,11 @@ forwardauth-modulen).
   oanvänd kod, eller används av en annan del av systemet vi inte
   dokumenterat än (t.ex. `restrictedLayer-loader.php` eller
   `restrictedLayer-rancher.php`). Följs upp vid loader-genomgången.
+- **✅ Löst tidigare öppen fråga:** `constants/RESTRICTEDLAYERS.php`
+  genereras av `writeConfig.php` (se writeConfig.md), som vid varje
+  publicering av en karta bygger om listan över skyddade lager baserat
+  på vilka tjänster som är markerade `restricted` i databasen, och
+  skriver den till fil via `defineFileConstant('RESTRICTEDLAYERS', ...)`.
+  Det förklarar även varför en kopia finns i `adm/tmp/` – sannolikt en
+  mellanlagringsplats innan filen flyttas/skrivs till sin slutgiltiga
+  plats (bör bekräftas när `publishMapFiles.php`/`saveFile.php` granskats).
