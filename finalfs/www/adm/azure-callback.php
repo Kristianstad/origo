@@ -1,7 +1,19 @@
 <?php
-/**
- * Azure OAuth2 Callback – med bakåtkompatibel session-struktur
- */
+/*
+Azure OAuth2 Callback – med bakåtkompatibel session-struktur
+
+azure-callback.php  (Azure skickar användaren hit efter inloggning)
+ ├─ includeDirectory("./functions/common")
+ ├─ includeDirectory("./functions/forwardauth")
+ ├─ ensureSessionWritable()
+ ├─ getAzureProvider()                              → skapar OAuth2-klient
+ ├─ validerar state-parameter mot $_SESSION['oauth2state']  (CSRF-skydd)
+ ├─ provider->getAccessToken() + getResourceOwner() → hämtar Azure-token + användarinfo
+ ├─ getAzureGroups($token)                          → hämtar användarens AD-grupper
+ ├─ getOnPremisesSamAccountName($token)              → hämtar lokalt AD-användarnamn
+ ├─ bygger $_SESSION['user'] med id, mail, name, groups, expires_at
+ └─ redirect tillbaka till sparad return_to
+*/
 
 require_once("./functions/includeDirectory.php");
 includeDirectory("./functions/common");
