@@ -1,4 +1,15 @@
 <?php
+/*
+multiselect.php
+ ├─ includeDirectory("./functions/common")
+ ├─ dbh()                                    [common]
+ ├─ tolkar $_GET['table'] i formatet "textareaId::tabell:aktuellaVärden"
+ ├─ all_from_table($dbh, 'map_configs', $table)   [common] → hämtar alla rader
+ ├─ toSwedish($table)                        [common] → rubrik på svenska
+ ├─ includeDirectory("./js-functions/multiselect")  → klistrar in ALLA js-filer inline i <script>
+ └─ renderar HTML: <select> + knappar, med inline onclick-anrop till JS-funktionerna
+*/
+
 // Tell browsers to not cache response
 header("Cache-Control: must-revalidate, max-age=0, s-maxage=0, no-cache, no-store");
 
