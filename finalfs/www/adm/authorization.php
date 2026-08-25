@@ -1,4 +1,18 @@
 <?php
+/*
+authorization.php
+ ├─ includeDirectory("./functions/common")
+ ├─ includeDirectory("./functions/authorization")
+ ├─ ensureSessionWritable()                  [common] – startar sessionen skrivbar
+ ├─ (om authMethod === 'ldap') dbh() + initUserLdap($dbh)   [common]
+ └─ router baserat på GET/POST:
+     ├─ ?logout          → logout()                    [authorization]
+     ├─ ?displaylogout    → displayLogout()             [authorization]
+     ├─ (inloggad, ingen SERVICE-param) → displayLogout()
+     ├─ POST               → login($dbh)                 [authorization]
+     └─ annars             → displayLogin()               [authorization]
+*/
+
 // Tell browsers to not cache response
 header("Cache-Control: must-revalidate, max-age=0, s-maxage=0, no-cache, no-store");
 
