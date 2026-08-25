@@ -1,6 +1,16 @@
 <?php
-// www/adm/mapstate.php
-// Main dispatcher – completely stateless
+/*
+mapstate.php
+ ├─ includeDirectory("./functions/common")   → laddar common (men bara dbh() används)
+ ├─ includeDirectory("./functions/mapstate") → laddar samtliga 6 funktionsfiler nedan
+ ├─ dbh()                                    [common] – öppnar databasanslutning
+ ├─ cleanupOldMapStates($dbh, $mapstateMaxUnused)  → körs på VARJE request, oavsett metod
+ └─ switch på HTTP-metod:
+     ├─ OPTIONS → stänger anslutning, avslutar (CORS-preflight)
+     ├─ POST    → createMapState($dbh)
+     ├─ GET     → retrieveMapState($dbh) → validateMapStateId() → updateLastUse()
+     └─ övrigt  → 405 Method Not Allowed
+*/
 
 require_once __DIR__ . '/functions/includeDirectory.php';
 includeDirectory(__DIR__ . '/functions/common');
