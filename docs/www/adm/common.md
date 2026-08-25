@@ -24,3 +24,5 @@
 | `getCookieOptions($expiryTimestamp)` | `getCookieOptions.php` | Bygger array med cookie-inställningar (path, domain, secure, httponly, samesite) för ett givet utgångsdatum | authorization |
 | `tableNamesFromSchema($dbh, $schema)` | `tableNamesFromSchema.php` | Listar tabellnamn i ett givet databasschema | read_schema_tables |
 | `tablesFromQgsXml($qgsXml, $layerName)` | `tablesFromQgsXml.php` | Tolkar en QGIS-projektfils XML för att hitta databastabeller ett lager bygger på | writeTablesForAllLayers |
+| `configTables($dbh)` | `configTables.php` | Hämtar samtliga konfigurationstabeller (maps, groups, layers, m.fl.) i ett svep, avsedd att packas upp med `extract()` | writeConfig |
+| `defineFileConstant($name, $value)` | `defineFileConstant.php` | Skriver en PHP-konstant till en fil på disk, läsbar senare via `includeFileConstant()`. Källan till `RESTRICTEDLAYERS`-konstanten | writeConfig |
