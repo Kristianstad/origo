@@ -22,3 +22,5 @@
 | `includeDirectory($path)` | *(i adm/functions/, ej i common/)* | Laddar alla `.php`-filer i angiven mapp med `require_once` | alla moduler |
 | `ensureSessionWritable()` | `ensureSessionWritable.php` | Säkerställer att sessionen är öppen/skrivbar innan skrivning | authorization, forwardauth |
 | `getCookieOptions($expiryTimestamp)` | `getCookieOptions.php` | Bygger array med cookie-inställningar (path, domain, secure, httponly, samesite) för ett givet utgångsdatum | authorization |
+| `tableNamesFromSchema($dbh, $schema)` | `tableNamesFromSchema.php` | Listar tabellnamn i ett givet databasschema | read_schema_tables |
+| `tablesFromQgsXml($qgsXml, $layerName)` | `tablesFromQgsXml.php` | Tolkar en QGIS-projektfils XML för att hitta databastabeller ett lager bygger på | writeTablesForAllLayers |
