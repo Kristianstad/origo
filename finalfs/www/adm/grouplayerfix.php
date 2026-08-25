@@ -1,5 +1,30 @@
 <?php
-// Proxy för QGIS Server med stöd för describeFeatureType och filter på valfria grupplager (WMS+WFS)
+/*
+Proxy för QGIS Server med stöd för describeFeatureType och filter på valfria grupplager (WMS+WFS)
+
+grouplayerfix.php
+ ├─ includeDirectory("./functions/grouplayerfix")   [OBS: common INTE inkluderad, se nedan]
+ ├─ läser $_GET['qgis_url'] – vilken QGIS-server som ska anropas
+ ├─ validerar qgis_url mot regex (http/https eller relativ path)
+ └─ tre grenar beroende på anropstyp:
+     │
+     ├─ [1] WMS GetMap med FILTER på ett grupplager:
+     │    ├─ getCachedProjectSettings($url)      → hämtar/cachar XML-projektstruktur
+     │    ├─ getLayerNamesInGroup($xml, $lager)  → rekursivt: är detta en grupp? om ja, vilka underlager?
+     │    ├─ expanderar LAYERS-parametern till kommaseparerad lista av underlager
+     │    ├─ justerar FILTER-parametern på samma sätt
+     │    └─ forwardToQgisServer($url, $params)  → skickar vidare det modifierade anropet
+     │
+     ├─ [2] WFS describeFeatureType på ett grupplager:
+     │    ├─ getCachedProjectSettings($url)
+     │    ├─ getLayerNamesInGroup($xml, $typeName)
+     │    ├─ OM inte grupp → getCachedDescribeFeatureType() för det enskilda lagret
+     │    └─ OM grupp → parallella curl-anrop (curl_multi) mot describeFeatureType
+     │         för VARJE underlager samtidigt, med individuell retry per anrop,
+     │         slår sedan ihop alla featureTypes till ett enda svar
+     │
+     └─ [3] Alla andra anrop → forwardToQgisServer($url, $params) oförändrat
+*/
 
 // Expose specific functions
 require_once("./functions/includeDirectory.php");
