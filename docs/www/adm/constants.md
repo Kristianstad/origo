@@ -13,3 +13,5 @@ common/functions laddas INTE alla konstanter automatiskt av `includeDirectory()`
 | `$adldapConfig` | `adldapConfig.php` | LDAP-anslutningsinställningar för adldap2-biblioteket | authorization |
 | `$adDomain` | `adDomain.php` | AD-domännamn använt vid LDAP-autentisering | authorization |
 | `$cookieConfig` | `cookieConfig.php` | Cookieinställningar: namn, krypteringsnyckel, livslängd | authorization |
+| `$forwardauthSessionConfig` | `forwardauthSessionConfig.php` | Sessionsinställningar för forward-auth: `slideExtension`, `absoluteMax`, `baseLifetime` | forwardauth |
+| `$azureConfig` | `azureConfig.php` | Azure AD-appregistrering: `clientId`, `clientSecret`, `redirectUri`, `tenant`, `scopes` | forwardauth |
