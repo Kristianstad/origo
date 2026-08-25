@@ -1,4 +1,45 @@
 <?php
+/*
+read_json.php
+ ├─ includeDirectory("./functions/common")
+ ├─ includeDirectory("./functions/read_json")
+ ├─ OM inget $_POST['json'] → visa ett importformulär med kryssrutor
+ │    per datatyp (lager, grupper, karta, kontroller, sidfötter,
+ │    proj4defs, källor, tilegrids, stilar, tjänster) + varningsdialog
+ │    ("riskabelt", "redundanta poster", "kan sluta fungera")
+ └─ OM $_POST['json'] finns → tolka och importera:
+      ├─ dbh(), configTables($dbh)           [common]
+      ├─ json_decode($json) → $json_arr      → PHP-struktur av hela Origo-konfigurationen
+      ├─ dela upp $json_arr i delar: controls, layers, styles, pageSettings,
+      │    projectionCode, extent, groups, source, m.fl.
+      ├─ separat ur $jsonGroups: identifiera bakgrundsgrupp (namn börjar på "background")
+      ├─ REGEX mot den RÅA JSON-STRÄNGEN (inte den avkodade strukturen!)
+      │    för att extrahera "source"-blocket samt "resolutions"-listor
+      │    – se flaggning, detta är skört
+      │
+      ├─ för varje källa i $jsonSource:
+      │    ├─ (tilegrids) mer regex-parsning av råtext för att hitta tileGrid-upplösningar
+      │    ├─ (services) skriver ny post i services om url:en inte redan setts
+      │    └─ (sources) skriver ny post i sources
+      │
+      ├─ (controls) skriver en post per kontroll i controls
+      │
+      ├─ (layers) för varje lager (inkl. lager inuti GROUP-lager, uppmärkta 'groupLayer'):
+      │    ├─ renamedup($layer['name'])           [read_json] → undviker namnkrock
+      │    ├─ tolkar motsvarande stil ur $jsonStyles → bestämmer ikon/utökad ikon/filter/clusterstyle
+      │    ├─ bygger upp $mapLayers / $groupsLayers (vilka lager hör till roten/vilken grupp)
+      │    ├─ städar bort den inbäddade "Administrera"-knappen ur abstract-fältet (som writeConfig
+      │    │    lade till där, se addLayersToJson.md) – bekräftar att detta är en rundtrippande
+      │    │    import/export-cykel: exportera med writeConfig, ändra, importera igen med read_json
+      │    └─ INSERT i layers-tabellen
+      │
+      ├─ (groups) recursiveGroups($jsonGroups)   [read_json] → skriver grupper rekursivt
+      ├─ (proj4defs) skriver nya proj4defs som inte redan finns
+      ├─ (footers) skriver sidfot om angiven
+      └─ (map) bygger och skriver själva maps-raden, inkl. hopsamlade
+           referenser till alla ovanstående (controls, groups, layers, proj4defs, footer, tilegrid)
+*/
+
 header("Cache-Control: must-revalidate, max-age=0, s-maxage=0, no-cache, no-store");
 
 require_once("./functions/includeDirectory.php");
