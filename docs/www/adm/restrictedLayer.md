@@ -122,3 +122,11 @@ forwardauth-modulen).
   öppnas här (se punkten om `initUserLdap()` ovan), men värt att bekräfta
   att ingen databasanslutning öppnas dolt inuti någon av de anropade
   funktionerna.
+- **⚠️ Möjlig oanvänd konstant:** `constants/EMPTYPNG.php` och
+  `constants/LOCKPNG.php` (toppnivå, utanför `adm/`) har namn som
+  antyder att de är tänkta att användas av just den här modulen, men
+  `restrictedLayer.php` läser istället motsvarande bilder direkt från
+  disk via `file_get_contents()`. Oklart om konstanterna är kvarlämnad,
+  oanvänd kod, eller används av en annan del av systemet vi inte
+  dokumenterat än (t.ex. `restrictedLayer-loader.php` eller
+  `restrictedLayer-rancher.php`). Följs upp vid loader-genomgången.
