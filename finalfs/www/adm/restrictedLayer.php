@@ -1,4 +1,30 @@
 <?php
+/*
+restrictedLayer.php
+ ├─ includeDirectory("./functions/common")
+ ├─ includeDirectory("./functions/restrictedLayer")
+ ├─ readAndCloseSession()                    [common]
+ ├─ includeFileConstant('RESTRICTEDLAYERS')  [common] → laddar RESTRICTEDLAYERS-konstanten (lista över skyddade lager)
+ ├─ (om authMethod === 'ldap') initUserLdap()   ⚠️ se flaggning – saknar $dbh-argument
+ ├─ tolkar QUERY_STRING manuellt (byter ut '&?' och '?' mot '&', för att hantera Origos url-format)
+ ├─ bygger $call = URL mot bakomliggande karttjänst (restrictedServiceUrl + path + querystring)
+ ├─ plockar ut begärda lagernamn ur LAYERS/LAYER/TYPENAME-parametrar
+ ├─ avgör om anropet är "obegränsat" (GetCapabilities, eller inga av de begärda lagren är skyddade)
+ │
+ ├─ OM obegränsat:
+ │    └─ fetchWithStatus($call, ...)  [restrictedLayer] → hämtar och returnerar svaret oförändrat
+ │
+ └─ OM begränsat:
+      ├─ authorization_names_filter($callLayers)  [restrictedLayer]
+      │    └─ authorization_filter($layerNames)    [restrictedLayer]
+      │         └─ userAuthorized($_SESSION['user'], $restrictedLayer)  [restrictedLayer]
+      ├─ OM alla begärda lager är godkända → fetchWithStatus(...) som ovan
+      ├─ OM GetLegendGraphic → returnerar en "lås"-bild istället för riktig legend
+      ├─ OM GetMap → returnerar en tom/transparent bild istället för kartdata
+      ├─ OM GetFeatureInfo → returnerar tom GeoJSON FeatureCollection
+      └─ annars → finishError500('saknar rättigheter')  [restrictedLayer]
+*/
+
 	// Tell browsers to not cache response
 	header("Cache-Control: must-revalidate, max-age=0, s-maxage=0, no-cache, no-store");
 	
