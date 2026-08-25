@@ -15,3 +15,4 @@ common/functions laddas INTE alla konstanter automatiskt av `includeDirectory()`
 | `$cookieConfig` | `cookieConfig.php` | Cookieinställningar: namn, krypteringsnyckel, livslängd | authorization |
 | `$forwardauthSessionConfig` | `forwardauthSessionConfig.php` | Sessionsinställningar för forward-auth: `slideExtension`, `absoluteMax`, `baseLifetime` | forwardauth |
 | `$azureConfig` | `azureConfig.php` | Azure AD-appregistrering: `clientId`, `clientSecret`, `redirectUri`, `tenant`, `scopes` | forwardauth |
+| `$dbhConnectionStringForUpdated` | `dbhConnectionStringForUpdated.php` | Dedikerad databasanslutningssträng för updated-modulen | updated |
