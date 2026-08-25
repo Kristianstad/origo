@@ -1,0 +1,12 @@
+# Konstanter (constants)
+
+**Plats:** `adm/constants/`
+**Laddas av:** enskilda `require`-satser där de behövs (till skillnad från
+common/functions laddas INTE alla konstanter automatiskt av `includeDirectory()`)
+
+| Konstant | Fil | Beskrivning | Används hittills av |
+|---|---|---|---|
+| `$authMethod` | `authMethod.php` | Styr autentiseringsmetod (t.ex. `'ldap'`) | news |
+| `$configSchema` | `configSchema.php` | Postgres-schemanamn där appens tabeller ligger | news, mapstate |
+| `$proxyRoot` | `proxyRoot.php` | Bas-URL-prefix, används för att bygga länkar korrekt bakom proxy | news |
+| `$mapstateMaxUnused` | `mapstateMaxUnused.php` | Antal dagar ett oanvänt mapstate får ligga kvar innan städning | mapstate |
