@@ -51,3 +51,35 @@ i sidans HTML vid varje sidladdning, inte som separata `<script src="...">`-
 taggar. JS-funktioner dokumenteras i respektive modul-`.md` tillsammans
 med PHP-delen, i ett eget avsnitt "JS-filer och funktioner", eftersom de
 utgör samma funktionella helhet (PHP renderar, JS hanterar interaktion).
+
+## Två parallella autentiseringssystem
+
+Applikationen har **två separata, icke sammankopplade sätt att autentisera
+användare**, där ett är på väg att fasas ut:
+
+1. **`authorization.php`** – LDAP-baserad inloggning (äldre spår, planerat
+   att fasas ut men lämnas kvar som fallback-alternativ tills vidare).
+   Tänkt att visas som sida/iframe som användaren interagerar med direkt.
+   Sätter `$_SESSION['user']['id']` (enkel struktur) samt en egen krypterad
+   cookie. Se `authorization.md`.
+
+2. **`forwardauth.php` / `azure-callback.php`** – Azure AD/Entra ID via
+   OAuth2 (nytt, avsett spår framöver), anropad av Traefik (reverse proxy)
+   som en "får requesten fortsätta?"-kontroll innan trafiken ens når
+   applikationen. Sätter `$_SESSION['user']` med en rikare struktur
+   (`mail`, `name`, `groups`, `expires_at` för sliding expiration). Se
+   `forwardauth.md`.
+
+**Status:** de två systemen används **inte samtidigt** – det är antingen
+LDAP eller Azure/forwardauth som gäller för en given installation/miljö,
+styrt av `$authMethod`. Azure/forwardauth är den långsiktiga riktningen;
+LDAP-spåret finns kvar som alternativ för den som föredrar det, men är
+inte under aktiv vidareutveckling. Detta är relevant vid förenkling: kod
+i LDAP-spåret bör inte tas bort, men kan prioriteras lägre än
+Azure-spåret vid framtida arbete.
+
+**Konsekvens för `restrictedLayer`-modulen:** den modulen kontrollerar
+`$_SESSION['user']['groups']` och `$_SESSION['user']['id']` utan att bry
+sig om vilket autentiseringsspår som satte dem – den fungerar därför med
+båda, förutsatt att sessionsstrukturen är kompatibel (vilket den är,
+se `userAuthorized.php`).
