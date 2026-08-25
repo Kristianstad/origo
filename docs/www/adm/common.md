@@ -13,8 +13,8 @@
 | `dbh()` | `dbh.php` | Öppnar och returnerar en PostgreSQL-anslutning | news, mapstate, info |
 | `initUserLdap($dbh)` | `initUserLdap.php` | Initierar användarinfo via LDAP, används när `$authMethod === 'ldap'` | news |
 | `pgArrayToPhp($pgArray)` | `pgArrayToPhp.php` | Konverterar Postgres arraysyntax till PHP-array | news |
-| `toSwedish($string)` | `toSwedish.php` | Översätter interna typ-/kolumnnamn till svenska för visning | info |
-| `all_from_table($dbh, $schema, $table)` | `all_from_table.php` | Hämtar alla rader från angiven tabell | info |
+| `toSwedish($string)` | `toSwedish.php` | Översätter interna typ-/kolumnnamn till svenska för visning | info, multiselect |
+| `all_from_table($dbh, $schema, $table)` | `all_from_table.php` | Hämtar alla rader från angiven tabell | info, multiselect *(⚠️ multiselect hårdkodar schema `'map_configs'` istället för `$configSchema` – se multiselect.md)* |
 | `array_column_search($value, $column, $rows)` | `array_column_search.php` | Hittar första raden i en array där given kolumn matchar värdet | info |
 | `pkColumnOfTable($table)` | `pkColumnOfTable.php` | Returnerar primärnyckelns kolumnnamn för en tabell | info |
 | `findAllParents($dbh, $child)` | `findAllParents.php` | Hittar rekursivt alla objekt som refererar till ett givet objekt | info |
