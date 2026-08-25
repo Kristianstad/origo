@@ -1,4 +1,20 @@
 <?php
+/*
+info.php
+ ├─ includeDirectory("./functions/common")
+ ├─ includeDirectory("./functions/info")   → laddar printParents.php, printUniqueLogins.php
+ ├─ dbh()                                          [common]
+ ├─ toSwedish($childType)                          [common] → svensk översättning av typnamnet
+ ├─ all_from_table($dbh, $configSchema, ...)        [common] → hämtar alla rader av given typ
+ ├─ array_column_search(...)                        [common] → hittar EN rad baserat på kolumnvärde
+ ├─ pkColumnOfTable(...)                             [common] → tar reda på primärnyckelkolumn för en tabell
+ ├─ (om $childType == 'source' och QGIS) läser .qgs-fil direkt från disk
+ ├─ (om $childType == 'aduser') printUniqueLogins(...)  [info] → inloggningsstatistik
+ ├─ findAllParents($dbh, $child)                     [common] → hittar alla objekt som refererar till detta
+ └─ printParents($allParents)                        [info] → skriver ut länkad lista av föräldrar
+     └─ använder internt: assoc_array_values, toSwedish  [common]
+*/
+
 // Tell browsers to not cache response
 header("Cache-Control: must-revalidate, max-age=0, s-maxage=0, no-cache, no-store");
 
