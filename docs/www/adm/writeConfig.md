@@ -88,11 +88,17 @@ skriver `maps.changed = 'f'` (via `markMapUnchanged`).
 | `indexweightedLayersList.php` | `indexweightedLayersList($layersList)` | Sorterar om lagerlistan baserat på ett `indexweight`-värde per lager – flyttar viktade lager till en specifik position i listan via upprepad `array_move()` |
 | `json_format.php` | `json_format($json): string` | Formaterar en JSON-sträng med indrag för läsbarhet (egen handskriven parser, äldre ursprung enligt kodkommentar – "Nicejson", 2008) |
 | `markMapUnchanged.php` | `markMapUnchanged(&$dbh, $mapId)` | Sätter `maps.changed = 'f'` efter lyckad publicering |
+| `pgArrayToText.php` | `pgArrayToText($pgArray): string` | Konverterar Postgres arraysyntax (`{a,b,c}`) till kommaseparerad text utan klamrar – enklare variant av `pgArrayToPhp()` som ger en sträng istället för en PHP-array |
+| `pgBoolToText.php` | `pgBoolToText($pgBool)` | Konverterar Postgres bool-representation (`'t'`/`'f'`) till JS-litteralerna `"true"`/`"false"`. Returnerar värdet oförändrat om det inte är `'t'`/`'f'` |
+| `pgBoxToText.php` | `pgBoxToText($pgBox): string` | Konverterar Postgres box-syntax (`(x2,y2),(x1,y1)`) till en kommaseparerad koordinatlista, och sorterar hörnen så att den mindre x-koordinaten kommer först |
+| `pgCoordsToText.php` | `pgCoordsToText($pgCoords): string` | Konverterar Postgres punkt-syntax (`(x,y)`) till kommaseparerad text utan parenteser |
+| `publishMapFiles.php` | `publishMapFiles($filepathWithoutSuffix, $html, $json, $mapId): void` | Skriver den genererade HTML- och JSON-filen till disk, skapar Brotli- och gzip-komprimerade varianter av båda (om stöd finns), och skapar publika symlänkar i webbroten som pekar på de faktiska filerna |
+| `renderCssTags.php` | `renderCssTags(array $items): string` | Bygger HTML för CSS-inkludering: `include(sökväg)`-syntax läses in och minifieras som inline `<style>`, annars renderas som vanlig `<link rel="stylesheet">` |
+| `renderJavaScriptTags.php` | `renderJavaScriptTags(array $items): string` | Bygger HTML för JS-inkludering: stödjer `include(...)`/`include_minify(...)` (minifieras) och `include_nominify(...)` (lämnas oförändrad, för redan minifierade bundles), annars renderas som vanlig `<script src="...">` |
+| `saveFile.php` | `saveFile(string $path, string $content): bool` | Enkel, defensiv wrapper runt `file_put_contents()` |
 
 ## Filer som ännu inte granskats
-`addLayersToJson.php`, `publishMapFiles.php`, `renderCssTags.php`,
-`renderJavaScriptTags.php`, `saveFile.php`, `pgArrayToText.php`,
-`pgBoolToText.php`, `pgBoxToText.php`, `pgCoordsToText.php`
+`addLayersToJson.php`
 
 ## Kända begränsningar / observationer (preliminära – gäller granskade filer)
 
