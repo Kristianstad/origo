@@ -126,17 +126,15 @@ tillbaka baserat på filens ändringstid jämfört med TTL.
   redigerats. Kommentarerna är i sig informativa och kan behållas, men
   om ni vill ha en enhetlig kommentarstil i kodbasen är det här den fil
   där flest sådana kommentarer behöver bedömas/städas.
-- **Ingen `common/`-inkludering** (se ovan) – betyder att om denna modul
-  någonsin behöver t.ex. sessionshantering eller behörighetskontroll
-  (jämför med `restrictedLayer.php`, som filtrerar på användarrättigheter)
-  måste det läggas till separat. Värt att bekräfta: **är avsaknaden av
-  behörighetskontroll i grouplayerfix avsiktlig?** Den proxar mot QGIS
-  Server utan någon synlig koppling till `RESTRICTEDLAYERS`/`$_SESSION['user']`
-  – till skillnad från restrictedLayer-modulen. Om samma bakomliggande
-  QGIS-tjänst nås av båda proxyarna kan detta vara en säkerhetslucka
-  (skyddade lager läsbara via grouplayerfix utan behörighetskontroll).
-  **Rekommenderas att verifieras som prioriterad fråga**, inte bara en
-  kodstädningsdetalj.
+- **Bekräftat: ingen säkerhetsrisk trots avsaknad av behörighetskontroll.**
+  `grouplayerfix.php` och `restrictedLayer.php` pekar mot **två skilda
+  QGIS-tjänster**, så avsaknaden av koppling till `RESTRICTEDLAYERS`/
+  `$_SESSION['user']` i grouplayerfix läcker inte skyddad information.
+  Det finns för närvarande inget behov att slå ihop de två proxy-vägarna.
+- **Begränsad nuvarande användning:** enligt uppgift har
+  `grouplayerfix.php` för närvarande begränsad användning i systemet.
+  Kan vara relevant vid prioritering av framtida refaktoreringsinsatser
+  – troligen lägre prioritet än mer centrala moduler som `manage`.
 - **Curl-inställningarna är dupliterade tre gånger** inom
   `grouplayerfix.php` (initiering + retry-block för describeFeatureType)
   och en fjärde gång i `forwardToQgisServer.php` – samma
