@@ -214,3 +214,60 @@ skriver `maps.changed = 'f'` (via `markMapUnchanged`).
   `pgArrayToText`, `pgBoolToText`, `pgBoxToText`, `pgCoordsToText` har
   ingen alls – ytterligare bekräftelse på åldersskiktning inom samma
   funktionsmapp.
+- **⚠️ HTML byggs ihop och klistras in som ett enda JSON-strängvärde**
+  för `"abstract"`-fältet: kontaktinfo, källinfo, tabellbeskrivningar och
+  en hel `<form>` med inbäddad "Administrera"-knapp slås ihop till en
+  lång HTML-sträng som sedan skrivs rakt in i JSON-strängen
+  (`$json = $json.', "abstract": "..."'`). Detta är samma
+  grundproblem som flaggades för hela writeConfig-modulen (JSON byggd
+  genom strängkonkatenering), men här i sin mest utsatta form: om något
+  av de sammansatta fälten (kontaktnamn, tabellbeskrivning, URL) någonsin
+  innehåller ett citattecken eller nyrad som inte är escapad, kollapsar
+  hela JSON-strukturen för hela kartan – inte bara för det enskilda
+  lagret. Detta är sannolikt förklaringen till varför
+  `writeConfig.php` har sin `badJson=y`-felsökningsmekanism inbyggd:
+  ett indicium på att detta faktiskt inträffar i praktiken ibland.
+- **`$adminForm`-HTML:en bäddar in en hel `<form>`-tagg i
+  `"abstract"`-strängen**, inklusive ett `<button>` som postar tillbaka
+  till samma sida med lagrets id. Fungerar, men gör "abstract"-fältet
+  till en blandning av faktisk beskrivning och UI-kontroller – lite
+  ovanligt datamodellsmässigt (adminverktyg inbäddat i det som
+  konceptuellt är "lagerbeskrivning"), värt att känna till om
+  abstract-fältet någonsin ska återanvändas i ett annat sammanhang
+  (t.ex. sökmotorexport, vilket vi redan sett i `writeConfig.php`s
+  SEO-logik – där används dock `$layersMeta['abstract']`, en **separat**
+  och renare kopia av beskrivningen utan adminformuläret, vilket är bra
+  och undviker att adminknappen läcker ut i sökmotordata).
+- **Mycket djup, delvis odokumenterad domänlogik för legend-/ikon-
+  generering** (DPI, symbolstorlekar, LAYERSPACE, LAYERFONTSIZE, etc. som
+  query-parametrar mot QGIS Servers `GetLegendGraphic`). Dessa "magiska
+  siffror" (DPI=250, ICONLABELSPACE=3, BOXSPACE=1.8, etc.) är sannolikt
+  resultatet av mycket manuellt visuellt finjusterande, och bör **inte**
+  ändras utan att förstå att de påverkar hur legendikoner faktiskt ser
+  ut i den publicerade kartan. Detta är en bra kandidat för en egen,
+  namngiven hjälpfunktion (t.ex. `buildLegendUrl($service, $sourceProject,
+  $layerName, $variant)`) vid framtida förenkling – inte för att ändra
+  värdena, utan för att separera "bygg en legend-URL" som ett eget,
+  testbart, dokumenterat koncept från resten av den redan komplexa
+  funktionen.
+- **Tung, konsekvent användning av `GLOBAL`** (`$map, $layers, $json,
+  $mapStyles, $mapSources, $sources, $services, $mapStyleLayers,
+  $contacts, $origins, $tables`), i linje med resten av
+  writeConfig-modulen. Denna funktion är den som gör flest globala
+  läsningar/skrivningar av alla writeConfig-filer, och är därför den
+  svåraste att förstå isolerat eller testa separat.
+- **Rekursion för GROUP-lager fungerar, men delar samma `$json`-sträng
+  globalt** – när `addLayersToJson()` anropar sig själv rekursivt för en
+  undergrupp, skriver den rekursiva anropet till samma globala `$json`-
+  variabel som föräldern. Detta fungerar eftersom PHP:s `GLOBAL`-nyckelord
+  refererar till samma variabel oavsett anropsdjup, men gör kontrollflödet
+  svårare att följa än om varje anrop byggde sin egen sträng och
+  returnerade den till föräldern.
+- **`unset($styleSource, $styleService, ...)` mitt i funktionen** – ett
+  tecken på medveten hantering av att globala/långlivade variabler i en
+  lång loop annars riskerar att "läcka" värden mellan iterationer. Bra
+  försiktighetsåtgärd givet kodens struktur, men samtidigt ett symptom
+  på att så mycket delas via variabler i vidare scope än nödvändigt.
+- Ingen `strict_types` eller parametertypning (`$mapLayersList`,
+  `&$layersMeta`, `$groupLayer` är alla otypade), konsekvent med övriga
+  äldre delar av writeConfig-modulen.
