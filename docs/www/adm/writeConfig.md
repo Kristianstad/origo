@@ -180,3 +180,39 @@ skriver `maps.changed = 'f'` (via `markMapUnchanged`).
   (`addControlsToJson`, `groupDepth`, m.fl.) – bekräftar att modulen är
   en blandning av äldre och nyare kod, i linje med tidigare
   observationer om kodbasens historik.
+- **Dödkod i både `renderCssTags.php` och `renderJavaScriptTags.php`:**
+  variabeln `$url` byggs upp (`$proxyRoot . $_SERVER["REQUEST_URI"] . ...
+  . 'badJson=y'`) i felhanteringsgrenen men **används aldrig** – koden
+  skriver bara ut ett `alert()` med felmeddelandet och avslutar med
+  `exit`, utan att navigera till `$url` (till skillnad från motsvarande
+  felhantering i `writeConfig.php` självt, som *gör* en
+  `window.location.href`-omdirigering till en `badJson=y`-variant för
+  felsökning). Sannolikt en ofärdig kopiering av samma mönster – om
+  avsikten var att erbjuda samma felsöknings-omväg här, saknas
+  `window.location.href`-raden. Enkel att åtgärda eller ta bort
+  variabeln om den inte behövs.
+- **`renderCssTags.php` och `renderJavaScriptTags.php` är nästan
+  identiska** i struktur (loop, regex-matchning av `include(...)`,
+  felhantering, minifiering) – JS-varianten har bara fler kommandovarianter
+  (`include_minify`/`include_nominify`). Kandidat att slå ihop till en
+  gemensam hjälpfunktion med en parameter för tagg-typ, om ni vill minska
+  dubblering vid framtida förenkling.
+- **Blandat `require` / `require_once`** för samma konstant
+  (`constants/proxyRoot.php`) mellan de två annars nästan identiska
+  filerna (`renderCssTags.php` använder `require_once`,
+  `renderJavaScriptTags.php` använder `require`) – ofarligt eftersom
+  koden ändå avslutar med `exit` direkt efter, men ytterligare ett tecken
+  på att filerna kopierats från varandra utan fullständig konsekvens.
+- **`pgBoxToText()` gör antagandet att en box alltid har exakt två
+  koordinatpar** (`explode('),(', ...)` följt av indexering `[0]`/`[1]`
+  utan kontroll). Detta är korrekt för Postgres `box`-typen per
+  definition, så ingen bugg, men värt att notera som ett implicit
+  antagande om indata-formatet.
+- **God, tydlig dokumentation i `publishMapFiles.php`** (PHPDoc-kommentar
+  med parameterbeskrivningar) – bra förebild jämfört med de äldre
+  `pg*ToText`-funktionerna som saknar all dokumentation.
+- Fortsatt blandad typning: `publishMapFiles`, `renderCssTags`,
+  `renderJavaScriptTags`, `saveFile` har fullständig PHP 8-typning;
+  `pgArrayToText`, `pgBoolToText`, `pgBoxToText`, `pgCoordsToText` har
+  ingen alls – ytterligare bekräftelse på åldersskiktning inom samma
+  funktionsmapp.
