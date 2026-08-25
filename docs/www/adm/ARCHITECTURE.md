@@ -83,3 +83,27 @@ Azure-spåret vid framtida arbete.
 sig om vilket autentiseringsspår som satte dem – den fungerar därför med
 båda, förutsatt att sessionsstrukturen är kompatibel (vilket den är,
 se `userAuthorized.php`).
+
+## Loader-filer utanför adm/ (dokumenteras separat)
+
+Toppnivåmapparna `authorization/`, `export/`, `forwardauth/`,
+`grouplayerfix/`, `mapstate/`, `news/`, `updated/` innehåller små
+`*-loader.php`-filer som speglar entry points i `adm/`. Mönstret
+återkommer konsekvent för nästan varje modul vi hittills dokumenterat
+(t.ex. `authorization-loader.php`, `news-loader.php`,
+`restrictedLayer-loader.php`, `mapstate-loader.php`,
+`forwardauth-loader.php` + `azure-callback-loader.php`).
+
+Vi har sett antydan till hur `displayLogout.php` och `login.php` i
+authorization-modulen anpassar sitt beteende beroende på om de anropas
+via en loader (`basename($formAction) === 'authorization-loader.php'`),
+vilket bekräftar att loaders är en aktiv, använd del av arkitekturen —
+inte bara historiska kvarlevor. Fullständig dokumentation av loader-
+mönstret (`loaders.md`) görs i en separat genomgång efter att samtliga
+`adm/`-moduler är klara, enligt överenskommelse.
+
+**Undantag:** `export/` har en egen `functions/`- och `constants/`-mapp
+med filer som delvis dubblerar `adm/functions/export/` och
+`adm/constants/` (se flaggning i export.md när den skrivs) — `export/`
+verkar alltså vara mer än bara en tunn loader, till skillnad från övriga
+toppnivåmappar. Värt extra uppmärksamhet vid loader-genomgången.
