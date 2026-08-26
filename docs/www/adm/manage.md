@@ -60,6 +60,56 @@ via `array_key_first()`/`key()`-mönster och agerar generiskt. Detta är
 kärnan i hur manage-modulen kan hantera alla entitetstyper med samma
 kodväg istället för att skriva om samma logik för varje typ.
 
+## Mönster: enkla entitetsformulär (printKeywordForm, printAduserForm, m.fl.)
+
+Flera `print<Typ>Form`-funktioner följer exakt samma struktur:
+
+```php
+function print<Typ>Form($target, $inheritPosts, $helps=array())
+{
+    if (!isFullTarget($target)) { die("..."); }
+    $sizePosts = sizePosts($inheritPosts);
+    echo '<div><div class="printXFormDiv"><form method="post">';
+    printTextarea(...);  // en gång per fält
+    printHiddenInputs($inheritPosts);
+    echo '<div class="buttonDiv">';
+    printUpdateButton($type);
+    printCopyButton($type);
+    $target = makeTargetBasic($target);
+    printInfoButton($target);
+    [ printReadDbSchemasButton(...) ]     // endast database
+    [ printConfigPreviewButton(...) ]     // endast group
+    $deleteConfirmStr = "Är du säker...";
+    printDeleteButton($target, $deleteConfirmStr, $inheritPosts);
+    echo '</div></form></div></div>';
+    [ addRemoveDiv med printAddOperation/printRemoveOperation ]  // endast control, group
+}
+```
+
+De skiljer sig bara i: vilka fält som visas (`printTextarea`-anropen),
+och vilka extra knappar/operationer som läggs till sist. Denna
+konsekvens gör mönstret till en stark kandidat för att brytas ut till en
+**generisk, datadriven formulärfunktion** vid framtida förenkling – t.ex.
+`printSimpleEntityForm($target, $fieldDefinitions, $inheritPosts, $helps)`
+där `$fieldDefinitions` är en liten array av `[kolumn, storlek, etikett]`.
+Det skulle radera bort merparten av dessa filers ~15–20 rader vardera
+till en enda konfigurationsrad per entitetstyp, utan att ändra
+funktionalitet.
+
+**Instanser av mönstret (denna omgång):**
+
+| Fil | Typ | Fält utöver id/abstract/info | Extra knappar/sektioner |
+|---|---|---|---|
+| `printKeywordForm.php` | keyword | – | – |
+| `printAduserForm.php` | aduser | name, email, company, department, lastlogin, adgroups (samtliga skrivskyddade, se flaggning) | – |
+| `printContactForm.php` | contact | name, web, email | – |
+| `printControlForm.php` | control | options, css, js, onload | `printAddOperation`/`printRemoveOperation` mot maps |
+| `printDatabaseForm.php` | database | connectionstring | `printReadDbSchemasButton` |
+| `printFooterForm.php` | footer | img, url, text | – |
+| `printFormatForm.php` | format | (endast format_id, ingen extra) | – |
+| `printGroupForm.php` | group | layers, groups, title, expanded (select), show_meta (select), keywords | `printConfigPreviewButton`, `printAddOperation`/`printRemoveOperation` mot maps OCH groups (två par) |
+| `printHelpForm.php` | help | (endast help_id/abstract/info, etiketterna är "Verktygsfält"/"Hjälptext" istället för "Id"/"Beskrivning") | – |
+
 ## Anropas med
 `manage.php?view=<vy>` (GET för vy) + POST med formulärdata
 
@@ -98,6 +148,17 @@ kodväg istället för att skriva om samma logik för varje typ.
 | `makeTargetFull.php` | `makeTargetFull($target, $configTablesOrDbh): array` | Tar en basic (eller full) target och returnerar en full target, genom att slå upp konfigurationen via `targetConfig()` (ej granskad ännu) om den saknas. Avslutar programmet om indata inte är en giltig target |
 | `markMapsChanged.php` | `markMapsChanged(&$dbh, $mapIds): void` | Sätter `maps.changed = 't'` för samtliga angivna kartor i en enda batch-SQL (flera `UPDATE`-satser konkatenerade med `; `). **Bekräftar tidigare hypotes:** detta är motparten till `markMapUnchanged()` i writeConfig-modulen – manage-modulen flaggar en karta som "ändrad, behöver publiceras om" varje gång något som påverkar den redigeras, och writeConfig-modulen nollställer flaggan efter lyckad publicering |
 | `postButton.php` | `postButton($post): string\|null` | Hittar namnet på den POST-parameter vars namn slutar på `Button` – det är detta namn (`<typ>Button`) som `manage.php` sedan bryter isär för att få fram `$type` |
+| `printAddOperation.php` | `printAddOperation($target, $addToTable, $buttontext, $inheritPosts)` | Skriver ut ett litet formulär: en dropdown med tillgängliga föräldrar (t.ex. kartor eller grupper) + en knapp som postar `operation`-kommandot för att lägga till `$target` i den valda föräldern |
+| `printChildSelect.php` | `printChildSelect($target, $column, &$thClass, $heading, $inheritPosts, $groupLevel=1, $selectedValue=null)` | Den mest komplexa av dessa byggstenar: skriver ut en kolumn i "barn-urvalsraden" (t.ex. vilka lager/grupper/kontroller finns i vald karta). Hanterar specialfall för `schemas`/`tables` (härledda från förälderns fullständiga id via prefix-strippning) och för nästlade grupper (bygger `groupIds`-kedjan baserat på djup) |
+| `printConfigPreviewButton.php` | `printConfigPreviewButton($mapId, $group=null, $layer=null)` | Knapp som öppnar en förhandsgranskning via `writeConfig.php?getHtml=y` i en ny flik, utan att skriva till disk. Kan begränsas till en specifik grupp eller ett specifikt lager |
+| `printCopyButton.php` | `printCopyButton($type)` | Enkel "Spara kopia"-knapp (`command=copy`) |
+| `printDeleteButton.php` | `printDeleteButton($target, $deleteConfirmStr, $inheritPosts)` | Raderaknapp med JS-bekräftelsedialog. **Visas bara om `$viewDepthGlobal == 1`** (se flaggning – innebär att radering bara är möjlig för toppnivåobjekt, inte nästlade) |
+| `printExportJsonButton.php` | `printExportJsonButton($mapId)` | Knapp som laddar ner kartans JSON-konfiguration via `writeConfig.php?getJson=y&download=y`, öppnas i den dolda iframen (`hiddenFrame`) så sidan inte navigerar bort |
+| `printHeadForm.php` | `printHeadForm($tableConfig, $inheritPosts)` | Skriver ut en enskild kolumn i toppradens urvalsformulär: en dropdown för att välja befintligt objekt (med ev. nyckelordskategorisering) + ett textfält och knapp för att skapa nytt |
+| `printHeadForms.php` | `printHeadForms($view, $configTables, $focusTable, $inheritPosts)` | Skriver ut hela toppraden av urvalsformulär, en `printHeadForm()`-kolumn per tabell som ingår i vald `$view` (styrt av `constants/views.php`). Placerar `$focusTable` först och ger den fokus-styling |
+| `printHelpButton.php` | `printHelpButton($type, $configParam=null, $buttonText='?', $buttonClass='smallHelpButton')` | Liten "?"-knapp bredvid ett fält, öppnar/togglar hjälptext för just det fältet (`help.php?id=<type>[:<configParam>]`) i topFrame |
+| `printHiddenInputs.php` | `printHiddenInputs($inheritPosts)` | Skriver ut ett dolt `<input>` per nyckel/värde i `$inheritPosts`, för att bevara navigeringskontext genom formulärinskick |
+| `printInfoButton.php` | `printInfoButton($basicTarget)` | "Info"-knapp som öppnar `info.php` i topFrame för given target |
 
 **Filsystem:** läser QGIS-projektfiler (`.qgs`) direkt från disk vid
 uppdatering av layer/source, samma mönster som i `info.php` och
@@ -298,3 +359,72 @@ med huvudsidan via `postMessage`:
 - Ingen av filerna har `strict_types` eller fullständig parametertypning
   (returtyper anges ibland i kommentarer men inte i kod), konsekvent
   med övriga äldre delar av kodbasen.
+- **⚠️ Trolig bugg i `printGroupForm.php`:**
+```php
+  printConfigPreviewButton('preview', targetId($group));
+```
+  `printConfigPreviewButton($mapId, $group=null, $layer=null)` förväntar
+  sig **kartans id** som första argument (det är detta värde som postas
+  vidare till `writeConfig.php?map=...`). Här skickas dock den
+  **hårdkodade strängen `'preview'`** som `$mapId`, inte den faktiska
+  kartans id från navigeringskontexten (t.ex. `$inheritPosts['mapId']`).
+  Om `'preview'` inte råkar vara ett giltigt `map_id` i databasen (osannolikt
+  att det skulle vara det av misstag) kommer `writeConfig.php`s
+  `array_column_search()` inte hitta någon matchande karta, vilket
+  sannolikt leder till att förhandsgranskningen för grupper blir tom
+  eller trasig. **Detta bör verifieras och sannolikt rättas** till att
+  skicka det faktiska `mapId` från `$inheritPosts` istället.
+- **⚠️ Möjlig bugg/skräpvärde i `printHiddenInputs.php`:**
+```php
+  if ($idKey != 'layerCategory')
+```
+  Detta undantag stavas `layerCategory` (singular, ingen "s"), men de
+  faktiska category-fälten som genereras av `categoryPosts()` (se
+  tidigare omgång) namnges efter tabellnamnet, t.ex. `layersCategory`
+  (plural, matchar tabellnamnet `layers`). Om `layerCategory` (singular)
+  aldrig faktiskt förekommer som nyckel i `$inheritPosts`, gör detta
+  undantag **ingenting** i praktiken – filtret matchar aldrig. Antingen
+  är detta en stavningsbugg (borde vara `layersCategory`) som gör att ett
+  fält läcker igenom som en dold input när det borde exkluderas, eller
+  så är exkluderingen överflödig kvarleva. **Bör verifieras** mot vad
+  som faktiskt är avsett att filtreras bort.
+- **`printAduserForm.php` skickar `true` som sjätte argument till
+  `printTextarea()`** för samtliga fält utom `abstract`/`info` (t.ex.
+  `printTextarea($aduser, 'name', ..., $sizePosts, true)`) – detta är
+  sannolikt en "read-only"-flagga (rimligt för AD-användardata som
+  synkas in automatiskt och inte ska redigeras manuellt i adminverktyget),
+  men den exakta innebörden bekräftas först när `printTextarea.php`
+  granskas.
+- **Kommentar-död kod i `printDeleteButton.php`:** ett helt block (att
+  trimma `$inheritPosts` baserat på objektets typ innan radering) är
+  utkommenterat. Ofarligt men gör filen svårare att läsa – kandidat för
+  borttagning om logiken verkligen inte längre behövs, eller
+  återinförande med förklaring om den faktiskt saknas.
+- **`printDeleteButton()`s villkor `$viewDepthGlobal == 1`** betyder att
+  raderaknappen bara visas för det **första** nivån av vald hierarki
+  (t.ex. den valda kartan, men inte en nästlad grupp längre ner, eller
+  ett valt lager om det nås via flera kaskaderande urval). Det är
+  oklart om detta är en avsiktlig begränsning (för att undvika
+  oavsiktlig radering djupt ner i en hierarki utan tydlig kontext) eller
+  en ofullständig implementation. Given hur central raderingsfunktionen
+  är, **rekommenderas att bekräfta avsikten** med denna begränsning.
+- **`printFormatForm.php` saknar en tydlig extra beskrivning** – till
+  skillnad från övriga i mönstret har den bara `format_id`/`abstract`/
+  `info`, inga typ-specifika fält alls. Bekräftar att `format` är en
+  mycket enkel referenstabell (troligen bara en lista över tillåtna
+  bildformat, jämför `layer['format']`-fältet vi sett i writeConfig).
+- **`printHeadForm.php` och `printChildSelect.php` innehåller djup,
+  delvis duplicerad specialfallslogik** för hur `schemas`/`tables`-
+  kolumner ska visas med förkortade etiketter (prefix-strippning av
+  förälderns id) jämfört med övriga kolumntyper. Detta är samma
+  database→schema→table-kaskad vi såg i `manage.php`s entry point,
+  implementerad på liknande sätt på två separata ställen. Kandidat för
+  att brytas ut till en delad hjälpfunktion (t.ex. `stripParentPrefix
+  ($ids, $parentId)`) om dessa filer någonsin refaktoreras.
+- **Inkonsekvent stil i `printHeadForm.php`:** blandar `<<<HERE`-heredoc-
+  block med vanlig `echo '...'`/`.`-konkatenering inom samma funktion,
+  samt använder `require()` för en konstant (`keywordCategorized.php`)
+  mitt i funktionskroppen (samma mönster som redan noterat för andra
+  manage-filer).
+- Ingen `strict_types` eller parametertypning i någon av filerna,
+  konsekvent med resten av manage-modulen.
