@@ -1,4 +1,61 @@
 <?php
+/*
+manage.php
+ ├─ includeDirectory("./functions/common")
+ ├─ includeDirectory("./functions/manage")
+ ├─ $post = array_filter($_POST, ...)      → rensar bort tomma POST-värden (men behåller "0")
+ ├─ $view = $_GET['view']                   → styr vilken vy/flik som visas
+ ├─ unset($_POST, $_GET)                    → försiktighetsmönster vi sett förut
+ │
+ ├─ FAS 1: TOLKA INKOMMANDE POST-DATA
+ │    ├─ bygger $groupIdsArray från groupIds/groupId
+ │    ├─ idPosts($post)            [manage] → alla *Id-fält (vilken rad är vald i varje kolumn)
+ │    ├─ sizePosts($post)          [manage] → sparade textarea-dimensioner (UI-state)
+ │    ├─ categoryPosts($post)      [manage] → vilken nyckelordskategori som valts per fält
+ │    ├─ focusTable($idPosts)      [manage] → vilken tabell som är "i fokus"
+ │    ├─ dbh(), configTables($dbh) [common] → ALLA konfigtabeller i minnet
+ │    ├─ viewKeywordCategorized($view)  [manage] → vilka tabeller kategoriseras via nyckelord i denna vy
+ │    └─ (eval) bygger $<table>Categories för varje kategoriserad tabell
+ │
+ ├─ FAS 2: HANTERA FORMULÄRINSKICK (om en knapp klickades)
+ │    ├─ postButton($post)          [manage] → vilken knapp klickades (avslöjar $type + $command)
+ │    ├─ beroende på $command:
+ │    │    ├─ 'copy'      → kopiera en rad (med "-kopia"-suffix vid namnkrock)
+ │    │    ├─ 'create'    → skapa ny rad med angivet id
+ │    │    ├─ 'delete'    → radera rad, MEN BARA om inget annat refererar till den
+ │    │    │                (findAllParents-koll, samma skyddsmönster som i info.php)
+ │    │    ├─ 'update'/'copy' → validateUpdate() → bygg UPDATE-sats via sqlForUpdate()
+ │    │    │    └─ SPECIALFALL: layer/source med QGIS-tjänst → läser .qgs-fil från disk
+ │    │    │       för att auto-fylla 'updated', 'softversion', 'tables' (samma mönster
+ │    │    │       som info.php och writeTablesForAllLayers.php)
+ │    │    └─ 'operation' → lägg till/ta bort ett barn (layer/group/control) från en
+ │    │                     förälder (map/group) → sqlForOperation()
+ │    ├─ kör $sql, om lyckat:
+ │    │    ├─ läser om configTables (färsk data)
+ │    │    ├─ usedInMaps() FÖRE och EFTER ändringen → markMapsChanged() för påverkade
+ │    │    │   kartor (sätter troligen maps.changed='t', vilket writeConfig.php senare
+ │    │    │   läser för att veta vilka kartor som behöver publiceras om)
+ │    │    └─ vid fel: bygger ett JS alert() med Postgres felmeddelande
+ │
+ ├─ FAS 3: RENDERA SIDAN (rubrik, JS, CSS, toppknappar, vyväxlare)
+ │    ├─ printViewSwitcher($view)      [manage]
+ │    ├─ printHeadForms(...)           [manage] → toppradens urvalsformulär (beror på vy)
+ │    └─ bygger JS-variabler för varje nyckelordskategori (kompliceras av eval(), se flaggning)
+ │
+ └─ FAS 4: RENDERA DET VALDA OBJEKTETS FORMULÄR (djupt kaskaderande, en gren per typ)
+      ├─ OM map vald   → printMapForm() + printChildSelect() för layers/groups/controls
+      ├─ OM database   → printDatabaseForm() + printChildSelect() för schemas
+      ├─ OM schema     → printSchemaForm() + printChildSelect() för tables
+      ├─ OM group(s)   → loop genom $groupIdsArray (nästlade grupper) → printGroupForm()
+      │                  + printChildSelect() för layers/groups (rekursivt genom hierarkin)
+      └─ OM övrigt <item> vald (idPosts icke-tom):
+           ├─ makeTargetFull(makeBasicTarget(...))  [manage] → normaliserad datastruktur
+           ├─ targetType()                           [manage] → vilken typ är detta?
+           └─ eval('print'.ucfirst($childType).'Form(...)')  ← DYNAMISKT FUNKTIONSANROP
+                (layer/source/table/searchtable har specialhantering före detta;
+                control/plugin och "allt annat" går via samma eval-mönster)
+*/
+
 // Tell browsers to not cache response
 header("Cache-Control: must-revalidate, max-age=0, s-maxage=0, no-cache, no-store");
 
