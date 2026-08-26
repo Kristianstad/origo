@@ -98,6 +98,17 @@ skriver `maps.changed = 'f'` (via `markMapUnchanged`).
 | `saveFile.php` | `saveFile(string $path, string $content): bool` | Enkel, defensiv wrapper runt `file_put_contents()` |
 | `addLayersToJson.php` | `addLayersToJson($mapLayersList, &$layersMeta, $groupLayer=false)` | Den mest centrala och komplexa funktionen i modulen (506 rader). Bygger JSON för varje lager: grundfält, typspecifik logik (WMS/WFS/GEOJSON), en sammansatt HTML-"abstract"-beskrivning, legend-/ikon-URL:er mot bakomliggande WMS-tjänst, hantering av klusterstilar. Rekursiv för GROUP-lager. Samlar även ihop `$mapSources`/`$mapStyles` och avslutar (vid toppnivåanrop) med att trigga `addSourcesToJson()`/`addStylesToJson()` |
 
+## Koppling till manage-modulen: "changed"-flaggan
+
+Nu bekräftad i sin helhet: `manage.php` (via `markMapsChanged()`)
+sätter `maps.changed = 't'` varje gång en ändring görs som påverkar en
+publicerad karta (lager, grupper, källor, etc.), och `writeConfig.php`
+(via `markMapUnchanged()`) nollställer flaggan (`'f'`) efter lyckad
+publicering. Detta ger sannolikt underlag för en "denna karta har
+osparade ändringar, klicka för att publicera"-indikator någonstans i
+manage-gränssnittet (troligen i `printWriteConfigButton.php`, ej
+granskad ännu).
+
 ## Kända begränsningar / observationer (preliminära – gäller granskade filer)
 
 - **⚠️ JSON byggs som strängkonkatenering, inte som PHP-array +
