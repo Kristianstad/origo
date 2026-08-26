@@ -75,6 +75,27 @@ uppdatering av layer/source, samma mönster som i `info.php` och
 **Databas:** läser och skriver till praktiskt taget samtliga
 konfigurationstabeller (via `configTables()` och dynamiskt genererad SQL).
 
+## JS-filer och funktioner
+
+**Plats:** `adm/js-functions/manage/`
+**Laddas:** inline i `<script>`-taggen i `<head>`, via samma
+`includeDirectory()`-mönster som används för PHP (se ARKITEKTUR.md)
+
+| Fil | Funktion | Beskrivning |
+|---|---|---|
+| `toggleTopFrame.js` | `toggleTopFrame(type)` | Visar/döljer den delade toppmonterade iframen (`#topFrame`). Håller reda på vilken typ av innehåll som visas (global variabel `topFrame`, deklarerad i `manage.php`s inline-script) – klick på samma typ igen döljer den, klick på en annan typ byter innehåll och scrollar upp |
+| `resizeIframe.js` | `resizeIframe(iframe)` | Anpassar en iframes höjd efter dess faktiska innehåll, genom att tillfälligt sätta höjden till `1px` och sedan mäta `scrollHeight` i nästa animationsframe |
+| `initMessageListener.js` | `initMessageListener()` | Sätter upp en global `postMessage`-lyssnare för hela sidan. Validerar avsändarens origin (måste matcha `window.location.origin`) och att datan har rätt form innan den hanteras. Hanterar tre fall: `action:'close'` utan `targetId` (stäng topFrame, t.ex. från help.php), `action:'resize'` (justera topFrame-höjd), och `targetId`+`value` (fyll i ett textarea-fält med värde från multiselect-verktyget, samt uppdatera den tillhörande multiselect-knappens `value`-attribut så nästa öppning av multiselect visar rätt förval) |
+| `formChangeButton.js` | `formChangeButton()` | Lägger till en CSS-klass (`change`) på ett formulärs "Uppdatera"-knapp så fort något fält i formuläret ändras (utom dolda fält), för att visuellt signalera osparade ändringar |
+| `preservePageScroll.js` | `preservePageScroll()` | Sparar scrollpositionen i `sessionStorage` vid formulärinskick, och återställer den efter att sidan laddats om – kompenserar för att `manage.php` är en traditionell serverrenderad sida där varje åtgärd (spara, välja ett nytt objekt) innebär en full sidomladdning |
+| `updateSelect.js` | `updateSelect(id, array)` | Fyller om en `<select>`-listas alternativ med ett nytt innehåll. Specialhantering för element vars id slutar på `Categories`: värdet sätts till det råa (understreck-separerade) kategorinamnet men visningstexten har understreck ersatta med mellanslag |
+
+## Kommunikationsmönster: iframe ↔ huvudsida
+
+`manage.php` bygger på ett återkommande mönster där verktyg som körs i
+en iframe (`help.php`, `multiselect.php`, och potentiellt andra) pratar
+med huvudsidan via `postMessage`:
+
 ## Kända begränsningar / observationer (preliminära, baserat på entry point)
 
 - **⚠️ Genomgående användning av `eval()`** för dynamiska
@@ -149,3 +170,55 @@ konfigurationstabeller (via `configTables()` och dynamiskt genererad SQL).
   acceptera i en publik felhantering.
 - Ingen `strict_types` eller parametertypning (gäller hela filen,
   konsekvent med övriga äldre delar av kodbasen).
+- **⚠️ `initMessageListener.js` saknar null-kontroll på
+  `multiselectButton`:**
+```js
+  const multiselectButton = document.getElementById(targetId + ":multiselect");
+  let multiselectButtonValue = multiselectButton.getAttribute('value');
+```
+  Om inget element med id `<targetId>:multiselect` finns i DOM:en (t.ex.
+  om ett fält kan fyllas via multiselect-verktyget utan att ha en
+  tillhörande multiselect-knapp, eller om knappens id-konvention någon
+  gång avviker), kastar detta ett `TypeError: Cannot read properties of
+  null` och stoppar resten av händelsehanteraren. Värt att lägga till
+  samma typ av null-kontroll som redan finns för `textarea` några rader
+  ovanför.
+- **Skört strängmönster för att uppdatera multiselect-knappens
+  `value`-attribut:**
+```js
+  multiselectButtonValue.replace(/^([^:]*::[^:]*).*$/, '$1:' + value);
+```
+  Denna regex förutsätter exakt samma `<textareaId>::<tabell>:<värden>`-
+  format som vi dokumenterade i `multiselect.md` (se
+  `multiselect.php`s query-parameterparsning). De två platserna – här
+  och i `multiselect.php` – måste hållas i synk manuellt; om formatet
+  någonsin ändras på ena stället måste det ändras på båda. Ytterligare
+  ett skäl (utöver läsbarhetsargumentet vi redan noterat i
+  `multiselect.md`) att överväga att ersätta den hopkodade strängen med
+  separata, tydligt namngivna data-attribut.
+- **Två funktioner med samma namn (`updateSelect`) i olika moduler:**
+  denna fils `updateSelect(id, array)` (manage) skiljer sig i
+  **parameterordning och beteende** från `update(menu)` i
+  multiselect-modulen (som vi dokumenterade tidigare som `update.js` –
+  notera att den filen faktiskt exporterar en funktion vid namn
+  `update`, inte `updateSelect`, så namnkonflikten är mindre akut än
+  den såg ut vid första anblick, men värt att dubbelkolla att inga
+  andra js-mappar har en `updateSelect`-funktion med annan signatur,
+  eftersom alla js-filer i en mapp laddas globalt utan namnrymder).
+- **`formChangeButton()` letar bara efter en knapp med exakt
+  `value="update"`** – om ett formulär har flera submit-knappar (t.ex.
+  separata knappar för "spara" och "kopiera" som vi sett i
+  `manage.php`s `$command`-hantering: `copy`/`create`/`delete`/`update`/
+  `operation`), får bara `update`-knappen den visuella
+  ändrings-markeringen. Rimligt om det är den enda knappen som ska
+  visa "osparade ändringar", men värt att bekräfta att det är avsiktligt
+  och inte ett förbiseende för de andra kommandona.
+- **Konsekvent, modern JS-stil** (`const`/`let`, arrow functions,
+  destrukturering, `querySelectorAll`/`forEach`) genomgående i samtliga
+  sex filer – till skillnad från flera äldre PHP-delar av kodbasen.
+  Bekräftar att JS-lagret överlag är nyare/mer omsorgsfullt underhållet
+  än en del av den äldre PHP-koden (t.ex. news/authorization).
+- Ingen av filerna har enhetstester eller motsvarande, men koden är
+  tillräckligt enkel och fri från globala sidoeffekter (förutom delade
+  DOM-element och den globala `topFrame`-variabeln) att den skulle vara
+  relativt lätt att testa isolerat om det blir aktuellt.
