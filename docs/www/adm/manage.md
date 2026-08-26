@@ -126,6 +126,18 @@ betydande typspecifik villkorslogik:
 | `printSearchmodelForm.php` | searchmodel | **Se flaggning – misstänkt bugg** |
 | `printMapstateForm.php`, `printNewForm.php`, `printOriginForm.php`, `printPluginForm.php`, `printProj4defForm.php` | mapstate, new, origin, plugin, proj4def | Följer det enkla mönstret från föregående omgång |
 
+## Formulärbyggstenar (denna omgång)
+
+| Fil | Funktion | Beskrivning |
+|---|---|---|
+| `printTilegridForm.php` | (enkelt mönster) | tilesize, standardfält i övrigt |
+| `printUpdateForm.php` | (enkelt mönster) | Namnet är missvisande – detta gäller entiteten "update" (en uppdateringsrutin/schema för när data anses föråldrad, kopplat till `updated`-modulen), inte formulärets egen uppdateringsknapp. Fält: `interval` (tidsintervall som text, t.ex. "+1 month" – ser ut som PHP:s `strtotime()`-kompatibla format), `method` (manuellt/automatiskt) |
+| `printUpdateButton.php` | `printUpdateButton($type)` | "Uppdatera"-knappen. Läser den globala `$formChangedGlobal`-flaggan (satt i `manage.php` vid failed update, se tidigare) för att visa den redan i "ändrad"-läge om ett sparförsök just misslyckades |
+| `printUpdateSelect.php` | `printUpdateSelect($fullTarget, $configParamValues, $class, $label, $help=false, $options=null, $onchange='')` | Motsvarigheten till `printTextarea()` men för `<select>`-fält istället för fritext. Om `$options` inte anges härleds de automatiskt från `$configParamValues` |
+| `printUrlButton.php` | `printUrlButton($url)` | Enkel "Öppna karta"-knapp som öppnar en URL i ny flik |
+| `printViewSwitcher.php` | `printViewSwitcher($view)` | Radioknappar för att växla mellan vyer (`constants/views.php`), autopostar vid ändring |
+| `printWriteConfigButton.php` | `printWriteConfigButton($mapId, $changed='f')` | Knappen som triggar `writeConfig.php` (publicering). Visar "ändrad"-styling om `maps.changed = 't'` (kopplingen till `markMapsChanged()` vi identifierade tidigare, nu bekräftad från UI-sidan) |
+
 ## Anropas med
 `manage.php?view=<vy>` (GET för vy) + POST med formulärdata
 
@@ -182,6 +194,16 @@ betydande typspecifik villkorslogik:
 | `printAddOperation.php` / `printRemoveOperation.php` | (redan dokumenterade) | `printRemoveOperation` kräver dessutom `findParents()` [common] för att bara visa föräldrar objektet faktiskt tillhör |
 | `printReadDbSchemasButton.php` | `printReadDbSchemasButton($databaseId)` | Knapp som anropar `read_db_schemas.php` i en dold iframe, med JS-bekräftelsedialog och automatisk formulärresubmit efter 1 sekund för att visa nya scheman |
 | `printReadSchemaTablesButton.php` | `printReadSchemaTablesButton($schemaId)` | Motsvarande för `read_schema_tables.php` |
+| `setTargetConfigParam.php` | `setTargetConfigParam(&$fullTarget, $configParam, $value)` | Skriver ett värde direkt i en full targets konfigurationsarray, in-memory (påverkar inte databasen) |
+| `sqlForOperation.php` | `sqlForOperation($operation, $child, $parent): string` | Bygger en UPDATE-sats som lägger till/tar bort ett barn-id ur förälderns array-kolumn |
+| `sqlForUpdate.php` | `sqlForUpdate($fullTarget, $updatePosts): string` | Bygger en fullständig UPDATE-sats för en target baserat på postat formulärdata |
+| `tableConfigs.php` | `tableConfigs($table, $configTablesOrDbh)` | Hämtar konfigurationen för en tabell antingen från en databaskoppling (färsk fråga) eller från en redan inläst `configTables`-array (cachat) – avgörs via `is_resource()` |
+| `targetConfig.php` | `targetConfig($target, $configTablesOrDbh=null)` | Slår upp/returnerar hela konfigurationen för en target, oavsett om den redan är "full" eller bara "basic" |
+| `targetConfigParam.php` | `targetConfigParam($fullTarget, $configParam)` | Läser ett enskilt konfigurationsvärde ur en full target |
+| `targetId.php` | `targetId($target)` | Returnerar targetens id-värde, oavsett om den är full eller basic |
+| `targetIdColumn.php` | `targetIdColumn($target): string` | Returnerar namnet på primärnyckelkolumnen för targetens typ. Specialfall: `proj4defs` använder `code` istället för `<typ>_id` |
+| `targetTable.php` | `targetTable($target): string` | Returnerar tabellnamnet för targetens typ |
+| `sizePosts.php` | `sizePosts($post): array` | Filtrerar `$post` till bredd-/höjd-/scrollrelaterade fält, och normaliserar `new*`-prefixade nycklar (från senaste formulärinskicket) till samma nyckelformat som de ursprungliga (`width*`/`height*`/`scroll*`) – nyare värden skriver över äldre i sammanslagningen |
 
 **Filsystem:** läser QGIS-projektfiler (`.qgs`) direkt från disk vid
 uppdatering av layer/source, samma mönster som i `info.php` och
@@ -442,28 +464,15 @@ med huvudsidan via `postMessage`:
   manage-filer).
 - Ingen `strict_types` eller parametertypning i någon av filerna,
   konsekvent med resten av manage-modulen.
-- **⚠️ Trolig bugg i `printSearchmodelForm.php`:** funktionen deklareras
-  med parametern `$searchmodel`, men **hela funktionskroppen använder
-  variabeln `$searchtable`** istället (som aldrig definieras i denna
-  funktion):
-```php
-  function printSearchmodelForm($searchmodel, $selectables, $inheritPosts, $helps=array())
-  {
-      if (!isFullTarget($searchmodel)) { die(...); }
-      ...
-      printUpdateSelect($searchtable, ...);   // ska vara $searchmodel
-      printTextarea($searchtable, 'schema', ...);  // ska vara $searchmodel
-      ...
-  }
-```
-  Detta ser ut som att filen skapats genom att kopiera
-  `printSearchtableForm.php` och byta funktionsnamn/parameternamn i
-  signaturen, men glömma att byta ut variabelnamnet i kroppen. Eftersom
-  `$searchtable` inte är definierad i funktionens scope kommer PHP ge
-  "Undefined variable"-varningar och sannolikt visa ett tomt eller
-  trasigt formulär när en searchmodel faktiskt väljs. **Detta bör
-  verifieras i er miljö och sannolikt rättas** genom att byta alla
-  `$searchtable`-referenser till `$searchmodel` i denna fil.
+- ~~⚠️ Trolig bugg i printSearchmodelForm.php~~ **KORRIGERAT:**
+  `printSearchmodelForm.php`, `printSearchtableForm.php` och
+  `adm/search.php` (0 bytes) härstammar från ett påbörjat men aldrig
+  färdigställt utvecklingsarbete. Variabelnamnsförväxlingen
+  (`$searchtable` istället för `$searchmodel`) är alltså en artefakt av
+  ofullständigt arbete snarare än en regressionsbugg i något som
+  fungerat tidigare. **Lägre prioritet** – relevant att känna till om
+  arbetet någon gång återupptas, men inget som bör rättas isolerat utan
+  sammanhang om vad `searchmodel`-konceptet är tänkt att bli.
 - **Två parallella multiselect-knappmönster** (`printMultiselectButton.php`
   och `printMultiselectButton2.php`). Den andra:
   - Använder `func_get_arg(2)` för att läsa ett argument som **inte
@@ -534,3 +543,34 @@ med huvudsidan via `postMessage`:
   förenkling av dessa formulär.
 - Fortsatt ingen `strict_types`/parametertypning, konsekvent med resten
   av manage-modulen.
+- **God arkitektur i target-infrastrukturen:** trots den genomgående
+  avsaknaden av typning är detta faktiskt ett väldesignat, konsekvent
+  abstraktionslager – varje funktion har ett tydligt, smalt ansvar, och
+  `tableConfigs()`s "färskt eller cachat"-abstraktion är ett elegant sätt
+  att återanvända samma kod oavsett om man har en databaskoppling eller
+  en redan inläst konfiguration. Detta är sannolikt den mest
+  välstrukturerade delen av hela manage-modulen och en bra förebild för
+  hur övriga delar (t.ex. `printLayerForm.php`s djupa villkorslogik)
+  skulle kunna struktureras om vid framtida förenkling.
+- **`printWriteConfigButton.php`s bekräftelsedialog hanterar avbrutet
+  klick korrekt** (`if (confirm(...)) {...return true;} else {return
+  false;}`), till skillnad från `printReadDbSchemasButton.php`/
+  `printReadSchemaTablesButton.php` som vi flaggade tidigare som troligen
+  buggiga i just detta avseende. Bra jämförelsepunkt: samma utvecklare
+  har skrivit korrekt hanterad bekräftelselogik på minst ett ställe, vilket
+  gör det tydligare att de andra två är förbiseenden snarare än ett
+  medvetet designval.
+- **`tableConfigs()` avslutar processen helt (`exit(1)`)** om varken en
+  databaskoppling eller en configTables-array med den efterfrågade
+  tabellen ges. Samma "fail fast för programmeringsfel"-mönster som
+  övriga target-funktioner, men `exit(1)` istället för `die("meddelande")`
+  – ger alltså ingen förklarande text till skillnad från systerfunktionerna,
+  vilket gör felsökning svårare om detta någonsin triggas oväntat.
+- **`printUpdateForm.php`s namnkrock med begreppet "update"** (en
+  databasentitet för uppdateringsscheman, kontra `printUpdateButton()`
+  för formulärets spara-knapp, kontra `sqlForUpdate()` för SQL-generering)
+  är rent namnmässigt förvirrande vid en första anblick men fullt
+  logisk vid närmare granskning – värt att notera i dokumentationen
+  (görs härmed) så framtida läsare inte blandar ihop de tre helt
+  orelaterade "update"-koncepten.
+- Fortsatt konsekvent avsaknad av `strict_types`/parametertypning.
