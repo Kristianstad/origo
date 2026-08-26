@@ -26,3 +26,4 @@
 | `tablesFromQgsXml($qgsXml, $layerName)` | `tablesFromQgsXml.php` | Tolkar en QGIS-projektfils XML för att hitta databastabeller ett lager bygger på | writeTablesForAllLayers |
 | `configTables($dbh)` | `configTables.php` | Hämtar samtliga konfigurationstabeller (maps, groups, layers, m.fl.) i ett svep, avsedd att packas upp med `extract()` | writeConfig |
 | `defineFileConstant($name, $value)` | `defineFileConstant.php` | Skriver en PHP-konstant till en fil på disk, läsbar senare via `includeFileConstant()`. Källan till `RESTRICTEDLAYERS`-konstanten | writeConfig |
+| `isTarget($target)` | `isTarget.php` | Kontrollerar om en variabel har formen av ett giltigt "target" (se target-konceptet i manage.md) | manage |
