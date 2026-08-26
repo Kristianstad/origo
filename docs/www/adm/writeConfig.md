@@ -109,6 +109,23 @@ osparade ändringar, klicka för att publicera"-indikator någonstans i
 manage-gränssnittet (troligen i `printWriteConfigButton.php`, ej
 granskad ännu).
 
+## Publiceringskedjan till disk
+
+writeConfig.php
+└─ publishMapFiles($filepathWithoutSuffix, $html, $json, $mapId)
+├─ saveFile() → sparar okomprimerad .html och .json
+├─ compressBrotli() → sparar .html.br / .json.br (om tillägget finns)
+├─ compressGzip() → sparar .html.gz / .json.gz
+└─ createSymlinkIfNotExists() → skapar publika symlänkar i
+<webRoot>/maps/<mapId>.html[.br|.gz] och .json[.br|.gz]
+som pekar på de faktiska filerna under $filepathWithoutSuffix
+
+Anledningen till att både okomprimerade och förkomprimerade varianter
+sparas är sannolikt att webbservern (nginx/Apache) är konfigurerad att
+servera `.br`/`.gz`-varianten direkt till klienter som stödjer det,
+utan att behöva komprimera vid varje request – en vanlig
+prestandaoptimering för statiska filer.
+
 ## Kända begränsningar / observationer (preliminära – gäller granskade filer)
 
 - **⚠️ JSON byggs som strängkonkatenering, inte som PHP-array +
