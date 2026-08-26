@@ -60,6 +60,19 @@ via `array_key_first()`/`key()`-mönster och agerar generiskt. Detta är
 kärnan i hur manage-modulen kan hantera alla entitetstyper med samma
 kodväg istället för att skriva om samma logik för varje typ.
 
+**SQL-generering byggd ovanpå target-infrastrukturen:**
+sqlForUpdate($fullTarget, $updatePosts)
+├─ targetTable(), targetId()
+├─ updatedFullTarget($fullTarget, $updatePosts) [ej granskad ännu] → slår ihop nuvarande + nya värden
+├─ appendUpdatedColumnsToSql(targetConfig($fullTarget), $sql) → bygger SET-satsen
+└─ targetIdColumn() → bygger WHERE-satsen
+→ resultat: en komplett UPDATE-sats för given target
+
+sqlForOperation($operation, $child, $parent)
+→ läser förälderns nuvarande array-kolumn (t.ex. maps.layers),
+lägger till/tar bort barnets id, skriver tillbaka som ny Postgres-array
+→ resultat: en komplett UPDATE-sats för att koppla/koppla loss två objekt
+
 ## Mönster: enkla entitetsformulär (printKeywordForm, printAduserForm, m.fl.)
 
 Flera `print<Typ>Form`-funktioner följer exakt samma struktur:
