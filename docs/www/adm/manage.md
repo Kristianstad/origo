@@ -110,6 +110,22 @@ funktionalitet.
 | `printGroupForm.php` | group | layers, groups, title, expanded (select), show_meta (select), keywords | `printConfigPreviewButton`, `printAddOperation`/`printRemoveOperation` mot maps OCH groups (två par) |
 | `printHelpForm.php` | help | (endast help_id/abstract/info, etiketterna är "Verktygsfält"/"Hjälptext" istället för "Id"/"Beskrivning") | – |
 
+## Entitetsformulär (utökade/komplexa varianter)
+
+Till skillnad från "enkla"-mönstret (föregående omgång) har dessa
+betydande typspecifik villkorslogik:
+
+| Fil | Typ | Komplexitet |
+|---|---|---|
+| `printMapForm.php` | map | Störst antal fält av alla enkla formulär (30+), unika knappar: `printWriteConfigButton`, `printExportJsonButton`, `printUrlButton` – detta är alltså formuläret som triggar hela writeConfig-publiceringen |
+| `printLayerForm.php` | layer | **Den mest komplexa print*Form-funktionen i hela modulen.** Djupt kaskaderande synlighetslogik (nästlade `<span style="display:none">`-block) beroende på lagertyp (WFS/WMS/GROUP/GEOJSON), stilkonfiguration, ikon-inställningar. Använder genomgående ett mönster där dolda fält "bevaras" via `printHiddenInputs()` när motsvarande synliga fält döljs, så att värdet inte går förlorat vid nästa uppdatering trots att fältet inte visas |
+| `printSourceForm.php` | source | Villkorlig visning baserat på tjänstetyp (`File`/`OpenStreetMap` döljer flera fält) |
+| `printSchemaForm.php` / `printTableForm.php` | schema / table | `printTableForm` gör ett **extra, eget databasanrop** (`dbh($dbhConnectionString)` + `updated_from_table()`) mitt i renderingen för att visa senaste ändringsdatum – enda formuläret som pratar med en annan databas än konfigurationsdatabasen under rendering |
+| `printServiceForm.php` | service | Villkorlig visning baserat på tjänstetyp, med `printHiddenInputs()`-bevarande mönster likt layer/source |
+| `printSearchtableForm.php` | searchtable | Enkelt fältmönster men fler fält än basmallen |
+| `printSearchmodelForm.php` | searchmodel | **Se flaggning – misstänkt bugg** |
+| `printMapstateForm.php`, `printNewForm.php`, `printOriginForm.php`, `printPluginForm.php`, `printProj4defForm.php` | mapstate, new, origin, plugin, proj4def | Följer det enkla mönstret från föregående omgång |
+
 ## Anropas med
 `manage.php?view=<vy>` (GET för vy) + POST med formulärdata
 
@@ -159,6 +175,13 @@ funktionalitet.
 | `printHelpButton.php` | `printHelpButton($type, $configParam=null, $buttonText='?', $buttonClass='smallHelpButton')` | Liten "?"-knapp bredvid ett fält, öppnar/togglar hjälptext för just det fältet (`help.php?id=<type>[:<configParam>]`) i topFrame |
 | `printHiddenInputs.php` | `printHiddenInputs($inheritPosts)` | Skriver ut ett dolt `<input>` per nyckel/värde i `$inheritPosts`, för att bevara navigeringskontext genom formulärinskick |
 | `printInfoButton.php` | `printInfoButton($basicTarget)` | "Info"-knapp som öppnar `info.php` i topFrame för given target |
+| `printTextarea.php` | `printTextarea($fullTarget, $configParam, $class, $label, $help=false, $sizePosts=array(), $readonly=false)` | Den mest centrala byggstenen i hela manage-modulen – skriver ut ett enskilt redigerbart fält som ett `<textarea>`. Städar Postgres-arraysyntax för visning, bevarar användarens tidigare valda storlek/scrollposition (via `$sizePosts`, kopplat till `sizePosts.js`-liknande dolda fält), visar en hjälpknapp om hjälptext finns, och visar en multiselect-knapp om fältet är konfigurerat som "multiselectable" |
+| `printSelectOptions.php` | `printSelectOptions($optionValues, $selectedValue=null)` | Skriver ut `<option>`-element för en `<select>`. Sorterar alfabetiskt om arrayen är associativ (id→namn). **Ovanligt val-etikettmönster**, se flaggning |
+| `printMultiselectButton.php` | `printMultiselectButton($configParam, $value=null, $textareaId, $buttonText='+', $buttonClass='smallMultiselectButton')` | Knapp som öppnar multiselect-verktyget i topFrame för ett givet fält, via samma `<textareaId>::<tabell>:<värden>`-kodning vi dokumenterat i `multiselect.md` |
+| `printMultiselectButton2.php` | `printMultiselectButton2($configParam, $value=null, $buttonText='+', $buttonClass='smallMultiselectButton')` | **Alternativ, nyare variant** av ovanstående – se flaggning, verkar vara en pågående migrering till ett annat interaktionsmönster (`openMultiselect()` JS-anrop istället för formulärpost + `toggleTopFrame`) |
+| `printAddOperation.php` / `printRemoveOperation.php` | (redan dokumenterade) | `printRemoveOperation` kräver dessutom `findParents()` [common] för att bara visa föräldrar objektet faktiskt tillhör |
+| `printReadDbSchemasButton.php` | `printReadDbSchemasButton($databaseId)` | Knapp som anropar `read_db_schemas.php` i en dold iframe, med JS-bekräftelsedialog och automatisk formulärresubmit efter 1 sekund för att visa nya scheman |
+| `printReadSchemaTablesButton.php` | `printReadSchemaTablesButton($schemaId)` | Motsvarande för `read_schema_tables.php` |
 
 **Filsystem:** läser QGIS-projektfiler (`.qgs`) direkt från disk vid
 uppdatering av layer/source, samma mönster som i `info.php` och
@@ -359,21 +382,12 @@ med huvudsidan via `postMessage`:
 - Ingen av filerna har `strict_types` eller fullständig parametertypning
   (returtyper anges ibland i kommentarer men inte i kod), konsekvent
   med övriga äldre delar av kodbasen.
-- **⚠️ Trolig bugg i `printGroupForm.php`:**
-```php
-  printConfigPreviewButton('preview', targetId($group));
-```
-  `printConfigPreviewButton($mapId, $group=null, $layer=null)` förväntar
-  sig **kartans id** som första argument (det är detta värde som postas
-  vidare till `writeConfig.php?map=...`). Här skickas dock den
-  **hårdkodade strängen `'preview'`** som `$mapId`, inte den faktiska
-  kartans id från navigeringskontexten (t.ex. `$inheritPosts['mapId']`).
-  Om `'preview'` inte råkar vara ett giltigt `map_id` i databasen (osannolikt
-  att det skulle vara det av misstag) kommer `writeConfig.php`s
-  `array_column_search()` inte hitta någon matchande karta, vilket
-  sannolikt leder till att förhandsgranskningen för grupper blir tom
-  eller trasig. **Detta bör verifieras och sannolikt rättas** till att
-  skicka det faktiska `mapId` från `$inheritPosts` istället.
+- ~~⚠️ Trolig bugg i printGroupForm.php~~ **KORRIGERAT:** `'preview'` är
+  ett medvetet, dedikerat Origo-karta-id som enbart används av
+  adminverktyget för förhandsgranskning (inte kartans faktiska
+  `mapId`). Samma mönster används konsekvent i `printLayerForm.php`
+  (`printConfigPreviewButton('preview', null, targetId($layer))`).
+  Ingen bugg. Fler detaljer om detta koncept väntas.
 - **⚠️ Möjlig bugg/skräpvärde i `printHiddenInputs.php`:**
 ```php
   if ($idKey != 'layerCategory')
@@ -428,3 +442,95 @@ med huvudsidan via `postMessage`:
   manage-filer).
 - Ingen `strict_types` eller parametertypning i någon av filerna,
   konsekvent med resten av manage-modulen.
+- **⚠️ Trolig bugg i `printSearchmodelForm.php`:** funktionen deklareras
+  med parametern `$searchmodel`, men **hela funktionskroppen använder
+  variabeln `$searchtable`** istället (som aldrig definieras i denna
+  funktion):
+```php
+  function printSearchmodelForm($searchmodel, $selectables, $inheritPosts, $helps=array())
+  {
+      if (!isFullTarget($searchmodel)) { die(...); }
+      ...
+      printUpdateSelect($searchtable, ...);   // ska vara $searchmodel
+      printTextarea($searchtable, 'schema', ...);  // ska vara $searchmodel
+      ...
+  }
+```
+  Detta ser ut som att filen skapats genom att kopiera
+  `printSearchtableForm.php` och byta funktionsnamn/parameternamn i
+  signaturen, men glömma att byta ut variabelnamnet i kroppen. Eftersom
+  `$searchtable` inte är definierad i funktionens scope kommer PHP ge
+  "Undefined variable"-varningar och sannolikt visa ett tomt eller
+  trasigt formulär när en searchmodel faktiskt väljs. **Detta bör
+  verifieras i er miljö och sannolikt rättas** genom att byta alla
+  `$searchtable`-referenser till `$searchmodel` i denna fil.
+- **Två parallella multiselect-knappmönster** (`printMultiselectButton.php`
+  och `printMultiselectButton2.php`). Den andra:
+  - Använder `func_get_arg(2)` för att läsa ett argument som **inte
+    finns i funktionssignaturen** (`function printMultiselectButton2($configParam, $value=null, $buttonText='+', $buttonClass='smallMultiselectButton')`
+    har bara fyra deklarerade parametrar, men koden läser ett femte
+    positionsargument via `func_get_arg(2)` – vilket i praktiken läser
+    **det tredje argumentet**, alltså positionen för `$buttonText`!
+    Om denna funktion anropas som `printMultiselectButton2($param, $value, $textareaId, $buttonText)`
+    (fyra argument, i linje med kommentaren "$textareaId som tredje
+    parameter"), stämmer `func_get_arg(2)` (0-indexerat, tredje
+    argumentet) faktiskt överens med `$textareaId` – men det gör
+    samtidigt att den deklarerade parametern `$buttonText` blir
+    **oanvänd/felaktigt bunden**, eftersom anroparen förväntas skicka
+    `$textareaId` i positionen där `$buttonText` är deklarerad. Detta är
+    förvirrande och skört kodmönster: signaturen ljuger om vad
+    funktionen faktiskt tar emot. **Bör verifieras mot faktiska
+    anropsplatser** (vi har inte sett var `printMultiselectButton2`
+    anropas ifrån ännu) för att avgöra om detta fungerar av misstag
+    eller är en aktiv bugg.
+  - Har `// GROK:`-kommentar, konsekvent med tidigare identifierade
+    AI-genererade/redigerade filer.
+  - Använder ett annat interaktionsmönster (`onclick="openMultiselect(...)"`,
+    en JS-funktion vi inte sett definierad ännu) istället för
+    formulärpost + `toggleTopFrame`. **Detta tyder på en pågående,
+    ofullständig migrering** av multiselect-knappen till ett nytt
+    mönster – värt att fråga om `printMultiselectButton.php` (den äldre)
+    fortfarande används aktivt, eller om `printMultiselectButton2.php`
+    är avsedd att ersätta den helt.
+- **`printSelectOptions.php`s etikettmönster är svårtytt:**
+```php
+  $selectOption = "$selectOption>".ltrim(substr($label, strrpos($label,',')), ',')."</option>";
+```
+  Detta tar **allt efter sista kommatecknet** i `$label` som visningstext
+  (eller hela `$label` om inget kommatecken finns, då `strrpos` returnerar
+  `false` och `substr($label, false)` blir hela strängen). Oklart utan
+  mer kontext varför – möjligen ett sätt att visa bara "sista delen" av
+  ett sammansatt namn (t.ex. om `$label` någon gång innehåller
+  "Kommun, Förvaltning, Namn" och bara "Namn" ska visas)? Detta är en
+  icke uppenbar detalj värd att fråga om, eftersom den påverkar hur
+  **alla** dropdown-menyer i hela manage-modulen visar sina etiketter.
+- **`printReadDbSchemasButton.php`/`printReadSchemaTablesButton.php`
+  ignorerar resultatet av `confirm()`:**
+```js
+  confirmStr="..."; confirm(confirmStr); setTimeout(...)
+```
+  `confirm()`s returvärde (true/false) sparas aldrig och används inte
+  för att avgöra om åtgärden ska fortsätta – `setTimeout(...)` körs
+  **oavsett om användaren klickar OK eller Avbryt** i bekräftelsedialogen.
+  Detta skiljer sig från `printDeleteButton()`s korrekta mönster
+  (`return confirm(confirmStr)` som formulärets `onsubmit`-värde, vilket
+  faktiskt stoppar inskickningen vid Avbryt). Sannolikt en bugg –
+  bekräftelsedialogen här är just nu bara kosmetisk och stoppar
+  ingenting om användaren ångrar sig. **Bör rättas** till samma mönster
+  som `printDeleteButton.php` använder.
+- **`printTableForm.php` anropar `updated_from_table()`** (utan `2`-
+  suffix, till skillnad från `updated_from_table2()` vi dokumenterade i
+  `updated.md`) – detta bekräftar att båda varianterna faktiskt används,
+  på olika ställen i kodbasen. `updated_from_table()` (utan `2`) finns i
+  `functions/common/` enligt filträdet men är ännu inte granskad.
+  Kandidat att jämföra de två när den filen ses, för att förstå om
+  skillnaden är meningsfull eller historisk.
+- **God konsekvens i "dölj men bevara"-mönstret** (`printHiddenInputs()`
+  med tidigare värden när ett fält döljs pga villkorslogik) i
+  `printLayerForm.php` och `printServiceForm.php` – detta är ett
+  genomtänkt sätt att undvika att data går förlorad när administratören
+  växlar mellan lägen (t.ex. byter tjänstetyp och byter sedan tillbaka)
+  utan att spara emellan. Bra mönster värt att bevara vid eventuell
+  förenkling av dessa formulär.
+- Fortsatt ingen `strict_types`/parametertypning, konsekvent med resten
+  av manage-modulen.
