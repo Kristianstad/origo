@@ -204,6 +204,12 @@ betydande typspecifik villkorslogik:
 | `targetIdColumn.php` | `targetIdColumn($target): string` | Returnerar namnet på primärnyckelkolumnen för targetens typ. Specialfall: `proj4defs` använder `code` istället för `<typ>_id` |
 | `targetTable.php` | `targetTable($target): string` | Returnerar tabellnamnet för targetens typ |
 | `sizePosts.php` | `sizePosts($post): array` | Filtrerar `$post` till bredd-/höjd-/scrollrelaterade fält, och normaliserar `new*`-prefixade nycklar (från senaste formulärinskicket) till samma nyckelformat som de ursprungliga (`width*`/`height*`/`scroll*`) – nyare värden skriver över äldre i sammanslagningen |
+| `typeHelps.php` | `typeHelps($type, $helps): array` | Filtrerar den globala listan av hjälptext-id:n (`help_id`, format `<typ>:<fält>`) till de som gäller en specifik typ, och returnerar bara fältdelen. Detta är mekaniken bakom `in_array($fältnamn, $helps)`-kontrollerna vi sett i varje `print*Form`-funktion – `$helps` som skickas till de funktionerna är redan filtrerat via denna funktion i `manage.php`s entry point |
+| `updatePosts.php` | `updatePosts($post): array` | Filtrerar `$post` till fält vars namn börjar med `update` – detta är alla postade formulärfältvärden redo att skrivas till databasen |
+| `updatedFullTarget.php` | `updatedFullTarget($fullTarget, $updatePosts): array` | Bygger en ny full target där varje kolumns värde ersätts med motsvarande `update<Kolumn>`-fält från `$updatePosts` (eller tom sträng om inget postades för den kolumnen). Array-kolumner (enligt `isArrayColumn()`/`constants/arrayColumns.php`) omsluts automatiskt med Postgres-array-syntax `{...}`. Detta är steget som förvandlar "vad användaren skrev i formuläret" till "vad som ska stå i databasen", och används av `sqlForUpdate()` innan `appendUpdatedColumnsToSql()` bygger själva SQL-strängen |
+| `validateUpdate.php` | `validateUpdate($updatePosts, $configTables, &$updateValid)` | Validerar **endast** fält som är markerade som "multiselectable" (`constants/multiselectables.php`) – kontrollerar att varje kommaseparerat värde som postats faktiskt existerar som ett giltigt id i motsvarande tabell. Sätter `$updateValid` (skickad by reference) och visar ett JS `alert()` vid fel. **Notera:** fält som inte är multiselectable valideras alltså inte alls av denna funktion – se flaggning nedan |
+| `updated_from_table.php` | `updated_from_table($dbh, $tableWithSchema): array` | Systerfunktion till `updated_from_table2()` (updated-modulen) – hämtar senaste `pg_xact_commit_timestamp` för en tabell, men returnerar **bara tidsstämpeln**, inte `xmin` som `updated_from_table2()` gör. Används av `printTableForm.php` för att visa senast-ändrad-datum direkt i formuläret (till skillnad från `updated.php`-modulens fristående JSON-endpoint) |
+| `viewKeywordCategorized.php` | `viewKeywordCategorized($view): array` | Filtrerar den globala listan av "tabeller som ska nyckelordskategoriseras" (`constants/keywordCategorized.php`) till bara de tabeller som är relevanta för vald `$view` (`constants/views.php`). Specialfallet `$view == 'Allt'` (eller tom) returnerar hela listan okategoriserat av vy |
 
 **Filsystem:** läser QGIS-projektfiler (`.qgs`) direkt från disk vid
 uppdatering av layer/source, samma mönster som i `info.php` och
@@ -574,3 +580,52 @@ med huvudsidan via `postMessage`:
   (görs härmed) så framtida läsare inte blandar ihop de tre helt
   orelaterade "update"-koncepten.
 - Fortsatt konsekvent avsaknad av `strict_types`/parametertypning.
+- **⚠️ Ofullständig validering – `validateUpdate()` kontrollerar bara
+  multiselectable-fält.** Detta är värt att lyfta fram tydligt: den
+  enda serversidesvalideringen som sker innan ett `UPDATE` körs mot
+  databasen är kontrollen att kommaseparerade referens-id:n (för
+  multiselect-fält som `adusers`, `adgroups`, m.fl.) faktiskt existerar.
+  **Alla andra fält** (fritext, siffror, ja/nej-val som `visible`/
+  `queryable`, URL:er, JSON-liknande fält som `style_config`/`options`,
+  etc.) skrivs till databasen **utan någon validering av innehåll,
+  format, eller ens att de är syntaktiskt giltiga** för sitt avsedda
+  ändamål. Detta förklarar sannolikt varför `writeConfig.php` har sin
+  egen `json_decode($json) === null`-kontroll som sista skyddsnät – en
+  administratör kan mycket väl spara ogiltig data i `manage.php` som
+  först upptäcks långt senare, vid publicering. Om ni någon gång vill
+  stärka datakvaliteten är detta den mest centrala platsen att lägga
+  till fler kontroller (t.ex. att `style_config`/`options`/
+  `clusteroptions` är giltig JSON redan vid spara-tillfället, inte
+  först vid publicering).
+- **Namnkonsekvens `updated_from_table` vs `updated_from_table2`
+  bekräftad som meningsfull, inte en bugg:** de två funktionerna har
+  olika returstruktur (bara tidsstämpel kontra tidsstämpel+xmin) och
+  används i olika sammanhang (formulärvisning direkt i manage.php kontra
+  JSON-endpointen i updated.php som jämför flera tabeller och behöver
+  `xmin` som tie-breaker/sorteringsnyckel). Ingen åtgärd behövs, men bra
+  att detta nu är verifierat snarare än antaget.
+- **`updatedFullTarget()`s hantering av saknade fält är trubbig:** om
+  ett fält inte postats alls (`$updatePosts['update'.ucfirst($column)]`
+  inte satt), sätts kolumnens nya värde till **tom sträng**, inte till
+  dess tidigare värde. Det betyder att `sqlForUpdate()` i praktiken
+  **skriver över alla kolumner** i tabellraden vid varje uppdatering –
+  inte bara de som faktiskt ändrades i formuläret – med tomma strängar
+  för allt som av någon anledning inte postades. Detta är sannolikt
+  ofarligt i praktiken *om* varje formulär alltid postar samtliga sina
+  fält (vilket verkar vara fallet, eftersom varje `print*Form`-funktion
+  konsekvent skriver ut alla relevanta `printTextarea`/`printUpdateSelect`-
+  anrop varje gång, inklusive dolda `printHiddenInputs()`-bevarade värden
+  när ett fält är villkorligt dolt) – men det är en skör design: om ett
+  fält någonsin glöms bort i ett formulär, eller om ett formulär skickas
+  in ofullständigt (t.ex. via ett anpassat/framtida API-anrop som inte
+  går via de befintliga `print*Form`-funktionerna), riskerar det att
+  tysta radera data i den kolumnen. Värt att känna till som en
+  bakomliggande skörhet i hela uppdateringsflödet, även om den inte
+  manifesterar sig som ett synligt problem idag.
+- **`viewKeywordCategorized()`s specialfall `'Allt'` är hårdkodat på
+  svenska** – konsekvent med övriga svenska UI-strängar i kodbasen, men
+  värt att notera tillsammans med `categories()`s `"Alla"` som ett annat
+  exempel på samma mönster (hårdkodade svenska nyckelord i logiken,
+  inte bara i visningstext).
+- Fortsatt konsekvent avsaknad av `strict_types`/parametertypning genom
+  hela filuppsättningen.
