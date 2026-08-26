@@ -13,10 +13,10 @@
 | `dbh($connectionString = null)` | `dbh.php` | Öppnar och returnerar en PostgreSQL-anslutning. Utan argument ansluter den till standard-/konfigurationsdatabasen; med en anslutningssträng som argument kan den ansluta till en **godtycklig extern databas** (se read_db_schemas) | news, mapstate, info, authorization, read_db_schemas |
 | `initUserLdap($dbh)` | `initUserLdap.php` | Initierar användarinfo via LDAP, används när `$authMethod === 'ldap'`. **Bieffekt:** skriver och stänger sessionen | news, authorization |
 | `pgArrayToPhp($pgArray)` | `pgArrayToPhp.php` | Konverterar Postgres arraysyntax till PHP-array | news, export |
-| `toSwedish($string)` | `toSwedish.php` | Översätter interna typ-/kolumnnamn till svenska för visning | info, multiselect |
+| `toSwedish($string)` | `toSwedish.php` | Översätter interna typ-/kolumnnamn till svenska för visning | info, multiselect, printCopyButton, printDeleteButton, printAddOperation, printRemoveOperation, printHeadForm/Forms, validateUpdate |
 | `all_from_table($dbh, $schema, $table)` | `all_from_table.php` | Hämtar alla rader från angiven tabell | info, multiselect, read_db_schemas, export |
 | `array_column_search($value, $column, $rows)` | `array_column_search.php` | Hittar första raden i en array där given kolumn matchar värdet | info, read_db_schemas, export |
-| `pkColumnOfTable($table)` | `pkColumnOfTable.php` | Returnerar primärnyckelns kolumnnamn för en tabell | info |
+| `pkColumnOfTable($table)` | `pkColumnOfTable.php` | Returnerar primärnyckelns kolumnnamn för en tabell | info, writeTablesForAllLayers, target-infrastruktur (targetId, targetIdColumn via targetTable), validateUpdate |
 | `findAllParents($dbh, $child)` | `findAllParents.php` | Hittar rekursivt alla objekt som refererar till ett givet objekt | info |
 | `assoc_array_values($array)` | `assoc_array_values.php` | Kontrollerar/hämtar faktiska värden i en nästlad associativ array | info |
 | `includeDirectory($path)` | *(i adm/functions/, ej i common/)* | Laddar alla `.php`-filer i angiven mapp med `require_once` | alla moduler |
