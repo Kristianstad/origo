@@ -1,6 +1,12 @@
+# Arkitektur – adm/ (Origo-adminverktyg)
+
+Genomgående mönster som gäller flera moduler. Modul-specifika detaljer
+finns i respektive `<modul>.md`.
+
 ## Include-mönster
 
-Samtliga huvudfiler (entry points) i `adm/` följer samma inledande mönster:
+Samtliga huvudfiler (entry points) i `adm/` följer i stort sett samma
+inledande mönster:
 
 ```php
 require_once("./functions/includeDirectory.php");
@@ -8,114 +14,125 @@ includeDirectory("./functions/common");
 includeDirectory("./functions/<modulnamn>");
 ```
 
-`includeDirectory()` (definierad i `adm/functions/includeDirectory.php`)
-laddar **samtliga** `.php`-filer i en given mapp med `require_once`.
-Det betyder:
+`includeDirectory()` (i `adm/functions/includeDirectory.php`) laddar
+**samtliga** `.php`-filer i en given mapp med `require_once`. Det betyder:
 
-- Alla ~25 filer i `functions/common/` laddas alltid, oavsett vilken
-  modul som körs — även om modulen bara använder ett fåtal av dem.
-- Det finns inget sätt att se i en modul-fil exakt vilka common-funktioner
-  som är tillgängliga utan att läsa `functions/common/`-mappens innehåll.
-- Vid dokumentation av en modul listar vi bara de common-funktioner som
-  modulen *faktiskt anropar* (inte alla som är tillgängliga) — se
-  `common.md` för fullständig referens över alla funktioner i mappen.
+- Alla filer i `functions/common/` laddas alltid, oavsett modul, även om
+  modulen bara använder ett fåtal av dem.
+- Ingen modul-fil visar i sig själv exakt vilka common-funktioner som är
+  tillgängliga – se `common.md` för en växande referens baserad på
+  faktiskt observerad användning.
+- **Undantag:** `grouplayerfix.php` inkluderar **inte** `functions/common/`
+  (medvetet bortkommenterat, modulen behöver inga common-funktioner för
+  närvarande).
 
-**Konsekvens för refaktorering:** eftersom allt i `common/` alltid laddas
-ihop finns ingen risk att "glömma ett include" om vi flyttar en funktion
-mellan filer i `common/` — men om vi bryter ut delar av `common/` till en
-egen undermapp måste vi uppdatera `includeDirectory()`-anropet i *varje*
-entry point-fil som behöver den nya mappen.
+**Konsekvens för refaktorering:** inget "glömt include" om funktioner
+flyttas mellan filer inom `common/` – men om `common/` bryts upp i
+undermappar måste `includeDirectory()`-anropet uppdateras i varje entry
+point som behöver den nya mappen.
 
 ## Konstanter kontra common-funktioner – laddningssätt
 
-Till skillnad från `functions/common/`, som laddas i sin helhet via
-`includeDirectory()` (se ovan), laddas filer i `adm/constants/` **individuellt**
-med explicit `require`/`require_once` där just den konstanten behövs, t.ex.:
+Till skillnad från `functions/common/`, laddas filer i `adm/constants/`
+**individuellt** med explicit `require`/`require_once` där just den
+konstanten behövs:
 
 ```php
 require("./constants/configSchema.php");
 ```
 
-Det betyder att en konstant **inte** är automatiskt tillgänglig bara för att
-den finns i `constants/`-mappen — varje modul måste själv inkludera de
-konstantfiler den behöver. Vid dokumentation av en modul listar vi därför
-bara de konstanter som modulen faktiskt `require`:ar, inte alla som finns
-i mappen (se `constants.md` för fullständig, växande referens).
+En konstant är alltså **inte** automatiskt tillgänglig bara för att den
+finns i mappen. Vid dokumentation av en modul listas därför bara de
+konstanter modulen faktiskt inkluderar – se `constants.md` för
+fullständig, växande referens.
 
 ## JS-filer
 
 Vissa moduler har klientlogik i `adm/js-functions/<modul>/`, laddad
-inline i en `<script>`-tagg via samma `includeDirectory()`-funktion som
-används för PHP (se ovan) – d.v.s. alla `.js`-filer i mappen klistras in
-i sidans HTML vid varje sidladdning, inte som separata `<script src="...">`-
-taggar. JS-funktioner dokumenteras i respektive modul-`.md` tillsammans
-med PHP-delen, i ett eget avsnitt "JS-filer och funktioner", eftersom de
-utgör samma funktionella helhet (PHP renderar, JS hanterar interaktion).
+inline i en `<script>`-tagg via samma `includeDirectory()`-mekanism som
+PHP – alla `.js`-filer i mappen klistras in i sidans HTML vid varje
+sidladdning, inte som separata `<script src="...">`-taggar. JS-funktioner
+dokumenteras i respektive modul-`.md`, i ett avsnitt "JS-filer och
+funktioner".
+
+### Kommunikationsmönster: iframe ↔ huvudsida
+
+Ett återkommande mönster: verktyg som körs i en iframe (`help.php`,
+`info.php`, `multiselect.php`) pratar med sin förälder via `postMessage`:
+Iframe-innehåll → window.parent.postMessage({ action: 'resize'|'close', ... }, origin)
+Huvudsida → tar emot, agerar (döljer/ändrar storlek på iframen, fyller i fält)
+
+I `manage.php` hanteras detta av `initMessageListener()` +
+`toggleTopFrame()`/`resizeIframe()` (se manage.md), som fungerar som den
+gemensamma mottagaren för samtliga dessa verktygsfönster via en delad
+iframe (`#topFrame`).
 
 ## Två parallella autentiseringssystem
 
-Applikationen har **två separata, icke sammankopplade sätt att autentisera
-användare**, där ett är på väg att fasas ut:
+Applikationen har två separata sätt att autentisera användare, där ett
+är på väg att fasas ut:
 
-1. **`authorization.php`** – LDAP-baserad inloggning (äldre spår, planerat
-   att fasas ut men lämnas kvar som fallback-alternativ tills vidare).
-   Tänkt att visas som sida/iframe som användaren interagerar med direkt.
-   Sätter `$_SESSION['user']['id']` (enkel struktur) samt en egen krypterad
-   cookie. Se `authorization.md`.
+1. **`authorization.php`** – LDAP-baserad inloggning (äldre spår,
+   underhålls men prioriteras lägre). Sätter `$_SESSION['user']['id']`
+   (enkel struktur) samt en egen krypterad cookie. Se `authorization.md`.
+2. **`forwardauth.php`/`azure-callback.php`** – Azure AD/Entra ID via
+   OAuth2 (nytt, avsett spår), anropad av Traefik som en
+   åtkomstkontroll före övrig trafik. Sätter `$_SESSION['user']` med en
+   rikare struktur (`mail`, `name`, `groups`, `expires_at` för sliding
+   expiration). Se `forwardauth.md`.
 
-2. **`forwardauth.php` / `azure-callback.php`** – Azure AD/Entra ID via
-   OAuth2 (nytt, avsett spår framöver), anropad av Traefik (reverse proxy)
-   som en "får requesten fortsätta?"-kontroll innan trafiken ens når
-   applikationen. Sätter `$_SESSION['user']` med en rikare struktur
-   (`mail`, `name`, `groups`, `expires_at` för sliding expiration). Se
-   `forwardauth.md`.
-
-**Status:** de två systemen används **inte samtidigt** – det är antingen
-LDAP eller Azure/forwardauth som gäller för en given installation/miljö,
-styrt av `$authMethod`. Azure/forwardauth är den långsiktiga riktningen;
-LDAP-spåret finns kvar som alternativ för den som föredrar det, men är
-inte under aktiv vidareutveckling. Detta är relevant vid förenkling: kod
-i LDAP-spåret bör inte tas bort, men kan prioriteras lägre än
-Azure-spåret vid framtida arbete.
-
-**Konsekvens för `restrictedLayer`-modulen:** den modulen kontrollerar
-`$_SESSION['user']['groups']` och `$_SESSION['user']['id']` utan att bry
-sig om vilket autentiseringsspår som satte dem – den fungerar därför med
-båda, förutsatt att sessionsstrukturen är kompatibel (vilket den är,
-se `userAuthorized.php`).
+**Status:** används inte samtidigt – styrs av `$authMethod`. Azure/
+forwardauth är den långsiktiga riktningen; LDAP finns kvar som alternativ.
+`restrictedLayer.php` fungerar med båda spåren utan att bry sig om
+vilket som satt `$_SESSION['user']`.
 
 ## Loader-filer utanför adm/ (dokumenteras separat)
 
 Toppnivåmapparna `authorization/`, `export/`, `forwardauth/`,
-`grouplayerfix/`, `mapstate/`, `news/`, `updated/` innehåller små
-`*-loader.php`-filer som speglar entry points i `adm/`. Mönstret
-återkommer konsekvent för nästan varje modul vi hittills dokumenterat
-(t.ex. `authorization-loader.php`, `news-loader.php`,
-`restrictedLayer-loader.php`, `mapstate-loader.php`,
-`forwardauth-loader.php` + `azure-callback-loader.php`).
+`grouplayerfix/`, `mapstate/`, `news/`, `updated/` innehåller
+`*-loader.php`-filer som speglar entry points i `adm/`. Bekräftat aktivt
+använda (se `authorization.md`: `login.php`/`displayLogout.php` anpassar
+beteende baserat på om anropet kom via en loader). Fullständig
+dokumentation (`loaders.md`) görs i en separat genomgång.
 
-Vi har sett antydan till hur `displayLogout.php` och `login.php` i
-authorization-modulen anpassar sitt beteende beroende på om de anropas
-via en loader (`basename($formAction) === 'authorization-loader.php'`),
-vilket bekräftar att loaders är en aktiv, använd del av arkitekturen —
-inte bara historiska kvarlevor. Fullständig dokumentation av loader-
-mönstret (`loaders.md`) görs i en separat genomgång efter att samtliga
-`adm/`-moduler är klara, enligt överenskommelse.
-
-**Undantag:** `export/` har en egen `functions/`- och `constants/`-mapp
-med filer som delvis dubblerar `adm/functions/export/` och
-`adm/constants/` (se flaggning i export.md när den skrivs) — `export/`
-verkar alltså vara mer än bara en tunn loader, till skillnad från övriga
-toppnivåmappar. Värt extra uppmärksamhet vid loader-genomgången.
+**Undantag:** `export/` (toppnivå) har egen `functions/`/`constants/`-mapp
+med kod som delvis dubblerar `adm/functions/export/` – mer än en tunn
+loader, extra uppmärksamhet vid loader-genomgången.
 
 ## Extern exportpipeline (FME Server)
 
-Export-modulen (se `export.md`) lämnar över tunga
-formatkonverteringsjobb till en extern **FME Server**-instans via dess
-REST-API, snarare än att göra konverteringen i PHP. Flödet är
-asynkront: PHP-scriptet svarar direkt till användaren, fortsätter sedan
-i bakgrunden (`fastcgi_finish_request()`) för att hämta rådata från
-kartservrar och skicka den vidare till FME, som i sin tur mejlar
-resultatet till användaren när jobbet är klart. Detta innebär att
-felsökning av en misslyckad export kan behöva involvera loggar på
-FME-servern, inte bara PHP-loggar.
+`export.php` lämnar över tunga formatkonverteringsjobb till en extern
+**FME Server**-instans via REST-API, asynkront
+(`fastcgi_finish_request()`). Se `export.md`. Denna modul är
+organisationsspecifik och ingår inte i det publika GitHub-repot.
+
+## Publiceringskedjan (writeConfig → disk) och "changed"-flaggan
+
+`writeConfig.php` genererar JSON + HTML och skriver till disk via
+`publishMapFiles()` (okomprimerat + Brotli + gzip + publika symlänkar).
+Samma fil skriver även `constants/RESTRICTEDLAYERS.php`
+(`defineFileConstant()`), vilket är den bekräftade källan till
+konstanten `restrictedLayer.php` läser.
+
+`manage.php` (`markMapsChanged()`) sätter `maps.changed='t'` när något
+som påverkar en publicerad karta ändras; `writeConfig.php`
+(`markMapUnchanged()`) nollställer flaggan efter lyckad publicering.
+Detta ger sannolikt underlag för en "osparade ändringar"-indikator i
+manage-gränssnittet.
+
+## Den dedikerade "preview"-kartan
+
+En Origo-karta med id `'preview'` existerar specifikt för
+adminverktygets förhandsgranskningsfunktion (`printConfigPreviewButton()`
+i manage.md, anropad från grupp- och lagerformulär). Detta är alltså
+inte ett användarfel eller en bugg när `'preview'` hårdkodas som mapId i
+dessa anrop, utan en avsiktlig, dedikerad resurs. *(Fler detaljer
+kompletteras här när de delges.)*
+
+## Datastrukturen "target" (manage-modulen)
+
+Ett centralt begrepp i manage-modulen: en enhetlig representation av
+"ett objekt av viss typ" i två varianter (basic: `[$type => $id]`, full:
+`[$type => $config]`). Gör att samma kod (SQL-generering,
+formulärrendering) kan hantera alla entitetstyper generiskt. Fullständig
+beskrivning i `manage.md`.
