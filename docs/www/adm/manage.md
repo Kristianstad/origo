@@ -33,6 +33,33 @@ Skriver ändringar direkt till konfigurationsdatabasen, och markerar
 inaktuella och behöver köras genom `writeConfig.php` igen för att
 ändringen ska synas för besökare.
 
+## Datastrukturen "target"
+
+Ett återkommande begrepp genom hela manage-modulen. Ett **target** är en
+liten, enhetlig datastruktur som representerar "ett objekt av en viss
+typ", i två varianter:
+
+- **Basic target:** `[$type => $id]`, t.ex. `['layer' => 'vagar#1']`
+  – bara typen och dess id, inget annat. Skapas av `makeBasicTarget()`.
+- **Full target:** `[$type => $config]`, t.ex.
+  `['layer' => ['layer_id' => 'vagar#1', 'title' => 'Vägar', ...]]`
+  – typen och hela dess konfigurationsrad från databasen. Skapas av
+  `makeFullTarget()` (om du redan har `$config`) eller `makeTargetFull()`
+  (om du bara har ett basic target och en databaskoppling/configTables,
+  och behöver slå upp konfigurationen åt dig).
+
+Skillnaden mellan en "full" och "basic" target känns igen på om värdet
+är en array (`is_array(current($target))`) – vilket är precis vad
+`isFullTarget()` kontrollerar.
+
+Detta enhetliga format gör att funktioner som `sqlForUpdate()`,
+`sqlForOperation()`, `printChildSelect()` m.fl. kan ta emot "vilket
+objekt som helst" utan att bry sig om exakt vilken av de många typerna
+(map/layer/group/source/...) det handlar om – de läser bara ut typen
+via `array_key_first()`/`key()`-mönster och agerar generiskt. Detta är
+kärnan i hur manage-modulen kan hantera alla entitetstyper med samma
+kodväg istället för att skriva om samma logik för varje typ.
+
 ## Anropas med
 `manage.php?view=<vy>` (GET för vy) + POST med formulärdata
 
@@ -53,20 +80,24 @@ inaktuella och behöver köras genom `writeConfig.php` igen för att
 - `pkColumnOfTable()`, `array_column_search()`, `pgArrayToPhp()`,
   `assoc_array_values()`, `findAllParents()`, `tablesFromQgsXml()`
 
-**Manage-funktioner** (namn bekräftade via användning, fullständig
-beskrivning väntar):
-`idPosts`, `sizePosts`, `categoryPosts`, `focusTable`, `viewKeywordCategorized`,
-`categories`, `postButton`, `typeTableName`, `isIdUniqueInTable`,
-`insertIdSql`, `deleteIdSql`, `updatePosts`, `validateUpdate`,
-`array_column_search` (delad), `makeFullTarget`, `sqlForUpdate`,
-`makeBasicTarget`, `sqlForOperation`, `usedInMaps`, `markMapsChanged`,
-`printViewSwitcher`, `printHeadForms`, `typeHelps`, `printMapForm`,
-`printChildSelect`, `printDatabaseForm`, `printSchemaForm`,
-`printGroupForm`, `makeTargetFull`, `targetType`, `targetConfigParam`,
-`setTargetConfigParam`, `printLayerForm`, `printSourceForm`,
-`printTableForm`, `printSearchtableForm`, samt (via `eval`)
-`print<Typ>Form` för varje övrig typ (t.ex. `printControlForm`,
-`printPluginForm`, m.fl.)
+## Filer och funktioner (target-hantering och POST-tolkning)
+
+| Fil | Funktion | Beskrivning |
+|---|---|---|
+| `appendUpdatedColumnsToSql.php` | `appendUpdatedColumnsToSql($dbColumns, $sql): string` | Bygger vidare på en befintlig SQL-sträng med `kolumn = värde`-par (kommaseparerade), för användning i en `UPDATE`-sats. Tomma värden (inkl. `'{}'`/`'{{}}'`, tomma Postgres-arrayer) blir `NULL`; övriga escapas med `pg_escape_literal()` |
+| `categories.php` | `categories($config, $catParam): array` | Bygger en nyckelordskategorisering: går igenom en hel tabellkonfiguration och grupperar rad-id:n (`$catParam`, primärnyckelkolumnen) efter deras `keywords`-fält. Lägger alltid till en `"Alla"`-kategori med samtliga id:n överst |
+| `categoryPosts.php` | `categoryPosts($post): array` | Filtrerar `$post` till fält vars namn slutar på `Category` |
+| `deleteIdSql.php` | `deleteIdSql($id, $tableName): string` | Bygger en `DELETE`-sats för given tabell och id |
+| `focusTable.php` | `focusTable($idPosts): string\|null` | Avgör vilken tabell som är "i fokus" utifrån vilka `*Id`-fält som postats – prioriterar map/database/schema/group före övriga typer, annars härleds tabellen från det första postade id-fältets namn |
+| `hasStringKeys.php` | `hasStringKeys(array $array): bool` | Kontrollerar om en array har minst en textnyckel (dvs. är associativ snarare än numeriskt indexerad). **Ingen användning observerad ännu** i det vi granskat – flaggad nedan |
+| `idPosts.php` | `idPosts($post): array` | Filtrerar `$post` till fält vars namn slutar på `Id`, med explicit undantag för `fromMapId`/`toMapId`/`fromGroupId`/`toGroupId` (dessa hanteras separat vid `operation`-kommandot, se manage.php) |
+| `isArrayColumn.php` | `isArrayColumn($column): bool` | Kontrollerar om en given kolumn är en Postgres-array-kolumn, genom att slå upp den mot listan i `constants/arrayColumns.php`. Avslutar programmet (`die()`) om `$column` inte är en icke-tom sträng |
+| `isFullTarget.php` | `isFullTarget($target): bool` | Avgör om en target är "full" (innehåller hela konfigurationen) snarare än "basic" (bara ett id) – se förklaring av target-konceptet ovan |
+| `makeBasicTarget.php` | `makeBasicTarget($type, $id): array` | Skapar en basic target `[$type => $id]`. Avslutar programmet vid ogiltiga argument |
+| `makeFullTarget.php` | `makeFullTarget($type, $config): array` | Skapar en full target `[$type => $config]` direkt från en redan känd konfigurationsrad. Avslutar programmet vid ogiltiga argument |
+| `makeTargetFull.php` | `makeTargetFull($target, $configTablesOrDbh): array` | Tar en basic (eller full) target och returnerar en full target, genom att slå upp konfigurationen via `targetConfig()` (ej granskad ännu) om den saknas. Avslutar programmet om indata inte är en giltig target |
+| `markMapsChanged.php` | `markMapsChanged(&$dbh, $mapIds): void` | Sätter `maps.changed = 't'` för samtliga angivna kartor i en enda batch-SQL (flera `UPDATE`-satser konkatenerade med `; `). **Bekräftar tidigare hypotes:** detta är motparten till `markMapUnchanged()` i writeConfig-modulen – manage-modulen flaggar en karta som "ändrad, behöver publiceras om" varje gång något som påverkar den redigeras, och writeConfig-modulen nollställer flaggan efter lyckad publicering |
+| `postButton.php` | `postButton($post): string\|null` | Hittar namnet på den POST-parameter vars namn slutar på `Button` – det är detta namn (`<typ>Button`) som `manage.php` sedan bryter isär för att få fram `$type` |
 
 **Filsystem:** läser QGIS-projektfiler (`.qgs`) direkt från disk vid
 uppdatering av layer/source, samma mönster som i `info.php` och
@@ -222,3 +253,48 @@ med huvudsidan via `postMessage`:
   tillräckligt enkel och fri från globala sidoeffekter (förutom delade
   DOM-element och den globala `topFrame`-variabeln) att den skulle vara
   relativt lätt att testa isolerat om det blir aktuellt.
+- **⚠️ SQL injection-risk i `deleteIdSql.php`:** `$id` klistras in direkt
+  i SQL-strängen utan escaping (`"... WHERE $tablePkColumn = '".$id."'"`).
+  `$id` kommer ytterst från `$post[$type . 'IdDel']` i `manage.php` –
+  alltså direkt användarinput (om än från en inloggad administratör).
+  Samma mönster som redan flaggats på flera andra ställen i kodbasen;
+  eftersom detta är en av de mest centrala och känsliga operationerna
+  (radering) i hela adminverktyget, är den här filen en god kandidat att
+  prioritera vid en eventuell säkerhetsstädning, tillsammans med
+  `markMapsChanged.php` (som har samma mönster för `$mapId`, om än
+  `$mapId` här kommer från redan validerad `usedInMaps()`-data snarare
+  än direkt användarinput, vilket sannolikt gör risken lägre där).
+- **Flera funktioner avslutar hela programmet med `die()` vid ogiltiga
+  argument** (`makeBasicTarget`, `makeFullTarget`, `makeTargetFull`,
+  `isArrayColumn`). Detta är ett medvetet "fail fast"-mönster för
+  interna programmeringsfel (fel typ av argument skickat av misstag),
+  snarare än för förväntade felsituationer med användarinput – rimligt
+  för hjälpfunktioner som bara anropas internt med redan kontrollerad
+  data, men det gör dem svåra att återanvända i sammanhang där ett
+  ogiltigt anrop bör hanteras mjukare (t.ex. return `false`/kasta ett
+  exception som kan fångas). Genomgående mönster värt att känna till
+  innan man refaktorerar kring dessa funktioner.
+- **`hasStringKeys.php` har ingen synlig användning** i det material vi
+  granskat hittills. Kan vara använd längre fram i `functions/manage/`
+  (vi har bara sett en bråkdel av filerna), eller vara kvarlämnad
+  död kod. Flaggas för uppföljning när fler filer granskats.
+- **`isArrayColumn()` läser sin konstant med ett funktionslokalt
+  `require()`** (`require("./constants/arrayColumns.php");` inuti
+  funktionskroppen) snarare än att konstanten skickas in som parameter
+  eller läses en gång centralt. Fungerar (PHP cachar inte `require` per
+  session, men körs bara en gång per anrop av funktionen så
+  prestandapåverkan är minimal), men avviker från mönstret i t.ex.
+  `deleteIdSql.php`/`markMapsChanged.php` som också gör motsvarande
+  lokala `require` av `configSchema.php` – **detta är alltså ett
+  konsekvent mönster i manage-modulen** (till skillnad från
+  writeConfig-modulen där konstanter oftast lästes högre upp), värt att
+  notera som en skillnad i kodstil mellan de två stora modulerna snarare
+  än en bugg i endera.
+- **`categories()`s namn `"Alla"` är hårdkodat på svenska** direkt i
+  logiken (inte via någon översättningsfunktion som `toSwedish()`) –
+  konsekvent med att UI-text genomgående är på svenska i hela
+  kodbasen, men värt att notera som en skillnad mot `toSwedish()`-
+  mönstret som annars använts för att översätta interna namn.
+- Ingen av filerna har `strict_types` eller fullständig parametertypning
+  (returtyper anges ibland i kommentarer men inte i kod), konsekvent
+  med övriga äldre delar av kodbasen.
