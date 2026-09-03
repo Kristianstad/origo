@@ -5,16 +5,17 @@
 	{
 		if (!isset($dbhConnectionString))
 		{
-			require_once("./constants/dbhConnectionString.php");
+			require("./constants/dbhConnectionString.php");
 		}
-		$dbh = pg_connect($dbhConnectionString, PGSQL_CONNECT_FORCE_NEW);
-		if (!$dbh)
-		{
-			echo '{"save_status":"Error in connection"}';
-			die();
+		for ($attempt = 1; $attempt <= 3; $attempt++) {
+			$dbh = @pg_connect($dbhConnectionString, PGSQL_CONNECT_FORCE_NEW);
+			if ($dbh !== false) {
+				return $dbh;
+			}
+			usleep(500000);
 		}
-		else
-		{
-			return $dbh;
-		}
- 	 }
+		error_log('PostgreSQL connection failed after 3 attempts');
+		http_response_code(503);
+		echo '{"save_status":"Database unavailable"}';
+		exit;
+ 	}
