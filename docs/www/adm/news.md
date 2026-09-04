@@ -53,16 +53,18 @@ i auktoriseringsmodulen, se `authorization.php`).
 
 ## Filer och funktioner
 
+*Sorterad alfabetiskt efter filnamn.*
+
 | Fil | Funktion | Beskrivning |
 |---|---|---|
 | `pgNewsArray.php` | `pgNewsArray(&$dbh)` | Hämtar **alla** nyheter från databasen, oavsett användare |
-| `userNews.php` | `userNews($username, $pgNewsArray)` | Filtrerar bort nyheter som användaren själv raderat; konverterar pg-arrayer till PHP-arrayer |
-| `selectNew.php` | `selectNew($userNews, $newId)` | Plockar ut en enskild nyhet från listan via `new_id` |
+| `printNews.php` | `printNews($username, $selectedNew, $return)` | Skriver ut en enskild nyhet (HTML eller JSON), markerar den som läst vid textvisning |
 | `printNewsList.php` | `printNewsList($userNews)` | Skriver ut JSON-array med `new_id` för alla nyheter, nyast först |
 | `printNewsSubjects.php` | `printNewsSubjects($username, $userNews)` | Skriver ut HTML-tabell med rubriker + raderaknapp |
-| `printNews.php` | `printNews($username, $selectedNew, $return)` | Skriver ut en enskild nyhet (HTML eller JSON), markerar den som läst vid textvisning |
 | `readDelete.php` | `readDelete($username, $selectedNew, $action)` | Lägger till användaren i `reads`- eller `deletes`-arrayen i databasen |
+| `selectNew.php` | `selectNew($userNews, $newId)` | Plockar ut en enskild nyhet från listan via `new_id` |
 | `testUnread.php` | `testUnread($username, $userNews)` | Returnerar `"true"`/`"false"` om det finns olästa nyheter |
+| `userNews.php` | `userNews($username, $pgNewsArray)` | Filtrerar bort nyheter som användaren själv raderat; konverterar pg-arrayer till PHP-arrayer |
 
 ## Kända begränsningar / observationer (ej åtgärdat ännu)
 

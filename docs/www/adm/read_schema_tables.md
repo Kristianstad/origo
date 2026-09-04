@@ -25,8 +25,8 @@ Inget eget svar skrivs ut (`pg_flush($dbh)` i slutet, men inget `echo`)
 - `dbh($connectionString)` – ansluter både till konfigurationsdatabasen
   och till den externa databasen (samma mönster som read_db_schemas)
 - `all_from_table()`, `array_column_search()` – slår upp anslutningssträng
-- `tableNamesFromSchema($dbh, $schema)` – **ny, ej tidigare dokumenterad
-  common-funktion**, listar tabellnamn i ett givet schema
+- `tableNamesFromSchema($dbh, $schema)` – listar tabellnamn i ett givet
+  schema, dokumenterad i common.md
 
 **Konstanter:** `constants/configSchema.php` → `$configSchema`
 
@@ -34,17 +34,15 @@ Inget eget svar skrivs ut (`pg_flush($dbh)` i slutet, men inget `echo`)
 `<configSchema>.tables` (kolumn `table_id`, format `db.schema.tabell`).
 
 ## Kända begränsningar / observationer
-- **⚠️ Strängbyggd SQL utan escaping vid INSERT:**
-  `"INSERT INTO $configSchema.tables(table_id) VALUES ('$database.$schema.$tableName') ..."`
-  – till skillnad från sin systermodul `read_db_schemas.php`, som
-  använder `pg_query_params()`. Här klistras `$database` (från
-  `$_GET['schema']`) och `$tableName` (från databasen, troligen säkert)
-  direkt in i strängen. `$database` kommer indirekt från användarinput
-  och bör escapas eller parameteriseras – samma åtgärd som redan gjorts
-  i `read_db_schemas.php` bör spegla hit.
-- **`die()` vid SQL-fel** utan att stänga någon av databasanslutningarna
-  – samma mönster som `schemaNamesFromDb()`, se den notisen i
-  `read_db_schemas.md`.
+- ~~**⚠️ Strängbyggd SQL utan escaping vid INSERT**~~ Koden
+  använder numera `pg_query_params()` med platshållare (`VALUES ($1)`)
+  för `INSERT INTO {$configSchema}.tables(table_id)`, samma säkra
+  mönster som `read_db_schemas.php`. Ingen SQL-injektionsrisk kvar här.
+- ~~**`die()` vid SQL-fel** utan att stänga någon av databasanslutningarna~~
+  Koden loggar felet (`error_log()`), stänger båda
+  databasanslutningarna explicit (`pg_close($dbh)`/`pg_close($dbh_config)`)
+  och avslutar med `http_response_code(500)` + `exit()` — motsvarande
+  gäller även vid saknad databas (`404`) och saknad parameter (`400`).
 - Doctype (`<!DOCTYPE html>`) skrivs ut överst trots att filen aldrig
   producerar något annat HTML-innehåll – sannolikt en kopieringsrest
   från en mall, ofarlig men vilseledande.

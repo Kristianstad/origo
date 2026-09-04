@@ -12,10 +12,11 @@ efter att nya lager lagts till, för att slippa manuellt ange vilka
 tabeller varje QGIS-lager bygger på – informationen härleds istället
 direkt ur QGIS-projektfilen.
 
-Ingen synlig koppling till `functions/manage/`, men resultatet
-(`layers.tables`) används sannolikt av manage-modulen (t.ex. vid
-visning av "vilka tabeller påverkas av detta lager", jämför `info.php`s
-"Används av"-funktion).
+Filen har en koppling till `functions/manage/` — den delar
+`tablesFromQgsXml()` med manage-modulen (se "Beror på" nedan).
+Resultatet (`layers.tables`) används sannolikt av manage-modulen
+(t.ex. vid visning av "vilka tabeller påverkas av detta lager", jämför
+`info.php`s "Används av"-funktion).
 
 ## Anropas med
 `writeTablesForAllLayers.php` (inga parametrar) – körs för samtliga
@@ -27,9 +28,14 @@ ut, sedan tyst bearbetning).
 ## Beror på
 **Common-funktioner:**
 - `dbh()`, `all_from_table()`, `array_column_search()`, `pkColumnOfTable()`
-- `tablesFromQgsXml($qgsXml, $layerName)` – **ny, ej tidigare
-  dokumenterad common-funktion**, tolkar en QGIS-projektfils XML för att
-  hitta vilka databastabeller ett givet lager bygger på
+
+**Manage-funktion (ej common):**
+- `tablesFromQgsXml($qgsXml, $layerName)` – ligger i
+  `functions/manage/`, inte `functions/common/`. Tolkar en
+  QGIS-projektfils XML för att hitta vilka databastabeller ett givet
+  lager bygger på. Delas alltså mellan manage och
+  writeTablesForAllLayers trots att den fysiskt bor i manage-modulens
+  funktionsmapp.
 
 **Konstanter:** `constants/configSchema.php` → `$configSchema`
 

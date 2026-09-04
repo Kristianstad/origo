@@ -2,16 +2,9 @@
 
 **Entry point:** `adm/manage.php` (32K, den enskilt största och mest
 centrala filen i systemet)
-**Funktionsfiler:** `adm/functions/manage/*.php` (60+ filer, **ännu
-inte granskade** – dokumenteras i en separat genomgång)
-**JS-filer:** `adm/js-functions/manage/*.js` (ej granskade ännu)
+**Funktionsfiler:** `adm/functions/manage/*.php` (78 filer)
+**JS-filer:** `adm/js-functions/manage/*.js` (6 filer)
 **Stilmall:** `adm/styles/manage.css`
-
-**⚠️ STATUS: endast entry point-filen dokumenterad hittills.** Detta är
-den viktigaste modulen i hela systemet – all administration av kartor,
-lager, källor, grupper m.m. går genom denna fil. Fullständig
-dokumentation kräver genomgång av samtliga filer i
-`functions/manage/`, vilket görs i efterföljande omgångar.
 
 ## Syfte
 Den centrala administrationssidan: en generisk CRUD-motor (skapa, läsa,
@@ -63,7 +56,7 @@ kodväg istället för att skriva om samma logik för varje typ.
 **SQL-generering byggd ovanpå target-infrastrukturen:**
 sqlForUpdate($fullTarget, $updatePosts)
 ├─ targetTable(), targetId()
-├─ updatedFullTarget($fullTarget, $updatePosts) [ej granskad ännu] → slår ihop nuvarande + nya värden
+├─ updatedFullTarget($fullTarget, $updatePosts) → slår ihop nuvarande + nya värden
 ├─ appendUpdatedColumnsToSql(targetConfig($fullTarget), $sql) → bygger SET-satsen
 └─ targetIdColumn() → bygger WHERE-satsen
 → resultat: en komplett UPDATE-sats för given target
@@ -109,11 +102,10 @@ Det skulle radera bort merparten av dessa filers ~15–20 rader vardera
 till en enda konfigurationsrad per entitetstyp, utan att ändra
 funktionalitet.
 
-**Instanser av mönstret (denna omgång):**
+**Instanser av mönstret (sorterad alfabetiskt efter filnamn):**
 
 | Fil | Typ | Fält utöver id/abstract/info | Extra knappar/sektioner |
 |---|---|---|---|
-| `printKeywordForm.php` | keyword | – | – |
 | `printAduserForm.php` | aduser | name, email, company, department, lastlogin, adgroups (samtliga skrivskyddade, se flaggning) | – |
 | `printContactForm.php` | contact | name, web, email | – |
 | `printControlForm.php` | control | options, css, js, onload | `printAddOperation`/`printRemoveOperation` mot maps |
@@ -122,6 +114,8 @@ funktionalitet.
 | `printFormatForm.php` | format | (endast format_id, ingen extra) | – |
 | `printGroupForm.php` | group | layers, groups, title, expanded (select), show_meta (select), keywords | `printConfigPreviewButton`, `printAddOperation`/`printRemoveOperation` mot maps OCH groups (två par) |
 | `printHelpForm.php` | help | (endast help_id/abstract/info, etiketterna är "Verktygsfält"/"Hjälptext" istället för "Id"/"Beskrivning") | – |
+| `printKeywordForm.php` | keyword | – | – |
+| `printSearchtableForm.php` | searchtable | mode, ttl, limit, usecentroid (select f/t), database (select), schema, table, searchfield, geometryfield, gidfield | – |
 
 ## Entitetsformulär (utökade/komplexa varianter)
 
@@ -130,22 +124,22 @@ betydande typspecifik villkorslogik:
 
 | Fil | Typ | Komplexitet |
 |---|---|---|
-| `printMapForm.php` | map | Störst antal fält av alla enkla formulär (30+), unika knappar: `printWriteConfigButton`, `printExportJsonButton`, `printUrlButton` – detta är alltså formuläret som triggar hela writeConfig-publiceringen |
 | `printLayerForm.php` | layer | **Den mest komplexa print*Form-funktionen i hela modulen.** Djupt kaskaderande synlighetslogik (nästlade `<span style="display:none">`-block) beroende på lagertyp (WFS/WMS/GROUP/GEOJSON), stilkonfiguration, ikon-inställningar. Använder genomgående ett mönster där dolda fält "bevaras" via `printHiddenInputs()` när motsvarande synliga fält döljs, så att värdet inte går förlorat vid nästa uppdatering trots att fältet inte visas |
-| `printSourceForm.php` | source | Villkorlig visning baserat på tjänstetyp (`File`/`OpenStreetMap` döljer flera fält) |
+| `printMapForm.php` | map | Störst antal fält av alla enkla formulär (30+), unika knappar: `printWriteConfigButton`, `printExportJsonButton`, `printUrlButton` – detta är alltså formuläret som triggar hela writeConfig-publiceringen |
+| `printMapstateForm.php`, `printNewForm.php`, `printOriginForm.php`, `printPluginForm.php`, `printProj4defForm.php` | mapstate, new, origin, plugin, proj4def | Följer det enkla mönstret från föregående omgång |
 | `printSchemaForm.php` / `printTableForm.php` | schema / table | `printTableForm` gör ett **extra, eget databasanrop** (`dbh($dbhConnectionString)` + `updated_from_table()`) mitt i renderingen för att visa senaste ändringsdatum – enda formuläret som pratar med en annan databas än konfigurationsdatabasen under rendering |
 | `printServiceForm.php` | service | Villkorlig visning baserat på tjänstetyp, med `printHiddenInputs()`-bevarande mönster likt layer/source |
-| `printSearchtableForm.php` | searchtable | Enkelt fältmönster men fler fält än basmallen |
-| `printSearchmodelForm.php` | searchmodel | **Se flaggning – misstänkt bugg** |
-| `printMapstateForm.php`, `printNewForm.php`, `printOriginForm.php`, `printPluginForm.php`, `printProj4defForm.php` | mapstate, new, origin, plugin, proj4def | Följer det enkla mönstret från föregående omgång |
+| `printSourceForm.php` | source | Villkorlig visning baserat på tjänstetyp (`File`/`OpenStreetMap` döljer flera fält) |
 
-## Formulärbyggstenar (denna omgång)
+## Formulärbyggstenar
+
+*Sorterad alfabetiskt efter filnamn.*
 
 | Fil | Funktion | Beskrivning |
 |---|---|---|
 | `printTilegridForm.php` | (enkelt mönster) | tilesize, standardfält i övrigt |
-| `printUpdateForm.php` | (enkelt mönster) | Namnet är missvisande – detta gäller entiteten "update" (en uppdateringsrutin/schema för när data anses föråldrad, kopplat till `updated`-modulen), inte formulärets egen uppdateringsknapp. Fält: `interval` (tidsintervall som text, t.ex. "+1 month" – ser ut som PHP:s `strtotime()`-kompatibla format), `method` (manuellt/automatiskt) |
 | `printUpdateButton.php` | `printUpdateButton($type)` | "Uppdatera"-knappen. Läser den globala `$formChangedGlobal`-flaggan (satt i `manage.php` vid failed update, se tidigare) för att visa den redan i "ändrad"-läge om ett sparförsök just misslyckades |
+| `printUpdateForm.php` | (enkelt mönster) | Namnet är missvisande – detta gäller entiteten "update" (en uppdateringsrutin/schema för när data anses föråldrad, kopplat till `updated`-modulen), inte formulärets egen uppdateringsknapp. Fält: `interval` (tidsintervall som text, t.ex. "+1 month" – ser ut som PHP:s `strtotime()`-kompatibla format), `method` (manuellt/automatiskt) |
 | `printUpdateSelect.php` | `printUpdateSelect($fullTarget, $configParamValues, $class, $label, $help=false, $options=null, $onchange='')` | Motsvarigheten till `printTextarea()` men för `<select>`-fält istället för fritext. Om `$options` inte anges härleds de automatiskt från `$configParamValues` |
 | `printUrlButton.php` | `printUrlButton($url)` | Enkel "Öppna karta"-knapp som öppnar en URL i ny flik |
 | `printViewSwitcher.php` | `printViewSwitcher($view)` | Radioknappar för att växla mellan vyer (`constants/views.php`), autopostar vid ändring |
@@ -165,13 +159,16 @@ betydande typspecifik villkorslogik:
 | `<knapp med kommando>` | Formulärknappens `name`/`value` avslöjar `$type` och `$command` (`copy`/`create`/`delete`/`update`/`operation`), tolkas av `postButton()` |
 | `to<Typ>Id` / `from<Typ>Id` | Vid `operation`-kommandot: lägg till/ta bort ett barn-objekt från en förälder (map/group) |
 
-## Beror på (bekräftat hittills)
+## Beror på
 **Common-funktioner** (`adm/functions/common/`):
 - `dbh()`, `configTables($dbh)`
 - `pkColumnOfTable()`, `array_column_search()`, `pgArrayToPhp()`,
   `assoc_array_values()`, `findAllParents()`, `tablesFromQgsXml()`
 
 ## Filer och funktioner (target-hantering och POST-tolkning)
+
+*Sorterad alfabetiskt efter filnamn (samma ordning som i
+`functions/manage/`-mappen).*
 
 | Fil | Funktion | Beskrivning |
 |---|---|---|
@@ -180,13 +177,13 @@ betydande typspecifik villkorslogik:
 | `categoryPosts.php` | `categoryPosts($post): array` | Filtrerar `$post` till fält vars namn slutar på `Category` |
 | `deleteIdSql.php` | `deleteIdSql($id, $tableName): string` | Bygger en `DELETE`-sats för given tabell och id |
 | `focusTable.php` | `focusTable($idPosts): string\|null` | Avgör vilken tabell som är "i fokus" utifrån vilka `*Id`-fält som postats – prioriterar map/database/schema/group före övriga typer, annars härleds tabellen från det första postade id-fältets namn |
-| `hasStringKeys.php` | `hasStringKeys(array $array): bool` | Kontrollerar om en array har minst en textnyckel (dvs. är associativ snarare än numeriskt indexerad). **Ingen användning observerad ännu** i det vi granskat – flaggad nedan |
+| `hasStringKeys.php` | `hasStringKeys(array $array): bool` | Kontrollerar om en array har minst en textnyckel (dvs. är associativ snarare än numeriskt indexerad). **Ingen användning observerad** – se flaggning |
 | `idPosts.php` | `idPosts($post): array` | Filtrerar `$post` till fält vars namn slutar på `Id`, med explicit undantag för `fromMapId`/`toMapId`/`fromGroupId`/`toGroupId` (dessa hanteras separat vid `operation`-kommandot, se manage.php) |
 | `isArrayColumn.php` | `isArrayColumn($column): bool` | Kontrollerar om en given kolumn är en Postgres-array-kolumn, genom att slå upp den mot listan i `constants/arrayColumns.php`. Avslutar programmet (`die()`) om `$column` inte är en icke-tom sträng |
 | `isFullTarget.php` | `isFullTarget($target): bool` | Avgör om en target är "full" (innehåller hela konfigurationen) snarare än "basic" (bara ett id) – se förklaring av target-konceptet ovan |
 | `makeBasicTarget.php` | `makeBasicTarget($type, $id): array` | Skapar en basic target `[$type => $id]`. Avslutar programmet vid ogiltiga argument |
 | `makeFullTarget.php` | `makeFullTarget($type, $config): array` | Skapar en full target `[$type => $config]` direkt från en redan känd konfigurationsrad. Avslutar programmet vid ogiltiga argument |
-| `makeTargetFull.php` | `makeTargetFull($target, $configTablesOrDbh): array` | Tar en basic (eller full) target och returnerar en full target, genom att slå upp konfigurationen via `targetConfig()` (ej granskad ännu) om den saknas. Avslutar programmet om indata inte är en giltig target |
+| `makeTargetFull.php` | `makeTargetFull($target, $configTablesOrDbh): array` | Tar en basic (eller full) target och returnerar en full target, genom att slå upp konfigurationen via `targetConfig()` om den saknas. Avslutar programmet om indata inte är en giltig target |
 | `markMapsChanged.php` | `markMapsChanged(&$dbh, $mapIds): void` | Sätter `maps.changed = 't'` för samtliga angivna kartor i en enda batch-SQL (flera `UPDATE`-satser konkatenerade med `; `). **Bekräftar tidigare hypotes:** detta är motparten till `markMapUnchanged()` i writeConfig-modulen – manage-modulen flaggar en karta som "ändrad, behöver publiceras om" varje gång något som påverkar den redigeras, och writeConfig-modulen nollställer flaggan efter lyckad publicering |
 | `postButton.php` | `postButton($post): string\|null` | Hittar namnet på den POST-parameter vars namn slutar på `Button` – det är detta namn (`<typ>Button`) som `manage.php` sedan bryter isär för att få fram `$type` |
 | `printAddOperation.php` | `printAddOperation($target, $addToTable, $buttontext, $inheritPosts)` | Skriver ut ett litet formulär: en dropdown med tillgängliga föräldrar (t.ex. kartor eller grupper) + en knapp som postar `operation`-kommandot för att lägga till `$target` i den valda föräldern |
@@ -200,28 +197,30 @@ betydande typspecifik villkorslogik:
 | `printHelpButton.php` | `printHelpButton($type, $configParam=null, $buttonText='?', $buttonClass='smallHelpButton')` | Liten "?"-knapp bredvid ett fält, öppnar/togglar hjälptext för just det fältet (`help.php?id=<type>[:<configParam>]`) i topFrame |
 | `printHiddenInputs.php` | `printHiddenInputs($inheritPosts)` | Skriver ut ett dolt `<input>` per nyckel/värde i `$inheritPosts`, för att bevara navigeringskontext genom formulärinskick |
 | `printInfoButton.php` | `printInfoButton($basicTarget)` | "Info"-knapp som öppnar `info.php` i topFrame för given target |
-| `printTextarea.php` | `printTextarea($fullTarget, $configParam, $class, $label, $help=false, $sizePosts=array(), $readonly=false)` | Den mest centrala byggstenen i hela manage-modulen – skriver ut ett enskilt redigerbart fält som ett `<textarea>`. Städar Postgres-arraysyntax för visning, bevarar användarens tidigare valda storlek/scrollposition (via `$sizePosts`, kopplat till `sizePosts.js`-liknande dolda fält), visar en hjälpknapp om hjälptext finns, och visar en multiselect-knapp om fältet är konfigurerat som "multiselectable" |
-| `printSelectOptions.php` | `printSelectOptions($optionValues, $selectedValue=null)` | Skriver ut `<option>`-element för en `<select>`. Sorterar alfabetiskt om arrayen är associativ (id→namn). **Ovanligt val-etikettmönster**, se flaggning |
 | `printMultiselectButton.php` | `printMultiselectButton($configParam, $value=null, $textareaId, $buttonText='+', $buttonClass='smallMultiselectButton')` | Knapp som öppnar multiselect-verktyget i topFrame för ett givet fält, via samma `<textareaId>::<tabell>:<värden>`-kodning vi dokumenterat i `multiselect.md` |
-| `printMultiselectButton2.php` | `printMultiselectButton2($configParam, $value=null, $buttonText='+', $buttonClass='smallMultiselectButton')` | **Alternativ, nyare variant** av ovanstående – se flaggning, verkar vara en pågående migrering till ett annat interaktionsmönster (`openMultiselect()` JS-anrop istället för formulärpost + `toggleTopFrame`) |
-| `printAddOperation.php` / `printRemoveOperation.php` | (redan dokumenterade) | `printRemoveOperation` kräver dessutom `findParents()` [common] för att bara visa föräldrar objektet faktiskt tillhör |
 | `printReadDbSchemasButton.php` | `printReadDbSchemasButton($databaseId)` | Knapp som anropar `read_db_schemas.php` i en dold iframe, med JS-bekräftelsedialog och automatisk formulärresubmit efter 1 sekund för att visa nya scheman |
 | `printReadSchemaTablesButton.php` | `printReadSchemaTablesButton($schemaId)` | Motsvarande för `read_schema_tables.php` |
+| `printRemoveOperation.php` | (samma mönster som `printAddOperation.php`, se ovan) | Motsatsen till `printAddOperation()` – kräver dessutom `findParents()` [common] för att bara visa de föräldrar objektet faktiskt tillhör (kan inte tas bort från en förälder det inte är kopplat till) |
+| `printSelectOptions.php` | `printSelectOptions($optionValues, $selectedValue=null)` | Skriver ut `<option>`-element för en `<select>`. Sorterar alfabetiskt om arrayen är associativ (id→namn). **Ovanligt val-etikettmönster**, se flaggning |
+| `printTextarea.php` | `printTextarea($fullTarget, $configParam, $class, $label, $help=false, $sizePosts=array(), $readonly=false)` | Den mest centrala byggstenen i hela manage-modulen – skriver ut ett enskilt redigerbart fält som ett `<textarea>`. Städar Postgres-arraysyntax för visning, bevarar användarens tidigare valda storlek/scrollposition (via `$sizePosts`, kopplat till `sizePosts.js`-liknande dolda fält), visar en hjälpknapp om hjälptext finns, och visar en multiselect-knapp om fältet är konfigurerat som "multiselectable" |
 | `setTargetConfigParam.php` | `setTargetConfigParam(&$fullTarget, $configParam, $value)` | Skriver ett värde direkt i en full targets konfigurationsarray, in-memory (påverkar inte databasen) |
+| `sizePosts.php` | `sizePosts($post): array` | Filtrerar `$post` till bredd-/höjd-/scrollrelaterade fält, och normaliserar `new*`-prefixade nycklar (från senaste formulärinskicket) till samma nyckelformat som de ursprungliga (`width*`/`height*`/`scroll*`) – nyare värden skriver över äldre i sammanslagningen |
 | `sqlForOperation.php` | `sqlForOperation($operation, $child, $parent): string` | Bygger en UPDATE-sats som lägger till/tar bort ett barn-id ur förälderns array-kolumn |
 | `sqlForUpdate.php` | `sqlForUpdate($fullTarget, $updatePosts): string` | Bygger en fullständig UPDATE-sats för en target baserat på postat formulärdata |
 | `tableConfigs.php` | `tableConfigs($table, $configTablesOrDbh)` | Hämtar konfigurationen för en tabell antingen från en databaskoppling (färsk fråga) eller från en redan inläst `configTables`-array (cachat) – avgörs via `is_resource()` |
+| `tablesFromQgsXml.php` | `tablesFromQgsXml($qgsXml=null, $layerName=null, $tables=[], $subtree=null): array` | Rekursiv XML-genomgång av ett QGIS-projekts (`.qgs`) lagerträd (`layer-tree-layer`/`layer-tree-group`): hittar samtliga (eller, om `$layerName` anges, ett specifikt) PostGIS-lager och extraherar deras käll-databas+tabell ur QGIS `source`-strängen (nyckel/värde-par separerade med mellanslag, t.ex. `dbname='x' table="y"`). Returnerar en lista av `databas.tabell`-strängar. De sista tre parametrarna är enbart för den interna rekursionen, anropas normalt bara med `$qgsXml`/`$layerName`. **Delas med `writeTablesForAllLayers.php`**, se writeTablesForAllLayers.md |
+| `tableType.php` | `tableType($table): string` | Den omvända operationen: tar bort ett avslutande `s` ur ett tabellnamn för att få fram typen (`layers` → `layer`). Enkel `rtrim($table, 's')` – fungerar för samtliga nuvarande tabellnamn men skulle ge fel resultat för en typ vars namn redan slutar på flera `s` i följd (inget sådant fall finns idag) |
 | `targetConfig.php` | `targetConfig($target, $configTablesOrDbh=null)` | Slår upp/returnerar hela konfigurationen för en target, oavsett om den redan är "full" eller bara "basic" |
 | `targetConfigParam.php` | `targetConfigParam($fullTarget, $configParam)` | Läser ett enskilt konfigurationsvärde ur en full target |
 | `targetId.php` | `targetId($target)` | Returnerar targetens id-värde, oavsett om den är full eller basic |
 | `targetIdColumn.php` | `targetIdColumn($target): string` | Returnerar namnet på primärnyckelkolumnen för targetens typ. Specialfall: `proj4defs` använder `code` istället för `<typ>_id` |
 | `targetTable.php` | `targetTable($target): string` | Returnerar tabellnamnet för targetens typ |
-| `sizePosts.php` | `sizePosts($post): array` | Filtrerar `$post` till bredd-/höjd-/scrollrelaterade fält, och normaliserar `new*`-prefixade nycklar (från senaste formulärinskicket) till samma nyckelformat som de ursprungliga (`width*`/`height*`/`scroll*`) – nyare värden skriver över äldre i sammanslagningen |
 | `typeHelps.php` | `typeHelps($type, $helps): array` | Filtrerar den globala listan av hjälptext-id:n (`help_id`, format `<typ>:<fält>`) till de som gäller en specifik typ, och returnerar bara fältdelen. Detta är mekaniken bakom `in_array($fältnamn, $helps)`-kontrollerna vi sett i varje `print*Form`-funktion – `$helps` som skickas till de funktionerna är redan filtrerat via denna funktion i `manage.php`s entry point |
-| `updatePosts.php` | `updatePosts($post): array` | Filtrerar `$post` till fält vars namn börjar med `update` – detta är alla postade formulärfältvärden redo att skrivas till databasen |
+| `typeTableName.php` | `typeTableName($type): string` | Returnerar tabellnamnet för en given typ genom att lägga till ett `s` (`layer` → `layers`). Den enkla, framåtriktade motsvarigheten till `tableType()` ovan; `targetTable()` bygger sannolikt på denna |
 | `updatedFullTarget.php` | `updatedFullTarget($fullTarget, $updatePosts): array` | Bygger en ny full target där varje kolumns värde ersätts med motsvarande `update<Kolumn>`-fält från `$updatePosts` (eller tom sträng om inget postades för den kolumnen). Array-kolumner (enligt `isArrayColumn()`/`constants/arrayColumns.php`) omsluts automatiskt med Postgres-array-syntax `{...}`. Detta är steget som förvandlar "vad användaren skrev i formuläret" till "vad som ska stå i databasen", och används av `sqlForUpdate()` innan `appendUpdatedColumnsToSql()` bygger själva SQL-strängen |
-| `validateUpdate.php` | `validateUpdate($updatePosts, $configTables, &$updateValid)` | Validerar **endast** fält som är markerade som "multiselectable" (`constants/multiselectables.php`) – kontrollerar att varje kommaseparerat värde som postats faktiskt existerar som ett giltigt id i motsvarande tabell. Sätter `$updateValid` (skickad by reference) och visar ett JS `alert()` vid fel. **Notera:** fält som inte är multiselectable valideras alltså inte alls av denna funktion – se flaggning nedan |
 | `updated_from_table.php` | `updated_from_table($dbh, $tableWithSchema): array` | Systerfunktion till `updated_from_table2()` (updated-modulen) – hämtar senaste `pg_xact_commit_timestamp` för en tabell, men returnerar **bara tidsstämpeln**, inte `xmin` som `updated_from_table2()` gör. Används av `printTableForm.php` för att visa senast-ändrad-datum direkt i formuläret (till skillnad från `updated.php`-modulens fristående JSON-endpoint) |
+| `updatePosts.php` | `updatePosts($post): array` | Filtrerar `$post` till fält vars namn börjar med `update` – detta är alla postade formulärfältvärden redo att skrivas till databasen |
+| `validateUpdate.php` | `validateUpdate($updatePosts, $configTables, &$updateValid)` | Validerar **endast** fält som är markerade som "multiselectable" (`constants/multiselectables.php`) – kontrollerar att varje kommaseparerat värde som postats faktiskt existerar som ett giltigt id i motsvarande tabell. Sätter `$updateValid` (skickad by reference) och visar ett JS `alert()` vid fel. **Notera:** fält som inte är multiselectable valideras alltså inte alls av denna funktion – se flaggning nedan |
 | `viewKeywordCategorized.php` | `viewKeywordCategorized($view): array` | Filtrerar den globala listan av "tabeller som ska nyckelordskategoriseras" (`constants/keywordCategorized.php`) till bara de tabeller som är relevanta för vald `$view` (`constants/views.php`). Specialfallet `$view == 'Allt'` (eller tom) returnerar hela listan okategoriserat av vy |
 
 **Filsystem:** läser QGIS-projektfiler (`.qgs`) direkt från disk vid
@@ -235,15 +234,17 @@ konfigurationstabeller (via `configTables()` och dynamiskt genererad SQL).
 
 **Plats:** `adm/js-functions/manage/`
 **Laddas:** inline i `<script>`-taggen i `<head>`, via samma
-`includeDirectory()`-mönster som används för PHP (se ARKITEKTUR.md)
+`includeDirectory()`-mönstret som används för PHP (se ARCHITECTURE.md)
+
+*Sorterad alfabetiskt efter filnamn.*
 
 | Fil | Funktion | Beskrivning |
 |---|---|---|
-| `toggleTopFrame.js` | `toggleTopFrame(type)` | Visar/döljer den delade toppmonterade iframen (`#topFrame`). Håller reda på vilken typ av innehåll som visas (global variabel `topFrame`, deklarerad i `manage.php`s inline-script) – klick på samma typ igen döljer den, klick på en annan typ byter innehåll och scrollar upp |
-| `resizeIframe.js` | `resizeIframe(iframe)` | Anpassar en iframes höjd efter dess faktiska innehåll, genom att tillfälligt sätta höjden till `1px` och sedan mäta `scrollHeight` i nästa animationsframe |
-| `initMessageListener.js` | `initMessageListener()` | Sätter upp en global `postMessage`-lyssnare för hela sidan. Validerar avsändarens origin (måste matcha `window.location.origin`) och att datan har rätt form innan den hanteras. Hanterar tre fall: `action:'close'` utan `targetId` (stäng topFrame, t.ex. från help.php), `action:'resize'` (justera topFrame-höjd), och `targetId`+`value` (fyll i ett textarea-fält med värde från multiselect-verktyget, samt uppdatera den tillhörande multiselect-knappens `value`-attribut så nästa öppning av multiselect visar rätt förval) |
 | `formChangeButton.js` | `formChangeButton()` | Lägger till en CSS-klass (`change`) på ett formulärs "Uppdatera"-knapp så fort något fält i formuläret ändras (utom dolda fält), för att visuellt signalera osparade ändringar |
+| `initMessageListener.js` | `initMessageListener()` | Sätter upp en global `postMessage`-lyssnare för hela sidan. Validerar avsändarens origin (måste matcha `window.location.origin`) och att datan har rätt form innan den hanteras. Hanterar tre fall: `action:'close'` utan `targetId` (stäng topFrame, t.ex. från help.php), `action:'resize'` (justera topFrame-höjd), och `targetId`+`value` (fyll i ett textarea-fält med värde från multiselect-verktyget, samt uppdatera den tillhörande multiselect-knappens `value`-attribut så nästa öppning av multiselect visar rätt förval) |
 | `preservePageScroll.js` | `preservePageScroll()` | Sparar scrollpositionen i `sessionStorage` vid formulärinskick, och återställer den efter att sidan laddats om – kompenserar för att `manage.php` är en traditionell serverrenderad sida där varje åtgärd (spara, välja ett nytt objekt) innebär en full sidomladdning |
+| `resizeIframe.js` | `resizeIframe(iframe)` | Anpassar en iframes höjd efter dess faktiska innehåll, genom att tillfälligt sätta höjden till `1px` och sedan mäta `scrollHeight` i nästa animationsframe |
+| `toggleTopFrame.js` | `toggleTopFrame(type)` | Visar/döljer den delade toppmonterade iframen (`#topFrame`). Håller reda på vilken typ av innehåll som visas (global variabel `topFrame`, deklarerad i `manage.php`s inline-script) – klick på samma typ igen döljer den, klick på en annan typ byter innehåll och scrollar upp |
 | `updateSelect.js` | `updateSelect(id, array)` | Fyller om en `<select>`-listas alternativ med ett nytt innehåll. Specialhantering för element vars id slutar på `Categories`: värdet sätts till det råa (understreck-separerade) kategorinamnet men visningstexten har understreck ersatta med mellanslag |
 
 ## Kommunikationsmönster: iframe ↔ huvudsida
@@ -252,7 +253,41 @@ konfigurationstabeller (via `configTables()` och dynamiskt genererad SQL).
 en iframe (`help.php`, `multiselect.php`, och potentiellt andra) pratar
 med huvudsidan via `postMessage`:
 
-## Kända begränsningar / observationer (preliminära, baserat på entry point)
+## Checklista: lägga till en ny entitetstyp
+
+En sammanfattning för den som vill lägga till en helt ny, enkel
+entitetstyp (t.ex. en ny referenstabell liknande `keyword`/`contact`)
+utan att behöva läsa alla 78 filer i `functions/manage/` i detalj:
+
+1. **Databas:** skapa tabellen i `map_configs`-schemat med en
+   `<typ>_id`-primärnyckel (se `targetIdColumn()` för specialfall som
+   `proj4defs`/`code`), samt gärna `abstract`/`info`-kolumner (mönstret
+   alla enkla formulär använder för hjälptexter, se `typeHelps()`).
+2. **Konstanter (endast vid behov):** lägg till i `constants/arrayColumns.php`
+   om något fält är en Postgres-array, i `constants/multiselectables.php`
+   om ett fält ska ha en multiselect-knapp, och i `constants/views.php`/
+   `constants/keywordCategorized.php` om typen ska synas i en viss vy
+   eller kunna nyckelordskategoriseras.
+3. **Formulärfunktion:** skapa `functions/manage/print<Typ>Form.php`.
+   Följer typen "enkla mönstret" (se ovan) räcker det att kopiera en
+   befintlig enkel `print*Form`-fil (t.ex. `printKeywordForm.php`) och
+   byta fältnamn/etiketter. Behövs villkorlig visning (döljda fält
+   beroende på annat fältvärde), se `printLayerForm.php`/
+   `printServiceForm.php` för det etablerade "dölj men bevara"-mönstret
+   med `printHiddenInputs()`.
+4. **Koppla in i entry point:** `manage.php` härleder `$type`/
+   `$typeTableName` dynamiskt från vilken knapp/vilket fält som
+   postades (se `postButton()`/`focusTable()`), så själva
+   dispatch-koden i `manage.php` behöver normalt inte ändras – nya
+   typer upptäcks automatiskt så länge `print<Typ>Form()` finns och
+   namnges enligt konventionen `print` + `ucfirst($type)` + `Form`.
+5. **Hjälptexter (valfritt):** lägg till rader i `helps`-tabellen med
+   `help_id` på formatet `<typ>` eller `<typ>:<fält>` (se help.md).
+6. **Dokumentation:** lägg till en rad i tabellen under "Mönster: enkla
+   entitetsformulär" (eller "Entitetsformulär (utökade/komplexa
+   varianter)" om typen har villkorslogik) ovan i det här dokumentet.
+
+## Kända begränsningar / observationer
 
 - **⚠️ Genomgående användning av `eval()`** för dynamiska
   funktionsanrop, på minst fyra ställen:
@@ -265,10 +300,18 @@ med huvudsidan via `postMessage`:
   Detta är ett vanligt men riskabelt mönster: om `$childType` (eller
   `$table`/`$typeTableName`) någonsin kan påverkas av extern input utan
   fullständig validering mot en känd lista av giltiga typer, öppnar det
-  för kodinjektion. I det vi sett hittills verkar `$childType` härledas
-  från `targetType()` baserat på databasstruktur (inte direkt från
-  `$_POST`), vilket sannolikt begränsar risken – men detta **bör
-  verifieras** när `targetType.php` och `typeTableName.php` granskas.
+  för kodinjektion. **Verifierat (uppdaterat):** `targetType()` läser
+  bara `key($target)` (dvs. härleds från databasstrukturen/den redan
+  uppslagna konfigurationen, inte direkt från `$_POST`), och
+  `typeTableName()`/`tableType()` är triviala strängoperationer
+  (`$type.'s'` respektive `rtrim($table,'s')`) utan egen validering –
+  risken begränsas alltså i praktiken av vilka typer som redan
+  förekommer i `$configTables`, inte av någon explicit whitelist i
+  dessa tre funktioner själva. Kodinjektion kräver därför att
+  `$childType`/`$table`/`$typeTableName` någonsin sätts direkt från
+  ovaliderad `$_POST`/`$_GET` högre upp i `manage.php` – inget vi sett
+  hittills, men inte uteslutet utan en fullständig genomgång av hela
+  entry point-filens dataflöde.
   Oavsett säkerhetsrisk är `eval()` här även en **läsbarhets- och
   verktygsstödsutmaning**: varken IDE:er, statisk analys (PHPStan) eller
   "hitta användningar av funktion X" fungerar över en `eval()`-gräns,
@@ -399,10 +442,11 @@ med huvudsidan via `postMessage`:
   ogiltigt anrop bör hanteras mjukare (t.ex. return `false`/kasta ett
   exception som kan fångas). Genomgående mönster värt att känna till
   innan man refaktorerar kring dessa funktioner.
-- **`hasStringKeys.php` har ingen synlig användning** i det material vi
-  granskat hittills. Kan vara använd längre fram i `functions/manage/`
-  (vi har bara sett en bråkdel av filerna), eller vara kvarlämnad
-  död kod. Flaggas för uppföljning när fler filer granskats.
+- **`hasStringKeys.php` har ingen synlig användning** i någon av de 77
+  filerna i `functions/manage/` eller i `manage.php` självt (bekräftat
+  efter fullständig genomgång). Sannolikt kvarlämnad död kod snarare än
+  en funktion som används längre fram – kandidat för borttagning vid
+  framtida städning, om inget nytt användningsställe dyker upp.
 - **`isArrayColumn()` läser sin konstant med ett funktionslokalt
   `require()`** (`require("./constants/arrayColumns.php");` inuti
   funktionskroppen) snarare än att konstanten skickas in som parameter
@@ -483,43 +527,6 @@ med huvudsidan via `postMessage`:
   manage-filer).
 - Ingen `strict_types` eller parametertypning i någon av filerna,
   konsekvent med resten av manage-modulen.
-- ~~⚠️ Trolig bugg i printSearchmodelForm.php~~ **KORRIGERAT:**
-  `printSearchmodelForm.php`, `printSearchtableForm.php` och
-  `adm/search.php` (0 bytes) härstammar från ett påbörjat men aldrig
-  färdigställt utvecklingsarbete. Variabelnamnsförväxlingen
-  (`$searchtable` istället för `$searchmodel`) är alltså en artefakt av
-  ofullständigt arbete snarare än en regressionsbugg i något som
-  fungerat tidigare. **Lägre prioritet** – relevant att känna till om
-  arbetet någon gång återupptas, men inget som bör rättas isolerat utan
-  sammanhang om vad `searchmodel`-konceptet är tänkt att bli.
-- **Två parallella multiselect-knappmönster** (`printMultiselectButton.php`
-  och `printMultiselectButton2.php`). Den andra:
-  - Använder `func_get_arg(2)` för att läsa ett argument som **inte
-    finns i funktionssignaturen** (`function printMultiselectButton2($configParam, $value=null, $buttonText='+', $buttonClass='smallMultiselectButton')`
-    har bara fyra deklarerade parametrar, men koden läser ett femte
-    positionsargument via `func_get_arg(2)` – vilket i praktiken läser
-    **det tredje argumentet**, alltså positionen för `$buttonText`!
-    Om denna funktion anropas som `printMultiselectButton2($param, $value, $textareaId, $buttonText)`
-    (fyra argument, i linje med kommentaren "$textareaId som tredje
-    parameter"), stämmer `func_get_arg(2)` (0-indexerat, tredje
-    argumentet) faktiskt överens med `$textareaId` – men det gör
-    samtidigt att den deklarerade parametern `$buttonText` blir
-    **oanvänd/felaktigt bunden**, eftersom anroparen förväntas skicka
-    `$textareaId` i positionen där `$buttonText` är deklarerad. Detta är
-    förvirrande och skört kodmönster: signaturen ljuger om vad
-    funktionen faktiskt tar emot. **Bör verifieras mot faktiska
-    anropsplatser** (vi har inte sett var `printMultiselectButton2`
-    anropas ifrån ännu) för att avgöra om detta fungerar av misstag
-    eller är en aktiv bugg.
-  - Har `// GROK:`-kommentar, konsekvent med tidigare identifierade
-    AI-genererade/redigerade filer.
-  - Använder ett annat interaktionsmönster (`onclick="openMultiselect(...)"`,
-    en JS-funktion vi inte sett definierad ännu) istället för
-    formulärpost + `toggleTopFrame`. **Detta tyder på en pågående,
-    ofullständig migrering** av multiselect-knappen till ett nytt
-    mönster – värt att fråga om `printMultiselectButton.php` (den äldre)
-    fortfarande används aktivt, eller om `printMultiselectButton2.php`
-    är avsedd att ersätta den helt.
 - **`printSelectOptions.php`s etikettmönster är svårtytt:**
 ```php
   $selectOption = "$selectOption>".ltrim(substr($label, strrpos($label,',')), ',')."</option>";

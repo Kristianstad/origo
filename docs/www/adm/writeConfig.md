@@ -1,15 +1,7 @@
 # Write config-modul (writeConfig)
 
 **Entry point:** `adm/writeConfig.php`
-**Funktionsfiler:** `adm/functions/writeConfig/*.php`
-
-**⚠️ STATUS: preliminär dokumentation.** Följande filer i
-`functions/writeConfig/` är **ännu inte granskade** och saknas i detta
-utkast: `addLayersToJson.php` (506 rader – central funktion, avgörande
-för fullständig förståelse), `publishMapFiles.php`,
-`renderCssTags.php`, `renderJavaScriptTags.php`, `saveFile.php`,
-`pgArrayToText.php`, `pgBoolToText.php`, `pgBoxToText.php`,
-`pgCoordsToText.php`. Detta dokument uppdateras när dessa granskats.
+**Funktionsfiler:** `adm/functions/writeConfig/*.php` (26 filer)
 
 ## Syfte
 Den centrala "publiceringsfunktionen" i systemet: läser en kartas
@@ -68,12 +60,15 @@ skriver `maps.changed = 'f'` (via `markMapUnchanged`).
 `structured-data[nummer].json`, `sitemap.xml` (troligen via
 `publishMapFiles()`, ej sedd ännu). Skapar mappen om den inte finns.
 
-## Filer och funktioner (granskade hittills)
+## Filer och funktioner
+
+*Sorterad alfabetiskt efter filnamn.*
 
 | Fil | Funktion | Beskrivning |
 |---|---|---|
 | `addControlsToJson.php` | `addControlsToJson($mapControls=null, &$mapCss, &$mapJs, &$mapOnload)` | Bygger JSON-arrayen för kartkontroller, samlar även ihop respektive kontrolls CSS/JS/onload-kod i de refererade variablerna |
 | `addGroupsToJson.php` | `addGroupsToJson($mapGroups)` | Rekursivt: bygger JSON för grupphierarkin, bygger samtidigt upp `$mapLayers` (global) med vilka lager som hör till varje grupp |
+| `addLayersToJson.php` | `addLayersToJson($mapLayersList, &$layersMeta, $groupLayer=false)` | Den mest centrala och komplexa funktionen i modulen (506 rader). Bygger JSON för varje lager: grundfält, typspecifik logik (WMS/WFS/GEOJSON), en sammansatt HTML-"abstract"-beskrivning, legend-/ikon-URL:er mot bakomliggande WMS-tjänst, hantering av klusterstilar. Rekursiv för GROUP-lager. Samlar även ihop `$mapSources`/`$mapStyles` och avslutar (vid toppnivåanrop) med att trigga `addSourcesToJson()`/`addStylesToJson()` |
 | `addPlugins.php` | `addPlugins($mapPlugins=null, &$mapCssFiles, &$mapJsFiles, &$mapCss, &$mapJs, &$mapOnload)` | Samlar ihop JS/CSS (inline och som filer) samt onload-kod för varje aktiverat plugin |
 | `addSourcesToJson.php` | `addSourcesToJson()` | Bygger JSON för datakällor (`source`), inkl. URL-uppbyggnad, tile grid-inställningar, query-parametrar. Läser globalt (`GLOBAL`) istället för parametrar |
 | `addStylesToJson.php` | `addStylesToJson()` | Bygger JSON för lagerstilar. Om `style_config` saknas i databasen, byggs en enkel standardstil (label/ikon/filter) istället |
@@ -84,6 +79,7 @@ skriver `maps.changed = 'f'` (via `markMapUnchanged`).
 | `fetchResourceContent.php` | `fetchResourceContent(string $resource): string\|false` | Hämtar innehåll från en lokal fil eller URL, med tillfälligt katalogbyte för att lösa relativa sökvägar. Används sannolikt för att bädda in externa CSS/JS-resurser i den publicerade HTML-sidan |
 | `fixDuplicateDeclarations.php` | `fixDuplicateDeclarations($jsCode): string` | Textbaserad JS-transformation: hittar dubbeldeklarerade variabler (`const`/`let`/`var` med samma namn i samma "rot-scope") i administratörsskriven onload-JS, och skriver om dem till giltig JS (undviker `SyntaxError: Identifier has already been declared`). Se flaggning nedan – detta är en betydande mängd egen parsning |
 | `getArrayValuesRecursively.php` | `getArrayValuesRecursively(array $array): array` | Plattar ut en nästlad array till en enkel lista med alla "löv"-värden |
+| `get_conftable.php` | `get_conftable($dbh, $table)` | Enkel hjälpfunktion: hämtar samtliga rader ur en tabell i schemat `map_configs` (hardkodat, inte via `$configSchema`) via `pg_query()`. `die()` vid SQL-fel. Till skillnad från `configTables()` (common) hämtar denna bara **en** tabell åt gången |
 | `groupDepth.php` | `groupDepth($groupIds, $layerIds=[])` | Rekursivt: bygger en nästlad struktur som visar vilka lager som finns i varje grupp (och undergrupper), med lagernamn prefixade med sin grupps sökväg (`grupp>lager`) |
 | `indexweightedLayersList.php` | `indexweightedLayersList($layersList)` | Sorterar om lagerlistan baserat på ett `indexweight`-värde per lager – flyttar viktade lager till en specifik position i listan via upprepad `array_move()` |
 | `json_format.php` | `json_format($json): string` | Formaterar en JSON-sträng med indrag för läsbarhet (egen handskriven parser, äldre ursprung enligt kodkommentar – "Nicejson", 2008) |
@@ -96,7 +92,6 @@ skriver `maps.changed = 'f'` (via `markMapUnchanged`).
 | `renderCssTags.php` | `renderCssTags(array $items): string` | Bygger HTML för CSS-inkludering: `include(sökväg)`-syntax läses in och minifieras som inline `<style>`, annars renderas som vanlig `<link rel="stylesheet">` |
 | `renderJavaScriptTags.php` | `renderJavaScriptTags(array $items): string` | Bygger HTML för JS-inkludering: stödjer `include(...)`/`include_minify(...)` (minifieras) och `include_nominify(...)` (lämnas oförändrad, för redan minifierade bundles), annars renderas som vanlig `<script src="...">` |
 | `saveFile.php` | `saveFile(string $path, string $content): bool` | Enkel, defensiv wrapper runt `file_put_contents()` |
-| `addLayersToJson.php` | `addLayersToJson($mapLayersList, &$layersMeta, $groupLayer=false)` | Den mest centrala och komplexa funktionen i modulen (506 rader). Bygger JSON för varje lager: grundfält, typspecifik logik (WMS/WFS/GEOJSON), en sammansatt HTML-"abstract"-beskrivning, legend-/ikon-URL:er mot bakomliggande WMS-tjänst, hantering av klusterstilar. Rekursiv för GROUP-lager. Samlar även ihop `$mapSources`/`$mapStyles` och avslutar (vid toppnivåanrop) med att trigga `addSourcesToJson()`/`addStylesToJson()` |
 
 ## Koppling till manage-modulen: "changed"-flaggan
 

@@ -6,7 +6,9 @@
 ## Syfte
 Visar en hjälptext i en popup/iframe (samma `postMessage`-mönster som
 info- och multiselect-modulerna). Utan parameter visas en generisk lista
-med länkar till Origo-dokumentation och en JSON-validerare. Med en
+med länkar till Origo-dokumentation och ett externt JSON-valideringsverktyg
+(för att kontrollera att t.ex. `style_config`/`options`-fält innehåller
+giltig JSON innan de sparas). Med en
 `id`-parameter visas istället en specifik hjälptext hämtad från databasen
 (troligen kontextuell hjälp kopplad till ett visst formulärfält i
 `manage.php`).

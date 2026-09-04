@@ -46,14 +46,16 @@ sannolikt från ett annat ställe i systemet, t.ex. manage-modulen.)
 
 ## Filer och funktioner
 
+*Sorterad alfabetiskt efter filnamn.*
+
 | Fil | Funktion | Beskrivning |
 |---|---|---|
-| `getMapStatesTable.php` | `getMapStatesTable(): string` | Bygger (och cachar statiskt) det fullt kvalificerade, escapade tabellnamnet `schema.mapstates`. Delas av övriga funktioner i modulen |
 | `cleanupOldMapStates.php` | `cleanupOldMapStates($dbh, int $days): void` | Tar bort mapstates som är äldre än `$days` och oanvända, eller >30 dagar gamla och aldrig använda – om inte `preserve` är satt. Körs på **varje** request |
 | `createMapState.php` | `createMapState($dbh): never` | Läser JSON från request body, genererar ett UUID v4, sparar i databasen, svarar med `mapStateId`. Avslutar alltid med `exit` |
+| `getMapStatesTable.php` | `getMapStatesTable(): string` | Bygger (och cachar statiskt) det fullt kvalificerade, escapade tabellnamnet `schema.mapstates`. Delas av övriga funktioner i modulen |
 | `retrieveMapState.php` | `retrieveMapState($dbh): never` | Validerar `mapStateId`, uppdaterar `lastuse`, hämtar och returnerar sparat state. Avslutar alltid med `exit` |
-| `validateMapStateId.php` | `validateMapStateId(string $id): bool` | Validerar att id matchar UUID-formatet via regex |
 | `updateLastUse.php` | `updateLastUse($dbh, string $id): void` | Sätter `lastuse = NOW()` för ett givet id |
+| `validateMapStateId.php` | `validateMapStateId(string $id): bool` | Validerar att id matchar UUID-formatet via regex |
 
 ## Kända begränsningar / observationer (ej åtgärdat ännu)
 

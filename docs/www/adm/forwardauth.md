@@ -84,12 +84,14 @@ för att `forwardauth.php` ska kunna återskapa ursprunglig URL.
 
 ## Filer och funktioner
 
+*Sorterad alfabetiskt efter filnamn.*
+
 | Fil | Funktion | Beskrivning |
 |---|---|---|
 | `getAzureAuthUrl.php` | `getAzureAuthUrl()` | Bygger Azure-inloggnings-URL och sparar `oauth2state` i sessionen (CSRF-skydd) |
+| `getAzureGroups.php` | `getAzureGroups($graphToken): array` | Hämtar (paginerat) användarens Azure AD-gruppmedlemskap via Microsoft Graph |
 | `getAzureProvider.php` | `getAzureProvider()` | Skapar en konfigurerad OAuth2-klient (`TheNetworg\OAuth2\Client\Provider\Azure`), tvingar Microsoft Graph som API-mål |
 | `getGraphToken.php` | `getGraphToken($token)` | Växlar ett access-token mot ett Graph-specifikt token via refresh_token-flödet. **Verkar för närvarande oanvänd** – se flaggning nedan |
-| `getAzureGroups.php` | `getAzureGroups($graphToken): array` | Hämtar (paginerat) användarens Azure AD-gruppmedlemskap via Microsoft Graph |
 | `getOnPremisesSamAccountName.php` | `getOnPremisesSamAccountName($graphToken)` | Hämtar användarens lokala AD-kontonamn (`onPremisesSamAccountName`) via Microsoft Graph |
 | `isSafeReturnTo.php` | `isSafeReturnTo(string $url): bool` | Validerar att en return-URL:s host slutar på `kristianstad.se`. **Hårdkodad domän** – se flaggning nedan |
 

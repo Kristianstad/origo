@@ -1,15 +1,17 @@
-# Read JSON-modul (read_json) — AVSTÄNGD, LÅG PRIORITET
+# Read JSON-modul (read_json) — AKTIV, KÄND TEKNISK SKULD
 
-**Entry point:** `adm/read_json.php.off` (avaktiverad; byt filändelse
-till `.php` för att återaktivera)
+**Entry point:** `adm/read_json.php` (aktiv i denna kodbas — ingen
+`.php.off`-ändelse finns, filen körs normalt av webbservern)
 **Funktionsfiler:** `adm/functions/read_json/*.php`
 
-**⚠️ STATUS: avstängd i produktion, låg underhållsprioritet.**
-Filändelsen `.php.off` gör att webbservern inte kör filen. Enligt beslut
-ska den inte återaktiveras utan eftertanke – den kan skriva över data
-och orsaka oreda. Används i praktiken bara vid nyuppsättning av systemet
-från grunden. Koden är enligt uppgift "rätt slarvig" – dokumentationen
-nedan är fullständig, men observationslistan är ovanligt lång eftersom
+**⚠️ Hög risk.** Filen är aktiv, inte avstängd. Eftersom filen faktiskt
+kan köras är den kända tekniska skulden nedan (strängbyggd SQL utan
+escaping, skör regex-baserad JSON-parsning, endast 2 av flera logiska
+steg utbrutna till egna funktioner) en reell risk, inte bara teknisk
+skuld i vilande kod. Rekommenderas att prioritera en säkerhets-/
+kodgranskning av denna fil separat, snarare än att anta att den är
+riskfri för att den sällan används. Koden är enligt uppgift "rätt
+slarvig" – observationslistan nedan är ovanligt lång eftersom
 kvalitetsnivån skiljer sig tydligt från resten av kodbasen.
 
 ## Syfte
@@ -47,9 +49,9 @@ beskrivningstexten för varje varv.
 ## Beror på
 **Common-funktioner:** `dbh()`, `configTables($dbh)`
 
-**Databas:** skriver till `map_configs.layers`, `.groups`, `.maps`,
-`.controls`, `.footers`, `.proj4defs`, `.tilegrids`, `.sources`,
-`.services` (hårdkodat schema `map_configs`, se flaggning).
+**Databas:** skriver till tabellerna `layers`, `groups`, `maps`,
+`controls`, `footers`, `proj4defs`, `tilegrids`, `sources`, `services` –
+samtliga i schemat `map_configs` (hårdkodat, se flaggning).
 
 ## Filer och funktioner
 
@@ -68,11 +70,9 @@ beskrivningstexten för varje varv.
   `pg_escape_literal()` (t.ex. `abstract`, `attributes`,
   `style_config`), men detta är inkonsekvent – de flesta fält
   (`title`, `format`, `type`, `url`, kontrollnamn via `pg_escape_string`
-  på ett ställe men inte konsekvent) är oskyddade. Eftersom denna modul
-  är avstängd och lågprioriterad är den akuta risken låg, men **om
-  modulen någonsin återaktiveras eller återanvänds som mall för ny
-  kod, bör den skrivas om med `pg_query_params()` genomgående** innan
-  den tas i bruk igen.
+  på ett ställe men inte konsekvent) är oskyddade. Filen är aktiv
+  (ingen `.off`-ändelse), så detta är en reell risk redan idag – **bör
+  skrivas om med `pg_query_params()` genomgående med hög prioritet.**
 - **Ingen validering av inskickad JSON-struktur** innan den används –
   om ett förväntat fält saknas (t.ex. `$json_arr['layers']` inte är en
   array) ger koden PHP-varningar eller oväntat beteende snarare än ett
@@ -128,14 +128,14 @@ beskrivningstexten för varje varv.
   med att använda `pgBoolToText()` (writeConfig-modulen) eller en
   motsvarande omvänd funktion.
 - **Mycket lång, monolitisk kod utan uppdelning i mindre funktioner** i
-  själva `read_json.php.off` (endast två små hjälpfunktioner är
+  själva `read_json.php` (endast två små hjälpfunktioner är
   utbrutna: `recursiveGroups`, `renamedup` – resten, inklusive hela
   lager-importlogiken med dess djupa villkorsträd för stilar/ikoner,
-  ligger direkt i entry point-filen). Om modulen någonsin blir aktuell
-  igen vore en uppdelning liknande `writeConfig`/`addLayersToJson`-
-  mönstret (en fil per logisk del: `importSources`, `importLayers`,
-  `importGroups`, `importMap`, etc.) den mest värdefulla första
-  refaktoreringsinsatsen.
+  ligger direkt i entry point-filen). En uppdelning liknande
+  `writeConfig`/`addLayersToJson`-mönstret (en fil per logisk del:
+  `importSources`, `importLayers`, `importGroups`, `importMap`, etc.)
+  är sannolikt den mest värdefulla första refaktoreringsinsatsen, givet
+  att filen är aktiv och inte bara vilande kod.
 - **Komplex, delvis duplicerad villkorslogik för stilar/ikoner** i
   lager-importen (fyra kapslade if/else-grenar som avgör
   `$layerStyleConfig`/`$layerIcon`/`$layerExtendedIcon`/`$layerStyleFilter`)
@@ -143,18 +143,19 @@ beskrivningstexten för varje varv.
   `addLayersToJson.php` (writeConfig) – de två borde spegla varandra
   exakt (vad som skrivs ut vid export måste kunna läsas tillbaka vid
   import), men eftersom det är fristående, separat skriven kod finns
-  risk att de tystnat glidit isär över tid. Om read_json någonsin
-  återaktiveras rekommenderas en explicit jämförelse mot
+  risk att de tyst glidit isär över tid. Eftersom modulen är aktiv
+  rekommenderas en explicit jämförelse mot
   `addLayersToJson.php`s logik för att säkerställa att rundtrippen
   fortfarande fungerar korrekt.
 - Ingen `strict_types` eller parametertypning.
 
 ## Sammanfattande rekommendation
-Eftersom modulen är avstängd, sällan behövd, och innehåller flera lager
+Modulen är aktiv, inte avstängd. Den innehåller flera lager
 av teknisk skuld (SQL injection-risk, skör regex-parsning, avsaknad av
-transaktionshantering), **rekommenderas den inte som utgångspunkt för
-vidareutveckling i sitt nuvarande skick**. Om ett behov av
-JSON-import uppstår igen i framtiden är en fullständig omskrivning
-(snarare än stegvis lagning) sannolikt mer kostnadseffektiv än att
-försöka härda den befintliga koden bit för bit, givet hur tätt
-sammanflätade problemen är.
+transaktionshantering), och **bör prioriteras för en säkerhets-/
+kodgranskning** snarare än att antas vara riskfri p.g.a. låg
+användningsfrekvens. Om/när modulen tas om hand är en fullständig
+omskrivning (snärare än stegvis lagning) sannolikt mer
+kostnadseffektiv än att försöka härda den befintliga koden bit för
+bit, givet hur tätt sammanflätade problemen är. Detta är dock inte i
+scope för den nuvarande dokumentationsomgången – se sessionsplanen.

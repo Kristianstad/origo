@@ -71,16 +71,18 @@ sessioner (AES-256-CBC-krypterat användarnamn).
 
 ## Filer och funktioner
 
+*Sorterad alfabetiskt efter filnamn.*
+
 | Fil | Funktion | Beskrivning |
 |---|---|---|
-| `login.php` | `login(&$dbh)` | Autentiserar mot LDAP, sätter krypterad cookie, initierar session, redirectar till `return_to` eller visar "inloggad"-vy |
-| `logout.php` | `logout()` | Förstör session och cookies (session, autentiseringscookie, refresh-cookie), visar inloggningsformulär igen |
+| `displayHtmlFooter.php` | `displayHtmlFooter()` | Skriver ut avslutande `</body></html>` |
+| `displayHtmlHeader.php` | `displayHtmlHeader()` | Skriver ut `<html><head>` inklusive `authorization.css` |
 | `displayLogin.php` | `displayLogin()` | Visar HTML-inloggningsformulär (användarnamn + lösenord) |
 | `displayLogout.php` | `displayLogout()` | Visar "inloggad"-vy med utloggningsknapp och inbäddad nyhetslista |
 | `displayWithHtml.php` | `displayWithHtml($content)` | Wrapper: header + valfritt innehåll + footer |
-| `displayHtmlHeader.php` | `displayHtmlHeader()` | Skriver ut `<html><head>` inklusive `authorization.css` |
-| `displayHtmlFooter.php` | `displayHtmlFooter()` | Skriver ut avslutande `</body></html>` |
 | `isSafeReturnUrl.php` | `isSafeReturnUrl(string $url): bool` | Whitelist-kontroll mot open redirect – tillåter relativa URL:er eller samma host som `HTTP_HOST` |
+| `login.php` | `login(&$dbh)` | Autentiserar mot LDAP, sätter krypterad cookie, initierar session, redirectar till `return_to` eller visar "inloggad"-vy |
+| `logout.php` | `logout()` | Förstör session och cookies (session, autentiseringscookie, refresh-cookie), visar inloggningsformulär igen |
 
 ## Kända begränsningar / observationer (ej åtgärdat ännu)
 
@@ -100,10 +102,10 @@ sessioner (AES-256-CBC-krypterat användarnamn).
   lokal utveckling utan AD) kan detta orsaka ett fatalt fel om
   composer-biblioteket inte är installerat. Kandidat att flytta `require_once`
   in i `login()`-funktionen, villkorat på `$authMethod === 'ldap'`.
-- **`displayLogout.php` har dödkodskommentar:** `if ($authMethod === 'ldap')`
-  är utkommenterad men koden innanför körs alltid ändå (indragningen
-  antyder att villkoret en gång fanns på riktigt). Bör städas bort eller
-  återinföras avsiktligt – oklart vilket som är rätt utan mer kontext.
+- ~~**`displayLogout.php` har dödkodskommentar:** `if ($authMethod === 'ldap')`
+  är utkommenterad men koden innanför körs alltid ändå~~ Villkoret är
+  aktiv, ej utkommenterad kod – utloggningsknappen byggs faktiskt bara
+  när `$authMethod === 'ldap'`. Ingen dödkod, ingen bugg.
 - **`$_GET['call']` skickas genom till formuläret som ett dolt fält utan
   synlig användning** i den kod vi sett hittills (varken läses eller
   valideras förutom escaping). Oklart syfte – flaggar för uppföljning,

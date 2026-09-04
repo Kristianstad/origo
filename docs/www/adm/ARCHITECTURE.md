@@ -26,8 +26,9 @@ includeDirectory("./functions/<modulnamn>");
   (medvetet bortkommenterat, modulen behöver inga common-funktioner för
   närvarande).
 
-**Konsekvens för refaktorering:** inget "glömt include" om funktioner
-flyttas mellan filer inom `common/` – men om `common/` bryts upp i
+**Konsekvens för refaktorering:** om funktioner flyttas mellan filer
+inom `common/` behöver inget include uppdateras (`includeDirectory()`
+laddar redan alla filer i mappen) – men om `common/` bryts upp i
 undermappar måste `includeDirectory()`-anropet uppdateras i varje entry
 point som behöver den nya mappen.
 
@@ -92,8 +93,8 @@ Toppnivåmapparna `authorization/`, `export/`, `forwardauth/`,
 `grouplayerfix/`, `mapstate/`, `news/`, `updated/` innehåller
 `*-loader.php`-filer som speglar entry points i `adm/`. Bekräftat aktivt
 använda (se `authorization.md`: `login.php`/`displayLogout.php` anpassar
-beteende baserat på om anropet kom via en loader). Fullständig
-dokumentation (`loaders.md`) görs i en separat genomgång.
+beteende baserat på om anropet kom via en loader). De saknar ännu egen
+dokumentation – se OVERVIEW.md, "Ej dokumenterade / lågprioriterade".
 
 **Undantag:** `export/` (toppnivå) har egen `functions/`/`constants/`-mapp
 med kod som delvis dubblerar `adm/functions/export/` – mer än en tunn
@@ -126,13 +127,17 @@ En Origo-karta med id `'preview'` existerar specifikt för
 adminverktygets förhandsgranskningsfunktion (`printConfigPreviewButton()`
 i manage.md, anropad från grupp- och lagerformulär). Detta är alltså
 inte ett användarfel eller en bugg när `'preview'` hårdkodas som mapId i
-dessa anrop, utan en avsiktlig, dedikerad resurs. *(Fler detaljer
-kompletteras här när de delges.)*
+dessa anrop, utan en avsiktlig, dedikerad resurs.
 
 ## Datastrukturen "target" (manage-modulen)
 
 Ett centralt begrepp i manage-modulen: en enhetlig representation av
-"ett objekt av viss typ" i två varianter (basic: `[$type => $id]`, full:
-`[$type => $config]`). Gör att samma kod (SQL-generering,
-formulärrendering) kan hantera alla entitetstyper generiskt. Fullständig
-beskrivning i `manage.md`.
+"ett objekt av viss typ" i två varianter:
+
+- **Basic:** `[$type => $id]`, t.ex. `['layer' => 'vagar#1']`
+- **Full:** `[$type => $config]`, t.ex.
+  `['layer' => ['layer_id' => 'vagar#1', 'title' => 'Vägar', ...]]`
+
+Gör att samma kod (SQL-generering, formulärrendering) kan hantera alla
+entitetstyper (map/layer/group/source/...) generiskt utan att skriva om
+samma logik för varje typ. Fullständig beskrivning i `manage.md`.

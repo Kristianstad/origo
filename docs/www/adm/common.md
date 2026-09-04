@@ -1,39 +1,42 @@
 # Gemensamma funktioner (common)
 
 **Plats:** `adm/functions/common/`
-**Laddas av:** samtliga huvudfiler i `adm/`, via `includeDirectory()` (se ARKITEKTUR.md)
+**Laddas av:** samtliga huvudfiler i `adm/`, via `includeDirectory()` (se ARCHITECTURE.md)
 
-> Denna fil fylls på allteftersom fler moduler dokumenteras. Endast
-> funktioner som faktiskt observerats användas listas — se mappen för
-> fullständig lista över vad som finns.
+> Tabellen är sorterad alfabetiskt efter funktionsnamn för att göra
+> det lätt att slå upp en specifik funktion. Se mappen för fullständig
+> lista över vad som finns.
 
 | Funktion | Fil | Beskrivning | Används av |
 |---|---|---|---|
-| `readAndCloseSession()` | `readAndCloseSession.php` | Läser in `$_SESSION` och stänger sessionen | news, export |
-| `dbh($connectionString=null)` | `dbh.php` | Öppnar PostgreSQL-anslutning. Utan argument: standarddatabasen. Med anslutningssträng: godtycklig extern databas | news, mapstate, info, authorization, read_db_schemas, export, writeConfig, manage, read_schema_tables, updated, help, writeTablesForAllLayers |
-| `initUserLdap($dbh)` | `initUserLdap.php` | Initierar användarinfo via LDAP (`$authMethod==='ldap'`). **Bieffekt:** skriver och stänger sessionen | news, authorization, export, restrictedLayer |
-| `pgArrayToPhp($pgArray)` | `pgArrayToPhp.php` | Konverterar Postgres arraysyntax (`{a,b,c}`) till PHP-array | news, export, writeConfig |
-| `toSwedish($string)` | `toSwedish.php` | Översätter interna typ-/kolumnnamn till svenska för visning | info, multiselect, printCopyButton, printDeleteButton, printAddOperation, printRemoveOperation, printHeadForm/Forms, validateUpdate |
 | `all_from_table($dbh, $schema, $table)` | `all_from_table.php` | Hämtar alla rader från angiven tabell | info, multiselect (⚠️ hårdkodar schema `map_configs`), read_db_schemas, export, writeTablesForAllLayers |
 | `array_column_search($value, $column, $rows)` | `array_column_search.php` | Hittar första raden där given kolumn matchar värdet | info, read_db_schemas, export, writeConfig, manage, writeTablesForAllLayers |
-| `pkColumnOfTable($table)` | `pkColumnOfTable.php` | Returnerar primärnyckelns kolumnnamn för en tabell | info, writeTablesForAllLayers, target-infrastruktur (targetId, targetIdColumn via targetTable), validateUpdate |
+| `assoc_array_values($array)` | `assoc_array_values.php` | Kontrollerar/hämtar faktiska värden i nästlad associativ array | info, manage |
+| `clearAuthSession()` | `clearAuthSession.php` | Nollställer `$_SESSION['user']`, sätter en ny `login_time_stamp` och stänger sessionen. Anropas av `initUserLdap()` när ingen giltig användare kan slås upp | authorization (indirekt via initUserLdap) |
+| `configTables($dbh)` | `configTables.php` | Hämtar samtliga konfigtabeller i ett svep, avsedd att packas upp med `extract()` | writeConfig, manage, read_json |
+| `dbh($connectionString=null)` | `dbh.php` | Öppnar PostgreSQL-anslutning. Utan argument: standarddatabasen. Med anslutningssträng: godtycklig extern databas | news, mapstate, info, authorization, read_db_schemas, export, writeConfig, manage, read_schema_tables, updated, help, writeTablesForAllLayers |
+| `defineFileConstant($name, $value)` | `defineFileConstant.php` | Skriver en PHP-konstant till fil, läsbar via `includeFileConstant()`. Källan till `RESTRICTEDLAYERS`-konstanten | writeConfig |
+| `ensureSessionWritable()` | `ensureSessionWritable.php` | Säkerställer att sessionen är öppen/skrivbar | authorization, forwardauth |
 | `findAllParents($dbh, $child)` | `findAllParents.php` | Rekursivt: alla objekt som refererar till ett givet objekt | info, manage |
 | `findParents($tableToRemoveFrom, $target)` | `findParents.php` | Icke-rekursiv variant: hittar direkta föräldrar | manage (printRemoveOperation) |
-| `assoc_array_values($array)` | `assoc_array_values.php` | Kontrollerar/hämtar faktiska värden i nästlad associativ array | info, manage |
-| `ensureSessionWritable()` | `ensureSessionWritable.php` | Säkerställer att sessionen är öppen/skrivbar | authorization, forwardauth |
 | `getCookieOptions($expiryTimestamp)` | `getCookieOptions.php` | Bygger cookie-inställningar (path/domain/secure/httponly/samesite) | authorization |
-| `tableNamesFromSchema($dbh, $schema)` | `tableNamesFromSchema.php` | Listar tabellnamn i ett databasschema | read_schema_tables |
-| `tablesFromQgsXml($qgsXml, $layerName)` | `tablesFromQgsXml.php` | Tolkar QGIS-projekt-XML för att hitta databastabeller ett lager bygger på | writeTablesForAllLayers, manage |
-| `configTables($dbh)` | `configTables.php` | Hämtar samtliga konfigtabeller i ett svep, avsedd att packas upp med `extract()` | writeConfig, manage, read_json |
-| `defineFileConstant($name, $value)` | `defineFileConstant.php` | Skriver en PHP-konstant till fil, läsbar via `includeFileConstant()`. Källan till `RESTRICTEDLAYERS`-konstanten | writeConfig |
 | `includeFileConstant($name)` | `includeFileConstant.php` | Läser en fil-konstant skriven av `defineFileConstant()` | restrictedLayer |
+| `initUserLdap($dbh)` | `initUserLdap.php` | Initierar användarinfo via LDAP (`$authMethod==='ldap'`). **Bieffekt:** skriver och stänger sessionen | news, authorization, export, restrictedLayer |
+| `insertIdSql($id, $tableName)` | `insertIdSql.php` | Bygger en `INSERT`-sats som skapar en ny rad med angivet id som primärnyckel, övriga kolumner tomma | manage (postButton-kommandot `create`) |
+| `isBasicTarget($target)` | `isBasicTarget.php` | Kontrollerar om en target är "basic" (värdet är en sträng/id) snarare än "full" (värdet är en config-array). Bygger på `isTarget()` | manage (target-infrastruktur) |
+| `isIdUniqueInTable($id, $tablePkColumn, $table)` | `isIdUniqueInTable.php` | Kontrollerar att ett id inte redan finns bland värdena i tabellens primärnyckelkolumn | manage (validering vid skapande) |
 | `isTarget($target)` | `isTarget.php` | Kontrollerar om en variabel har formen av ett giltigt "target" (se manage.md) | manage |
-| `targetType($target)` | `targetType.php` | Returnerar typen (nyckeln) för ett target | manage |
 | `makeTargetBasic($target)` | `makeTargetBasic.php` | Konverterar en full target till en basic target | manage (används flitigt i samtliga print*Form) |
-| `updated_from_table($dbh, $tableWithSchema)` | `updated_from_table.php` | Enklare variant av `updated_from_table2()` (updated-modulen); används av manage för att visa senaste ändringsdatum för en tabell | manage |
-| `includeDirectory($path)` | *(i `adm/functions/`, ej i `common/`)* | Laddar alla `.php`-filer i angiven mapp med `require_once` | samtliga moduler |
+| `pgArrayToPhp($pgArray)` | `pgArrayToPhp.php` | Konverterar Postgres arraysyntax (`{a,b,c}`) till PHP-array | news, export, writeConfig |
+| `pkColumnOfTable($table)` | `pkColumnOfTable.php` | Returnerar primärnyckelns kolumnnamn för en tabell | info, writeTablesForAllLayers, target-infrastruktur (targetId, targetIdColumn via targetTable), validateUpdate |
+| `readAndCloseSession()` | `readAndCloseSession.php` | Läser in `$_SESSION` och stänger sessionen | news, export |
+| `tableNamesFromSchema($dbh, $schema)` | `tableNamesFromSchema.php` | Listar tabellnamn i ett databasschema | read_schema_tables |
+| `targetType($target)` | `targetType.php` | Returnerar typen (nyckeln) för ett target | manage |
+| `toSwedish($string)` | `toSwedish.php` | Översätter interna typ-/kolumnnamn till svenska för visning | info, multiselect, printCopyButton, printDeleteButton, printAddOperation, printRemoveOperation, printHeadForm/Forms, validateUpdate |
+| `usedInMaps($dbh, $target, $checkedTargets=[], $usedInMaps=[])` | `usedInMaps.php` | Rekursivt: hittar alla kartor (`map`-target) som ett givet target ytterst ingår i, via `findAllParents()`. Håller reda på redan besökta targets för att undvika oändlig rekursion vid cirkulära referenser | manage (avgör vilka kartor som ska markeras `changed` vid en ändring) |
+| `includeDirectory($path)` | *(i `adm/functions/`, ej i `common/` — placerad sist, utanför den alfabetiska listan, eftersom den fysiskt hör hemma på en annan plats)* | Laddar alla `.php`-filer i angiven mapp med `require_once` | samtliga moduler |
 
-## Funktioner sedda men ej fullständigt beskrivna
-Namn bekräftade via användning i manage.php, fullständig beskrivning
-väntar tills respektive fil granskats: `targetConfig()` (används av
-`makeTargetFull()`).
+> **Not:** `tablesFromQgsXml()` och `updated_from_table()` beskrevs
+> tidigare felaktigt här som common-funktioner. Båda ligger i
+> `functions/manage/`, inte `functions/common/` — se manage.md. Samma
+> gäller `targetConfig()`, som också hör till `functions/manage/`.

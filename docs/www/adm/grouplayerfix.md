@@ -58,11 +58,13 @@ tillbaka baserat på filens ändringstid jämfört med TTL.
 
 ## Filer och funktioner
 
+*Sorterad alfabetiskt efter filnamn.*
+
 | Fil | Funktion | Beskrivning |
 |---|---|---|
 | `forwardToQgisServer.php` | `forwardToQgisServer($url, $params, $maxRetries = 4): array` | Skickar ett anrop till QGIS Server via curl, med retry vid transienta fel (ingen HTTP-status alls, d.v.s. nätverksfel – **inte** vid 4xx/5xx specifikt, se flaggning). Returnerar `['body' => ..., 'headers' => ...]` |
-| `getCachedProjectSettings.php` | `getCachedProjectSettings($qgisUrl): string` | Hämtar QGIS-projektets `GetProjectSettings`-XML, cachad (APCu eller fil) enligt TTL |
 | `getCachedDescribeFeatureType.php` | `getCachedDescribeFeatureType($qgisUrl, $typeName): string` | Hämtar describeFeatureType-JSON för ett enskilt lager, cachad enligt samma mönster |
+| `getCachedProjectSettings.php` | `getCachedProjectSettings($qgisUrl): string` | Hämtar QGIS-projektets `GetProjectSettings`-XML, cachad (APCu eller fil) enligt TTL |
 | `getLayerNamesInGroup.php` | `getLayerNamesInGroup($xml, $groupName): array` | Rekursiv, namespace-säker XPath-sökning: hittar alla "löv"-lagernamn under en given grupp i projekt-XML:en. Returnerar tom array om `$groupName` inte är en grupp |
 | `getResponseContentType.php` | `getResponseContentType($params): string` | Bestämmer Content-Type baserat på `outputFormat`-parametern, annars `text/xml`. **Verkar oanvänd** – se flaggning |
 

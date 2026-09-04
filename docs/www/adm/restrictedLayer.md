@@ -18,7 +18,7 @@ efter anropstyp, så att kartan i frontend visar inget innehåll för de
 lagren istället för att krascha.
 
 Fungerar oberoende av vilket autentiseringsspår (LDAP eller Azure/
-forwardauth) som satte `$_SESSION['user']` – se ARKITEKTUR.md.
+forwardauth) som satte `$_SESSION['user']` – se ARCHITECTURE.md.
 
 ## Anropas med
 `restrictedLayer.php?PATH=<sökväg>&<övriga WMS/WFS-parametrar>`
@@ -68,13 +68,15 @@ forwardauth-modulen).
 
 ## Filer och funktioner
 
+*Sorterad alfabetiskt efter filnamn.*
+
 | Fil | Funktion | Beskrivning |
 |---|---|---|
 | `authorization_filter.php` | `authorization_filter($layerNames): array` | Filtrerar en lista lagernamn till de som är antingen obegränsade eller där användaren är behörig. Returnerar array av lager-arrayer (inte bara namn) |
 | `authorization_names_filter.php` | `authorization_names_filter($layerNames): array` | Wrapper runt `authorization_filter()` som returnerar enbart lagernamnen |
-| `userAuthorized.php` | `userAuthorized($user, $restrictedLayer): bool` | Avgör om en given användare är behörig till ett specifikt skyddat lager, baserat på `authorized_users` (id-matchning) eller `authorized_groups` (någon gemensam grupp) |
 | `fetchWithStatus.php` | `fetchWithStatus($url, $context, $maxAttempts = 2): array` | Hämtar en URL, läser ut HTTP-statuskoden, gör om anropet vid 5xx-fel (max `$maxAttempts` försök, 150ms paus mellan försök). Returnerar `['content' => ..., 'status' => ...]` |
 | `finishError500.php` | `finishError500($cause)` | Avslutar requesten med HTTP 500 och texten "Rättigheter saknas!". **OBS:** `$cause`-parametern tas emot men används aldrig i funktionen – se flaggning |
+| `userAuthorized.php` | `userAuthorized($user, $restrictedLayer): bool` | Avgör om en given användare är behörig till ett specifikt skyddat lager, baserat på `authorized_users` (id-matchning) eller `authorized_groups` (någon gemensam grupp) |
 
 ## Kända begränsningar / observationer (ej åtgärdat ännu)
 

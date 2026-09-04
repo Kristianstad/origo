@@ -13,11 +13,20 @@ värdena till konstanter i nuläget. Observationerna nedan noterar ändå
 var dessa värden finns, för den som behöver hitta och ändra dem – inte
 som förslag på generalisering.
 
+**adm/export.php och adm/functions/export/ finns inte alls i den här
+arbetsytan** (bekräftat med filsökning, 0 träffar) — skillnaden mot
+"finns men är hemlig" är viktig: det är inte bara att koden är
+utelämnad ur det publika repot, filerna saknas helt lokalt också. Denna
+dokumentation beskriver modulen utifrån
+tidigare granskning i en miljö där filerna fanns, som referens för den
+organisation som äger den koden — inte utifrån filer som går att läsa
+i just detta arbetsytträd.
+
 **Relaterad, äldre variant:** `export.old.php` finns kvar i samma mapp
 men dokumenteras inte (se tidigare beslut att hoppa över `.old`-filer).
 Det finns även en delvis duplicerad kopia av flera av dessa
 funktionsfiler i den fristående `export/`-mappen på toppnivå (utanför
-`adm/`) – se anteckning i ARKITEKTUR.md om detta, följs upp vid
+`adm/`) – se anteckning i ARCHITECTURE.md om detta, följs upp vid
 loader-genomgången.
 
 ## Syfte

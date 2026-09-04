@@ -47,14 +47,16 @@ namnet kommer direkt från `$_GET['table']`.
 
 ## JS-filer och funktioner
 
+*Sorterad alfabetiskt efter filnamn.*
+
 | Fil | Funktion | Beskrivning |
 |---|---|---|
-| `update.js` | `update(menu)` | Körs vid ändring i select-listan. Räknar ut vad som lagts till/tagits bort, håller ordning på urvalsordningen i `data-sorted-values`, uppdaterar textarean |
+| `closeTopFrame.js` | `closeTopFrame()` | Skickar bara en `close`-signal (utan värde) till förälderfönstret |
+| `getCurrentSelection.js` | `getCurrentSelection()` | Läser och trimmar värdet från textarean `#selection` |
 | `makeSelectToggleOnly.js` | `makeSelectToggleOnly(selectId)` | Fångar `mousedown` i capture-fas för att göra vanligt klick till "toggla ett alternativ" istället för webbläsarens standard shift/ctrl-rangebeteende |
 | `selectOptionsByValues.js` | `selectOptionsByValues(selectId, optionValues)` | Förvalsmarkerar options baserat på en kommaseparerad sträng, körs vid sidladdning |
-| `getCurrentSelection.js` | `getCurrentSelection()` | Läser och trimmar värdet från textarean `#selection` |
 | `sendSelectionAndClose.js` | `sendSelectionAndClose(targetId)` | Läser aktuellt urval och skickar det + en `close`-signal till förälderfönstret via `postMessage` |
-| `closeTopFrame.js` | `closeTopFrame()` | Skickar bara en `close`-signal (utan värde) till förälderfönstret |
+| `update.js` | `update(menu)` | Körs vid ändring i select-listan. Räknar ut vad som lagts till/tagits bort, håller ordning på urvalsordningen i `data-sorted-values`, uppdaterar textarean |
 
 **Beroendekedja mellan JS-filerna:** `makeSelectToggleOnly` anropar
 `update` (global funktion, måste finnas laddad). `sendSelectionAndClose`
