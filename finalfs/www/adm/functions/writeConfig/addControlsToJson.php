@@ -4,31 +4,22 @@
 
 	function addControlsToJson($mapControls=null, &$mapCss='', &$mapJs='', &$mapOnload='')
 	{
-		GLOBAL $json, $map, $controls;
+		GLOBAL $map, $controls;
 		if (!isset($mapControls))
 		{
 			$mapControls = pgArrayToPhp($map['controls']);
 		}
-		$json = $json.'"controls": [';
-		$firstControl = true;
+		$controlsJson = array();
 		foreach ($mapControls as $control)
 		{
-			if ($firstControl)
-			{
-				$firstControl = false;
-			}
-			else
-			{
-				$json = $json.', ';
-			}
 			$control = array_column_search($control, 'control_id', $controls);
 			$controlName = trim(explode('#', $control['control_id'], 2)[0]);
-			$json = $json.'{ "name": "'.$controlName.'"';
+			$controlJson = array('name' => $controlName);
 			if (!empty($control['options']) && $control['options'] !== 'null')
 			{
-				$json = $json.', "options": '.$control['options'];
+				$controlJson['options'] = json_decode($control['options'], true);
 			}
-			$json = $json.' }';
+			$controlsJson[] = $controlJson;
 			if (!empty($control['css']))
 			{
 				$mapCss=$mapCss.$control['css'];
@@ -42,7 +33,7 @@
 				$mapOnload=$mapOnload."\n".$control['onload'];
 			}
 		}
-		$json = $json.']';
+		return $controlsJson;
 	}
 
 ?>

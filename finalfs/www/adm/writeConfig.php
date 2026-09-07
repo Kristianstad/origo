@@ -6,7 +6,7 @@ writeConfig.php
  ├─ includeDirectory("./functions/writeConfig")
  ├─ tolkar $_GET['map'] (mapId, ev. med "\"-separerad extra data – "swiper"-workaround)
  ├─ configTables($dbh)                       [common] → hämtar ALLA konfigtabeller på en gång, extract() till lokala variabler
- ├─ bygger upp $json som en STRÄNG (inte en PHP-array!) bit för bit:
+ ├─ bygger upp $configJson som en PHP-array:
  │    ├─ addControlsToJson()      [writeConfig] → kartkontroller (zoom, mätverktyg etc.)
  │    ├─ pageSettings (footer, mapGrid, embedded)
  │    ├─ projektion, extent, center, zoom, upplösningar
@@ -14,8 +14,8 @@ writeConfig.php
  │    ├─ groupDepth() + getArrayValuesRecursively() + indexweightedLayersList()  [writeConfig]
  │    │     → bygger och sorterar den fullständiga, platta listan av lager (rekursivt genom grupper)
  │    ├─ addGroupsToJson()        [writeConfig] → grupphierarki
- │    └─ addLayersToJson()        [writeConfig, EJ SEDD ÄNNU] → själva lagerlistan + metadata
- ├─ validerar den hopbyggda JSON-strängen med json_decode()
+ │    └─ addLayersToJson()        [writeConfig] → lagerlistan + metadata som PHP-array
+ ├─ serialiserar och validerar konfigurationen med json_encode()/json_decode()
  ├─ formaterar den snyggt med json_format()  [writeConfig]
  └─ två huvudlägen beroende på $_GET['getJson']/$_GET['getHtml']:
       ├─ getJson=y  → returnera bara JSON-konfigurationen (nedladdningsbar)
@@ -74,7 +74,7 @@ $configTables = configTables($dbh);
 extract($configTables);
 
 $map = array_column_search($mapId, 'map_id', $maps);
-$json = '{ ';
+$configJson = array();
 
 if (isset($map['css'])) {
 	$mapCss = $map['css'];
@@ -94,33 +94,45 @@ if (isset($map['onload'])) {
 
 if (!empty($map['controls'])) {
 	$mapControls = pgArrayToPhp($map['controls']);
-	addControlsToJson($mapControls, $mapCss, $mapJs, $mapOnload);
+	$configJson['controls'] = addControlsToJson($mapControls, $mapCss, $mapJs, $mapOnload);
 }
 
-$json = $json . ', ';
-
-// PageSettings <start>
-$json = $json . '"pageSettings": {';
+$pageSettings = array();
 if (!empty($map['footer'])) {
 	$footer = array_column_search($map['footer'], 'footer_id', $footers);
+	$footerJson = array(
+		'img' => $footer['img'],
+		'url' => $footer['url']
+	);
 	if (!empty($footer['text'])) {
-		$footerText = ', "text": "' . $footer['text'] . '"';
-	} else {
-		$footerText = '';
+		$footerJson['text'] = $footer['text'];
 	}
-	$json = $json . '"footer": { "img": "' . $footer['img'] . '", "url" : "' . $footer['url'] . '"' . $footerText . ' },';
+	$pageSettings['footer'] = $footerJson;
 }
-$json = $json . '"mapGrid": { "visible": ' . pgBoolToText($map['mapgrid']) . ' }';
-if ($map['embedded'] == 'f') {
-	$json = $json . ', "mapInteractions": { "embedded": ' . pgBoolToText($map['embedded']) . ' }';
-}
-$json = $json . ' },';
-// PageSettings </end>
 
-$json = $json . '"projectionCode": "' . $map['projectioncode'] . '", ';
+$pageSettings['mapGrid'] = array('visible' => $map['mapgrid'] === 't');
+if ($map['embedded'] == 'f') {
+	$pageSettings['mapInteractions'] = array('embedded' => false);
+}
+$configJson['pageSettings'] = $pageSettings;
+unset($pageSettings);
+
+$toJsonNumber = function ($value) {
+	return is_numeric($value) ? $value + 0 : $value;
+};
+
+$mapJson = array(
+	'projectionCode' => $map['projectioncode'],
+	'extent' => array_map($toJsonNumber, explode(',', pgBoxToText($map['extent']))),
+	'center' => array_map($toJsonNumber, explode(',', pgCoordsToText($map['center']))),
+	'zoom' => $toJsonNumber($map['zoom']),
+	'enableRotation' => $map['enablerotation'] === 't',
+	'constrainResolution' => $map['constrainresolution'] === 't',
+	'resolutions' => array_map($toJsonNumber, pgArrayToPhp($map['resolutions']))
+);
 if (!empty(array_column_search($map['projectioncode'], 'code', $proj4defs)['projectionextent'])) {
 	$mapProjectionExtent = pgBoxToText(array_column_search($map['projectioncode'], 'code', $proj4defs)['projectionextent']);
-	$json = $json . '"projectionExtent": [' . $mapProjectionExtent . '], ';
+	$mapJson['projectionExtent'] = array_map($toJsonNumber, explode(',', $mapProjectionExtent));
 } else {
 	if ($map['projectioncode'] != 'EPSG:3857' && $map['projectioncode'] != 'EPSG:4326') {
 		require("./constants/proxyRoot.php");
@@ -130,42 +142,33 @@ if (!empty(array_column_search($map['projectioncode'], 'code', $proj4defs)['proj
 	}
 }
 
-$json = $json . '"featureinfoOptions": ' . $map['featureinfooptions'] . ', ';
+$mapJson['featureinfoOptions'] = json_decode($map['featureinfooptions'], true);
+if (!empty($map['palette'])) {
+	$mapJson['palette'] = json_decode($map['palette'], true);
+}
 if (!empty($map['tilegrid'])) {
 	$tilegrid = array_column_search($map['tilegrid'], 'tilegrid_id', $tilegrids);
-	$json = $json . '"tileGridOptions": { "tileSize": ' . $tilegrid['tilesize'] . ' },';
+	$mapJson['tileGridOptions'] = array('tileSize' => $toJsonNumber($tilegrid['tilesize']));
 }
+$configJson = array_merge($configJson, $mapJson);
+unset($mapJson, $toJsonNumber);
 
 // Proj4Defs <start>
 $mapProj4defs = pgArrayToPhp($map['proj4defs']);
-$json = $json . '"proj4Defs": [';
-$firstProj4def = true;
+$proj4DefsJson = array();
 foreach ($mapProj4defs as $proj4def) {
-	if ($firstProj4def) {
-		$firstProj4def = false;
-	} else {
-		$json = $json . ', ';
-	}
 	$proj4def = array_column_search($proj4def, 'code', $proj4defs);
+	$proj4defJson = array(
+		'code' => $proj4def['code'],
+		'projection' => $proj4def['projection']
+	);
 	if (!empty($proj4def['alias'])) {
-		$proj4defAlias = ', "alias": "' . $proj4def['alias'] . '"';
-	} else {
-		$proj4defAlias = '';
+		$proj4defJson['alias'] = $proj4def['alias'];
 	}
-	$json = $json . '{ "code": "' . $proj4def['code'] . '", "projection": "' . $proj4def['projection'] . '"' . $proj4defAlias . ' }';
+	$proj4DefsJson[] = $proj4defJson;
 }
-$json = $json . '], ';
+$configJson['proj4Defs'] = $proj4DefsJson;
 // Proj4Defs </end>
-
-$json = $json . '"extent": [' . pgBoxToText($map['extent']) . '], ';
-$json = $json . '"center": [' . pgCoordsToText($map['center']) . '], ';
-$json = $json . '"zoom": ' . $map['zoom'] . ', ';
-$json = $json . '"enableRotation": ' . pgBoolToText($map['enablerotation']) . ', ';
-if (!empty($map['palette'])) {
-	$json = $json . '"palette": ' . $map['palette'] . ', ';
-}
-$json = $json . '"constrainResolution": ' . pgBoolToText($map['constrainresolution']) . ', ';
-$json = $json . '"resolutions": [ ' . pgArrayToText($map['resolutions']) . ' ]';
 
 $mapLayers = array();
 if (!empty(pgArrayToPhp($map['layers']))) {
@@ -190,11 +193,19 @@ $mapGroups = pgArrayToPhp($map['groups']);
 $mapLayerIds = groupDepth($mapGroups, $mapLayers);
 $mapLayersList = getArrayValuesRecursively($mapLayerIds);
 $mapLayersList = indexweightedLayersList($mapLayersList);
-addGroupsToJson($map['groups']);
-$json = $json . ', ';
+$groupsJson = addGroupsToJson($map['groups']);
+if (!empty($groupsJson)) {
+	$configJson['groups'] = $groupsJson;
+}
+unset($groupsJson);
 $layersMeta = array();
-addLayersToJson($mapLayersList, $layersMeta);
-$json = $json . ' }';
+$layersJson = addLayersToJson($mapLayersList, $layersMeta);
+$configJson['layers'] = $layersJson;
+$configJson['source'] = addSourcesToJson();
+$configJson['styles'] = addStylesToJson();
+$json = json_encode($configJson, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+unset($configJson);
+unset($layersJson);
 
 if (isset($_GET['badJson'])) {
 	header('Content-Type: application/octet-stream');
@@ -351,9 +362,9 @@ HERE;
 	} else {
 		fastcgi_finish_request();
 		if ($map['searchengineindexable'] == "t") {
-			$mapTitle = json_encode(trim($map['title'], " \t\n\r\0\x0B\""), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-			$mapAbstract = json_encode(trim($map['abstract'], " \t\n\r\0\x0B\""), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-			$mapUrl = trim(json_encode(trim($map['url'], " \t\n\r\0\x0B\""), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES), '"');
+			$mapTitle = trim($map['title'], " \t\n\r\0\x0B\"");
+			$mapAbstract = trim($map['abstract'], " \t\n\r\0\x0B\"");
+			$mapUrl = trim($map['url'], " \t\n\r\0\x0B\"");
 			$tmpMapKeywords = array_unique(array_filter(array_column($layersMeta, 'keywords')));
 			$mapKeywords = array();
 			foreach ($tmpMapKeywords as $layerKeywords) {
@@ -362,60 +373,48 @@ HERE;
 			$mapKeywords = array_unique($mapKeywords);
 			$mapKeywords = implode(',', $mapKeywords);
 
-			$structuredDataJson = <<<HERE
-			{
-				"@context": "https://schema.org",
-				"@type": "WebPage",
-				"name": {$mapTitle},
-				"description": {$mapAbstract},
-				"url": "{$mapUrl}",
-				"keywords": "{$mapKeywords}",
-				"about": [ 
-HERE;
-
-			$firstTitle = true;
+			$structuredData = array(
+				'@context' => 'https://schema.org',
+				'@type' => 'WebPage',
+				'name' => $mapTitle,
+				'description' => $mapAbstract,
+				'url' => $mapUrl,
+				'keywords' => $mapKeywords,
+				'about' => array()
+			);
 			foreach ($layersMeta as $lmeta) {
-				if ($firstTitle) {
-					$firstTitle = false;
-				} else {
-					$structuredDataJson = $structuredDataJson . ', ';
-				}
-				$structuredDataJson = $structuredDataJson . '{ "@type": "Thing", "name": "' . $lmeta['title'] . '"';
+				$layerStructuredData = array('@type' => 'Thing', 'name' => $lmeta['title']);
 				if (isset($lmeta['abstract']) && !empty($lmeta['abstract']) && $lmeta['abstract'] !== 'null') {
-					$structuredDataJson = $structuredDataJson . ', "description": "' . $lmeta['abstract'] . '"';
+					$layerStructuredData['description'] = $lmeta['abstract'];
 				}
 				if (isset($lmeta['keywords']) && !empty($lmeta['keywords']) && $lmeta['keywords'] !== 'null') {
-					$structuredDataJson = $structuredDataJson . ', "keywords": "' . $lmeta['keywords'] . '"';
+					$layerStructuredData['keywords'] = $lmeta['keywords'];
 				}
-				$structuredDataJson = $structuredDataJson . ' }';
+				$structuredData['about'][] = $layerStructuredData;
 			}
 
 			require("./constants/searchEngineMeta.php");
-			$structuredDataJson = $structuredDataJson . <<<HERE
-				],
-				"geo": {
-					"@type": "GeoCoordinates",
-					"latitude": {$geoLatitude},
-					"longitude": {$geoLongitude}
-				},
-				"contentLocation": {
-					"@type": "Place",
-					"name": "{$contentLocationName}",
-					"address": {
-						"@type": "PostalAddress",
-						"addressLocality": "{$contentLocationAddressLocality}",
-						"addressCountry": "{$contentLocationAddressCountry}"
-					}
-				},
-				"publisher": {
-					"@type": "Organization",
-					"name": "{$publisherName}",
-					"url": "{$publisherUrl}"
-				}
-			}
-HERE;
+			$structuredData['geo'] = array(
+				'@type' => 'GeoCoordinates',
+				'latitude' => $geoLatitude + 0,
+				'longitude' => $geoLongitude + 0
+			);
+			$structuredData['contentLocation'] = array(
+				'@type' => 'Place',
+				'name' => $contentLocationName,
+				'address' => array(
+					'@type' => 'PostalAddress',
+					'addressLocality' => $contentLocationAddressLocality,
+					'addressCountry' => $contentLocationAddressCountry
+				)
+			);
+			$structuredData['publisher'] = array(
+				'@type' => 'Organization',
+				'name' => $publisherName,
+				'url' => $publisherUrl
+			);
 
-			$structuredDataJson = json_encode(json_decode($structuredDataJson), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+			$structuredDataJson = json_encode($structuredData, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 			$html = $html . <<<HERE
 		<script type="application/ld+json">
 {$structuredDataJson}

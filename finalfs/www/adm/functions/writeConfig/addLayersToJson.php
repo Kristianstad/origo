@@ -16,17 +16,14 @@ addLayersToJson($mapLayersList, &$layersMeta, $groupLayer=false)
  │    │    "utökad" legend, samt hanterar "tematisk stil" (thematicStyling)
  │    └─ samlar ihop unika källor ($mapSources) och stilar ($mapStyles) som
  │         används av hela kartan (konsumeras sedan av addSourcesToJson/addStylesToJson)
- └─ (endast vid toppnivå, ej rekursivt anrop) avslutar med att anropa
-      addSourcesToJson() och addStylesToJson() – alltså är addLayersToJson()
-      den funktion som "startar" hela resten av JSON-genereringen för
-      källor och stilar, inte writeConfig.php direkt
+ └─ returnerar lager-arrayen; writeConfig.php serialiserar därefter
+	 lager, källor och stilar som separata JSON-block
 */
 
 	function addLayersToJson($mapLayersList, &$layersMeta, $groupLayer=false)
 	{
-		GLOBAL $map, $layers, $json, $mapStyles, $mapSources, $sources, $services, $mapStyleLayers, $contacts, $origins, $tables;
-		$json = $json. '"layers": [ ';
-		$firstLayer = true;
+		GLOBAL $map, $layers, $mapStyles, $mapSources, $sources, $services, $mapStyleLayers, $contacts, $origins, $tables;
+		$layersJson = array();
 		if (!isset($mapSources))
 		{
 			$mapSources = array();
@@ -51,14 +48,6 @@ addLayersToJson($mapLayersList, &$layersMeta, $groupLayer=false)
 			{
 				$group='root';
 				$layerId=$listItem[0];
-			}
-			if ($firstLayer)
-			{
-				$firstLayer = false;
-			}
-			else
-			{
-				$json = $json.', ';
 			}
 			$layer = array_column_search($layerId, 'layer_id', $layers);
 			$layersMeta[]=array('title'=>trim(json_encode(trim($layer['title'], " \t\n\r\0\x0B\""), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES), '"'), 'abstract'=>trim(json_encode(trim($layer['abstract'], " \t\n\r\0\x0B\""), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES), '"'), 'keywords'=>trim(json_encode(str_replace(array("'", "\""), '', trim($layer['keywords'], " \t\n\r\0\x0B\"{}")), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES), '"'));
@@ -102,18 +91,22 @@ addLayersToJson($mapLayersList, &$layersMeta, $groupLayer=false)
 			}
 			// Set default values </end>
 			$layerName = trim(explode('#', $layer['layer_id'], 2)[0]);
-			$json = $json.'{ "name": "'.$layerName.'", "title": "'.$layer['title'].'", "type": "'.$layer['type'].'"';
+			$layerJson = array(
+				'name' => $layerName,
+				'title' => $layer['title'],
+				'type' => $layer['type']
+			);
 			if (!$groupLayer)
 			{
-				$json = $json.', "group": "'.$group.'"';
+				$layerJson['group'] = $group;
 			}
 			if (!empty($layer['format']) && $layer['format'] !== 'image/png')
 			{
-				$json = $json.', "format": "'.$layer['format'].'"';
+				$layerJson['format'] = $layer['format'];
 			}
 			if (!empty($layer['attribution']))
 			{
-				$json = $json.', "attribution": "'.$layer['attribution'].'"';
+				$layerJson['attribution'] = $layer['attribution'];
 			}
 			if (!empty($layer['style_layer']))
 			{
@@ -125,93 +118,91 @@ addLayersToJson($mapLayersList, &$layersMeta, $groupLayer=false)
 				}
 				if ($styleLayer['show_icon'] != 'f' || $styleLayer['show_iconext'] == 't' || $layer['type'] == 'GROUP' || $layer['type'] == 'GEOJSON')
 				{
-					$json = $json.', "style": "'.$layer['style_layer'].'"';
+					$layerJson['style'] = $layer['style_layer'];
 				}
 			}
 			if ($layer['queryable'] == 'f')
 			{
-				$json = $json.', "queryable": false';
+				$layerJson['queryable'] = false;
 			}
 			if ($layer['visible'] == 't')
 			{
-				$json = $json.', "visible": true';
+				$layerJson['visible'] = true;
 			}
 			elseif ($layer['visible'] == 'f')
 			{
-				$json = $json.', "visible": false';
+				$layerJson['visible'] = false;
 			}
 			if ($layer['swiper'] == 't')
 			{
-				$json = $json.', "isSwiperLayer": true';
+				$layerJson['isSwiperLayer'] = true;
 			}
 			elseif ($layer['swiper'] == 'under')
 			{
-				$json = $json.', "isUnderSwiper": true';
+				$layerJson['isUnderSwiper'] = true;
 			}
 			if (empty($group) && $layer['legend'] == 't')
 			{
-				$json = $json.', "legend": true';
+				$layerJson['legend'] = true;
 			}
 			if (isset($layer['opacity']) && $layer['opacity'] < 1)
 			{
-				$json = $json.', "opacity": '.$layer['opacity'];
+				$layerJson['opacity'] = $layer['opacity'] + 0;
 			}
 			if ($layer['type'] == 'GEOJSON')
 			{
-				$json = $json.', "source": "'.$source['file'].'"';
-				$json = $json.', "headers": { "Accept": "application/geo+json" }';
+				$layerJson['source'] = $source['file'];
+				$layerJson['headers'] = array('Accept' => 'application/geo+json');
 			}
 			else
 			{
 				if ($layer['type'] != 'OSM')
 				{
-					$json = $json.', "source": "'.$layer['source'].'"';
+					$layerJson['source'] = $layer['source'];
 					if ($layer['type'] == 'WMS')
 					{
 						if (!empty($layer['gutter']))
 						{
-							$json = $json.', "gutter": '.$layer['gutter'];
+							$layerJson['gutter'] = $layer['gutter'] + 0;
 						}
 						if ($layer['tiled'] == 'f')
 						{
-							$json = $json.', "renderMode": "image"';
+							$layerJson['renderMode'] = 'image';
 						}
 						if (!empty($layer['featureinfolayer']))
 						{
-							$json = $json.', "featureinfoLayer": "'.$layer['featureinfolayer'].'"';
+							$layerJson['featureinfoLayer'] = $layer['featureinfolayer'];
 						}
 					}
 					elseif ($layer['type'] == 'WFS')
 					{
-						$json = $json.', "projection": "EPSG:4326"';
+						$layerJson['projection'] = 'EPSG:4326';
 						if ($layer['editable'] == 't')
 						{
-							$json = $json.', "editable": true';
+							$layerJson['editable'] = true;
 							if (!empty($layer['allowededitoperations']))
 							{
 								$allowededitoperations=explode(',', str_replace(["\r\n", "\r", "\n", ' ', '"', '[', ']'], '', $layer['allowededitoperations']));
-								array_walk($allowededitoperations, function(&$value, $key) { $value = '"'.$value.'"'; });
-								$json = $json.', "allowedEditOperations": ['.implode(',', $allowededitoperations).']';
+								$layerJson['allowedEditOperations'] = $allowededitoperations;
 								unset($allowededitoperations);
 							}
 							if (!empty($layer['geometryname']))
 							{
-								$json = $json.', "geometryName": "'.$layer['geometryname'].'"';
+								$layerJson['geometryName'] = $layer['geometryname'];
 							}
 							if (!empty($layer['geometrytype']))
 							{
-								$json = $json.', "geometryType": "'.$layer['geometrytype'].'"';
+								$layerJson['geometryType'] = $layer['geometrytype'];
 							}
 							if (!empty($layer['featurelistattributes']))
 							{
 								$featurelistattributes=explode(',', str_replace(["\r\n", "\r", "\n", ' ', '"', '[', ']'], '', $layer['featurelistattributes']));
-								array_walk($featurelistattributes, function(&$value, $key) { $value = '"'.$value.'"'; });
-								$json = $json.', "featureListAttributes": ['.implode(',', $featurelistattributes).']';
+								$layerJson['featureListAttributes'] = $featurelistattributes;
 								unset($featurelistattributes);
 							}
 							if (!empty($layer['drawtools']))
 							{
-								$json = $json.', "drawTools": '.$layer['drawtools'];
+								$layerJson['drawTools'] = json_decode($layer['drawtools'], true);
 							}
 						}
 					}
@@ -244,6 +235,7 @@ addLayersToJson($mapLayersList, &$layersMeta, $groupLayer=false)
 			{
 				$beskr=$beskr." <a href='".$layer['web']."' target='_blank'>Mer info.</a>";
 			}
+			$abstract = '';
 			if ($layer['show_meta'] != 'f')
 			{
 				if ($map['show_meta'] == 't')
@@ -282,71 +274,65 @@ addLayersToJson($mapLayersList, &$layersMeta, $groupLayer=false)
 					{
 						$originStr='';
 					}
-					$json = $json.', "abstract": "<b>Beskrivning: </b>'.$beskr.'<br><b>Resurser: </b>';
+					$abstract = '<b>Beskrivning: </b>'.$beskr.'<br><b>Resurser: </b>';
 					$layerTables=trim($layer['tables'], '{}');
 					if (empty($layer['resources']))
 					{
-						$json = $json.str_replace(',', ', ', $layerTables);
+						$abstract .= str_replace(',', ', ', $layerTables);
 					}
 					else
 					{
-						$json = $json.$layer['resources'];
+						$abstract .= $layer['resources'];
 					}
-					$json = $json.'<br><b>Kontakt: </b>'.$contactStr.'<br><b>Källa: </b>'.$originStr.'<br>';
+					$abstract .= '<br><b>Kontakt: </b>'.$contactStr.'<br><b>Källa: </b>'.$originStr.'<br>';
 					if (!empty($layer['updated']))
 					{
-						$json = $json.'<b>Uppdaterad: </b>'.$layer['updated'];
+						$abstract .= '<b>Uppdaterad: </b>'.$layer['updated'];
 					}
 					elseif (!empty($layerTables))
 					{
-						$json = $json."<b>Uppdaterad: </b><iframe id='".$layer['layer_id']."uppd' src='' style='display:none;width:6em;height:1em;padding-top:3px'></iframe><button onclick='var iframe=document.getElementById(\\\"".$layer['layer_id']."uppd\\\");iframe.src=\\\"/php/updated/updated-loader.php?table=".$layerTables."\\\";iframe.style.display=null;this.style.display=\\\"none\\\";'>Visa</button>";
+						$abstract .= "<b>Uppdaterad: </b><iframe id='".$layer['layer_id']."uppd' src='' style='display:none;width:6em;height:1em;padding-top:3px'></iframe><button onclick='var iframe=document.getElementById(\\\"".$layer['layer_id']."uppd\\\");iframe.src=\\\"/php/updated/updated-loader.php?table=".$layerTables."\\\";iframe.style.display=null;this.style.display=\\\"none\\\";'>Visa</button>";
 					}
-					$json = $json.'<br>';
+					$abstract .= '<br>';
 					unset($layerTables);
 				}
 				else
 				{
-					$json = $json.', "abstract": "';
 					if (!empty($beskr))
 					{
-						$json = $json.$beskr.'<br>';
+						$abstract = $beskr.'<br>';
 					}
 				}
 			}
-			else
-			{
-				$json = $json.', "abstract": "';
-			}
 			$adminForm="<form action='".parse_url($_SERVER["HTTP_REFERER"], PHP_URL_PATH)."?view=Origo' method='post' target='_blank'><button type='submit' name='layerId' value='".$layer['layer_id']."' style='float:right; color:blue'>Administrera</button></form>";
-			$json = $json.$adminForm.'"';
+			$layerJson['abstract'] = $abstract.$adminForm;
 			if (!empty($layer['attributes']) && $layer['type'] !== 'GROUP')
 			{
-				$json = $json.', "attributes": '.$layer['attributes'];
+				$layerJson['attributes'] = json_decode($layer['attributes'], true);
 			}
 			if (!empty($layer['maxscale']))
 			{
-				$json = $json.', "maxScale": '.$layer['maxscale'];
+				$layerJson['maxScale'] = $layer['maxscale'] + 0;
 			}
 			if (!empty($layer['minscale']))
 			{
-				$json = $json.', "minScale": '.$layer['minscale'];
+				$layerJson['minScale'] = $layer['minscale'] + 0;
 			}
 			if (!empty($layer['layertype']) && $layer['layertype'] !== 'vector')
 			{
-				$json = $json.', "layerType": "'.$layer['layertype'].'"';
+				$layerJson['layerType'] = $layer['layertype'];
 				if ($layer['layertype'] == 'cluster')
 				{
-					$json = $json.', "clusterStyle": "'.$layer['style_layer'].'-cluster"';
+					$layerJson['clusterStyle'] = $layer['style_layer'].'-cluster';
 					if (!empty($layer['clusteroptions']) && $layer['clusteroptions'] !== '{}')
 					{
-						$json = $json.', "clusterOptions": '.$layer['clusteroptions'];
+						$layerJson['clusterOptions'] = json_decode($layer['clusteroptions'], true);
 					}
 				}
 			}
 			if ($layer['type'] === 'GROUP')
 			{
-				$json = $json.', ';
-				addLayersToJson(pgArrayToPhp($layer['layers']), $layersMeta, true);
+				$layerJson['layers'] = addLayersToJson(pgArrayToPhp($layer['layers']), $layersMeta, true);
 			}
 			if (!empty($layer['source']) && !in_array($layer['source'], $mapSources))
 			{
@@ -433,10 +419,10 @@ addLayersToJson($mapLayersList, &$layersMeta, $groupLayer=false)
 						if (($styleLayer['show_iconext'] != 't' || empty($styleLayer['icon_extended'])) && $layer['type'] != 'GROUP')
 						{
 							unset($styleLayer['icon_extended']);
-							$json = $json.', "hasThemeLegend":true';
+							$layerJson['hasThemeLegend'] = true;
 							if ($styleLayer['thematicstyling'] == 't')
 							{
-								$json .= ', "thematicStyling":true';
+								$layerJson['thematicStyling'] = true;
 								$legendParams = [
 									'FORMAT'         => 'image/png',
 									'LAYERTITLE'     => true,
@@ -446,7 +432,7 @@ addLayersToJson($mapLayersList, &$layersMeta, $groupLayer=false)
 								if ($iconTtl !== '-1') {
 									$legendParams['ttl'] = $iconTtl;
 								}
-								$json .= ', "legendParams": ' . json_encode($legendParams);
+								$layerJson['legendParams'] = $legendParams;
 							}
 							else
 							{
@@ -472,7 +458,7 @@ addLayersToJson($mapLayersList, &$layersMeta, $groupLayer=false)
 								if ($restricted) {
 									$legendParams['restricted'] = 't';
 								}
-								$json .= ', "legendParams": ' . json_encode($legendParams);
+								$layerJson['legendParams'] = $legendParams;
 							}
 						}
 					}
@@ -511,14 +497,7 @@ addLayersToJson($mapLayersList, &$layersMeta, $groupLayer=false)
 					}
 				}
 			}
-			$json = $json.'}';
+			$layersJson[] = $layerJson;
 		}
-		$json = $json.' ]';
-		if (!$groupLayer)
-		{
-			$json = $json.', ';
-			addSourcesToJson();
-			$json = $json.', ';
-			addStylesToJson();
-		}
+		return $layersJson;
 	}

@@ -2,53 +2,43 @@
 
 	function addStylesToJson()
 	{
-		GLOBAL $mapStyles, $styles, $json, $mapSources;
-		$json = $json.'"styles": {';
-		$firstStyle = true;
+		GLOBAL $mapStyles, $styles, $mapSources;
+		$stylesJson = array();
 		foreach ($mapStyles as $style)
 		{
-			if ($firstStyle)
-			{
-				$firstStyle = false;
-			}
-			else
-			{
-				$json = $json.', ';
-			}
-			$json = $json.'"'.$style['layer_id'].'": ';
 			if (!empty($style['style_config']) && $style['style_config'] != '[]' && $style['style_config'] != '{}' && $style['style_config'] != '""' && $style['style_config'] != 'null')
 			{
-				$json = $json.$style['style_config'];
+				$stylesJson[$style['layer_id']] = json_decode($style['style_config'], true);
 			}
 			else
 			{
-				$json = $json.'[ [ {';
+				$styleJson = array();
 				if (!empty($style['label']))
 				{
-					$json = $json.'"label": "'.$style['label'].'", ';
+					$styleJson['label'] = $style['label'];
 				}
 				if (!empty($style['icon']))
 				{
 					if (substr($style['layer_id'], -strlen('-bg'))==='-bg' || (empty($style['icon_extended']) && $style['type'] != 'WFS'))
 					{
-						$json = $json.'"image": { "src": "'.$style['icon'].'" }';
+						$styleJson['image'] = array('src' => $style['icon']);
 					}
 					else
 					{
-						$json = $json.'"icon": { "src": "'.$style['icon'].'" }';
+						$styleJson['icon'] = array('src' => $style['icon']);
 					}
 				}
 				if (!empty($style['style_filter']))
 				{
-					$json = $json.', "filter": "'.$style['style_filter'].'"';
+					$styleJson['filter'] = $style['style_filter'];
 				}
-				$json = $json.' }';
+				$styleJsonLayers = array($styleJson);
 				if (substr($style['layer_id'], -strlen('-bg'))!=='-bg' && !empty($style['icon_extended']))
 				{
-					$json = $json.',{ "icon": { "src": "'.$style['icon_extended'].'" }, "extendedLegend": true }';
+					$styleJsonLayers[] = array('icon' => array('src' => $style['icon_extended']), 'extendedLegend' => true);
 				}
- 				$json = $json.']]';
+				$stylesJson[$style['layer_id']] = array($styleJsonLayers);
 			}
 		}
-		$json = $json.' }';
+		return $stylesJson;
 	}

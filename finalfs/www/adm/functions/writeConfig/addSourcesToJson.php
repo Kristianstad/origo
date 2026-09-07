@@ -6,29 +6,20 @@
 
 	function addSourcesToJson()
 	{
-		GLOBAL $json, $mapSources, $map, $sources, $services, $tilegrids;
+		GLOBAL $mapSources, $map, $sources, $services, $tilegrids;
 		require("./constants/sourcesQueryColumns.php");
-		$json = $json.'"source": { ';
+		$sourcesJson = array();
 		if (!is_array($mapSources))
 		{
 			$mapSources = pgArrayToPhp($mapSources);
 		}
 
 		$mapSources = array_unique($mapSources);
-		$firstSource = true;
 		foreach ($mapSources as $sourceId)
 		{
 			$source = array_column_search(trim(explode('@', $sourceId, 2)[0]), 'source_id', $sources);
 			if (!empty($source))
 			{
-				if ($firstSource)
-				{
-					$firstSource = false;
-				}
-				else
-				{
-					$json = $json.', ';
-				}
 				$type = array_column_search($source['service'], 'service_id', $services, 'type');
 				$url = array_column_search($source['service'], 'service_id', $services, 'base_url');
 				$restricted = array_column_search($source['service'], 'service_id', $services, 'restricted');
@@ -56,22 +47,22 @@
 				if (!empty($queryParams)) {
 					$url .= '?' . http_build_query($queryParams);
 				}
-				$json = $json.'"'.$sourceId.'": { "url": "'.$url.'"';
+				$sourceJson = array('url' => $url);
 				if ($wfsSource)
 				{
-					$json = $json.', "workspace": "qgs"';
+					$sourceJson['workspace'] = 'qgs';
 				}
 				if (!empty($type))
 				{
-					$json = $json.', "type": "'.$type.'"';
+					$sourceJson['type'] = $type;
 				}
 				if (!empty($source['tilegrid']))
 				{
 					$tilegrid = array_column_search($source['tilegrid'], 'tilegrid_id', $tilegrids);
-					$json = $json.', "tileGrid": { ';
+					$tileGridJson = array();
 					if (!empty($tilegrid['tilesize']))
 					{
-						$json = $json.'"tileSize": '.$tilegrid['tilesize'].', ';
+						$tileGridJson['tileSize'] = is_numeric($tilegrid['tilesize']) ? $tilegrid['tilesize'] + 0 : $tilegrid['tilesize'];
 					}
 					if (!empty($tilegrid['resolutions']))
 					{
@@ -81,7 +72,9 @@
 					{
 						$resolutions=$map['resolutions'];
 					}
-					$json = $json.'"resolutions": [ '.pgArrayToText($resolutions).' ], ';
+					$tileGridJson['resolutions'] = array_map(function ($value) {
+						return is_numeric($value) ? $value + 0 : $value;
+					}, pgArrayToPhp($resolutions));
 					if (!empty($tilegrid['extent']))
 					{
 						$extent=$tilegrid['extent'];
@@ -90,11 +83,13 @@
 					{
 						$extent=$map['extent'];
 					}
-					$json = $json.'"extent": ['.pgBoxToText($extent).'] ';
-					$json = $json.'}';
+					$tileGridJson['extent'] = array_map(function ($value) {
+						return is_numeric($value) ? $value + 0 : $value;
+					}, explode(',', pgBoxToText($extent)));
+					$sourceJson['tileGrid'] = $tileGridJson;
 				}
-				$json = $json.'}';
+				$sourcesJson[$sourceId] = $sourceJson;
 			}
 		}
-		$json = $json.' }';
+		return $sourcesJson;
 	}

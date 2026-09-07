@@ -66,12 +66,12 @@ skriver `maps.changed = 'f'` (via `markMapUnchanged`).
 
 | Fil | Funktion | Beskrivning |
 |---|---|---|
-| `addControlsToJson.php` | `addControlsToJson($mapControls=null, &$mapCss, &$mapJs, &$mapOnload)` | Bygger JSON-arrayen för kartkontroller, samlar även ihop respektive kontrolls CSS/JS/onload-kod i de refererade variablerna |
-| `addGroupsToJson.php` | `addGroupsToJson($mapGroups)` | Rekursivt: bygger JSON för grupphierarkin, bygger samtidigt upp `$mapLayers` (global) med vilka lager som hör till varje grupp |
-| `addLayersToJson.php` | `addLayersToJson($mapLayersList, &$layersMeta, $groupLayer=false)` | Den mest centrala och komplexa funktionen i modulen (506 rader). Bygger JSON för varje lager: grundfält, typspecifik logik (WMS/WFS/GEOJSON), en sammansatt HTML-"abstract"-beskrivning, legend-/ikon-URL:er mot bakomliggande WMS-tjänst, hantering av klusterstilar. Rekursiv för GROUP-lager. Samlar även ihop `$mapSources`/`$mapStyles` och avslutar (vid toppnivåanrop) med att trigga `addSourcesToJson()`/`addStylesToJson()` |
+| `addControlsToJson.php` | `addControlsToJson($mapControls=null, &$mapCss, &$mapJs, &$mapOnload): array` | Bygger en PHP-array för kartkontroller, samlar även ihop respektive kontrolls CSS/JS/onload-kod i de refererade variablerna |
+| `addGroupsToJson.php` | `addGroupsToJson($mapGroups): array` | Rekursivt: bygger en PHP-array för grupphierarkin, bygger samtidigt upp `$mapLayers` (global) med vilka lager som hör till varje grupp |
+| `addLayersToJson.php` | `addLayersToJson($mapLayersList, &$layersMeta, $groupLayer=false): array` | Den mest centrala och komplexa funktionen i modulen. Bygger en PHP-array för varje lager: grundfält, typspecifik logik (WMS/WFS/GEOJSON), en sammansatt HTML-"abstract"-beskrivning, legend-/ikon-URL:er mot bakomliggande WMS-tjänst och hantering av klusterstilar. Rekursiv för GROUP-lager. Samlar även ihop `$mapSources`/`$mapStyles`; källor och stilar serialiseras därefter av `writeConfig.php` |
 | `addPlugins.php` | `addPlugins($mapPlugins=null, &$mapCssFiles, &$mapJsFiles, &$mapCss, &$mapJs, &$mapOnload)` | Samlar ihop JS/CSS (inline och som filer) samt onload-kod för varje aktiverat plugin |
-| `addSourcesToJson.php` | `addSourcesToJson()` | Bygger JSON för datakällor (`source`), inkl. URL-uppbyggnad, tile grid-inställningar, query-parametrar. Läser globalt (`GLOBAL`) istället för parametrar |
-| `addStylesToJson.php` | `addStylesToJson()` | Bygger JSON för lagerstilar. Om `style_config` saknas i databasen, byggs en enkel standardstil (label/ikon/filter) istället |
+| `addSourcesToJson.php` | `addSourcesToJson(): array` | Bygger en PHP-array för datakällor (`source`), inkl. URL-uppbyggnad, tile grid-inställningar och query-parametrar. Läser globalt (`GLOBAL`) istället för parametrar |
+| `addStylesToJson.php` | `addStylesToJson(): array` | Bygger en PHP-array för lagerstilar. Om `style_config` saknas i databasen, byggs en enkel standardstil (label/ikon/filter) istället |
 | `array_move.php` | `array_move(&$a, $oldpos, $newpos)` | Generisk hjälpfunktion: flyttar ett element i en array från ett index till ett annat |
 | `compressBrotli.php` | `compressBrotli(string $data): ?string` | Komprimerar med Brotli om PHP-tillägget finns, annars `null` |
 | `compressGzip.php` | `compressGzip(string $data): ?string` | Komprimerar med gzip (nivå 9) |
@@ -123,23 +123,13 @@ prestandaoptimering för statiska filer.
 
 ## Kända begränsningar / observationer (preliminära – gäller granskade filer)
 
-- **⚠️ JSON byggs som strängkonkatenering, inte som PHP-array +
-  `json_encode()`.** Hela `$json`-variabeln i `writeConfig.php` byggs
-  upp bit för bit med `.` -konkatenering av handskriven JSON-syntax
-  (citattecken, kommatecken, hakparenteser skrivs manuellt). Detta gäller
-  genomgående i `addControlsToJson`, `addGroupsToJson`, `addSourcesToJson`,
-  `addStylesToJson` m.fl. Risk: databasvärden (titlar, abstracts, etc.)
-  som innehåller citattecken eller specialtecken kan **förstöra JSON-
-  strukturen** om de inte är korrekt escapade innan de når databasen.
-  `writeConfig.php` validerar visserligen den färdiga strängen med
-  `json_decode($json) === null` och visar ett felmeddelande om den är
-  trasig – men detta upptäcker bara att något gick fel, inte *vilket*
-  fält som orsakade det, vilket gör felsökning svårt för en
-  administratör som fyllt i en titel med ett citattecken i. **Detta är
-  den enskilt största kandidaten för förenkling** i hela modulen:
-  bygga upp en vanlig PHP-array/associativ struktur och avsluta med ett
-  enda `json_encode()`-anrop skulle eliminera hela denna kategori av
-  buggar. Stor omskrivning dock, inte en snabb fix.
+- **Fas 3 JSON-konvertering klar:** hela kartkonfigurationen byggs nu som
+  PHP-arrayer, inklusive kontroller, `pageSettings`, kartmetadata,
+  proj4-definitioner, grupper, lager, sources och styles, och serialiseras
+  med `json_encode()`. SEO-blockets JSON-LD byggs också som array och
+  serialiseras separat. CSS-, JS- och onload-bihang hanteras fortfarande
+  via befintliga referensparametrar. Sitemap-filen är XML och byggs därför
+  fortsatt som XML-text.
 - **Tung användning av globala variabler (`GLOBAL`)** genomgående i
   writeConfig-funktionerna (`$json`, `$map`, `$groups`, `$layers`,
   `$sources`, `$services`, `$tilegrids`, `$mapLayers`, `$mapSources`,
@@ -237,19 +227,13 @@ prestandaoptimering för statiska filer.
   `pgArrayToText`, `pgBoolToText`, `pgBoxToText`, `pgCoordsToText` har
   ingen alls – ytterligare bekräftelse på åldersskiktning inom samma
   funktionsmapp.
-- **⚠️ HTML byggs ihop och klistras in som ett enda JSON-strängvärde**
-  för `"abstract"`-fältet: kontaktinfo, källinfo, tabellbeskrivningar och
-  en hel `<form>` med inbäddad "Administrera"-knapp slås ihop till en
-  lång HTML-sträng som sedan skrivs rakt in i JSON-strängen
-  (`$json = $json.', "abstract": "..."'`). Detta är samma
-  grundproblem som flaggades för hela writeConfig-modulen (JSON byggd
-  genom strängkonkatenering), men här i sin mest utsatta form: om något
-  av de sammansatta fälten (kontaktnamn, tabellbeskrivning, URL) någonsin
-  innehåller ett citattecken eller nyrad som inte är escapad, kollapsar
-  hela JSON-strukturen för hela kartan – inte bara för det enskilda
-  lagret. Detta är sannolikt förklaringen till varför
-  `writeConfig.php` har sin `badJson=y`-felsökningsmekanism inbyggd:
-  ett indicium på att detta faktiskt inträffar i praktiken ibland.
+- **HTML byggs ihop som ett enda JSON-strängvärde** för `"abstract"`-fältet:
+  kontaktinfo, källinfo, tabellbeskrivningar och en hel `<form>` med
+  inbäddad "Administrera"-knapp slås ihop till en lång HTML-sträng.
+  Strängen läggs nu in i en PHP-array och escapes av `json_encode()`, så
+  citattecken och radbrytningar förstör inte längre JSON-strukturen. HTML-
+  innehållets egen säkerhet och presentation är fortfarande en separat
+  fråga.
 - **`$adminForm`-HTML:en bäddar in en hel `<form>`-tagg i
   `"abstract"`-strängen**, inklusive ett `<button>` som postar tillbaka
   till samma sida med lagrets id. Fungerar, men gör "abstract"-fältet
