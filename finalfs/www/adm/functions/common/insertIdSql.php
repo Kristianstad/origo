@@ -8,7 +8,10 @@
 	{
 		require("./constants/configSchema.php");
 		$tablePkColumn=pkColumnOfTable($tableName);
-		return "INSERT INTO $configSchema.$tableName($tablePkColumn) VALUES ('".$id."')";
+		return array(
+			'sql' => "INSERT INTO $configSchema.$tableName($tablePkColumn) VALUES ($1)",
+			'params' => array($id)
+		);
 	}
 
 ?>

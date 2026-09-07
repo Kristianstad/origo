@@ -22,7 +22,7 @@
 | `getCookieOptions($expiryTimestamp)` | `getCookieOptions.php` | Bygger cookie-inställningar (path/domain/secure/httponly/samesite) | authorization |
 | `includeFileConstant($name)` | `includeFileConstant.php` | Läser en fil-konstant skriven av `defineFileConstant()` | restrictedLayer |
 | `initUserLdap($dbh)` | `initUserLdap.php` | Initierar användarinfo via LDAP (`$authMethod==='ldap'`). **Bieffekt:** skriver och stänger sessionen | news, authorization, export, restrictedLayer |
-| `insertIdSql($id, $tableName)` | `insertIdSql.php` | Bygger en `INSERT`-sats som skapar en ny rad med angivet id som primärnyckel, övriga kolumner tomma | manage (postButton-kommandot `create`) |
+| `insertIdSql($id, $tableName)` | `insertIdSql.php` | Bygger en parameteriserad `INSERT`-sats som skapar en ny rad med angivet id som primärnyckel, övriga kolumner tomma; returnerar SQL och parametrar | manage (postButton-kommandona `create`/`copy`) |
 | `isBasicTarget($target)` | `isBasicTarget.php` | Kontrollerar om en target är "basic" (värdet är en sträng/id) snarare än "full" (värdet är en config-array). Bygger på `isTarget()` | manage (target-infrastruktur) |
 | `isIdUniqueInTable($id, $tablePkColumn, $table)` | `isIdUniqueInTable.php` | Kontrollerar att ett id inte redan finns bland värdena i tabellens primärnyckelkolumn | manage (validering vid skapande) |
 | `isTarget($target)` | `isTarget.php` | Kontrollerar om en variabel har formen av ett giltigt "target" (se manage.md) | manage |

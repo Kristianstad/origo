@@ -13,10 +13,13 @@
 			$targetId=targetId($fullTarget);
 			$fullTarget=updatedFullTarget($fullTarget, $updatePosts);
 			$sql="UPDATE $configSchema.$targetTable SET";
-			$sql=appendUpdatedColumnsToSql(targetConfig($fullTarget), $sql);
+			$statement=appendUpdatedColumnsToSql(targetConfig($fullTarget), $sql);
+			$sql=$statement['sql'];
+			$params=$statement['params'];
 			$targetIdColumn=targetIdColumn($fullTarget);
-			$sql=$sql." WHERE $targetIdColumn = '".$targetId."'";
-			return $sql;
+			$params[]=$targetId;
+			$sql=$sql." WHERE $targetIdColumn = $".count($params);
+			return array('sql' => $sql, 'params' => $params);
 		}
 		else
 		{

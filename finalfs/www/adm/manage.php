@@ -30,7 +30,7 @@ manage.php
  │    │    │       som info.php och writeTablesForAllLayers.php)
  │    │    └─ 'operation' → lägg till/ta bort ett barn (layer/group/control) från en
  │    │                     förälder (map/group) → sqlForOperation()
- │    ├─ kör $sql, om lyckat:
+ │    ├─ kör statements, om lyckat:
  │    │    ├─ läser om configTables (färsk data)
  │    │    ├─ usedInMaps() FÖRE och EFTER ändringen → markMapsChanged() för påverkade
  │    │    │   kartor (sätter troligen maps.changed='t', vilket writeConfig.php senare
@@ -144,10 +144,8 @@ if (isset($postButton)) {
     // Expose the command associated with the $postButton as $command
     $command = $post[$postButton];
 
-    // $sql (string) will contain an sql-query to be executed on the database
-    $sql = "";
+    $sqlStatements = array();
 
-    // If $command is 'copy' and an id was posted, then $sql will contain an sql-query to insert a new row into the database table named by $typeTableName.
     if ($command == 'copy' && isset($post[$type . 'Id'])) {
         if (isset($post['update' . ucfirst($typeTablePkColumn)])) {
             $copyId = $post['update' . ucfirst($typeTablePkColumn)];
@@ -157,25 +155,23 @@ if (isset($postButton)) {
         while (!isIdUniqueInTable($copyId, $typeTablePkColumn, $typeTable)) {
             $copyId = $copyId . '-kopia';
         }
-        $sql = insertIdSql($copyId, $typeTableName) . '; ';
+        $sqlStatements[] = insertIdSql($copyId, $typeTableName);
     }
 
-    // If $command is 'create' and a new unique id was posted, then $sql will contain an sql-query to insert a new row into the database table named by $typeTableName
     if ($command == 'create' && !empty($post[$type . 'IdNew'])) {
         $id = $post[$type . 'IdNew'];
         if (isIdUniqueInTable($id, $typeTablePkColumn, $typeTable)) {
-            $sql = insertIdSql($id, $typeTableName);
+            $sqlStatements[] = insertIdSql($id, $typeTableName);
         }
     }
 
-    // Else, if $command is 'delete' and the specified id exists, $sql will contain an sql-query to delete a row in the database table named by $typeTableName
     elseif ($command == 'delete' && !empty($post[$type . 'IdDel'])) {
         $id = $post[$type . 'IdDel'];
         if (!isIdUniqueInTable($id, $typeTablePkColumn, $typeTable)) {
             $child = array($type => $id);
             $allParents = findAllParents($dbh, $child);
             if (empty(assoc_array_values($allParents))) {
-                $sql = deleteIdSql($id, $typeTableName);
+                $sqlStatements[] = deleteIdSql($id, $typeTableName);
                 unset($post[$type . 'Id'], $idPosts[$type . 'Id']);
             } else {
                 $errorAlert = 'window.onload=function(){alert("Radering misslyckades då ' . $id . ' används!\nAnvänd Info-verktyget för att ta reda på var ' . $id . ' används.");}';
@@ -184,13 +180,11 @@ if (isset($postButton)) {
         }
     }
 
-    // Else, if given input is valid, $sql will contain an sql-query to update a row in the database
     elseif (isset($post[$type . 'Id'])) {
 
         // The id of the given item (of type $type) is read from $post and is exposed as $id (string)
         $id = $post[$type . 'Id'];
 
-        // If $command is 'update' or 'copy', then $sql will contain an sql-query to update a row in the database table named by $typeTableName
         if ($command == 'update' || $command == 'copy') {
 
             // If $type is 'layer' or 'group', make the posted abstract field html compatible
@@ -243,8 +237,7 @@ if (isset($postButton)) {
                     unset($copyId);
                 }
 
-                // $sql is appended with an sql-query to update a row in the database with data from $updatePosts
-                $sql = $sql . sqlForUpdate(makeFullTarget($type, $config), $updatePosts);
+                $sqlStatements[] = sqlForUpdate(makeFullTarget($type, $config), $updatePosts);
                 unset($config);
             } else {
                 $failedUpdate['type'] = $type;
@@ -257,7 +250,6 @@ if (isset($postButton)) {
             unset($updateValid);
         }
 
-        // If $command is 'operation', then $sql will contain an sql-query to update a specific field in the configuration database to add or remove a given $id of $type from a given map or group
         elseif ($command == 'operation') {
 
             // If a parent has been given (whos config is to be edited) then expose its type, which needs to be either 'map' or 'group', as $parentKey (string)
@@ -279,13 +271,12 @@ if (isset($postButton)) {
                     $parentPkColumnValue = $post['from' . ucfirst($parentKey) . 'Id'];
                 }
 
-                // If $operation is set, then $sql will contain an sql-query that adds or removes given $id of type $type from given parent $parentPkColumnValue
                 if (isset($operation)) {
                     $parentPkColumnKey = pkColumnOfTable($parentKey . 's');
                     $parentOperationColumnKey = $type . 's';
                     $parentOperationColumnValue = array_column_search($parentPkColumnValue, $parentPkColumnKey, $configTables[$parentKey . 's'])[$parentOperationColumnKey];
                     $operationParent = array($parentKey . 's' => array($parentPkColumnKey => $parentPkColumnValue, $parentOperationColumnKey => $parentOperationColumnValue));
-                    $sql = sqlForOperation($operation, makeBasicTarget($type, $id), $operationParent);
+                    $sqlStatements[] = sqlForOperation($operation, makeBasicTarget($type, $id), $operationParent);
                     unset($operation, $parentPkColumnValue, $parentPkColumnKey, $parentOperationColumnKey, $parentOperationColumnValue, $operationParent);
                 }
                 unset($parentKey);
@@ -293,11 +284,26 @@ if (isset($postButton)) {
         }
     }
 
-    // if $sql has been set, then perform database operations and re-read data
-    if (!empty($sql)) {
+    // if statements have been set, then perform database operations and re-read data
+    if (!empty($sqlStatements)) {
         $usedInMapsOld = usedInMaps($dbh, array($type => $id));
-        $result = pg_query($dbh, $sql);
-        if (!$result) {
+        $allOk = pg_query($dbh, "BEGIN") !== false;
+        $result = false;
+        if ($allOk) {
+            foreach ($sqlStatements as $statement) {
+                $result = pg_query_params($dbh, $statement['sql'], $statement['params']);
+                if ($result === false) {
+                    $allOk = false;
+                    break;
+                }
+            }
+        }
+        if ($allOk) {
+            $result = pg_query($dbh, "COMMIT");
+            $allOk = $result !== false;
+        }
+        if (!$allOk) {
+            pg_query($dbh, "ROLLBACK");
             $errorAlert = 'window.onload=function(){alert("Misslyckades att skriva till databas!\n\n' . str_replace('"', '\"', str_replace(["\r", "\n"], '\n', pg_last_error())) . '");}' . "\n";
             $failedUpdate['type'] = $type;
             $failedUpdate['id'] = $id;
@@ -322,7 +328,7 @@ if (isset($postButton)) {
         }
         unset($usedInMapsOld, $result);
     }
-    unset($updatePosts, $id, $type, $typeTableName, $typeTablePkColumn, $typeTable, $command, $sql);
+        unset($updatePosts, $id, $type, $typeTableName, $typeTablePkColumn, $typeTable, $command, $sqlStatements);
 }
 pg_close($dbh);
 

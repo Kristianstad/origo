@@ -57,14 +57,14 @@ kodväg istället för att skriva om samma logik för varje typ.
 sqlForUpdate($fullTarget, $updatePosts)
 ├─ targetTable(), targetId()
 ├─ updatedFullTarget($fullTarget, $updatePosts) → slår ihop nuvarande + nya värden
-├─ appendUpdatedColumnsToSql(targetConfig($fullTarget), $sql) → bygger SET-satsen
+├─ appendUpdatedColumnsToSql(targetConfig($fullTarget), $sql) → bygger SET-sats + parametrar
 └─ targetIdColumn() → bygger WHERE-satsen
-→ resultat: en komplett UPDATE-sats för given target
+→ resultat: `array('sql' => ..., 'params' => ...)` för given target
 
 sqlForOperation($operation, $child, $parent)
 → läser förälderns nuvarande array-kolumn (t.ex. maps.layers),
 lägger till/tar bort barnets id, skriver tillbaka som ny Postgres-array
-→ resultat: en komplett UPDATE-sats för att koppla/koppla loss två objekt
+→ resultat: `array('sql' => ..., 'params' => ...)` för att koppla/koppla loss två objekt
 
 ## Mönster: enkla entitetsformulär (printKeywordForm, printAduserForm, m.fl.)
 
@@ -162,10 +162,10 @@ betydande typspecifik villkorslogik:
 
 | Fil | Funktion | Beskrivning |
 |---|---|---|
-| `appendUpdatedColumnsToSql.php` | `appendUpdatedColumnsToSql($dbColumns, $sql): string` | Bygger vidare på en befintlig SQL-sträng med `kolumn = värde`-par (kommaseparerade), för användning i en `UPDATE`-sats. Tomma värden (inkl. `'{}'`/`'{{}}'`, tomma Postgres-arrayer) blir `NULL`; övriga escapas med `pg_escape_literal()` |
+| `appendUpdatedColumnsToSql.php` | `appendUpdatedColumnsToSql($dbColumns, $sql, $params=[]): array` | Bygger vidare på en SQL-sträng med parameteriserade `kolumn = $N`-par för en `UPDATE`-sats. Tomma värden (inkl. `'{}'`/`'{{}}'`, tomma Postgres-arrayer) blir `NULL`; returnerar SQL och parametrar |
 | `categories.php` | `categories($config, $catParam): array` | Bygger en nyckelordskategorisering: går igenom en hel tabellkonfiguration och grupperar rad-id:n (`$catParam`, primärnyckelkolumnen) efter deras `keywords`-fält. Lägger alltid till en `"Alla"`-kategori med samtliga id:n överst |
 | `categoryPosts.php` | `categoryPosts($post): array` | Filtrerar `$post` till fält vars namn slutar på `Category` |
-| `deleteIdSql.php` | `deleteIdSql($id, $tableName): string` | Bygger en `DELETE`-sats för given tabell och id |
+| `deleteIdSql.php` | `deleteIdSql($id, $tableName): array` | Bygger parameteriserad `DELETE`-sats för given tabell och id; returnerar SQL och parametrar |
 | `focusTable.php` | `focusTable($idPosts): string\|null` | Avgör vilken tabell som är "i fokus" utifrån vilka `*Id`-fält som postats – prioriterar map/database/schema/group före övriga typer, annars härleds tabellen från det första postade id-fältets namn |
 | `hasStringKeys.php` | `hasStringKeys(array $array): bool` | Kontrollerar om en array har minst en textnyckel (dvs. är associativ snarare än numeriskt indexerad). **Ingen användning observerad** – se flaggning |
 | `idPosts.php` | `idPosts($post): array` | Filtrerar `$post` till fält vars namn slutar på `Id`, med explicit undantag för `fromMapId`/`toMapId`/`fromGroupId`/`toGroupId` (dessa hanteras separat vid `operation`-kommandot, se manage.php) |
@@ -195,8 +195,8 @@ betydande typspecifik villkorslogik:
 | `printTextarea.php` | `printTextarea($fullTarget, $configParam, $class, $label, $help=false, $sizePosts=array(), $readonly=false)` | Den mest centrala byggstenen i hela manage-modulen – skriver ut ett enskilt redigerbart fält som ett `<textarea>`. Städar Postgres-arraysyntax för visning, bevarar användarens tidigare valda storlek/scrollposition (via `$sizePosts`, kopplat till `sizePosts.js`-liknande dolda fält), visar en hjälpknapp om hjälptext finns, och visar en multiselect-knapp om fältet är konfigurerat som "multiselectable" |
 | `setTargetConfigParam.php` | `setTargetConfigParam(&$fullTarget, $configParam, $value)` | Skriver ett värde direkt i en full targets konfigurationsarray, in-memory (påverkar inte databasen) |
 | `sizePosts.php` | `sizePosts($post): array` | Filtrerar `$post` till bredd-/höjd-/scrollrelaterade fält, och normaliserar `new*`-prefixade nycklar (från senaste formulärinskicket) till samma nyckelformat som de ursprungliga (`width*`/`height*`/`scroll*`) – nyare värden skriver över äldre i sammanslagningen |
-| `sqlForOperation.php` | `sqlForOperation($operation, $child, $parent): string` | Bygger en UPDATE-sats som lägger till/tar bort ett barn-id ur förälderns array-kolumn |
-| `sqlForUpdate.php` | `sqlForUpdate($fullTarget, $updatePosts): string` | Bygger en fullständig UPDATE-sats för en target baserat på postat formulärdata |
+| `sqlForOperation.php` | `sqlForOperation($operation, $child, $parent): array` | Bygger en parameteriserad UPDATE-sats som lägger till/tar bort ett barn-id ur förälderns array-kolumn; returnerar SQL och parametrar |
+| `sqlForUpdate.php` | `sqlForUpdate($fullTarget, $updatePosts): array` | Bygger en parameteriserad fullständig UPDATE-sats för en target baserat på postat formulärdata; returnerar SQL och parametrar |
 | `tableConfigs.php` | `tableConfigs($table, $configTablesOrDbh)` | Hämtar konfigurationen för en tabell antingen från en databaskoppling (färsk fråga) eller från en redan inläst `configTables`-array (cachat) – avgörs via `is_resource()` |
 | `tablesFromQgsXml.php` | `tablesFromQgsXml($qgsXml=null, $layerName=null, $tables=[], $subtree=null): array` | Rekursiv XML-genomgång av ett QGIS-projekts (`.qgs`) lagerträd (`layer-tree-layer`/`layer-tree-group`): hittar samtliga (eller, om `$layerName` anges, ett specifikt) PostGIS-lager och extraherar deras käll-databas+tabell ur QGIS `source`-strängen (nyckel/värde-par separerade med mellanslag, t.ex. `dbname='x' table="y"`). Returnerar en lista av `databas.tabell`-strängar. De sista tre parametrarna är enbart för den interna rekursionen, anropas normalt bara med `$qgsXml`/`$layerName`. **Delas med `writeTablesForAllLayers.php`**, se writeTablesForAllLayers.md |
 | `tableType.php` | `tableType($table): string` | Den omvända operationen: tar bort ett avslutande `s` ur ett tabellnamn för att få fram typen (`layers` → `layer`). Enkel `rtrim($table, 's')` – fungerar för samtliga nuvarande tabellnamn men skulle ge fel resultat för en typ vars namn redan slutar på flera `s` i följd (inget sådant fall finns idag) |
@@ -392,17 +392,11 @@ utan att behöva läsa alla 78 filer i `functions/manage/` i detalj:
   tillräckligt enkel och fri från globala sidoeffekter (förutom delade
   DOM-element och den globala `topFrame`-variabeln) att den skulle vara
   relativt lätt att testa isolerat om det blir aktuellt.
-- **⚠️ SQL injection-risk i `deleteIdSql.php`:** `$id` klistras in direkt
-  i SQL-strängen utan escaping (`"... WHERE $tablePkColumn = '".$id."'"`).
-  `$id` kommer ytterst från `$post[$type . 'IdDel']` i `manage.php` –
-  alltså direkt användarinput (om än från en inloggad administratör).
-  Samma mönster som redan flaggats på flera andra ställen i kodbasen;
-  eftersom detta är en av de mest centrala och känsliga operationerna
-  (radering) i hela adminverktyget, är den här filen en god kandidat att
-  prioritera vid en eventuell säkerhetsstädning, tillsammans med
-  `markMapsChanged.php` (som har samma mönster för `$mapId`, om än
-  `$mapId` här kommer från redan validerad `usedInMaps()`-data snarare
-  än direkt användarinput, vilket sannolikt gör risken lägre där).
+- **✅ SQL-parametrisering i manage.php:s CRUD-flöde:** `insertIdSql.php`,
+  `deleteIdSql.php`, `sqlForUpdate.php` och `sqlForOperation.php` returnerar
+  nu SQL med placeholders samt separata parametrar. `manage.php` kör satserna
+  med `pg_query_params()` i en explicit transaktion. `read_json.php` och
+  övriga importrelaterade INSERT-satser ingår inte i denna ändring.
 - **Flera funktioner avslutar hela programmet med `die()` vid ogiltiga
   argument** (`makeBasicTarget`, `makeFullTarget`, `makeTargetFull`,
   `isArrayColumn`). Detta är ett medvetet "fail fast"-mönster för

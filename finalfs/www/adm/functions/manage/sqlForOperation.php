@@ -26,8 +26,8 @@
 			unset($parentColumnArray[$key]);
 		}
 		$parentColumnNewValue='{'.implode(',', $parentColumnArray).'}';
-		$sql="UPDATE $configSchema.$parentTable SET $parentColumn = '$parentColumnNewValue' WHERE $parentPkColumn = '$parentId'";
-		return $sql;
+		$sql="UPDATE $configSchema.$parentTable SET $parentColumn = $1 WHERE $parentPkColumn = $2";
+		return array('sql' => $sql, 'params' => array($parentColumnNewValue, $parentId));
 	}
 
 ?>

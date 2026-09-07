@@ -1,18 +1,16 @@
 <?php
 
-	function appendUpdatedColumnsToSql($dbColumns, $sql)
+	function appendUpdatedColumnsToSql($dbColumns, $sql, $params=array())
 	{
 		$first=true;
 		foreach ($dbColumns as $column => $value)
 		{
 			if ((empty($value) && $value !== '0') || $value == '{}' || $value == '{{}}')
 			{
-				$value="null";
+				$value=null;
 			}
-			else
-			{
-				$value=pg_escape_literal($value);
-			}
+			$params[]=$value;
+			$placeholder='$'.count($params);
 			if ($first)
 			{
 				$first=false;
@@ -21,9 +19,9 @@
 			{
 				$sql=$sql.',';
 			}
-			$sql=$sql." $column = $value";
+			$sql=$sql." $column = $placeholder";
 		}
-		return $sql;
+		return array('sql' => $sql, 'params' => $params);
 	}
 
 ?>

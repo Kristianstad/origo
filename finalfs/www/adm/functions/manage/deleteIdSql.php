@@ -8,7 +8,10 @@
 	{
 		require("./constants/configSchema.php");
 		$tablePkColumn=pkColumnOfTable($tableName);
-		return "DELETE FROM $configSchema.$tableName WHERE $tablePkColumn = '".$id."'";
+		return array(
+			'sql' => "DELETE FROM $configSchema.$tableName WHERE $tablePkColumn = $1",
+			'params' => array($id)
+		);
 	}
 
 ?>
