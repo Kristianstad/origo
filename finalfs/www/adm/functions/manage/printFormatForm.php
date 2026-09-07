@@ -6,24 +6,13 @@
 	// Prints form fields and buttons that are used to view and edit the configuration for the given format.
 	function printFormatForm($format, $inheritPosts, $helps=array())
 	{
-		if (!isFullTarget($format))
-		{
-			die("printFormatForm($format, $inheritPosts, $helps=array()) failed!");
-		}
-		$sizePosts=sizePosts($inheritPosts);
-		echo '<div><div class="printXFormDiv"><form method="post">';
-		printTextarea($format, 'format_id', 'textareaMedium', 'Format:', in_array('format_id', $helps), $sizePosts);
-		printTextarea($format, 'abstract', 'textareaLarge', 'Beskrivning:', in_array('abstract', $helps), $sizePosts);
-		printTextarea($format, 'info', 'textareaLarge', 'Info:', in_array('info', $helps), $sizePosts);
-		printHiddenInputs($inheritPosts);
-		echo '<div class="buttonDiv">';
-		printUpdateButton('format');
-		printCopyButton('format');
-		$format=makeTargetBasic($format);
-		printInfoButton($format);
-		$deleteConfirmStr="Är du säker att du vill radera formatet ".targetId($format)."? Referenser till formatet hanteras separat.";
-		printDeleteButton($format, $deleteConfirmStr, $inheritPosts);
-		echo '</div></form></div></div>';
+		printSimpleEntityForm($format, 'format', array(
+			array('name'=>'format_id', 'class'=>'textareaMedium', 'label'=>'Format:'),
+			array('name'=>'abstract', 'class'=>'textareaLarge', 'label'=>'Beskrivning:'),
+			array('name'=>'info', 'class'=>'textareaLarge', 'label'=>'Info:')
+		), $inheritPosts, $helps, array(
+			'deleteConfirm'=>function ($target) { return "Är du säker att du vill radera formatet ".targetId($target)."? Referenser till formatet hanteras separat."; }
+		));
 	}
 
 ?>

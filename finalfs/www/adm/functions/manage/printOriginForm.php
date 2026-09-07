@@ -6,27 +6,16 @@
 	// Prints form fields and buttons that are used to view and edit the configuration for the given origin.
 	function printOriginForm($origin, $inheritPosts, $helps=array())
 	{
-		if (!isFullTarget($origin))
-		{
-			die("printOriginForm($origin, $inheritPosts, $helps=array()) failed!");
-		}
-		$sizePosts=sizePosts($inheritPosts);
-		echo '<div><div class="printXFormDiv"><form method="post">';
-		printTextarea($origin, 'origin_id', 'textareaMedium', 'Id:', in_array('origin_id', $helps), $sizePosts);
-		printTextarea($origin, 'name', 'textareaMedium', 'Namn:', in_array('name', $helps), $sizePosts);
-		printTextarea($origin, 'web', 'textareaMedium', 'Webbsida:', in_array('web', $helps), $sizePosts);
-		printTextarea($origin, 'email', 'textareaMedium', 'E-mail:', in_array('email', $helps), $sizePosts);
-		printTextarea($origin, 'abstract', 'textareaLarge', 'Beskrivning:', in_array('abstract', $helps), $sizePosts);
-		printTextarea($origin, 'info', 'textareaLarge', 'Info:', in_array('info', $helps), $sizePosts);
-		printHiddenInputs($inheritPosts);
-		echo '<div class="buttonDiv">';
-		printUpdateButton('origin');
-		printCopyButton('origin');
-		$origin=makeTargetBasic($origin);
-		printInfoButton($origin);
-		$deleteConfirmStr="Är du säker att du vill radera ursprungskällan ".targetId($origin)."? Referenser till ursprungskällan hanteras separat.";
-		printDeleteButton($origin, $deleteConfirmStr, $inheritPosts);
-		echo '</div></form></div></div>';
+		printSimpleEntityForm($origin, 'origin', array(
+			array('name'=>'origin_id', 'class'=>'textareaMedium', 'label'=>'Id:'),
+			array('name'=>'name', 'class'=>'textareaMedium', 'label'=>'Namn:'),
+			array('name'=>'web', 'class'=>'textareaMedium', 'label'=>'Webbsida:'),
+			array('name'=>'email', 'class'=>'textareaMedium', 'label'=>'E-mail:'),
+			array('name'=>'abstract', 'class'=>'textareaLarge', 'label'=>'Beskrivning:'),
+			array('name'=>'info', 'class'=>'textareaLarge', 'label'=>'Info:')
+		), $inheritPosts, $helps, array(
+			'deleteConfirm'=>function ($target) { return "Är du säker att du vill radera ursprungskällan ".targetId($target)."? Referenser till ursprungskällan hanteras separat."; }
+		));
 	}
 
 ?>

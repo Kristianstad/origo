@@ -68,39 +68,23 @@ lägger till/tar bort barnets id, skriver tillbaka som ny Postgres-array
 
 ## Mönster: enkla entitetsformulär (printKeywordForm, printAduserForm, m.fl.)
 
-Flera `print<Typ>Form`-funktioner följer exakt samma struktur:
+Flera `print<Typ>Form`-funktioner använder nu den gemensamma
+`printSimpleEntityForm()`-funktionen:
 
 ```php
 function print<Typ>Form($target, $inheritPosts, $helps=array())
 {
-    if (!isFullTarget($target)) { die("..."); }
-    $sizePosts = sizePosts($inheritPosts);
-    echo '<div><div class="printXFormDiv"><form method="post">';
-    printTextarea(...);  // en gång per fält
-    printHiddenInputs($inheritPosts);
-    echo '<div class="buttonDiv">';
-    printUpdateButton($type);
-    printCopyButton($type);
-    $target = makeTargetBasic($target);
-    printInfoButton($target);
-    [ printReadDbSchemasButton(...) ]     // endast database
-    [ printConfigPreviewButton(...) ]     // endast group
-    $deleteConfirmStr = "Är du säker...";
-    printDeleteButton($target, $deleteConfirmStr, $inheritPosts);
-    echo '</div></form></div></div>';
-    [ addRemoveDiv med printAddOperation/printRemoveOperation ]  // endast control, group
+  printSimpleEntityForm($target, $type, $fields, $inheritPosts, $helps, $extras);
 }
 ```
 
-De skiljer sig bara i: vilka fält som visas (`printTextarea`-anropen),
-och vilka extra knappar/operationer som läggs till sist. Denna
-konsekvens gör mönstret till en stark kandidat för att brytas ut till en
-**generisk, datadriven formulärfunktion** vid framtida förenkling – t.ex.
-`printSimpleEntityForm($target, $fieldDefinitions, $inheritPosts, $helps)`
-där `$fieldDefinitions` är en liten array av `[kolumn, storlek, etikett]`.
-Det skulle radera bort merparten av dessa filers ~15–20 rader vardera
-till en enda konfigurationsrad per entitetstyp, utan att ändra
-funktionalitet.
+Varje wrapper deklarerar en ordnad `$fields`-array. Fältdefinitionerna
+stöder textarea med valfri `readonly`-flagga och select-fält med sina
+optioner. `$extras` stöder inline-knappar (t.ex. databasens
+`printReadDbSchemasButton` och gruppens preview) samt sektioner efter
+formuläret (kontrollens och gruppens add/remove-operationer).
+Funktionsnamnen och deras publika argument är oförändrade eftersom
+`manage.php` fortfarande använder dynamisk dispatch.
 
 **Instanser av mönstret (sorterad alfabetiskt efter filnamn):**
 
@@ -115,7 +99,14 @@ funktionalitet.
 | `printGroupForm.php` | group | layers, groups, title, expanded (select), show_meta (select), keywords | `printConfigPreviewButton`, `printAddOperation`/`printRemoveOperation` mot maps OCH groups (två par) |
 | `printHelpForm.php` | help | (endast help_id/abstract/info, etiketterna är "Verktygsfält"/"Hjälptext" istället för "Id"/"Beskrivning") | – |
 | `printKeywordForm.php` | keyword | – | – |
+| `printMapstateForm.php` | mapstate | mapurl, state, created, lastuse, preserve (select) | – |
+| `printNewForm.php` | new | text, date, reads, deletes | – |
+| `printOriginForm.php` | origin | name, web, email | – |
+| `printPluginForm.php` | plugin | css_files, css, js_files, js, onload | `printAddOperation`/`printRemoveOperation` mot maps |
+| `printProj4defForm.php` | proj4def | code, projection, projectionextent, alias | – |
 | `printSearchtableForm.php` | searchtable | mode, ttl, limit, usecentroid (select f/t), database (select), schema, table, searchfield, geometryfield, gidfield | – |
+| `printSchemaForm.php` | schema | keywords, contact (select), origin (select), updated, update (select) | `printReadSchemaTablesButton` |
+| `printTilegridForm.php` | tilegrid | tilesize | – |
 
 ## Entitetsformulär (utökade/komplexa varianter)
 
@@ -126,8 +117,7 @@ betydande typspecifik villkorslogik:
 |---|---|---|
 | `printLayerForm.php` | layer | **Den mest komplexa print*Form-funktionen i hela modulen.** Djupt kaskaderande synlighetslogik (nästlade `<span style="display:none">`-block) beroende på lagertyp (WFS/WMS/GROUP/GEOJSON), stilkonfiguration, ikon-inställningar. Använder genomgående ett mönster där dolda fält "bevaras" via `printHiddenInputs()` när motsvarande synliga fält döljs, så att värdet inte går förlorat vid nästa uppdatering trots att fältet inte visas |
 | `printMapForm.php` | map | Störst antal fält av alla enkla formulär (30+), unika knappar: `printWriteConfigButton`, `printExportJsonButton`, `printUrlButton` – detta är alltså formuläret som triggar hela writeConfig-publiceringen |
-| `printMapstateForm.php`, `printNewForm.php`, `printOriginForm.php`, `printPluginForm.php`, `printProj4defForm.php` | mapstate, new, origin, plugin, proj4def | Följer det enkla mönstret från föregående omgång |
-| `printSchemaForm.php` / `printTableForm.php` | schema / table | `printTableForm` gör ett **extra, eget databasanrop** (`dbh($dbhConnectionString)` + `updated_from_table()`) mitt i renderingen för att visa senaste ändringsdatum – enda formuläret som pratar med en annan databas än konfigurationsdatabasen under rendering |
+| `printTableForm.php` | table | Gör ett **extra, eget databasanrop** (`dbh($dbhConnectionString)` + `updated_from_table()`) mitt i renderingen för att visa senaste ändringsdatum – enda formuläret som pratar med en annan databas än konfigurationsdatabasen under rendering |
 | `printServiceForm.php` | service | Villkorlig visning baserat på tjänstetyp, med `printHiddenInputs()`-bevarande mönster likt layer/source |
 | `printSourceForm.php` | source | Villkorlig visning baserat på tjänstetyp (`File`/`OpenStreetMap` döljer flera fält) |
 

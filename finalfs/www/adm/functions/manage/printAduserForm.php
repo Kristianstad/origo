@@ -6,30 +6,20 @@
 	// Prints form fields and buttons that are used to view and edit the configuration for the given aduser.
 	function printAduserForm($aduser, $inheritPosts, $helps=array())
 	{
-		if (!isFullTarget($aduser))
-		{
-			die("printAduserForm($aduser, $inheritPosts, $helps=array()) failed!");
-		}
-		$sizePosts=sizePosts($inheritPosts);
-		echo '<div><div class="printXFormDiv"><form method="post">';
-		printTextarea($aduser, 'aduser_id', 'textareaMedium', 'Id:', in_array('aduser_id', $helps), $sizePosts, true);
-		printTextarea($aduser, 'name', 'textareaMedium', 'Namn:', in_array('name', $helps), $sizePosts, true);
-		printTextarea($aduser, 'email', 'textareaMedium', 'E-mail:', in_array('email', $helps), $sizePosts, true);
-		printTextarea($aduser, 'company', 'textareaMedium', 'Företag/Förvaltning:', in_array('company', $helps), $sizePosts, true);
-		printTextarea($aduser, 'department', 'textareaMedium', 'Avdelning:', in_array('department', $helps), $sizePosts, true);
-		printTextarea($aduser, 'lastlogin', 'textareaMedium', 'Senast inloggad:', in_array('lastlogin', $helps), $sizePosts, true);
-		printTextarea($aduser, 'adgroups', 'textareaMedium', 'AD-grupper:', in_array('adgroups', $helps), $sizePosts, true);
-		printTextarea($aduser, 'abstract', 'textareaLarge', 'Beskrivning:', in_array('abstract', $helps), $sizePosts);
-		printTextarea($aduser, 'info', 'textareaLarge', 'Info:', in_array('info', $helps), $sizePosts);
-		printHiddenInputs($inheritPosts);
-		echo '<div class="buttonDiv">';
-		printUpdateButton('aduser');
-		printCopyButton('aduser');
-		$aduser=makeTargetBasic($aduser);
-		printInfoButton($aduser);
-		$deleteConfirmStr="Är du säker att du vill radera AD-användaren ".targetId($aduser)."? Referenser till AD-användaren hanteras separat.";
-		printDeleteButton($aduser, $deleteConfirmStr, $inheritPosts);
-		echo '</div></form></div></div>';
+		$fields=array(
+			array('name'=>'aduser_id', 'class'=>'textareaMedium', 'label'=>'Id:', 'readonly'=>true),
+			array('name'=>'name', 'class'=>'textareaMedium', 'label'=>'Namn:', 'readonly'=>true),
+			array('name'=>'email', 'class'=>'textareaMedium', 'label'=>'E-mail:', 'readonly'=>true),
+			array('name'=>'company', 'class'=>'textareaMedium', 'label'=>'Företag/Förvaltning:', 'readonly'=>true),
+			array('name'=>'department', 'class'=>'textareaMedium', 'label'=>'Avdelning:', 'readonly'=>true),
+			array('name'=>'lastlogin', 'class'=>'textareaMedium', 'label'=>'Senast inloggad:', 'readonly'=>true),
+			array('name'=>'adgroups', 'class'=>'textareaMedium', 'label'=>'AD-grupper:', 'readonly'=>true),
+			array('name'=>'abstract', 'class'=>'textareaLarge', 'label'=>'Beskrivning:'),
+			array('name'=>'info', 'class'=>'textareaLarge', 'label'=>'Info:')
+		);
+		printSimpleEntityForm($aduser, 'aduser', $fields, $inheritPosts, $helps, array(
+			'deleteConfirm'=>function ($target) { return "Är du säker att du vill radera AD-användaren ".targetId($target)."? Referenser till AD-användaren hanteras separat."; }
+		));
 	}
 
 ?>

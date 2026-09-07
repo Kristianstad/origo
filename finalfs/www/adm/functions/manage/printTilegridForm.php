@@ -6,25 +6,14 @@
 	// Prints form fields and buttons that are used to view and edit the configuration for the given tilegrid.
 	function printTilegridForm($tilegrid, $inheritPosts, $helps=array())
 	{
-		if (!isFullTarget($tilegrid))
-		{
-			die("printTilegridForm($tilegrid, $inheritPosts, $helps=array()) failed!");
-		}
-		$sizePosts=sizePosts($inheritPosts);
-		echo '<div><div class="printXFormDiv"><form method="post">';
-		printTextarea($tilegrid, 'tilegrid_id', 'textareaMedium', 'Id:', in_array('tilegrid_id', $helps), $sizePosts);
-		printTextarea($tilegrid, 'tilesize', 'textareaSmall', 'Tile-storlek:', in_array('tilesize', $helps), $sizePosts);
-		printTextarea($tilegrid, 'abstract', 'textareaLarge', 'Beskrivning:', in_array('abstract', $helps), $sizePosts);
-		printTextarea($tilegrid, 'info', 'textareaLarge', 'Info:', in_array('info', $helps), $sizePosts);
-		printHiddenInputs($inheritPosts);
-		echo '<div class="buttonDiv">';
-		printUpdateButton('tilegrid');
-		printCopyButton('tilegrid');
-		$tilegrid=makeTargetBasic($tilegrid);
-		printInfoButton($tilegrid);
-		$deleteConfirmStr="Är du säker att du vill radera tilegriden ".targetId($tilegrid)."? Referenser till tilegriden hanteras separat.";
-		printDeleteButton($tilegrid, $deleteConfirmStr, $inheritPosts);
-		echo '</div></form></div></div>';
+		printSimpleEntityForm($tilegrid, 'tilegrid', array(
+			array('name'=>'tilegrid_id', 'class'=>'textareaMedium', 'label'=>'Id:'),
+			array('name'=>'tilesize', 'class'=>'textareaSmall', 'label'=>'Tile-storlek:'),
+			array('name'=>'abstract', 'class'=>'textareaLarge', 'label'=>'Beskrivning:'),
+			array('name'=>'info', 'class'=>'textareaLarge', 'label'=>'Info:')
+		), $inheritPosts, $helps, array(
+			'deleteConfirm'=>function ($target) { return "Är du säker att du vill radera tilegriden ".targetId($target)."? Referenser till tilegriden hanteras separat."; }
+		));
 	}
 
 ?>
