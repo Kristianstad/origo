@@ -289,39 +289,20 @@ utan att behöva läsa alla 78 filer i `functions/manage/` i detalj:
 
 ## Kända begränsningar / observationer
 
-- **⚠️ Genomgående användning av `eval()`** för dynamiska
-  funktionsanrop, på minst fyra ställen:
-```php
-  eval("\${$table}Categories=categories(\$config, \$catParam);");
-  eval("\$categories=\${$categorized}Categories;");
-  eval("\${$typeTableName}Categories=categories(\$configTables[\$typeTableName], \$typeTablePkColumn);");
-  eval('print' . ucfirst($childType) . 'Form($childFullTarget, ...);');
-```
-  Detta är ett vanligt men riskabelt mönster: om `$childType` (eller
-  `$table`/`$typeTableName`) någonsin kan påverkas av extern input utan
-  fullständig validering mot en känd lista av giltiga typer, öppnar det
-  för kodinjektion. **Verifierat (uppdaterat):** `targetType()` läser
-  bara `key($target)` (dvs. härleds från databasstrukturen/den redan
-  uppslagna konfigurationen, inte direkt från `$_POST`), och
-  `typeTableName()`/`tableType()` är triviala strängoperationer
-  (`$type.'s'` respektive `rtrim($table,'s')`) utan egen validering –
-  risken begränsas alltså i praktiken av vilka typer som redan
-  förekommer i `$configTables`, inte av någon explicit whitelist i
-  dessa tre funktioner själva. Kodinjektion kräver därför att
-  `$childType`/`$table`/`$typeTableName` någonsin sätts direkt från
-  ovaliderad `$_POST`/`$_GET` högre upp i `manage.php` – inget vi sett
-  hittills, men inte uteslutet utan en fullständig genomgång av hela
-  entry point-filens dataflöde.
-  Oavsett säkerhetsrisk är `eval()` här även en **läsbarhets- och
-  verktygsstödsutmaning**: varken IDE:er, statisk analys (PHPStan) eller
-  "hitta användningar av funktion X" fungerar över en `eval()`-gräns,
-  vilket gör det svårare för en ny utvecklare (eller AI) att förstå
-  vilka `print*Form`-funktioner som faktiskt anropas utan att läsa hela
-  filen. **Detta är den högst prioriterade kandidaten för förenkling i
-  hela manage-modulen** – ett explicit `match`/`switch`-uttryck eller en
-  uppslagstabell (`$formRenderers = ['layer' => 'printLayerForm', ...]`)
-  skulle ge exakt samma funktionalitet utan `eval()`, och samtidigt göra
-  koden sökbar och verktygsstödd.
+- ~~Genomgående användning av `eval()` för dynamiska funktionsanrop~~ –
+  **åtgärdat.** `manage.php` innehöll tidigare fem `eval()`-anrop: tre för
+  att bygga dynamiska variabelnamn (`${$table}Categories`) och två för
+  `print<Typ>Form()`-dispatchen. Dessa är nu ersatta med:
+  - en samlad array `$categoriesByTable[$table]` istället för de
+    dynamiska `${$table}Categories`-variablerna (skrivs vid inläsning,
+    läses vid formulärbygge och JS-variabelgenerering), och
+  - variabel-funktionsanrop (`$formFunction = 'print'.ucfirst($childType).'Form';
+    $formFunction(...);`) istället för `eval('print'.ucfirst($childType).'Form(...)');`.
+
+  Funktionaliteten är oförändrad – samma dynamiska, generiska dispatch
+  baserat på tabellnamn/typnamn – men koden är nu sökbar och
+  verktygsstödd (IDE/statisk analys ser anropen), utan `eval()`s
+  kodinjektionsrisk.
 - **Extremt hög cyklomatisk komplexitet i en enda fil.** 705 rader med
   djupt nästlade villkor, och minst fem distinkta "typer av objekt som
   kan vara valda" (map/database/schema/group-kedja/övrigt) hanteras i

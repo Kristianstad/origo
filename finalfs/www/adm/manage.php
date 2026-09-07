@@ -15,7 +15,7 @@ manage.php
  │    ├─ focusTable($idPosts)      [manage] → vilken tabell som är "i fokus"
  │    ├─ dbh(), configTables($dbh) [common] → ALLA konfigtabeller i minnet
  │    ├─ viewKeywordCategorized($view)  [manage] → vilka tabeller kategoriseras via nyckelord i denna vy
- │    └─ (eval) bygger $<table>Categories för varje kategoriserad tabell
+ │    └─ bygger $categoriesByTable[<table>] för varje kategoriserad tabell
  │
  ├─ FAS 2: HANTERA FORMULÄRINSKICK (om en knapp klickades)
  │    ├─ postButton($post)          [manage] → vilken knapp klickades (avslöjar $type + $command)
@@ -40,7 +40,7 @@ manage.php
  ├─ FAS 3: RENDERA SIDAN (rubrik, JS, CSS, toppknappar, vyväxlare)
  │    ├─ printViewSwitcher($view)      [manage]
  │    ├─ printHeadForms(...)           [manage] → toppradens urvalsformulär (beror på vy)
- │    └─ bygger JS-variabler för varje nyckelordskategori (kompliceras av eval(), se flaggning)
+ │    └─ bygger JS-variabler för varje nyckelordskategori (läser $categoriesByTable)
  │
  └─ FAS 4: RENDERA DET VALDA OBJEKTETS FORMULÄR (djupt kaskaderande, en gren per typ)
       ├─ OM map vald   → printMapForm() + printChildSelect() för layers/groups/controls
@@ -51,9 +51,9 @@ manage.php
       └─ OM övrigt <item> vald (idPosts icke-tom):
            ├─ makeTargetFull(makeBasicTarget(...))  [manage] → normaliserad datastruktur
            ├─ targetType()                           [manage] → vilken typ är detta?
-           └─ eval('print'.ucfirst($childType).'Form(...)')  ← DYNAMISKT FUNKTIONSANROP
+           └─ $formFunction = 'print'.ucfirst($childType).'Form'; $formFunction(...)  ← DYNAMISKT FUNKTIONSANROP (variabel-funktion, ej eval)
                 (layer/source/table/searchtable har specialhantering före detta;
-                control/plugin och "allt annat" går via samma eval-mönster)
+                control/plugin och "allt annat" går via samma mönster)
 */
 
 // Tell browsers to not cache response
@@ -117,10 +117,11 @@ $keywordCategorized = viewKeywordCategorized($view);
 // Configs (from tables) that should be categorized by keywords, exposed as $categoryConfigs (array)
 $categoryConfigs = array_intersect_key($configTables, array_flip($keywordCategorized));
 
-// Extract the categories (keywords) for all $categoryConfigs and expose as $<table>Categories (array)
+// Extract the categories (keywords) for all $categoryConfigs and expose as $categoriesByTable[<table>] (array)
+$categoriesByTable = array();
 foreach ($categoryConfigs as $table => $config) {
     $catParam = pkColumnOfTable($table);
-    eval("\${$table}Categories=categories(\$config, \$catParam);");
+    $categoriesByTable[$table] = categories($config, $catParam);
 }
 
 // If a post form was submitted by clicking a button, then the id of the button is exposed as $postButton (string)
@@ -307,7 +308,7 @@ if (isset($postButton)) {
         } else {
             $configTables = configTables($dbh);
             if ($command != 'operation' && in_array($typeTableName, $keywordCategorized)) {
-                eval("\${$typeTableName}Categories=categories(\$configTables[\$typeTableName], \$typeTablePkColumn);");
+                $categoriesByTable[$typeTableName] = categories($configTables[$typeTableName], $typeTablePkColumn);
             }
             if ($command == 'update' || $command == 'copy' || $command == 'operation') {
                 $usedInMapsNew = usedInMaps($dbh, array($type => $id));
@@ -354,7 +355,7 @@ includeDirectory("./js-functions/manage");
 // Create and expose a js-variable for each keyword category, each containing a list of items that has the specified keyword among their keywords
 $updateSelects = "";
 foreach ($keywordCategorized as $categorized) {
-    eval("\$categories=\${$categorized}Categories;");
+    $categories = $categoriesByTable[$categorized];
     $categories2 = array();
     foreach ($categories as $category => $member) {
         $category = str_replace(array('-', '+', '/'), '', str_replace(' ', '_', $category));
@@ -734,13 +735,17 @@ if (!empty($idPosts)) {
     //  Else, if a control or plugin is selected
     elseif ($childType == 'control' || $childType == 'plugin') {
         // Print the form for the selected control/plugin
-        eval('print' . ucfirst($childType) . 'Form($childFullTarget, array("maps"=>$configTables["maps"]), $inheritPosts, $typeHelps);');
+        $formFunction = 'print' . ucfirst($childType) . 'Form';
+        $formFunction($childFullTarget, array("maps" => $configTables["maps"]), $inheritPosts, $typeHelps);
+        unset($formFunction);
     }
 
     // Else, if <item> of other type is selected
     else {
         // Print the form for the selected <item> based on its type
-        eval('print' . ucfirst($childType) . 'Form($childFullTarget, $inheritPosts, $typeHelps);');
+        $formFunction = 'print' . ucfirst($childType) . 'Form';
+        $formFunction($childFullTarget, $inheritPosts, $typeHelps);
+        unset($formFunction);
     }
     unset($childFullTarget, $childType, $typeHelps);
 }
