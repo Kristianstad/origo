@@ -206,6 +206,28 @@ INSERT INTO map_configs.groups(group_id,title,expanded,layers,abstract) VALUES (
 INSERT INTO map_configs.groups(group_id,title,expanded,layers,abstract) VALUES ('origosamverkan#1','Origosamverkan',true,'{origokommuner#1,kommunmask#1}','En lagergrupp som visualiserar samverkan inom Origo-projektet.');
 INSERT INTO map_configs.groups(group_id,layers,abstract) VALUES ('none#1','{kommunmask#1}','En lagergrupp som är dold i lagerträdet.');
 
+CREATE TABLE map_configs.classes
+(
+  classe_id character varying COLLATE pg_catalog."default" NOT NULL,
+  abstract character varying COLLATE pg_catalog."default",
+  info character varying COLLATE pg_catalog."default",
+  infogroups character varying[] COLLATE pg_catalog."default",
+  layers character varying[] COLLATE pg_catalog."default",
+  tables character varying[] COLLATE pg_catalog."default",
+  CONSTRAINT classes_pkey PRIMARY KEY (classe_id)
+);
+
+CREATE TABLE map_configs.infogroups
+(
+  infogroup_id character varying COLLATE pg_catalog."default" NOT NULL,
+  abstract character varying COLLATE pg_catalog."default",
+  info character varying COLLATE pg_catalog."default",
+  infogroups character varying[] COLLATE pg_catalog."default",
+  layers character varying[] COLLATE pg_catalog."default",
+  tables character varying[] COLLATE pg_catalog."default",
+  CONSTRAINT infogroups_pkey PRIMARY KEY (infogroup_id)
+);
+
 CREATE TABLE map_configs.layers
 (
     layer_id character varying COLLATE pg_catalog."default" NOT NULL,

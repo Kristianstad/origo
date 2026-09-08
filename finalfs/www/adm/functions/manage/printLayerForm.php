@@ -210,10 +210,7 @@
 		$deleteConfirmStr="Är du säker att du vill radera lagret ".targetId($layer)."? Referenser till lagret hanteras separat.";
 		printDeleteButton($layer, $deleteConfirmStr, $inheritPosts);
 		echo '</div></form></div></div><div class="addRemoveDiv">';
-		printAddOperation($layer, array('maps'=>array_column($operationTables['maps'], 'map_id')), 'Lägg till i karta', $inheritPosts);
-		printRemoveOperation($layer, array('maps'=>$operationTables['maps']), 'Ta bort från karta', $inheritPosts);
-		printAddOperation($layer, array('groups'=>array_column($operationTables['groups'], 'group_id')), 'Lägg till i grupp', $inheritPosts);
-		printRemoveOperation($layer, array('groups'=>$operationTables['groups']),'Ta bort från grupp', $inheritPosts);
+		printAddRemoveOperations($layer, $operationTables, $inheritPosts, array('add'=>array('maps'=>'Lägg till i karta', 'groups'=>'Lägg till i grupp'), 'remove'=>array('maps'=>'Ta bort från karta', 'groups'=>'Ta bort från grupp')));
 		echo '</div>';
 	}
 

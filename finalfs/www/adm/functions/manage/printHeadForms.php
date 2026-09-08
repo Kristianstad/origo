@@ -20,13 +20,13 @@
 		}
 		else
 		{
-			$forms=array_flip($views[$view]);
+			$forms=array_flip(array_intersect($views[$view], array_keys($configTables)));
 			foreach ($forms as $k => $v)
 			{
 				$forms[$k]=$configTables[$k];
 			}
 		}
-		if (isset($focusTable))
+		if (isset($focusTable) && isset($configTables[$focusTable]))
 		{
 			unset($forms[$focusTable]);
 			$forms=array_merge(array($focusTable=>$configTables[$focusTable]), $forms);

@@ -19,6 +19,14 @@
 		{
 			$focusTable='groups';
 		}
+		elseif (isset($idPosts['classeId']))
+		{
+			$focusTable='classes';
+		}
+		elseif (isset($idPosts['infogroupId']))
+		{
+			$focusTable='infogroups';
+		}
 		else
 		{
 			$firstKey=key($idPosts);

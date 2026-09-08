@@ -93,6 +93,18 @@ if (isset($post['groupIds'])) {
     $groupIdsArray = array();
 }
 
+if (isset($post['infogroupIds'])) {
+    $infogroupIdsArray = explode(',', $post['infogroupIds']);
+    if (!isset($post['infogroupId'])) {
+        $post['infogroupId'] = $infogroupIdsArray[0];
+    }
+} elseif (isset($post['infogroupId'])) {
+    $post['infogroupIds'] = $post['infogroupId'];
+    $infogroupIdsArray = array($post['infogroupId']);
+} else {
+    $infogroupIdsArray = array();
+}
+
 // Expose all $post values where the key ends with 'Id' (excluding 'fromMapId', 'toMapId', 'fromGroupId', 'toGroupId') as $idPosts (array)
 $idPosts = idPosts($post);
 
@@ -252,21 +264,22 @@ if (isset($postButton)) {
 
         elseif ($command == 'operation') {
 
-            // If a parent has been given (whos config is to be edited) then expose its type, which needs to be either 'map' or 'group', as $parentKey (string)
-            if (!empty($post['toMapId']) || !empty($post['fromMapId'])) {
-                $parentKey = 'map';
-            } elseif (!empty($post['toGroupId']) || !empty($post['fromGroupId'])) {
-                $parentKey = 'group';
+            // If a parent has been given (whos config is to be edited) then expose its type as $parentKey (string)
+            foreach (array('map', 'group', 'classe', 'infogroup') as $possibleParentKey) {
+                if (!empty($post['to' . ucfirst($possibleParentKey) . 'Id']) || !empty($post['from' . ucfirst($possibleParentKey) . 'Id'])) {
+                    $parentKey = $possibleParentKey;
+                    break;
+                }
             }
 
             // If a parent has been given:
             // Determine if the operation is 'add' or 'remove' and expose the result as $operation
             // Read the id of the parent from $post and expose as $parentPkColumnValue (string)
             if (isset($parentKey)) {
-                if (!empty($post['toMapId']) || !empty($post['toGroupId'])) {
+                if (!empty($post['to' . ucfirst($parentKey) . 'Id'])) {
                     $operation = 'add';
                     $parentPkColumnValue = $post['to' . ucfirst($parentKey) . 'Id'];
-                } elseif (!empty($post['fromMapId']) || !empty($post['fromGroupId'])) {
+                } elseif (!empty($post['from' . ucfirst($parentKey) . 'Id'])) {
                     $operation = 'remove';
                     $parentPkColumnValue = $post['from' . ucfirst($parentKey) . 'Id'];
                 }
@@ -337,6 +350,9 @@ pg_close($dbh);
 $inheritPosts = array_merge($idPosts, $sizePosts);
 if (isset($post['groupIds'])) {
     $inheritPosts['groupIds'] = $post['groupIds'];
+}
+if (isset($post['infogroupIds'])) {
+    $inheritPosts['infogroupIds'] = $post['infogroupIds'];
 }
 foreach ($categoryPosts as $postName => $category) {
     $inheritPosts[$postName] = $category;
@@ -580,6 +596,66 @@ if (isset($post['schemaId'])) {
     unset($schema, $idPosts['schemaId']);
 }
 
+// If a class is selected
+if (isset($post['classeId'])) {
+    $viewDepthGlobal++;
+    if (isset($failedUpdate) && $failedUpdate['type'] == 'classe') {
+        $classe = array('classe' => $failedUpdate['values']);
+        $formChangedGlobal = true;
+    } else {
+        $classe = array('classe' => array_column_search($post['classeId'], 'classe_id', $configTables['classes']));
+    }
+    if (!empty(current($classe))) {
+        $operationTables = array();
+        foreach (array('infogroups', 'layers', 'tables') as $operationTable) {
+            if (isset($configTables[$operationTable])) {
+                $operationTables[$operationTable] = $configTables[$operationTable];
+            }
+        }
+        printClasseForm($classe, $operationTables, $inheritPosts, typeHelps('classe', $helps));
+        unset($operationTables, $operationTable);
+        echo '<hr class="childSelectHr"><table><tr>';
+        $thClass = 'thFirst';
+        printChildSelect($classe, 'infogroups', $thClass, 'Informationsgrupp', $inheritPosts);
+        printChildSelect($classe, 'layers', $thClass, 'Lager', $inheritPosts);
+        printChildSelect($classe, 'tables', $thClass, 'Tabell', $inheritPosts);
+        echo '</tr></table>';
+    }
+    unset($classe, $idPosts['classeId'], $thClass);
+}
+
+// If an infogroup is selected
+$infogroupLevel = 1;
+foreach ($infogroupIdsArray as $infogroupId) {
+    $viewDepthGlobal++;
+    if (isset($failedUpdate) && $failedUpdate['type'] == 'infogroup' && $failedUpdate['id'] == $infogroupId) {
+        $infogroup = array('infogroup' => $failedUpdate['values']);
+        $formChangedGlobal = true;
+    } else {
+        $infogroup = array('infogroup' => array_column_search($infogroupId, 'infogroup_id', $configTables['infogroups']));
+    }
+    $inheritPosts['infogroupId'] = $infogroupId;
+    if (!empty(current($infogroup))) {
+        $operationTables = array();
+        foreach (array('classes', 'infogroups', 'layers', 'tables') as $operationTable) {
+            if (isset($configTables[$operationTable])) {
+                $operationTables[$operationTable] = $configTables[$operationTable];
+            }
+        }
+        printInfogroupForm($infogroup, $operationTables, $inheritPosts, typeHelps('infogroup', $helps));
+        unset($operationTables, $operationTable);
+        echo '<hr class="overflowHr"><table><tr>';
+        $thClass = 'thFirst';
+        printChildSelect($infogroup, 'infogroups', $thClass, 'Informationsgrupp', $inheritPosts, $infogroupLevel);
+        printChildSelect($infogroup, 'layers', $thClass, 'Lager', $inheritPosts, $infogroupLevel);
+        printChildSelect($infogroup, 'tables', $thClass, 'Tabell', $inheritPosts, $infogroupLevel);
+        echo '</tr></table>';
+    }
+    unset($infogroup);
+    $infogroupLevel++;
+}
+unset($infogroupIdsArray, $infogroupId, $infogroupLevel, $idPosts['infogroupId']);
+
 //  (If a group is selected)
 
 // Expose a copy of $groupIdsArray as $tmpGroupIds (array)
@@ -679,7 +755,15 @@ if (!empty($idPosts)) {
         );
 
         // Print the form for the selected layer
-        printLayerForm($childFullTarget, $selectables, array("maps" => $configTables["maps"], "groups" => $configTables["groups"]), $inheritPosts, $typeHelps);
+        $operationTables = array("maps" => $configTables["maps"], "groups" => $configTables["groups"]);
+        if (isset($configTables["classes"])) {
+            $operationTables["classes"] = $configTables["classes"];
+        }
+        if (isset($configTables["infogroups"])) {
+            $operationTables["infogroups"] = $configTables["infogroups"];
+        }
+        printLayerForm($childFullTarget, $selectables, $operationTables, $inheritPosts, $typeHelps);
+        unset($operationTables);
         unset($selectables);
     }
 
@@ -722,7 +806,15 @@ if (!empty($idPosts)) {
         $connectionString = array_column_search($databaseId, 'database_id', $configTables['databases'])['connectionstring'];
 
         // Print the form for the selected table
-        printTableForm($childFullTarget, $connectionString, $selectables, $inheritPosts, $typeHelps);
+        $operationTables = array();
+        if (isset($configTables["classes"])) {
+            $operationTables["classes"] = $configTables["classes"];
+        }
+        if (isset($configTables["infogroups"])) {
+            $operationTables["infogroups"] = $configTables["infogroups"];
+        }
+        printTableForm($childFullTarget, $connectionString, $selectables, $operationTables, $inheritPosts, $typeHelps);
+        unset($operationTables);
         unset($selectables, $databaseId, $connectionString);
     }
 

@@ -4,7 +4,7 @@
 
 	// Takes a full table target (array), pg_connect connection string, table selectables (array), inheritPosts (array), and helps (array).
 	// Prints form fields and buttons that are used to view and edit the configuration for the given table.
-	function printTableForm($table, $dbhConnectionString, $selectables, $inheritPosts, $helps=array())
+	function printTableForm($table, $dbhConnectionString, $selectables, $operationTables, $inheritPosts, $helps=array())
 	{
 		if (!isFullTarget($table))
 		{
@@ -34,6 +34,9 @@
 		$deleteConfirmStr="Är du säker att du vill radera all metadata för tabellen ".targetId($table)."?";
 		printDeleteButton($table, $deleteConfirmStr, $inheritPosts);
 		echo '</div></form></div></div>';
+		echo '<div class="addRemoveDiv">';
+		printAddRemoveOperations($table, $operationTables, $inheritPosts);
+		echo '</div>';
 	}
 
 ?>

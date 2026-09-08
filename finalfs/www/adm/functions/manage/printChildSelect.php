@@ -18,15 +18,16 @@
 			$columnType=rtrim($column, 's');
 			$sName=$columnType.'Id';
 			$columnArr=explode(',', $targetColumnValue);
-			if (key($target) == 'group' && ($column == 'groups' || $column == 'layers'))
+			if ((key($target) == 'group' && ($column == 'groups' || $column == 'layers')) || (key($target) == 'infogroup' && $column == 'infogroups'))
 			{
-				if (isset($inheritPosts['groupIds']))
+				$hierarchyKey=key($target) == 'group' ? 'group' : 'infogroup';
+				if (isset($inheritPosts[$hierarchyKey.'Ids']))
 				{
-					$groupIdsArray=explode(',', $inheritPosts['groupIds']);
+					$groupIdsArray=explode(',', $inheritPosts[$hierarchyKey.'Ids']);
 				}
-				if ($column == 'groups')
+				if ($column == 'groups' || $column == 'infogroups')
 				{
-					$sName='groupIds';
+					$sName=$hierarchyKey.'Ids';
 					if (!isset($selectedValue) && isset($groupIdsArray[$groupLevel]))
 					{
 						$selectedValue=$groupIdsArray[$groupLevel];
@@ -37,7 +38,7 @@
 				{
 					$groupIdsArray=array_slice($groupIdsArray, 0, $groupLevel);
 				}
-				if ($column == 'groups' && !empty($groupIdsArray))
+				if (($column == 'groups' || $column == 'infogroups') && !empty($groupIdsArray))
 				{
 					$columnArr=array_map(function($val) use ($groupIdsArray) { return implode(',', $groupIdsArray).','.$val; } , $columnArr);
 				}
@@ -85,6 +86,10 @@
 					if (isset($inheritPosts['groupIds']))
 					{
 						$hiddenInputs['groupIds']=implode(',', $groupIdsArray);
+					}
+					if (isset($inheritPosts['infogroupIds']))
+					{
+						$hiddenInputs['infogroupIds']=implode(',', $groupIdsArray);
 					}
 				}
 			}
