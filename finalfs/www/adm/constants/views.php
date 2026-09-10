@@ -5,9 +5,9 @@
 	$views = array(
 		'Allt'	=> array(),
 		'Origo' => array('maps', 'controls', 'plugins', 'groups', 'layers', 'sources', 'services', 'footers'),
-		'Infoförv' => array('classes', 'infogroups'),
 		'Extra' => array('tilegrids', 'proj4defs', 'formats', 'mapstates', 'news', 'adusers'),
 		'Meta'	=> array('databases', 'schemas', 'tables', 'contacts', 'origins', 'updates', 'keywords'),
+		'Infoförv' => array('classes', 'infogroups'),
 		'Verktyg' => array('helps', 'exttools')
 	);
 
