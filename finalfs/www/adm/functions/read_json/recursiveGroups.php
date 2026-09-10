@@ -1,8 +1,8 @@
 <?php
 
-function recursiveGroups($groupsArr)
+function recursiveGroups($dbh, array $groupsArr, string $importId, array $groupsLayers): array
 {
-	GLOBAL $dbh, $groups, $importId, $groupsLayers;
+	require './constants/configSchema.php';
 	$parentGroups=array();
 	foreach ($groupsArr as $group)
 	{
@@ -10,7 +10,7 @@ function recursiveGroups($groupsArr)
 		$parentGroups[]=$group['name']."#$importId";
 		if (!empty($group['groups']))
 		{
-			$childGroups=recursiveGroups($group['groups']);
+			$childGroups=recursiveGroups($dbh, $group['groups'], $importId, $groupsLayers);
 		}
 		else
 		{
@@ -24,13 +24,16 @@ function recursiveGroups($groupsArr)
 		{
 			$groupExpanded='false';
 		}
-		$sql="INSERT INTO map_configs.groups(group_id, title, expanded, abstract, groups, layers) VALUES ('".$group['name']."#$importId', '".$group['title']."', '$groupExpanded', ".pg_escape_literal(str_replace(array('"'), '\"', str_replace(array("\r\n", "\r", "\n"), "<br />", isset($group['abstract']) ? $group['abstract'] : 'NULL'))).", '{".implode(',', $childGroups)."}', '{".implode(',', (array) ($groupsLayers[$group['name']] ?? []))."}')";
-		$result=pg_query($dbh, $sql);
-		if (!$result)
-		{
-			var_dump($sql);
-			die("Error in SQL query: $sql" . pg_last_error());
-		}
+		$groupAbstract=isset($group['abstract']) ? str_replace(array("\r\n", "\r", "\n"), "<br />", $group['abstract']) : null;
+		$sql="INSERT INTO {$configSchema}.groups(group_id, title, expanded, abstract, groups, layers) VALUES ($1, $2, $3, $4, $5, $6)";
+		executeImportQuery($dbh, $sql, array(
+			$group['name']."#$importId",
+			$group['title'] ?? null,
+			$groupExpanded,
+			$groupAbstract,
+			toPgArrayLiteral($childGroups),
+			toPgArrayLiteral((array) ($groupsLayers[$group['name']] ?? array()))
+		));
 	}
 	return $parentGroups;
 }

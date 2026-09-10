@@ -1,54 +1,48 @@
 <?php
-/*
-read_json.php
- ├─ includeDirectory("./functions/common")
- ├─ includeDirectory("./functions/read_json")
- ├─ OM inget $_POST['json'] → visa ett importformulär med kryssrutor
- │    per datatyp (lager, grupper, karta, kontroller, sidfötter,
- │    proj4defs, källor, tilegrids, stilar, tjänster) + varningsdialog
- │    ("riskabelt", "redundanta poster", "kan sluta fungera")
- └─ OM $_POST['json'] finns → tolka och importera:
-      ├─ dbh(), configTables($dbh)           [common]
-      ├─ json_decode($json) → $json_arr      → PHP-struktur av hela Origo-konfigurationen
-      ├─ dela upp $json_arr i delar: controls, layers, styles, pageSettings,
-      │    projectionCode, extent, groups, source, m.fl.
-      ├─ separat ur $jsonGroups: identifiera bakgrundsgrupp (namn börjar på "background")
-      ├─ REGEX mot den RÅA JSON-STRÄNGEN (inte den avkodade strukturen!)
-      │    för att extrahera "source"-blocket samt "resolutions"-listor
-      │    – se flaggning, detta är skört
-      │
-      ├─ för varje källa i $jsonSource:
-      │    ├─ (tilegrids) mer regex-parsning av råtext för att hitta tileGrid-upplösningar
-      │    ├─ (services) skriver ny post i services om url:en inte redan setts
-      │    └─ (sources) skriver ny post i sources
-      │
-      ├─ (controls) skriver en post per kontroll i controls
-      │
-      ├─ (layers) för varje lager (inkl. lager inuti GROUP-lager, uppmärkta 'groupLayer'):
-      │    ├─ renamedup($layer['name'])           [read_json] → undviker namnkrock
-      │    ├─ tolkar motsvarande stil ur $jsonStyles → bestämmer ikon/utökad ikon/filter/clusterstyle
-      │    ├─ bygger upp $mapLayers / $groupsLayers (vilka lager hör till roten/vilken grupp)
-      │    ├─ städar bort den inbäddade "Administrera"-knappen ur abstract-fältet (som writeConfig
-      │    │    lade till där, se addLayersToJson.md) – bekräftar att detta är en rundtrippande
-      │    │    import/export-cykel: exportera med writeConfig, ändra, importera igen med read_json
-      │    └─ INSERT i layers-tabellen
-      │
-      ├─ (groups) recursiveGroups($jsonGroups)   [read_json] → skriver grupper rekursivt
-      ├─ (proj4defs) skriver nya proj4defs som inte redan finns
-      ├─ (footers) skriver sidfot om angiven
-      └─ (map) bygger och skriver själva maps-raden, inkl. hopsamlade
-           referenser till alla ovanstående (controls, groups, layers, proj4defs, footer, tilegrid)
-*/
+/* Importerar valda delar av en Origo-konfiguration i en transaktion. */
 
 header("Cache-Control: must-revalidate, max-age=0, s-maxage=0, no-cache, no-store");
 
 require_once("./functions/includeDirectory.php");
 includeDirectory("./functions/common");
 includeDirectory("./functions/read_json");
+require_once("./constants/configSchema.php");
+
+function importRequested(array $post, string $name): bool
+{
+	return ($post[$name] ?? null) === 'yes';
+}
+
+function importError(string $message): void
+{
+	http_response_code(400);
+	echo htmlspecialchars($message, ENT_QUOTES, 'UTF-8');
+	exit;
+}
+
+function pgPointLiteral(array $coordinates): ?string
+{
+	if (count($coordinates) !== 2)
+	{
+		return null;
+	}
+	return '('.(string) $coordinates[0].','.(string) $coordinates[1].')';
+}
+
+function pgExtentLiteral(array $coordinates): ?string
+{
+	if (count($coordinates) !== 4)
+	{
+		return null;
+	}
+	return '('.(string) $coordinates[0].','.(string) $coordinates[1].'),('.(string) $coordinates[2].','.(string) $coordinates[3].')';
+}
 
 // === Visa formulär om ingen JSON skickats ===
-if (empty($_POST['json'])) {
+$post=$_POST;
+if (empty($post['json'])) {
     $importid = uniqid();
+	$csrfToken=generateCsrfToken();
 
     echo <<<HTML
 <!DOCTYPE html>
@@ -61,6 +55,7 @@ if (empty($_POST['json'])) {
 <form method="post"
       onsubmit="return confirm('Att importera en hel origokonfiguration i JSON-format till databasen är riskabelt. Det kan innebära att ett stort antal redundanta poster läggs till i databasen och att redan befintliga origokonfigurationer slutar att fungera. Är du säker på att du vill importera till databasen?');"
       style="line-height:2">
+		<input type="hidden" name="csrf_token" value="{$csrfToken}">
     <label for="json">Json:</label>
     <textarea rows="1" id="json" name="json"></textarea><br>
 
@@ -112,6 +107,81 @@ HTML;
     exit;
 }
 
+if (!validateCsrfToken($post['csrf_token'] ?? null))
+{
+	importError('Ogiltig eller saknad säkerhetstoken. Ladda om formuläret och försök igen.');
+}
+
+$importId=trim((string) ($post['importid'] ?? ''));
+if (!preg_match('/\A[A-Za-z0-9_-]{1,64}\z/D', $importId))
+{
+	importError('Import-id får endast innehålla bokstäver, siffror, bindestreck och understreck.');
+}
+
+$json=(string) ($post['json'] ?? '');
+$json_arr=json_decode($json, true, 512, JSON_BIGINT_AS_STRING);
+if (json_last_error() !== JSON_ERROR_NONE || !is_array($json_arr))
+{
+	importError('JSON kunde inte läsas: '.json_last_error_msg());
+}
+
+foreach (array('controls', 'layers', 'styles', 'groups', 'source', 'proj4Defs', 'resolutions') as $field)
+{
+	if (isset($json_arr[$field]) && !is_array($json_arr[$field]))
+	{
+		importError('JSON-fältet '.$field.' måste vara en array.');
+	}
+}
+
+if (isset($json_arr['pageSettings']) && !is_array($json_arr['pageSettings']))
+{
+	importError('JSON-fältet pageSettings måste vara en array.');
+}
+if (isset($json_arr['pageSettings']['mapGrid']) && !is_array($json_arr['pageSettings']['mapGrid']))
+{
+	importError('JSON-fältet pageSettings.mapGrid måste vara en array.');
+}
+if (isset($json_arr['pageSettings']['footer']) && !is_array($json_arr['pageSettings']['footer']))
+{
+	importError('JSON-fältet pageSettings.footer måste vara en array.');
+}
+foreach (array('projectionExtent', 'extent', 'center') as $field)
+{
+	if (isset($json_arr[$field]) && !is_array($json_arr[$field]))
+	{
+		importError('JSON-fältet '.$field.' måste vara en array.');
+	}
+}
+if (isset($json_arr['tileGridOptions']) && !is_array($json_arr['tileGridOptions']))
+{
+	importError('JSON-fältet tileGridOptions måste vara en array.');
+}
+if (importRequested($post, 'map') && empty(trim((string) ($post['mapid'] ?? ''))))
+{
+	importError('Kartans namn får inte vara tomt.');
+}
+foreach ($json_arr['controls'] ?? array() as $control)
+{
+	if (!is_array($control) || !isset($control['name']) || !is_string($control['name']))
+	{
+		importError('Varje kontroll måste ha ett namn.');
+	}
+}
+foreach ($json_arr['groups'] ?? array() as $group)
+{
+	if (!is_array($group) || !isset($group['name']) || !is_string($group['name']))
+	{
+		importError('Varje grupp måste ha ett namn.');
+	}
+}
+foreach ($json_arr['source'] ?? array() as $source)
+{
+	if (!is_array($source) || !isset($source['url']) || !is_string($source['url']))
+	{
+		importError('Varje källa måste ha en URL.');
+	}
+}
+
 $dbh=dbh();
 $configTables=configTables($dbh);
 /*
@@ -130,17 +200,10 @@ $groups=$configTables['groups'];
 $proj4defs=$configTables['proj4defs'];
 //setLayers();
 
-$importId=$_POST['importid'];
-$json=$_POST['json'];
-
-//$json=file_get_contents('../../index.json');
-//var_dump($controls);
-//var_dump($json);
-$json_arr=json_decode($json,true,512,JSON_BIGINT_AS_STRING);
-$jsonControls=$json_arr['controls'];
-$jsonLayers=$json_arr['layers'];
-$jsonStyles=$json_arr['styles'];
-$jsonPageSettings=$json_arr['pageSettings'];
+$jsonControls=$json_arr['controls'] ?? array();
+$jsonLayers=$json_arr['layers'] ?? array();
+$jsonStyles=$json_arr['styles'] ?? array();
+$jsonPageSettings=$json_arr['pageSettings'] ?? array();
 
 if (isset($jsonPageSettings['mapGrid']))
 {
@@ -150,16 +213,18 @@ else
 {
 	$jsonMapGrid['visible']=false;
 }
-$jsonFooter=$jsonPageSettings['footer'];
-$jsonProjectionCode=$json_arr['projectionCode'];
-$jsonProjectionExtent=$json_arr['projectionExtent'];
-$jsonFeatureinfoOptions=$json_arr['featureinfoOptions'];
-$jsonProj4Defs=$json_arr['proj4Defs'];
-$jsonExtent=$json_arr['extent'];
-$jsonCenter=$json_arr['center'];
-$jsonZoom=$json_arr['zoom'];
+$jsonFooter=$jsonPageSettings['footer'] ?? array();
+$jsonProjectionCode=$json_arr['projectionCode'] ?? '';
+$jsonProjectionExtent=$json_arr['projectionExtent'] ?? array();
+$jsonFeatureinfoOptions=$json_arr['featureinfoOptions'] ?? array();
+$jsonProj4Defs=$json_arr['proj4Defs'] ?? array();
+$jsonExtent=$json_arr['extent'] ?? array();
+$jsonCenter=$json_arr['center'] ?? array();
+$jsonZoom=$json_arr['zoom'] ?? null;
 $jsonGroups=array();
-foreach ($json_arr['groups'] as $group)
+$backgroundGroup=null;
+$noneLayer=false;
+foreach ($json_arr['groups'] ?? array() as $group)
 {
 	if (stripos($group['name'], 'background') === 0)
 	{
@@ -171,39 +236,38 @@ foreach ($json_arr['groups'] as $group)
 	}
 }
 
-preg_match('/(.*)("source": *{.*)/s', $json, $matches);
-$jsonPreSource=$matches[1].'}';
-
-
-$jsonSource_str='{'.$matches[2];
-$jsonSource=$json_arr['source'];
+$jsonSource=$json_arr['source'] ?? array();
 $jsonServices=array();
 $jsonTilegrids=array();
 $serviceCount=1;
 $tilegridCount=1;
+$jsonResolutions=toPgArrayLiteral($json_arr['resolutions'] ?? array());
+$mapGroups=array();
+$mapFooter=null;
+$tilegridId=null;
+
+try
+{
+	executeImportQuery($dbh, 'BEGIN');
 foreach ($jsonSource as $sourceId => $source)
 {
-	if ($_POST['tilegrids'] == 'yes' && !empty($source['tileGrid']))
+	$urlQuery=array();
+	$sourceTilegridId=null;
+	if (importRequested($post, 'tilegrids') && !empty($source['tileGrid']))
 	{
-		$pregStr='/(.*)("'.$sourceId.'": *{.*)/s';
-		preg_match($pregStr, $jsonSource_str, $matches);
-		$jsonSource_str=$matches[2];
-		if (preg_match('/"resolutions": *\[([^\]]*)\]/', $jsonSource_str, $matches))
-		{
-			$source['tileGrid']['resolutions']='{'.$matches[1].'}';
-		}
 		if (!in_array($source['tileGrid'], $jsonTilegrids, true))
 		{
 			$tilegridId="tilegrid$tilegridCount#$importId";
+			$sourceTilegridId=$tilegridId;
 			$jsonTilegrids[$tilegridId]=$source['tileGrid'];
-			$sql="INSERT INTO map_configs.tilegrids(tilegrid_id, tilesize, resolutions) VALUES ('$tilegridId', '".$source['tileGrid']['tileSize']."', '".$source['tileGrid']['resolutions']."')";
-			$result=pg_query($dbh, $sql);
-			if (!$result)
-			{
-				die("Error in SQL query: " . pg_last_error());
-			}
+			$sql="INSERT INTO {$configSchema}.tilegrids(tilegrid_id, tilesize, resolutions) VALUES ($1, $2, $3)";
+			executeImportQuery($dbh, $sql, array($tilegridId, $source['tileGrid']['tileSize'] ?? null, toPgArrayLiteral($source['tileGrid']['resolutions'] ?? array())));
 			$tilegridCount++;
 
+		}
+		elseif (isset($tilegridId) && in_array($source['tileGrid'], $jsonTilegrids, true))
+		{
+			$sourceTilegridId=array_search($source['tileGrid'], $jsonTilegrids, true);
 		}
 	}
 
@@ -213,18 +277,14 @@ foreach ($jsonSource as $sourceId => $source)
 		//$source['url']=substr($source['url'], 0, strpos($source['url'], "?"));
 	}
 	$source['url']=dirname($source['url']);
-	if ($_POST['services'] == 'yes')
+	if (importRequested($post, 'services'))
 	{
 		if (!in_array($source['url'], $jsonServices))
 		{
 			$jsonServices["service$serviceCount"]=$source['url'];
 			$source['service']=array_search($source['url'], $jsonServices)."#$importId";
-			$sql="INSERT INTO map_configs.services(service_id, base_url) VALUES ('".$source['service']."', '".$source['url']."')";
-			$result=pg_query($dbh, $sql);
-			if (!$result)
-			{
-				die("Error in SQL query: " . pg_last_error());
-			}
+			$sql="INSERT INTO {$configSchema}.services(service_id, base_url) VALUES ($1, $2)";
+			executeImportQuery($dbh, $sql, array($source['service'], $source['url']));
 			$serviceCount++;
 		}
 		else
@@ -232,49 +292,37 @@ foreach ($jsonSource as $sourceId => $source)
 			$source['service']=array_search($source['url'], $jsonServices)."#$importId";
 		}
 	}
-	if ($_POST['sources'] == 'yes')
+	if (importRequested($post, 'sources'))
 	{
 		$sourceColumns='source_id, service, tilegrid';
-		$sourceValues="'".$sourceId."#$importId', '".$source['service']."', '$tilegridId'";
+		$sourceParams=array($sourceId."#$importId", $source['service'] ?? null, $sourceTilegridId);
+		$sourcePlaceholders=array('$1', '$2', '$3');
 		if (!empty($urlQuery['with_geometry']))
 		{
 			$sourceColumns=$sourceColumns.',with_geometry';
-			$sourceValues=$sourceValues.",'".$urlQuery['with_geometry']."'";
+			$sourceParams[]=$urlQuery['with_geometry'];
+			$sourcePlaceholders[]='$'.count($sourceParams);
 		}
 		if (!empty($urlQuery['fi_point_tolerance']))
 		{
 			$sourceColumns=$sourceColumns.',fi_point_tolerance';
-			$sourceValues=$sourceValues.",'".$urlQuery['fi_point_tolerance']."'";
+			$sourceParams[]=$urlQuery['fi_point_tolerance'];
+			$sourcePlaceholders[]='$'.count($sourceParams);
 		}
-		$sql="INSERT INTO map_configs.sources($sourceColumns) VALUES ($sourceValues)";
-		$result=pg_query($dbh, $sql);
-		if (!$result)
-		{
-			die("Error in SQL query: " . pg_last_error());
-		}
+		$sql="INSERT INTO {$configSchema}.sources($sourceColumns) VALUES (".implode(',', $sourcePlaceholders).")";
+		executeImportQuery($dbh, $sql, $sourceParams);
 	}
 
 }
 
-if (preg_match('/"resolutions": *\[([^\]]*)\]/', $jsonPreSource, $matches))
-{
-	$jsonResolutions='{'.$matches[1].'}';
-}
-
 $mapControls=array();
-if ($_POST['controls'] == 'yes')
+if (importRequested($post, 'controls'))
 {
 	foreach ($jsonControls as $control)
 	{
 		$mapControls[]=$control['name']."#$importId";
-		$sql = "INSERT INTO map_configs.controls(control_id, options) VALUES ('" . 
-			(isset($control['name']) ? pg_escape_string($control['name']) : '') . "#$importId', " . 
-			(isset($control['options']) ? pg_escape_literal(json_encode($control['options'], JSON_PRETTY_PRINT)) : 'NULL') . ")";
-		$result=pg_query($dbh, $sql);
-		if (!$result)
-		{
-			die("Error in SQL query: " . pg_last_error());
-		}
+		$sql="INSERT INTO {$configSchema}.controls(control_id, options) VALUES ($1, $2)";
+		executeImportQuery($dbh, $sql, array(($control['name'] ?? '')."#$importId", isset($control['options']) ? json_encode($control['options'], JSON_PRETTY_PRINT) : null));
 	}
 }
 
@@ -282,114 +330,22 @@ $uniqueLayers=array();
 $mapLayers=array();
 $groupsLayers=array();
 $allLayers=array();
-if ($_POST['layers'] == 'yes')
+if (importRequested($post, 'layers'))
 {
-	foreach ($jsonLayers as $jsonLayer)
-	{
-		if ($jsonLayer['type'] == 'GROUP')
-		{
-			foreach ($jsonLayer['layers'] as $groupLayerLayer)
-			{
-				$groupLayerLayer['group']='groupLayer';
-				$allLayers[]=$groupLayerLayer;
-			}
-		}
-		$allLayers[]=$jsonLayer;
-	}
+	$allLayers=flattenGroupLayers($jsonLayers);
 	foreach ($allLayers as $layer)
 	{
-		$layer['name']=renamedup($layer['name']);
-		if ($_POST['styles'] == 'yes')
+		$layer['name']=renamedup($layer['name'] ?? '', $uniqueLayers);
+		if (importRequested($post, 'styles'))
 		{
-			$layerStyle=$jsonStyles[$layer['style']];
-
-			if (count($layerStyle[0]) > 1)
-			{
-				if (count($layerStyle[0]) === 2 && (!empty($layerStyle[0][0]['icon']['src'])) && (!empty($layerStyle[0][1]['icon']['src'])) && (!empty($layerStyle[0][0]['extendedLegend']) || !empty($layerStyle[0][1]['extendedLegend'])))
-				{
-					$layerStyleConfig='[]';
-					if (!empty($layerStyle[0][0]['extendedLegend']))
-					{
-						$layerExtendedIcon=$layerStyle[0][0]['icon']['src'];
-						$layerIcon=$layerStyle[0][1]['icon']['src'];
-					}
-					else
-					{
-						$layerExtendedIcon=$layerStyle[0][1]['icon']['src'];
-						$layerIcon=$layerStyle[0][0]['icon']['src'];
-					}
-					if (!empty($layerStyle[0][0]['filter']) || !empty($layerStyle[0][1]['filter']))
-					{
-						if (!empty($layerStyle[0][0]['filter']))
-						{
-							$layerStyleFilter=$layerStyle[0][0]['filter'];
-						}
-						else
-						{
-							$layerStyleFilter=$layerStyle[0][1]['filter'];
-						}
-					}
-					else
-					{
-						$layerStyleFilter='';
-					}
-				}
-				else
-				{
-					$layerStyleConfig=json_encode($layerStyle, JSON_PRETTY_PRINT);
-					$layerIcon='';
-					$layerExtendedIcon='';
-					$layerStyleFilter='';
-				}
-			}
-			else
-			{
-				if (!empty($layerStyle[0][0]['icon']['src']))
-				{
-					$layerStyleConfig='[]';
-					$layerStyleFilter=$layerStyle[0][0]['filter'];
-					if ($layerStyle[0][0]['extendedLegend'])
-					{
-						$layerIcon='';
-						$layerExtendedIcon=$layerStyle[0][0]['icon']['src'];
-					}
-					else
-					{
-						$layerIcon=$layerStyle[0][0]['icon']['src'];
-						$layerExtendedIcon='';
-					}
-				}
-				elseif (!empty($layerStyle[0][0]['image']['src']))
-				{
-					$layerStyleConfig='[]';
-					$layerIcon=$layerStyle[0][0]['image']['src'];
-					$layerExtendedIcon='';
-					if (!empty($layerStyle[0][0]['filter']))
-					{
-						$layerStyleFilter=$layerStyle[0][0]['filter'];
-					}
-					else
-					{
-						$layerStyleFilter='';
-					}
-				}
-				else
-				{
-					$layerStyleConfig=json_encode($layerStyle, JSON_PRETTY_PRINT);
-					$layerIcon='';
-					$layerExtendedIcon='';
-					$layerStyleFilter='';
-				}
-
-			}
-			if (!empty($layer['clusterStyle']))
-			{
-				$layerClusterStyle=json_encode($jsonStyles[$layer['clusterStyle']], JSON_PRETTY_PRINT);
-			}
-			else
-			{
-				$layerClusterStyle='[]';
-			}
+			$styleResult=extractLayerStyleConfig($jsonStyles[$layer['style'] ?? ''] ?? array());
+			$layerStyleConfig=$styleResult['config'];
+			$layerIcon=$styleResult['icon'];
+			$layerExtendedIcon=$styleResult['extendedIcon'];
+			$layerStyleFilter=$styleResult['filter'];
+			$layerClusterStyle=!empty($layer['clusterStyle']) && isset($jsonStyles[$layer['clusterStyle']])
+				? json_encode($jsonStyles[$layer['clusterStyle']], JSON_PRETTY_PRINT)
+				: '[]';
 		}
 		else
 		{
@@ -422,102 +378,21 @@ if ($_POST['layers'] == 'yes')
 				$groupsLayers[$layer['group']]=array($layer['name']."$importId");
 			}
 		}
-		if (!empty($layer['queryable']))
-		{
-			$layerQueryable=var_export($layer['queryable'], true);
-		}
-		else
-		{
-			$layerQueryable='true';
-		}
-		if (empty($layer['opacity']))
-		{
-			$layer['opacity']=1;
-		}
-		if (isset($layer['visible']))
-		{
-			$layerVisible=var_export($layer['visible'], true);
-		}
-		else
-		{
-			$layerVisible='true';
-		}
-		if ($layer['type'] == 'GROUP')
-		{
-			$layerLayers_arr=array();
-			foreach ($layer['layers'] as $layerLayer)
-			{
-				$layerLayers_arr[]=$layerLayer['name']."#$importId";
-			}
-			$layerLayers='{'.implode(',', $layerLayers_arr).'}';
-			$layerSource='';
-		}
-		else
-		{
-			$layerLayers='{}';
-			$layerSource=$layer['source']."#$importId";
-		}
-		if (!empty($layer['abstract']))
-		{
-			$layer['abstract']=preg_replace("|(<br>)*<form action='[^']*' method='post' target='_blank'><button type='submit' name='layerId' value='[^']*' style='[^']*'>Administrera</button></form>|i", '', $layer['abstract']);
-		}
-		if (empty($layerIcon))
-		{
-			$layerShowicon='false';
-		}
-		else
-		{
-			$layerShowicon='true';
-		}
-		$layersColumns='layer_id, title, format, type, attributes, abstract, queryable, featureinfolayer, opacity, visible, source, style_config, show_icon, icon, style_filter, icon_extended, layers, layertype, clusterstyle, attribution';
-		$layersValues = "'" . (array_key_exists('name', $layer) ? $layer['name'] : null) . "$importId', '"
-			. (array_key_exists('title', $layer) ? $layer['title'] : null) . "', '"
-			. (array_key_exists('format', $layer) ? $layer['format'] : null) . "', '"
-			. (array_key_exists('type', $layer) ? $layer['type'] : null) . "', "
-			. (array_key_exists('attributes', $layer) ? pg_escape_literal(json_encode($layer['attributes'], JSON_PRETTY_PRINT)) : 'NULL') . ", "
-			. (array_key_exists('abstract', $layer) ? pg_escape_literal(str_replace(array('"'), '\"', str_replace(array("\r\n", "\r", "\n"), "<br />", $layer['abstract']))) : 'NULL') . ", '"
-			. $layerQueryable . "', '"
-			. (array_key_exists('featureinfoLayer', $layer) ? $layer['featureinfoLayer'] : null) . "', '"
-			. (array_key_exists('opacity', $layer) ? $layer['opacity'] : null) . "', '"
-			. $layerVisible . "', '"
-			. $layerSource . "', "
-			. pg_escape_literal($layerStyleConfig) . ", "
-			. $layerShowicon . ", '"
-			. $layerIcon . "', "
-			. pg_escape_literal($layerStyleFilter) . ", '"
-			. $layerExtendedIcon . "', '"
-			. $layerLayers . "', '"
-			. (array_key_exists('layerType', $layer) ? $layer['layerType'] : null) . "', '"
-			. $layerClusterStyle . "', '"
-			. (array_key_exists('attribution', $layer) ? $layer['attribution'] : null) . "'";
-		if (!empty($layer['maxScale']))
-		{
-			$layersColumns=$layersColumns.', maxscale';
-			$layersValues=$layersValues.", '".$layer['maxScale']."'";
-		}
-		if (!empty($layer['minScale']))
-		{
-			$layersColumns=$layersColumns.', minscale';
-			$layersValues=$layersValues.", '".$layer['minScale']."'";
-		}
-		if (!empty($layer['clusterOptions']) && $layer['clusterOptions'] !== '[]')
-		{
-			$layersColumns=$layersColumns.', clusteroptions';
-			$layersValues=$layersValues.", ".pg_escape_literal(json_encode($layer['clusterOptions'], JSON_PRETTY_PRINT));
-		}
-		$sql="INSERT INTO map_configs.layers($layersColumns) VALUES ($layersValues)";
-		$result=pg_query($dbh, $sql);
-		if (!$result)
-		{
-			var_dump($sql);
-			die("Error in SQL query: " . pg_last_error());
-		}
+		$styleResult=array(
+			'config'=>$layerStyleConfig,
+			'icon'=>$layerIcon,
+			'extendedIcon'=>$layerExtendedIcon,
+			'filter'=>$layerStyleFilter,
+			'clusterStyle'=>$layerClusterStyle
+		);
+		list($sql, $layerParams)=buildLayerInsert($configSchema, $layer, $importId, $styleResult);
+		executeImportQuery($dbh, $sql, $layerParams);
 	}
 }
 
-if ($_POST['groups'] == 'yes')
+if (importRequested($post, 'groups'))
 {
-	if ($noneLayer && $group['name'] == 'background')
+	if ($noneLayer && !empty($backgroundGroup) && ($backgroundGroup['name'] ?? '') === 'background')
 	{
 		$jsonGroups[]=array('name' => "none");
 	}
@@ -525,30 +400,32 @@ if ($_POST['groups'] == 'yes')
 	{
 		$jsonGroups[]=$backgroundGroup;
 	}
-	$mapGroups=recursiveGroups($jsonGroups);
+	$mapGroups=recursiveGroups($dbh, $jsonGroups, $importId, $groupsLayers);
 }
 
 $mapProj4Defs=array();
 foreach ($jsonProj4Defs as $def)
 {
+	if (!isset($def['code']))
+	{
+		continue;
+	}
 	$mapProj4Defs[]=$def['code'];
-	if ($_POST['proj4defs'] == 'yes')
+	if (importRequested($post, 'proj4defs'))
 	{
 		if (!in_array($def['code'], array_column($proj4defs, 'code')))
 		{
 			if ($def['code'] == $jsonProjectionCode)
 			{
-				$sql="INSERT INTO map_configs.proj4defs(code, projection, projectionextent, alias) VALUES ('".$def['code']."', '".$def['projection']."', '(".$jsonProjectionExtent[0].",".$jsonProjectionExtent[1]."),(".$jsonProjectionExtent[2].",".$jsonProjectionExtent[3].")', '".$def['alias']."')";
+				$sql="INSERT INTO {$configSchema}.proj4defs(code, projection, projectionextent, alias) VALUES ($1, $2, $3, $4)";
+				$params=array($def['code'], $def['projection'] ?? null, pgExtentLiteral($jsonProjectionExtent), $def['alias'] ?? null);
 			}
 			else
 			{
-				$sql="INSERT INTO map_configs.proj4defs(code, projection, alias) VALUES ('".$def['code']."', '".$def['projection']."', '".$def['alias']."')";
+				$sql="INSERT INTO {$configSchema}.proj4defs(code, projection, alias) VALUES ($1, $2, $3)";
+				$params=array($def['code'], $def['projection'] ?? null, $def['alias'] ?? null);
 			}
-			$result=pg_query($dbh, $sql);
-			if (!$result)
-			{
-				die("Error in SQL query: " . pg_last_error());
-			}
+			executeImportQuery($dbh, $sql, $params);
 		}
 	}
 }
@@ -556,18 +433,14 @@ foreach ($jsonProj4Defs as $def)
 if (!empty($jsonFooter))
 {
 	$mapFooter="footer#$importId";
-	if ($_POST['footers'] == 'yes')
+	if (importRequested($post, 'footers'))
 	{
-		$sql="INSERT INTO map_configs.footers(footer_id, img, url, text) VALUES ('$mapFooter', '".$jsonFooter['img']."', '".$jsonFooter['url']."', '".$jsonFooter['text']."')";
-		$result=pg_query($dbh, $sql);
-		if (!$result)
-		{
-			die("Error in SQL query: " . pg_last_error());
-		}
+		$sql="INSERT INTO {$configSchema}.footers(footer_id, img, url, text) VALUES ($1, $2, $3, $4)";
+		executeImportQuery($dbh, $sql, array($mapFooter, $jsonFooter['img'] ?? null, $jsonFooter['url'] ?? null, $jsonFooter['text'] ?? null));
 	}
 }
 
-if ($_POST['map'] == 'yes')
+if (importRequested($post, 'map'))
 {
 	if (!empty($json_arr['enableRotation']))
 	{
@@ -585,60 +458,76 @@ if ($_POST['map'] == 'yes')
 	{
 		$jsonConstrainResolution='true';
 	}
-	if ($_POST['tilegrids'] == 'yes' && !empty($json_arr['tileGridOptions']))
+	if (importRequested($post, 'tilegrids') && !empty($json_arr['tileGridOptions']))
 	{
-		$pregStr='/(.*)("tileGridOptions": *{[^}]*})/s';
-		preg_match($pregStr, $jsonPreSource, $matches);
-		$jsonTileGridOptions_str=$matches[2];
-		if (preg_match('/"resolutions": *\[([^\]]*)\]/', $jsonTileGridOptions_str, $matches))
+		$tileGridOptions=$json_arr['tileGridOptions'];
+		if (!isset($tileGridOptions['resolutions']))
 		{
-			$json_arr['tileGridOptions']['resolutions']='{'.$matches[1].'}';
+			$tileGridOptions['resolutions']=$json_arr['resolutions'] ?? array();
 		}
-		else
-		{
-			$json_arr['tileGridOptions']['resolutions']=$jsonResolutions;
-		}
-		if (!in_array($json_arr['tileGridOptions'], $jsonTilegrids, true))
+		if (!in_array($tileGridOptions, $jsonTilegrids, true))
 		{
 			$tilegridId="tilegrid$tilegridCount#$importId";
-			$jsonTilegrids[$tilegridId]=$json_arr['tileGridOptions'];
+			$jsonTilegrids[$tilegridId]=$tileGridOptions;
 
-			$sql="INSERT INTO map_configs.tilegrids(tilegrid_id, tilesize, resolutions) VALUES ('$tilegridId', '".$json_arr['tileGridOptions']['tileSize']."', '".$json_arr['tileGridOptions']['resolutions']."')";
-			$result=pg_query($dbh, $sql);
-			if (!$result)
-			{
-				die("Error in SQL query: " . pg_last_error());
-			}
+			$sql="INSERT INTO {$configSchema}.tilegrids(tilegrid_id, tilesize, resolutions) VALUES ($1, $2, $3)";
+			executeImportQuery($dbh, $sql, array($tilegridId, $tileGridOptions['tileSize'] ?? null, toPgArrayLiteral($tileGridOptions['resolutions'])));
 			$tilegridCount++;
 		}
 	}
 	$mapColumns='map_id, mapgrid, projectioncode, featureinfooptions, extent, enablerotation, constrainresolution, resolutions, controls, groups, layers, proj4defs, footer, tilegrid';
-
-	$mapValues="'".$_POST['mapid']."', '".var_export($jsonMapGrid['visible'], true)."', '$jsonProjectionCode', '".json_encode($jsonFeatureinfoOptions, JSON_PRETTY_PRINT)."', '(".$jsonExtent[0].",".$jsonExtent[1]."),(".$jsonExtent[2].",".$jsonExtent[3].")', '$jsonEnableRotation', '$jsonConstrainResolution', '$jsonResolutions', '{".implode(',', $mapControls)."}', '{".implode(',', $mapGroups)."}', '{".implode(',', $mapLayers)."}', '{".implode(',', $mapProj4Defs)."}', '$mapFooter', '$tilegridId'";
+	$mapParams=array(
+		trim((string) ($post['mapid'] ?? '')),
+		var_export($jsonMapGrid['visible'] ?? false, true),
+		$jsonProjectionCode,
+		json_encode($jsonFeatureinfoOptions, JSON_PRETTY_PRINT),
+		pgExtentLiteral($jsonExtent),
+		$jsonEnableRotation,
+		$jsonConstrainResolution,
+		$jsonResolutions,
+		toPgArrayLiteral($mapControls),
+		toPgArrayLiteral($mapGroups),
+		toPgArrayLiteral($mapLayers),
+		toPgArrayLiteral($mapProj4Defs),
+		$mapFooter ?? null,
+		$tilegridId ?? null
+	);
 	if (!empty($jsonCenter))
 	{
 		$mapColumns=$mapColumns.', center';
-		$mapValues=$mapValues.", '(".$jsonCenter[0].",".$jsonCenter[1].")'";
+		$mapParams[]=pgPointLiteral($jsonCenter);
 	}
 	if (isset($jsonZoom))
 	{
 		$mapColumns=$mapColumns.', zoom';
-		$mapValues=$mapValues.", '$jsonZoom'";
+		$mapParams[]=$jsonZoom;
 	}
-	$sql="INSERT INTO map_configs.maps($mapColumns) VALUES ($mapValues)";
-	$result=pg_query($dbh, $sql);
-	pg_close($dbh);
-	if (!$result)
+	$mapPlaceholders=array();
+	foreach ($mapParams as $index => $unused)
 	{
-		die("Error in SQL query: " . pg_last_error());
+		$mapPlaceholders[]='$'.($index+1);
 	}
+	$sql="INSERT INTO {$configSchema}.maps($mapColumns) VALUES (".implode(',', $mapPlaceholders).")";
+	executeImportQuery($dbh, $sql, $mapParams);
 }
-if ($result)
+
+	executeImportQuery($dbh, 'COMMIT');
+pg_close($dbh);
+}
+catch (Throwable $exception)
 {
-	echo "Import lyckades!";
-	echo '<form action="manage.php">';
-	echo   '<input type="hidden" name="view" value="Origo" />';
-	echo   '<input type="submit" value="Till konfigurationsverktyget" />';
-	echo '</form>';
+	if (isset($dbh))
+	{
+		@pg_query($dbh, 'ROLLBACK');
+		pg_close($dbh);
+	}
+	error_log('read_json import failed: '.$exception->getMessage());
+	importError('Importen misslyckades. Inga ändringar sparades.');
 }
+
+echo "Import lyckades!";
+echo '<form action="manage.php">';
+echo   '<input type="hidden" name="view" value="Origo" />';
+echo   '<input type="submit" value="Till konfigurationsverktyget" />';
+echo '</form>';
 ?>

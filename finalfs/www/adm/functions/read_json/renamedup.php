@@ -1,26 +1,16 @@
 <?php
 
-function renamedup($name, $count=0)
+function renamedup(string $name, array &$uniqueLayers): string
 {
-	GLOBAL $uniqueLayers;
-	if ($count > 0)
+	$count=0;
+	do
 	{
-		$newname="$name#$count";
-	}
-	else
-	{
-		$newname="$name#";
-	}
-	if (in_array($newname, $uniqueLayers))
-	{
+		$newname=$name.($count > 0 ? "#$count" : '#');
 		$count++;
-		return renamedup($name, $count);
 	}
-	else
-	{
-		$uniqueLayers[]=$newname;
-		return $newname;
-	}
+	while (in_array($newname, $uniqueLayers, true));
+	$uniqueLayers[]=$newname;
+	return $newname;
 }
 
 ?>
