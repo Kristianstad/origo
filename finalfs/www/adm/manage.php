@@ -408,13 +408,19 @@ echo <<<HTML
 <body onresize="Array.from(document.getElementsByClassName('resizeimg')).forEach(function(element) { element.onerror(); });">
 
 	<!-- Print the top buttons, including radio buttons to change view -->
-	<form action="read_json.php">
-		<button title="Importera konfiguration från JSON-fil" class="topButton" type="submit">Importera JSON</button>
-	</form>
 	<form id="helpForm" action="help.php" target="topFrame">
 		<button title="Visa/dölj hjälptext" class="topButton" onclick="toggleTopFrame('help');" type="submit">Hjälp</button>
 	</form>
 HTML;
+
+if ($view === 'Verktyg')
+{
+    echo <<<HTML
+    <form action="read_json.php">
+        <button title="Importera konfiguration från JSON-fil" class="topButton" type="submit">Importera JSON</button>
+    </form>
+HTML;
+}
 
 printViewSwitcher($view);
 
