@@ -37,6 +37,8 @@
 		'keywords'	=>'nyckelord',
 		'help'		=>'hjälp',
 		'helps'		=>'hjälp',
+		'exttool'	=>'externt verktyg',
+		'exttools'	=>'externa verktyg',
 		'formats'	=>'format',
 		'new'		=>'nyhet',
 		'news'		=>'nyheter',

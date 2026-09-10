@@ -64,6 +64,6 @@
 		{
 			$url="../".str_replace('#', '%23', $id).".html";
 		}
-		printUrlButton($url);
+		printUrlButton($url, 'map');
 		echo '</div></form></div></div>';
 	}

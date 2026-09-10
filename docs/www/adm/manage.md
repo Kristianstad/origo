@@ -100,6 +100,7 @@ Funktionsnamnen och deras publika argument är oförändrade eftersom
 | `printFormatForm.php` | format | (endast format_id, ingen extra) | – |
 | `printGroupForm.php` | group | layers, groups, title, expanded (select), show_meta (select), keywords | `printConfigPreviewButton`, `printAddOperation`/`printRemoveOperation` mot maps OCH groups (två par) |
 | `printHelpForm.php` | help | (endast help_id/abstract/info, etiketterna är "Verktygsfält"/"Hjälptext" istället för "Id"/"Beskrivning") | – |
+| `printExttoolForm.php` | exttool | url | `printUrlButton` |
 | `printKeywordForm.php` | keyword | – | – |
 | `printMapstateForm.php` | mapstate | mapurl, state, created, lastuse, preserve (select) | – |
 | `printNewForm.php` | new | text, date, reads, deletes | – |
@@ -133,7 +134,7 @@ betydande typspecifik villkorslogik:
 | `printUpdateButton.php` | `printUpdateButton($type)` | "Uppdatera"-knappen. Läser den globala `$formChangedGlobal`-flaggan (satt i `manage.php` vid failed update, se tidigare) för att visa den redan i "ändrad"-läge om ett sparförsök just misslyckades |
 | `printUpdateForm.php` | (enkelt mönster) | Namnet är missvisande – detta gäller entiteten "update" (en uppdateringsrutin/schema för när data anses föråldrad, kopplat till `updated`-modulen), inte formulärets egen uppdateringsknapp. Fält: `interval` (tidsintervall som text, t.ex. "+1 month" – ser ut som PHP:s `strtotime()`-kompatibla format), `method` (manuellt/automatiskt) |
 | `printUpdateSelect.php` | `printUpdateSelect($fullTarget, $configParamValues, $class, $label, $help=false, $options=null, $onchange='')` | Motsvarigheten till `printTextarea()` men för `<select>`-fält istället för fritext. Om `$options` inte anges härleds de automatiskt från `$configParamValues` |
-| `printUrlButton.php` | `printUrlButton($url)` | Enkel "Öppna karta"-knapp som öppnar en URL i ny flik |
+| `printUrlButton.php` | `printUrlButton($url, $type)` | Generisk knapp som öppnar en URL i ny flik och använder typen för knapptexten, exempelvis karta eller externt verktyg |
 | `printViewSwitcher.php` | `printViewSwitcher($view)` | Radioknappar för att växla mellan vyer (`constants/views.php`), autopostar vid ändring |
 | `printWriteConfigButton.php` | `printWriteConfigButton($mapId, $changed='f')` | Knappen som triggar `writeConfig.php` (publicering). Visar "ändrad"-styling om `maps.changed = 't'` (kopplingen till `markMapsChanged()` vi identifierade tidigare, nu bekräftad från UI-sidan) |
 
