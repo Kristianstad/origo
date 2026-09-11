@@ -15,6 +15,8 @@ function printSkinForm($skin, $inheritPosts, $helps=array())
 		array('name'=>'header_color', 'class'=>'textareaSmall', 'label'=>'Rubrikfärg:'),
 		array('name'=>'header_text_color', 'class'=>'textareaSmall', 'label'=>'Rubriktextfärg:'),
 		array('name'=>'focus_text_color', 'class'=>'textareaSmall', 'label'=>'Fokustextfärg:'),
+		array('name'=>'focus_font_weight', 'class'=>'textareaSmall', 'label'=>'Fokusvikt:'),
+		array('name'=>'no_focus_font_weight', 'class'=>'textareaSmall', 'label'=>'Icke-fokusvikt:'),
 		array('name'=>'hover_color', 'class'=>'textareaSmall', 'label'=>'Hover-färg:'),
 		array('name'=>'active_color', 'class'=>'textareaSmall', 'label'=>'Aktiv färg:'),
 		array('name'=>'accent_color', 'class'=>'textareaSmall', 'label'=>'Accentfärg:'),

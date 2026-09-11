@@ -11,6 +11,8 @@ function printSkinVariables(array $skin): void
 		'header_color'=>'--skin-header',
 		'header_text_color'=>'--skin-header-text',
 		'focus_text_color'=>'--skin-focus-text',
+		'focus_font_weight'=>'--skin-focus-weight',
+		'no_focus_font_weight'=>'--skin-no-focus-weight',
 		'hover_color'=>'--skin-hover',
 		'active_color'=>'--skin-active',
 		'accent_color'=>'--skin-accent',

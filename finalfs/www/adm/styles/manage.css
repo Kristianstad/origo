@@ -25,8 +25,8 @@
 		.thFirst		{ white-space:nowrap; padding-right:0.5em }
 		.thNext			{ white-space:nowrap; padding-left:0.5em; padding-right:0.5em }
 		h3				{ margin-block-start:0.1em; margin-block-end:0.1em; font-size:clamp(9px, 1vw, 14px) }
-		.h3NoFocus		{ margin-block-start:0 }
-		.h3Focus		{ margin-block-start:0; color:var(--skin-focus-text, #212121) }
+		.h3NoFocus		{ margin-block-start:0; font-weight:var(--skin-no-focus-weight, 700) }
+		.h3Focus		{ margin-block-start:0; color:var(--skin-focus-text, #212121); font-weight:var(--skin-focus-weight, 700) }
 		.h3Black		{ color:var(--skin-text, #212121) }
 		select			{ font-family:inherit; font-size:inherit; box-sizing:border-box; padding:0.2em; position:relative; line-height:1.4; border:0.0625em solid var(--skin-border, #BDBDBD); vertical-align:middle; border-radius:var(--skin-radius, 0.25em); background-color:var(--skin-surface, #FFFFFF); scrollbar-color:var(--skin-primary, #455a64) var(--skin-surface, #FFFFFF); scrollbar-width:thin; color:var(--skin-text, #212121) }
 		.headSelect		{ width:100%; max-width:calc(100% - 4.5em) }

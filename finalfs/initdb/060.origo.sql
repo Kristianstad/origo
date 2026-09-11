@@ -558,6 +558,8 @@ CREATE TABLE map_configs.skins
   header_color character varying COLLATE pg_catalog."default",
   header_text_color character varying COLLATE pg_catalog."default",
   focus_text_color character varying COLLATE pg_catalog."default",
+  focus_font_weight character varying COLLATE pg_catalog."default",
+  no_focus_font_weight character varying COLLATE pg_catalog."default",
   hover_color character varying COLLATE pg_catalog."default",
   active_color character varying COLLATE pg_catalog."default",
   accent_color character varying COLLATE pg_catalog."default",
@@ -569,10 +571,10 @@ CREATE TABLE map_configs.skins
   CONSTRAINT skins_pkey PRIMARY KEY (skin_id)
 );
 
-INSERT INTO map_configs.skins(skin_id,abstract,info,bg_color,surface_color,text_color,primary_color,button_text_color,header_color,header_text_color,focus_text_color,hover_color,active_color,accent_color,border_color,danger_color,font_family,border_radius,shadow_color) VALUES
-('Standard','Standardutseendet.','Basutseendet för administrationsverktyget.','#cfd8dc','#ffffff','#212121','#455a64','#ffffff','#607d8b','#cfd8dc','#212121','#0097a7','#b2ebf2','#00bcd4','#bdbdbd','#ffcdd2','Roboto, sans-serif','0.25em','#c1c1c1'),
-('Mörkt','Mörkt utseende.','Ett mörkt alternativ med tydligare kontrast på knappar och rubriker.','#1e2429','#2b333a','#e0e0e0','#546e7a','#ffffff','#263238','#ffffff','#ffffff','#00acc1','#26c6da','#26c6da','#78909c','#ef9a9a','Roboto, sans-serif','0.5em','#000000'),
-('Kristianstad','Kristianstads kommuns grafiska profil.','Baserat på kommunens officiella färger, Open Sans och formspråk med rundade hörn. En ljusare bakgrund och ljusblå rubrikfält ger bättre kontrast mot de mörkblå knapparna.','#f4f7f2','#ffffff','#1a1a1a','#19486e','#ffffff','#71c4eb','#19486e','#19486e','#00968f','#00968f','#e5cc4e','#ccc7c2','#d67d1f','Open Sans, sans-serif','0.4em','#b3aca8');
+INSERT INTO map_configs.skins(skin_id,abstract,info,bg_color,surface_color,text_color,primary_color,button_text_color,header_color,header_text_color,focus_text_color,focus_font_weight,no_focus_font_weight,hover_color,active_color,accent_color,border_color,danger_color,font_family,border_radius,shadow_color) VALUES
+('Standard','Standardutseendet.','Basutseendet för administrationsverktyget.','#cfd8dc','#ffffff','#212121','#455a64','#ffffff','#607d8b','#cfd8dc','#212121','700','700','#0097a7','#b2ebf2','#00bcd4','#bdbdbd','#ffcdd2','Roboto, sans-serif','0.25em','#c1c1c1'),
+('Mörkt','Mörkt utseende.','Ett mörkt alternativ med tydligare kontrast på knappar och rubriker.','#1e2429','#2b333a','#e0e0e0','#546e7a','#ffffff','#263238','#ffffff','#ffffff','700','400','#00acc1','#26c6da','#26c6da','#78909c','#ef9a9a','Roboto, sans-serif','0.5em','#000000'),
+('Kristianstad','Kristianstads kommuns grafiska profil.','Baserat på kommunens officiella färger, Open Sans och formspråk med rundade hörn. En ljusare bakgrund och ljusblå rubrikfält ger bättre kontrast mot de mörkblå knapparna.','#f4f7f2','#ffffff','#1a1a1a','#19486e','#ffffff','#71c4eb','#19486e','#19486e','700','400','#00968f','#00968f','#e5cc4e','#ccc7c2','#d67d1f','Open Sans, sans-serif','0.4em','#b3aca8');
 
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('skin:skin_id','<b>Utseende > Id</b><br>Ett unikt namn för utseendet.');
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('skin:abstract','<b>Utseende > Beskrivning</b><br>En kort beskrivning av utseendet.');
@@ -585,6 +587,8 @@ INSERT INTO map_configs.helps(help_id,abstract) VALUES ('skin:button_text_color'
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('skin:header_color','<b>Utseende > Rubrikfärg</b><br>Färg för tabellrubriker och avdelande gränser som CSS-färg.');
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('skin:header_text_color','<b>Utseende > Rubriktextfärg</b><br>Textfärg för tabellrubriker som CSS-färg.');
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('skin:focus_text_color','<b>Utseende > Fokustextfärg</b><br>Textfärg för den rubrik som visar aktuell fokuskolumn som CSS-färg.');
+INSERT INTO map_configs.helps(help_id,abstract) VALUES ('skin:focus_font_weight','<b>Utseende > Fokusvikt</b><br>CSS-vikt för texten i aktuell fokuskolumn, till exempel 400 eller 700.');
+INSERT INTO map_configs.helps(help_id,abstract) VALUES ('skin:no_focus_font_weight','<b>Utseende > Icke-fokusvikt</b><br>CSS-vikt för texten i övriga kolumner, till exempel 400 eller 700.');
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('skin:hover_color','<b>Utseende > Hover-färg</b><br>Färg när pekaren hålls över ett interaktivt element som CSS-färg.');
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('skin:active_color','<b>Utseende > Aktiv färg</b><br>Färg för aktivt eller nedtryckt element som CSS-färg.');
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('skin:accent_color','<b>Utseende > Accentfärg</b><br>Accentfärg för markerade eller särskilt framhävda element som CSS-färg.');
