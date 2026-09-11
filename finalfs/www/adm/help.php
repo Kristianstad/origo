@@ -26,7 +26,7 @@ HERE;
 
 pg_close($dbh);
 
-$content .= "<br style=\"clear:both\"><button type=\"button\" onclick=\"window.parent.postMessage({ action: 'close' }, window.location.origin);\">Stäng</button>";
+$content .= "<br style=\"clear:both\"><div class=\"helpCloseButton\"><button type=\"button\" onclick=\"window.parent.postMessage({ action: 'close' }, window.location.origin);\">Stäng</button></div>";
 
 // === Början av sidan ===
 echo <<<HTML

@@ -9,7 +9,7 @@
 		.textareaXSmall	{ width:2.5em; resize:none }
 		input[type='checkbox'] { accent-color:var(--skin-primary, #455a64); margin-right:0.3em }
 		form			{ margin:0; margin-block-end:0 }
-		.printXFormDiv	{ float:left; line-height:2.1; margin-top:0.5em; margin-bottom:2.5em }
+		.printXFormDiv	{ float:left; line-height:2.1; margin-top:0.2em; margin-bottom:2.5em }
 		.optionSpan		{ white-space:nowrap }
 		.readJsonButtonDiv { display:flex; position:relative; left:0; line-height:1.5; margin-top:0.5em; justify-content:flex-start }
 		.readJsonButtonDiv .updateButton { margin-right:0.2em }
