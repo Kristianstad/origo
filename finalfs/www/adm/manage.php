@@ -358,6 +358,8 @@ foreach ($categoryPosts as $postName => $category) {
     $inheritPosts[$postName] = $category;
 }
 
+$currentSkin=currentSkin($configTables['skins'] ?? array());
+
 // === Början av sidan ===
 echo <<<HTML
 <!DOCTYPE html>
@@ -400,6 +402,7 @@ echo <<<HTML
 HTML;
 
 // Include all css-stylesheets from the given directory
+printSkinVariables($currentSkin);
 require("./styles/manage.css");
 
 echo <<<HTML

@@ -39,6 +39,8 @@
 		'helps'		=>'hjälp',
 		'exttool'	=>'externt verktyg',
 		'exttools'	=>'externa verktyg',
+		'skin'		=>'utseende',
+		'skins'		=>'utseenden',
 		'formats'	=>'format',
 		'new'		=>'nyhet',
 		'news'		=>'nyheter',

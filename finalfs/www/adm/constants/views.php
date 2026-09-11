@@ -8,7 +8,7 @@
 		'Extra' => array('tilegrids', 'proj4defs', 'formats', 'mapstates', 'news', 'adusers'),
 		'Meta'	=> array('databases', 'schemas', 'tables', 'contacts', 'origins', 'updates', 'keywords'),
 		'Infoförv' => array('classes', 'infogroups'),
-		'Verktyg' => array('helps', 'exttools')
+		'Verktyg' => array('helps', 'exttools', 'skins')
 	);
 
 ?>

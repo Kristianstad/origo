@@ -545,6 +545,55 @@ CREATE TABLE map_configs.exttools
 
 INSERT INTO map_configs.exttools(exttool_id,url,abstract) VALUES ('JSON Checker','https://jsonchecker.com/','Ett verktyg för att kontrollera/felsöka JSON-data.');
 
+CREATE TABLE map_configs.skins
+(
+  skin_id character varying COLLATE pg_catalog."default" NOT NULL,
+  abstract character varying COLLATE pg_catalog."default",
+  info character varying COLLATE pg_catalog."default",
+  bg_color character varying COLLATE pg_catalog."default",
+  surface_color character varying COLLATE pg_catalog."default",
+  text_color character varying COLLATE pg_catalog."default",
+  primary_color character varying COLLATE pg_catalog."default",
+  button_text_color character varying COLLATE pg_catalog."default",
+  header_color character varying COLLATE pg_catalog."default",
+  header_text_color character varying COLLATE pg_catalog."default",
+  focus_text_color character varying COLLATE pg_catalog."default",
+  hover_color character varying COLLATE pg_catalog."default",
+  active_color character varying COLLATE pg_catalog."default",
+  accent_color character varying COLLATE pg_catalog."default",
+  border_color character varying COLLATE pg_catalog."default",
+  danger_color character varying COLLATE pg_catalog."default",
+  font_family character varying COLLATE pg_catalog."default",
+  border_radius character varying COLLATE pg_catalog."default",
+  shadow_color character varying COLLATE pg_catalog."default",
+  CONSTRAINT skins_pkey PRIMARY KEY (skin_id)
+);
+
+INSERT INTO map_configs.skins(skin_id,abstract,info,bg_color,surface_color,text_color,primary_color,button_text_color,header_color,header_text_color,focus_text_color,hover_color,active_color,accent_color,border_color,danger_color,font_family,border_radius,shadow_color) VALUES
+('Standard','Standardutseendet.','Basutseendet för administrationsverktyget.','#cfd8dc','#ffffff','#212121','#455a64','#ffffff','#607d8b','#cfd8dc','#212121','#0097a7','#b2ebf2','#00bcd4','#bdbdbd','#ffcdd2','Roboto, sans-serif','0.25em','#c1c1c1'),
+('Mörkt','Mörkt utseende.','Ett mörkt alternativ med tydligare kontrast på knappar och rubriker.','#1e2429','#2b333a','#e0e0e0','#546e7a','#ffffff','#263238','#ffffff','#ffffff','#00acc1','#26c6da','#26c6da','#78909c','#ef9a9a','Roboto, sans-serif','0.5em','#000000'),
+('Kristianstad','Kristianstads kommuns grafiska profil.','Baserat på kommunens officiella färger, Open Sans och formspråk med rundade hörn. En ljusare bakgrund och ljusblå rubrikfält ger bättre kontrast mot de mörkblå knapparna.','#f4f7f2','#ffffff','#1a1a1a','#19486e','#ffffff','#71c4eb','#19486e','#19486e','#00968f','#00968f','#e5cc4e','#ccc7c2','#d67d1f','Open Sans, sans-serif','0.4em','#b3aca8');
+
+INSERT INTO map_configs.helps(help_id,abstract) VALUES ('skin:skin_id','<b>Utseende > Id</b><br>Ett unikt namn för utseendet.');
+INSERT INTO map_configs.helps(help_id,abstract) VALUES ('skin:abstract','<b>Utseende > Beskrivning</b><br>En kort beskrivning av utseendet.');
+INSERT INTO map_configs.helps(help_id,abstract) VALUES ('skin:info','<b>Utseende > Info</b><br>Administrativ information om utseendet.');
+INSERT INTO map_configs.helps(help_id,abstract) VALUES ('skin:bg_color','<b>Utseende > Bakgrundsfärg</b><br>Sidans huvudsakliga bakgrundsfärg som CSS-färg.');
+INSERT INTO map_configs.helps(help_id,abstract) VALUES ('skin:surface_color','<b>Utseende > Ytfärg</b><br>Färg för formulärfält och andra ljusa ytor som CSS-färg.');
+INSERT INTO map_configs.helps(help_id,abstract) VALUES ('skin:text_color','<b>Utseende > Textfärg</b><br>Standardfärg för text som CSS-färg.');
+INSERT INTO map_configs.helps(help_id,abstract) VALUES ('skin:primary_color','<b>Utseende > Primärfärg</b><br>Primär färg för knappar och interaktiva element som CSS-färg.');
+INSERT INTO map_configs.helps(help_id,abstract) VALUES ('skin:button_text_color','<b>Utseende > Knapptextfärg</b><br>Textfärg för knappar som CSS-färg.');
+INSERT INTO map_configs.helps(help_id,abstract) VALUES ('skin:header_color','<b>Utseende > Rubrikfärg</b><br>Färg för tabellrubriker och avdelande gränser som CSS-färg.');
+INSERT INTO map_configs.helps(help_id,abstract) VALUES ('skin:header_text_color','<b>Utseende > Rubriktextfärg</b><br>Textfärg för tabellrubriker som CSS-färg.');
+INSERT INTO map_configs.helps(help_id,abstract) VALUES ('skin:focus_text_color','<b>Utseende > Fokustextfärg</b><br>Textfärg för den rubrik som visar aktuell fokuskolumn som CSS-färg.');
+INSERT INTO map_configs.helps(help_id,abstract) VALUES ('skin:hover_color','<b>Utseende > Hover-färg</b><br>Färg när pekaren hålls över ett interaktivt element som CSS-färg.');
+INSERT INTO map_configs.helps(help_id,abstract) VALUES ('skin:active_color','<b>Utseende > Aktiv färg</b><br>Färg för aktivt eller nedtryckt element som CSS-färg.');
+INSERT INTO map_configs.helps(help_id,abstract) VALUES ('skin:accent_color','<b>Utseende > Accentfärg</b><br>Accentfärg för markerade eller särskilt framhävda element som CSS-färg.');
+INSERT INTO map_configs.helps(help_id,abstract) VALUES ('skin:border_color','<b>Utseende > Ramfärg</b><br>Färg för ramar runt formulärfält som CSS-färg.');
+INSERT INTO map_configs.helps(help_id,abstract) VALUES ('skin:danger_color','<b>Utseende > Varningsfärg</b><br>Färg för raderings- och varningsknappar som CSS-färg.');
+INSERT INTO map_configs.helps(help_id,abstract) VALUES ('skin:font_family','<b>Utseende > Typsnitt</b><br>CSS-värde för verktygets typsnitt, till exempel Open Sans, sans-serif.');
+INSERT INTO map_configs.helps(help_id,abstract) VALUES ('skin:border_radius','<b>Utseende > Hörnradie</b><br>CSS-värde för hörnradien på knappar och formulärfält.');
+INSERT INTO map_configs.helps(help_id,abstract) VALUES ('skin:shadow_color','<b>Utseende > Skuggfärg</b><br>Färg för den lilla inre skuggan vid nedtryckta knappar som CSS-färg.');
+
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('help:help_id','<b>Hjälp > Verktygsfält</b><br>Det fulla namnet för det verktygsfält som ska tilldelas en hjälptext (för muspekaren över namnet på ett verktygsfält för att få upp det fulla namnet).');
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('help:abstract','<b>Hjälp > Hjälptext</b><br>Meningsfull hjälptext (html) som visas när användaren klickar på<button class="smallHelpButton">?</button> till höger om det aktuella verktygsfältet.');
 INSERT INTO map_configs.helps(help_id,abstract) VALUES ('layer:indexweight','<html lang="sv-SE"><head><style>table{line-height:1;float:left}td{min-width:3em;text-align:left;vertical-align:top}.p-indent{padding-left:2em}</style></head><body><b>Lager > Indexvikt</b><br>Indexvikt kan sättas på lager och anges som ett positivt eller negativt heltalsvärde. Värdet påverkar ritordningen och ibland lagerträdet.<br><table cellspacing="0" cellpadding="0"><tbody><tr><td colspan="3"><h3>Inga indexvikter satta</h3></td><td></td><td colspan="3"><h3>Lager3=1 <em>eller</em> Lager2=-1</h3></td><td></td><td colspan="3"><h3>Lager4=2</h3></td><td></td><td colspan="3"><h3>Lager3=2 <em>och</em> Lager4=2</h3></td></tr><tr><td><strong>Lagerträd</strong></td><td></td><td><strong>Ritordning</strong></td><td></td><td><strong>Lagerträd</strong></td><td></td><td><strong>Ritordning</strong></td><td></td><td><strong>Lagerträd</strong></td><td></td><td><strong>Ritordning</strong></td><td></td><td><strong>Lagerträd</strong></td><td></td><td><strong>Ritordning</strong></td></tr><tr><td><p>Grupp1</p><p class="p-indent">Lager1</p><p class="p-indent">Lager2</p><p>Grupp2</p><p class="p-indent">Lager3</p><p class="p-indent">Lager4</p></td><td></td><td><p>Lager1</p><p>Lager2</p><p>Lager3</p><p>Lager4</p><p></p></td><td></td><td><p>Grupp1</p><p class="p-indent">Lager1</p><p class="p-indent">Lager2</p><p>Grupp2</p><p class="p-indent">Lager3</p><p class="p-indent">Lager4</p></td><td></td><td><p>Lager1</p><p><strong><em>Lager3</em></strong></p><p><strong><em>Lager2</em></strong></p><p>Lager4</p></td><td></td><td><p>Grupp1</p><p class="p-indent">Lager1</p><p class="p-indent">Lager2</p><p>Grupp2</p><p class="p-indent"><strong><em>Lager4</em></strong></p><p class="p-indent"><strong><em>Lager3</em></strong></p></td><td></td><td><p>Lager1</p><p><strong><em>Lager4</em></strong></p><p><strong><em>Lager2</em></strong></p><p><strong><em>Lager3</em></strong></p></td><td></td><td><p>Grupp1</p><p class="p-indent">Lager1</p><p class="p-indent">Lager2</p><p>Grupp2</p><p class="p-indent">Lager3</p><p class="p-indent">Lager4</p></td><td></td><td><p><em><strong>Lager3</strong></em></p><p><em><strong>Lager4</strong></em></p><p><em><strong>Lager1</strong></em></p><p><em><strong>Lager2</strong></em></p></td></tr></tbody></table></body></html>');
