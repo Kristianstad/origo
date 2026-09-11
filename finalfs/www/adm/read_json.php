@@ -43,6 +43,9 @@ $post=$_POST;
 if (empty($post['json'])) {
     $importid = uniqid();
 	$csrfToken=generateCsrfToken();
+	$dbh=dbh();
+	$currentSkin=currentSkin(all_from_table($dbh, $configSchema, 'skins'));
+	pg_close($dbh);
 
     echo <<<HTML
 <!DOCTYPE html>
@@ -50,56 +53,58 @@ if (empty($post['json'])) {
 <head>
 <meta charset="utf-8">
 <title>Importera Origo-konfiguration</title>
+<style>
+HTML;
+
+	printSkinVariables($currentSkin);
+	require("./styles/read_json.css");
+
+	echo <<<HTML
+</style>
+<script>
+	window.onload = function() {
+		if (window.parent !== window) {
+			window.parent.postMessage({ action: 'resize' }, window.location.origin);
+		}
+	};
+</script>
 </head>
 <body>
 <form method="post"
       onsubmit="return confirm('Att importera en hel origokonfiguration i JSON-format till databasen är riskabelt. Det kan innebära att ett stort antal redundanta poster läggs till i databasen och att redan befintliga origokonfigurationer slutar att fungera. Är du säker på att du vill importera till databasen?');"
-      style="line-height:2">
+		>
+	<div class="printXFormDiv">
 		<input type="hidden" name="csrf_token" value="{$csrfToken}">
-    <label for="json">Json:</label>
-    <textarea rows="1" id="json" name="json"></textarea><br>
+		<span class="optionSpan"><label for="json">Json:</label><textarea rows="1" class="textareaXLarge" id="json" name="json"></textarea></span><wbr>
 
-    <label for="importid">Unikt import-id:</label>
-    <textarea rows="1" id="importid" name="importid">{$importid}</textarea><br>
+		<span class="optionSpan"><label for="importid">Unikt import-id:</label><textarea rows="1" class="textareaMedium" id="importid" name="importid">{$importid}</textarea></span><wbr>
 
-    <label for="layers">Lager:</label>
-    <input type="checkbox" id="layers" name="layers" value="yes" checked><br>
+		<span class="optionSpan"><label for="layers">Lager:</label><input type="checkbox" id="layers" name="layers" value="yes" checked></span><wbr>
 
-    <label for="groups">Grupper:</label>
-    <input type="checkbox" id="groups" name="groups" value="yes" checked><br>
+		<span class="optionSpan"><label for="groups">Grupper:</label><input type="checkbox" id="groups" name="groups" value="yes" checked></span><wbr>
 
-    <label for="map">Karta:</label>
-    <input type="checkbox" id="map" name="map" value="yes" checked>
-    <label for="mapid">Namn:</label>
-    <textarea rows="1" id="mapid" name="mapid">map#{$importid}</textarea><br>
+		<span class="optionSpan"><label for="map">Karta:</label><input type="checkbox" id="map" name="map" value="yes" checked></span>
+		<span class="optionSpan"><label for="mapid">Namn:</label><textarea rows="1" class="textareaMedium" id="mapid" name="mapid">map#{$importid}</textarea></span><wbr>
 
-    <label for="controls">Kontroller:</label>
-    <input type="checkbox" id="controls" name="controls" value="yes" checked><br>
+		<span class="optionSpan"><label for="controls">Kontroller:</label><input type="checkbox" id="controls" name="controls" value="yes" checked></span><wbr>
 
-    <label for="footers">Sidfötter:</label>
-    <input type="checkbox" id="footers" name="footers" value="yes" checked><br>
+		<span class="optionSpan"><label for="footers">Sidfötter:</label><input type="checkbox" id="footers" name="footers" value="yes" checked></span><wbr>
 
-    <label for="proj4defs">proj4defs:</label>
-    <input type="checkbox" id="proj4defs" name="proj4defs" value="yes" checked><br>
+		<span class="optionSpan"><label for="proj4defs">proj4defs:</label><input type="checkbox" id="proj4defs" name="proj4defs" value="yes" checked></span><wbr>
 
-    <label for="sources">Källor:</label>
-    <input type="checkbox" id="sources" name="sources" value="yes" checked><br>
+		<span class="optionSpan"><label for="sources">Källor:</label><input type="checkbox" id="sources" name="sources" value="yes" checked></span><wbr>
 
-    <label for="tilegrids">Tilegrids:</label>
-    <input type="checkbox" id="tilegrids" name="tilegrids" value="yes" checked><br>
+		<span class="optionSpan"><label for="tilegrids">Tilegrids:</label><input type="checkbox" id="tilegrids" name="tilegrids" value="yes" checked></span><wbr>
 
-    <label for="styles">Stilar:</label>
-    <input type="checkbox" id="styles" name="styles" value="yes" checked><br>
+		<span class="optionSpan"><label for="styles">Stilar:</label><input type="checkbox" id="styles" name="styles" value="yes" checked></span><wbr>
 
-    <label for="services">Tjänster:</label>
-    <input type="checkbox" id="services" name="services" value="yes" checked><br>
+		<span class="optionSpan"><label for="services">Tjänster:</label><input type="checkbox" id="services" name="services" value="yes" checked></span><wbr>
 
-    <button type="submit" name="submit" value="submit">Importera</button>
-</form>
-
-<form action="manage.php">
-    <input type="hidden" name="view" value="Origo" />
-    <input type="submit" value="Till konfigurationsverktyget" />
+	<div class="readJsonButtonDiv">
+		<button class="updateButton" type="submit" name="submit" value="submit">Importera</button>
+		<button class="updateButton" type="button" onclick="window.parent.postMessage({ action: 'close' }, window.location.origin);">Stäng</button>
+	</div>
+	</div>
 </form>
 </body>
 </html>

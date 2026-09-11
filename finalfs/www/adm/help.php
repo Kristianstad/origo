@@ -2,19 +2,16 @@
 // Tell browsers to not cache response
 header("Cache-Control: must-revalidate, max-age=0, s-maxage=0, no-cache, no-store");
 
+require_once("./functions/includeDirectory.php");
+includeDirectory("./functions/common");
+require("./constants/configSchema.php");
+
+$dbh = dbh();
+$currentSkin = currentSkin(all_from_table($dbh, $configSchema, 'skins'));
 $content = '';
 
 if (isset($_GET['id'])) {
-    // Expose specific functions
-    require_once("./functions/includeDirectory.php");
-
-    // Expose all functions in given folders
-    includeDirectory("./functions/common");
-
-    require("./constants/configSchema.php");
-    $dbh = dbh();
     $helps = all_from_table($dbh, $configSchema, 'helps');
-    pg_close($dbh);
 
     $help = array_column_search($_GET['id'], 'help_id', $helps);
     if (isset($help['abstract'])) {
@@ -27,6 +24,8 @@ if (isset($_GET['id'])) {
 HERE;
 }
 
+pg_close($dbh);
+
 $content .= "<br style=\"clear:both\"><button type=\"button\" onclick=\"window.parent.postMessage({ action: 'close' }, window.location.origin);\">Stäng</button>";
 
 // === Början av sidan ===
@@ -37,6 +36,7 @@ echo <<<HTML
 	<style>
 HTML;
 
+printSkinVariables($currentSkin);
 require("./styles/help.css");
 
 echo <<<HTML

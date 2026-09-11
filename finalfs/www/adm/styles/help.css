@@ -1,12 +1,12 @@
-		html		{ width:100%; height:100%; scrollbar-color:#455a64 #FFFFFF; scrollbar-width:thin }
-		body		{ line-height:2; font-family:'Roboto',sans-serif; font-size:clamp(7px, 0.9vw, 12px); background-color:#cfd8dc; padding:0.1em 0.5em 0.5em 0.5em; color:#212121; margin:0 }
-		a			{ color:#212121 }
-		button, .btn	{ height:1.7em; font-family:inherit; font-size:inherit; border:none; padding:0.3em; position:relative; margin-left:0.1em; white-space:nowrap; background-color:#455a64; color:#FFFFFF; border-radius:0.25em; cursor:pointer; transition:background-color 0.3s ease; vertical-align:middle }
-		button:hover, .btn:hover { background-color: #0097a7 }
-		button:active	{ background-color:#b2ebf2; box-shadow:inset 0 0 0.3125em #c1c1c1; outline:none }
+		html		{ width:100%; height:100%; scrollbar-color:var(--skin-primary, #455a64) var(--skin-surface, #FFFFFF); scrollbar-width:thin }
+		body		{ line-height:2; font-family:var(--skin-font, 'Roboto', sans-serif); font-size:clamp(7px, 0.9vw, 12px); background-color:var(--skin-bg, #cfd8dc); padding:0.1em 0.5em 0.5em 0.5em; color:var(--skin-text, #212121); margin:0 }
+		a			{ color:var(--skin-text, #212121) }
+		button, .btn	{ height:1.7em; font-family:inherit; font-size:inherit; border:none; padding:0.3em; position:relative; margin-left:0.1em; white-space:nowrap; background-color:var(--skin-primary, #455a64); color:var(--skin-button-text, #FFFFFF); border-radius:var(--skin-radius, 0.25em); cursor:pointer; transition:background-color 0.3s ease; vertical-align:middle }
+		button:hover, .btn:hover { background-color:var(--skin-hover, #0097a7) }
+		button:active	{ background-color:var(--skin-active, #b2ebf2); box-shadow:inset 0 0 0.3125em var(--skin-shadow, #c1c1c1); outline:none }
 		/*.smallHelpButton { padding-left:0.3em; padding-right:0.3em; height:unset; border-style:none; top:0 }*/
 		::-webkit-scrollbar { width: 6px }
-		::-webkit-scrollbar-track { background: #cfd8dc; border-radius: 3px }
-		::-webkit-scrollbar-thumb { background: #455a64; border-radius: 3px }
-		::-moz-selection { color:#FFFFFF; background:#00bcd4 }
-		::selection		{ color:#FFFFFF; background: #00bcd4 }
+		::-webkit-scrollbar-track { background:var(--skin-bg, #cfd8dc); border-radius: 3px }
+		::-webkit-scrollbar-thumb { background:var(--skin-primary, #455a64); border-radius: 3px }
+		::-moz-selection { color:var(--skin-surface, #FFFFFF); background:var(--skin-accent, #00bcd4) }
+		::selection		{ color:var(--skin-surface, #FFFFFF); background:var(--skin-accent, #00bcd4) }

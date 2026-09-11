@@ -419,8 +419,8 @@ HTML;
 if ($view === 'Verktyg')
 {
     echo <<<HTML
-    <form action="read_json.php">
-        <button title="Importera konfiguration från JSON-fil" class="topButton" type="submit">Importera JSON</button>
+    <form action="read_json.php" target="topFrame">
+        <button title="Importera konfiguration från JSON-fil" class="topButton" onclick="toggleTopFrame('read_json');" type="submit">Importera JSON</button>
     </form>
 HTML;
 }

@@ -34,6 +34,7 @@ if (empty($submitValue[1])) {
 }
 
 $values = all_from_table($dbh, 'map_configs', $table);
+$currentSkin = currentSkin(all_from_table($dbh, 'map_configs', 'skins'));
 pg_close($dbh);
 
 if ($table == 'proj4defs') {
@@ -65,6 +66,7 @@ echo <<<HTML
 	<style>
 HTML;
 
+printSkinVariables($currentSkin);
 require("./styles/multiselect.css");
 
 echo <<<HTML

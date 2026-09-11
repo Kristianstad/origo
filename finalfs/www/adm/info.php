@@ -32,6 +32,7 @@ $dbh = dbh();
 $childType   = $_GET['type'] ?? '';
 $childId     = $_GET['id'] ?? '';
 $childTypeSv = toSwedish($childType);
+$currentSkin = currentSkin(all_from_table($dbh, $configSchema, 'skins'));
 
 // === Början av sidan ===
 echo <<<HTML
@@ -41,6 +42,7 @@ echo <<<HTML
 	<style>
 HTML;
 
+printSkinVariables($currentSkin);
 require("./styles/info.css");
 
 echo <<<HTML
