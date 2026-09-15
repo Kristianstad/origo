@@ -32,6 +32,8 @@ function makeSelectToggleOnly(selectId) {
         // Vanligt vänsterklick → vi tar över kontrollen
         event.preventDefault();
         event.stopPropagation();
+		const scrollTop=select.scrollTop;
+		const scrollLeft=select.scrollLeft;
 
         // Toggle det klickade alternativet
         const option = event.target;
@@ -43,14 +45,15 @@ function makeSelectToggleOnly(selectId) {
         } else {
             console.warn('update-funktionen saknas – kunde inte synka urvalet');
         }
-
-        // Tvinga webbläsaren att uppdatera vy (viktigt i Chrome/Edge)
-        // GROK: behövs för att undvika att vissa webbläsare "fastnar" i gammalt tillstånd
-        const wasFocused = document.activeElement === select;
-        select.blur();
-        if (wasFocused) {
-            select.focus();
-        }
+        const restoreScroll=() => {
+            select.scrollTop=scrollTop;
+            select.scrollLeft=scrollLeft;
+        };
+        restoreScroll();
+        requestAnimationFrame(() => {
+            restoreScroll();
+            setTimeout(restoreScroll, 0);
+        });
 
     }, true);  // capture-fas → absolut nödvändigt för att övertrumfa default-beteendet
 }
