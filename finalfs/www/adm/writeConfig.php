@@ -63,9 +63,11 @@ if (!empty($mapIdArray[1])) {
 }
 
 $configDir = "$webRoot/maps/$mapName";
-if (!file_exists("$configDir")) {
-	mkdir("$configDir");
-	chmod("$configDir", 0770);
+if (!is_dir($configDir)) {
+	if (!mkdir($configDir, 0770, true) && !is_dir($configDir)) {
+		die("Kunde inte skapa konfigurationskatalogen: $configDir");
+	}
+	chmod($configDir, 0770);
 }
 
 ignore_user_abort(true);
