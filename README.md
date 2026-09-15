@@ -293,6 +293,8 @@ drift.
 
 Med Docker rekommenderas normalt den publicerade imagen. Hämta den nya
 image-versionen med `docker pull` och skapa om containern med samma bind mounts.
+Den senaste utvecklarversionen finns som
+`ghcr.io/kristianstad/origo:with_php`.
 
 Stoppa därefter den gamla containern och starta den nya imagen med samma
 miljövariabler, portar och bind mounts. Ta inte bort hostkatalogerna.
