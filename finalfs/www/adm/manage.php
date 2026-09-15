@@ -246,7 +246,10 @@ if (isset($postButton)) {
                 if ($command == 'copy') {
                     $config[$typeTablePkColumn] = $copyId;
                     $updatePosts['update' . ucfirst($typeTablePkColumn)] = $copyId;
-                    unset($copyId);
+					if ($typeTableName === 'maps')
+					{
+						$updatePosts['updateChanged']='t';
+					}
                 }
 
                 $sqlStatements[] = sqlForUpdate(makeFullTarget($type, $config), $updatePosts);
@@ -325,11 +328,17 @@ if (isset($postButton)) {
                 $failedUpdate['values'][lcfirst(substr($key, 6))] = $value;
             }
         } else {
+            if ($command === 'copy' && isset($copyId))
+            {
+                $post[$type . 'Id']=$copyId;
+                $idPosts[$type . 'Id']=$copyId;
+                $id=$copyId;
+            }
             $configTables = configTables($dbh);
             if ($command != 'operation' && in_array($typeTableName, $keywordCategorized)) {
                 $categoriesByTable[$typeTableName] = categories($configTables[$typeTableName], $typeTablePkColumn);
             }
-            if ($command == 'update' || $command == 'copy' || $command == 'operation') {
+            if ($command == 'update' || $command == 'operation') {
                 $usedInMapsNew = usedInMaps($dbh, array($type => $id));
                 $usedInMaps = array_unique(array_merge($usedInMapsOld, $usedInMapsNew));
                 if (!empty($usedInMaps)) {
@@ -341,7 +350,7 @@ if (isset($postButton)) {
         }
         unset($usedInMapsOld, $result);
     }
-        unset($updatePosts, $id, $type, $typeTableName, $typeTablePkColumn, $typeTable, $command, $sqlStatements);
+    unset($updatePosts, $copyId, $id, $type, $typeTableName, $typeTablePkColumn, $typeTable, $command, $sqlStatements);
 }
 pg_close($dbh);
 

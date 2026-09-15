@@ -8,8 +8,15 @@
 	{
 		require("./constants/configSchema.php");
 		$tablePkColumn=pkColumnOfTable($tableName);
+		$columns=$tablePkColumn;
+		$values='$1';
+		if ($tableName === 'maps')
+		{
+			$columns.=', changed';
+			$values.=', true';
+		}
 		return array(
-			'sql' => "INSERT INTO $configSchema.$tableName($tablePkColumn) VALUES ($1)",
+			'sql' => "INSERT INTO $configSchema.$tableName($columns) VALUES ($values)",
 			'params' => array($id)
 		);
 	}
