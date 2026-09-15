@@ -43,7 +43,7 @@ Can drop all but CHOWN, SETPCAP, SETGID and SETUID.
 
 Detta repository innehåller Kristianstads kommuns PHP-baserade administrationsverktyg för Origo. Verktyget hanterar bland annat kartor, lager, grupper, metadata, behörighetsklassning och publicering av Origo-konfiguration.
 
-Den rekommenderade installationen använder den publicerade `-adm`-imagen:
+Den rekommenderade installationen använder den publicerade `-adm`-avbilden:
 
 `ghcr.io/kristianstad/origo:2.10.0-adm`
 
@@ -91,7 +91,7 @@ docker --version
 
 På Windows ska Docker Desktop vara startat och använda Linux-containrar.
 
-### Starta publicerad image
+### Starta publicerad image (Linux-exempel)
 
 ```bash
 docker pull ghcr.io/kristianstad/origo:2.10.0-adm
