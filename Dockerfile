@@ -53,8 +53,7 @@ ARG FINALCMDS=\
 "&& ln -s /www/preview/index.json /www/preview.json "\
 "&& ln -s /www/preview/index.html /www/preview.html "\
 "&& mkdir -p /etc/origo-adm "\
-"&& cp -a /www/adm/constants /etc/origo-adm/constants-defaults "\
-"&& cp -a /www/maps /etc/origo-adm/maps-defaults "
+"&& cp -a /www/adm/constants /etc/origo-adm/constants-defaults "
 ARG REMOVEFILES="/etc/php$PHP_VERSION/php-fpm.d/www.conf"
 ARG STARTUPEXECUTABLES="/usr/sbin/php-fpm$PHP_VERSION /usr/libexec/postgresql$POSTGRESQL_VERSION/postgres"
 ARG LINUXUSEROWNED="/var/log/php$PHP_VERSION /www/demokarta /www/demokarta/index.json /www/demokarta/index.html /www/preview /www/preview/index.json /www/preview/index.html"

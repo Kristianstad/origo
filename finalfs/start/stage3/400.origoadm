@@ -23,10 +23,4 @@ then
       done
       echo 'copied missing image constants to /www/adm/constants'
    fi
-
-   if [ -d "/etc/origo-adm/maps-defaults" ] && [ -d "/www/maps" ] && [ -z "$(find /www/maps -mindepth 1 -print -quit)" ]
-   then
-      cp -a /etc/origo-adm/maps-defaults/. /www/maps/
-      echo 'copied image maps to empty /www/maps'
-   fi
 fi
