@@ -268,6 +268,86 @@ Viktiga Docker-variabler:
 
 Verifiera alltid variabler mot den valda avbildsversionen. Lägg inte känsliga värden i Git, publika kommandon eller shellhistorik.
 
+### Inställningar i `constants`
+
+Miljö- och installationsspecifika inställningar för adminverktyget ligger i
+`finalfs/www/adm/constants`. Vid Docker-drift kan katalogen monteras från
+hosten på `/www/adm/constants`. Vid installation utan Docker redigeras filerna
+direkt i motsvarande katalog. Ändra normalt bara de lokala konfigurationsfilerna
+och behåll en säkerhetskopia före uppgradering.
+
+#### Databas och sökvägar
+
+- `dbhConnectionString.php` innehåller PostgreSQL-anslutningen som används av
+  adminverktyget, till exempel host, port, databasnamn, användare, lösenord,
+  SSL-läge och anslutningstimeout. Använd inte standardlösenordet i produktion.
+- `configSchema.php` anger PostgreSQL-schemat där Origo-konfigurationen finns,
+  normalt `map_configs`.
+- `webRoot.php` anger den interna sökvägen till webbroten, normalt `/www`.
+  Den måste stämma med den katalog där kartor och övriga Origo-filer finns.
+- `proxyRoot.php` anger ett extra sökvägsprefix som läggs till i genererade
+  kartlänkar när Origo ligger bakom en reverse proxy eller publiceras under en
+  underkatalog.
+- `previewBase.php` anger bas-URL för HTML-filer som skapas vid förhandsvisning.
+
+#### Inloggning och sessioner
+
+- `authMethod.php` väljer autentiseringsmetod: `azure` för Microsoft Entra ID
+  eller `ldap` för Active Directory/LDAP.
+- `azureConfig.php` innehåller klient-ID, klienthemlighet, redirect-URI,
+  tenant och OAuth-scopes för Microsoft Entra ID. Klienthemligheten ska inte
+  lagras i Git.
+- `adldapConfig.php` innehåller LDAP/Active Directory-servrar, base DN,
+  bind-användare, lösenord, port, SSL/TLS, protokollversion, timeout och
+  referral-hantering.
+- `adDomain.php` anger den fullständiga Active Directory-domänen.
+- `adGroupFilter.php` innehåller grupper som ska döljas från vyer i
+  adminverktyget.
+- `forwardauthSessionConfig.php` styr sessionens grundlivslängd, förlängning
+  vid aktivitet och absoluta maxlivslängd.
+- `cookieConfig.php` styr sessionscookie-namn, krypteringsnyckel, livslängd,
+  domän, sökväg, `Secure`, `HttpOnly` och `SameSite`. Byt särskilt
+  `cookieKey` i en egen installation och använd en unik slumpmässig nyckel.
+
+#### Adminvyer och tabellbeteende
+
+- `views.php` bestämmer vilka konfigurationsfält som visas i vyerna `Origo`,
+  `Extra`, `Meta`, `Infoförv` och `Verktyg`. Här kan man även anpassa vilka
+  tabeller som hör till respektive vy.
+- `keywordCategorized.php` anger vilka tabeller som ska grupperas efter
+  nyckelord i adminverktyget.
+- `multiselectables.php` anger vilka tabeller och alias som får
+  multiselect-kontroller.
+- `tableAliases.php` mappar interna alias till riktiga tabeller, till exempel
+  `exports` till `layers`.
+- `exclusiveOperationGroups.php` anger tabeller som ska behandlas som
+  ömsesidigt exklusiva vid vissa operationer.
+- `arrayColumns.php` beskriver vilka kolumner som innehåller arraydata och
+  därför ska läsas och skrivas som arrayer.
+- `sourcesQueryColumns.php` anger vilka kolumner i `sources` som ska läggas
+  till som URL-parametrar när källans `base_url` byggs.
+
+Dessa filer påverkar hur adminverktyget tolkar databasschemat. Ändra dem bara
+om databasen eller den önskade adminvyn faktiskt ska anpassas, och kontrollera
+alltid att namnen motsvarar tabeller och kolumner i `060.origo.sql`.
+
+#### Kartor, tjänster och metadata
+
+- `restrictedServiceUrl.php` anger intern adress till begränsade karttjänster
+  som ska kunna nås av Origo-servern men inte vara publikt åtkomliga.
+- `iconTtl.php` styr TTL-parametern för URL:er till lagerikoner. Värdet `-1`
+  stänger av TTL-parametern.
+- `mapstateMaxUnused.php` anger efter hur många dagar oanvända mapstates tas
+  bort automatiskt.
+- `searchEngineMeta.php` innehåller geografiska metadata och utgivarinformation
+  som används vid sökmotorindexering.
+- `swedishDic.php` innehåller svensk terminologi som används av verktyget.
+
+Filer som `dbhConnectionString.php`, `azureConfig.php`, `adldapConfig.php`,
+`cookieConfig.php`, `webRoot.php`, `proxyRoot.php` och
+`restrictedServiceUrl.php` är normalt miljöspecifika. De bör därför hanteras
+som lokal konfiguration och inte ersättas slentrianmässigt vid en uppgradering.
+
 ## Backup och uppgradering
 
 Säkerhetskopiera minst hostkatalogen som monteras på `/pgdata`, hostkatalogen
