@@ -1,9 +1,9 @@
 # origo
 https://github.com/Kristianstad/origo/pkgs/container/origo
 
-Docker image of Origo (https://github.com/origo-map). The image is built on https://github.com/Kristianstad/nginx/pkgs/container/nginx (check out for webserver settings). Listens on port 8080 internally. Files and directories in the Origo config directory are added to the Origo web directory at startup. There is also an optional management tool for Origo and metadata included in the -adm tag. (Path to manage tool is adm/manage.php and default login is origo, origo. Each created map gets their own html-file. Source code for the management tool is available in the with_php branch.)
+Docker-avbild av Origo (https://github.com/origo-map). Avbilden bygger på https://github.com/Kristianstad/nginx/pkgs/container/nginx (se repositoryt för webbserverinställningar). Lyssnar internt på port 8080. Filer och kataloger i Origos konfigurationskatalog läggs till i Origos webbkatalog vid uppstart. Det finns även ett valfritt administrationsverktyg för Origo och metadata i `-adm`-taggen. (Sökvägen till administrationsverktyget är `adm/manage.php` och standardinloggningen är origo, origo. Varje skapad karta får en egen HTML-fil. Källkoden till administrationsverktyget finns i branchen `with_php`.)
 
-Try out the image in [Iximiuz Labs](https://labs.iximiuz.com/playgrounds):
+Testa avbilden i [Iximiuz Labs](https://labs.iximiuz.com/playgrounds):
 ```
 1. Start a Docker playground.
 2. Run the following command at the command prompt:
@@ -47,25 +47,42 @@ Den rekommenderade installationen använder den publicerade `-adm`-avbilden:
 
 `ghcr.io/kristianstad/origo:2.10.0-adm`
 
-Imagen innehåller nginx, PHP-FPM, PostgreSQL, Origo och administrationsverktyget.
+Avbilden innehåller nginx, PHP-FPM, PostgreSQL, Origo och administrationsverktyget.
 
 ## Ställningstaganden inför installation
 
 ### Windows eller Linux
 
-Linux rekommenderas för produktion. Docker Engine kan köras utan Docker Desktop, har lägre overhead och passar bättre på servrar. Nackdelen är att serverns uppdateringar, brandvägg, TLS, backup och övervakning måste hanteras av driftorganisationen.
+Linux är ett naturligt val för produktion, men administrationsverktyget har små
+resurskrav och kan även köras på Windows när det passar organisationens
+förvaltning och kompetens.
 
-Windows passar bra för utveckling, test och demonstration. [Docker Desktop](https://www.docker.com/products/docker-desktop/) ger en enkel Docker-/WSL2-miljö, men har mer overhead och kan innebära licenskostnad beroende på organisation och användning. Kontrollera aktuella Docker-villkor före kommersiell användning.
+Windows passar för utveckling, test och drift. [Docker Desktop](https://www.docker.com/products/docker-desktop/) ger en enkel Docker-/WSL2-miljö. Kontrollera aktuella Docker-villkor före kommersiell användning.
 
 ### Docker eller installation helt utan Docker
 
-Docker är rekommenderat eftersom nginx, PHP-FPM, PHP-tillägg, PostgreSQL, Origo och Composer-bibliotek paketeras i en testad kombination. Samma image kan användas i utveckling, test och produktion. En docker-installation kan även kombineras med separata del-tjänster som ligger utanför dockermiljön (läs mer nedan).
+Docker är rekommenderat eftersom nginx, PHP-FPM, PHP-tillägg, PostgreSQL, Origo och Composer-bibliotek paketeras i en testad kombination. Samma avbild kan användas i utveckling, test och produktion. En docker-installation kan även kombineras med separata del-tjänster som ligger utanför dockermiljön (läs mer nedan).
 
-Bare-metal-installation helt utan Docker ger mer kontroll men kräver egen installation och samordning av nginx, PHP-FPM, PHP-tillägg, Composer, PostgreSQL, autentisering, filrättigheter och initierings-SQL. Versionsskillnader blir också lättare att introducera.
+Installation helt utan Docker ger mer kontroll men kräver egen installation och
+samordning av webbserver, PHP, PHP-tillägg, Composer, PostgreSQL,
+autentisering, filrättigheter och initierings-SQL.
+
+### Lokala admininstallationer med gemensam lagring
+
+Om man vill slippa exponera och säkra adminverktyget på ett gemensamt nätverk,
+och organisationen har få administratörer, kan varje administratör köra en egen
+lokal installation. Installationerna kan ansluta till samma PostgreSQL-databas
+och använda gemensamma `constants`- och `maps`-kataloger. Då behöver endast de
+lokala installationerna vara åtkomliga för respektive administratör.
+
+Den gemensamma databasen och fillagringen måste ändå skyddas och säkerhetskopieras.
+Säkerställ också att alla installationer använder kompatibla versioner av
+adminverktyget och att samtidig redigering av samma karta hanteras enligt
+organisationens rutiner.
 
 ### Inbyggd Origo eller separat Origo (vid dockerinstallation)
 
-Inbyggd Origo är enklast. Adminverktyg, kartor och preview körs med samma image och på samma värd. Det passar särskilt bra för utveckling, test och mindre installationer.
+Inbyggd Origo är enklast. Adminverktyg, kartor och preview körs med samma avbild och på samma värd. Det passar särskilt bra för utveckling, test och mindre installationer.
 
 Separat Origo kan ge oberoende uppgraderingar, skalning och tydligare separation mellan admin och publik kartvisning. Det kräver dock egen reverse-proxy-konfiguration, hantering av delad fillagring etc. Om man redan har en väl fungerande Origo-installation kan det vara bra att låta den ligga separat.
 
@@ -91,7 +108,7 @@ docker --version
 
 På Windows ska Docker Desktop vara startat och använda Linux-containrar.
 
-### Starta publicerad image (Linux-exempel)
+### Starta publicerad avbild (Linux-exempel)
 
 ```bash
 docker pull ghcr.io/kristianstad/origo:2.10.0-adm
@@ -135,7 +152,7 @@ lokal lagring med tillförlitlig låsning och filsystemsstöd rekommenderas.
 Fileshare passar bättre för `/www/maps` och `/www/adm/constants`.
 
 Montera inte en tom katalog över hela `/www`, eftersom det döljer webbkoden som
-finns i imagen. Montera i stället de avsedda underkatalogerna:
+finns i avbilden. Montera i stället de avsedda underkatalogerna:
 
 - `/pgdata` för PostgreSQL-data
 - `/www/adm/constants` för lokala anslutnings-, cookie-, auth- och proxyinställningar
@@ -161,7 +178,11 @@ Det sista kommandot tar bort containern men inte hostkatalogerna. Ta inte bort
 
 ### Port och reverse proxy
 
-För lokal utveckling räcker `--publish 8080:8080`. I produktion bör containern ligga bakom en reverse proxy med HTTPS, DNS, brandvägg och begränsad åtkomst till `/adm/`.
+För lokal utveckling räcker `--publish 8080:8080`. Den första porten är
+hostens port och den andra är containerns interna port. Därför kan tjänsten
+publiceras på valfri ledig hostport, till exempel `--publish 9090:8080`, och
+nås via `http://localhost:9090/adm/`. I produktion bör containern ligga bakom
+en reverse proxy med HTTPS, DNS, brandvägg och begränsad åtkomst till `/adm/`.
 
 Om endast en lokal reverse proxy ska nå containern:
 
@@ -226,6 +247,12 @@ lagringsplats som den externa Origo-installationen läser från. Det kan vara en
 lokal hostkatalog eller en monterad fileshare. Annars kan adminverktyget skriva
 kartkonfigurationen utan att den publika Origo-servern hittar filerna.
 
+Adminverktyget kan också användas helt frikopplat från Origo. I det läget
+ansluter verktyget till databasen och kartkonfigurationen exporteras manuellt
+som JSON. JSON-filerna kan därefter granskas, versionshanteras och kopieras till
+den Origo-installation där kartorna ska publiceras. Detta passar när Origo inte
+ska ha direkt åtkomst till adminverktygets databas eller gemensamma filkatalog.
+
 ## Konfiguration och miljövariabler
 
 Viktiga Docker-variabler:
@@ -239,7 +266,7 @@ Viktiga Docker-variabler:
 | `VAR_phpini_*` | PHP-konfiguration |
 | `VAR_wwwconf_*` | PHP-FPM-konfiguration |
 
-Verifiera alltid variabler mot den valda image-versionen. Lägg inte känsliga värden i Git, publika kommandon eller shellhistorik.
+Verifiera alltid variabler mot den valda avbildsversionen. Lägg inte känsliga värden i Git, publika kommandon eller shellhistorik.
 
 ## Backup och uppgradering
 
@@ -253,11 +280,11 @@ docker exec origo-admin pg_dump --username postgres --dbname origo > origo.sql
 
 Testa återställning i en separat databas.
 
-Vid uppgradering: ta backup, hämta ny image, stoppa och ta bort containern utan att ta bort hostkatalogerna, starta med samma bind mounts och kontrollera loggar, admin och publicerade kartor. Kör inte om initierings-SQL manuellt mot en befintlig databas utan att först kontrollera om tabeller och data redan finns.
+Vid uppgradering: ta backup, hämta en ny avbild, stoppa och ta bort containern utan att ta bort hostkatalogerna, starta med samma bind mounts och kontrollera loggar, admin och publicerade kartor. Kör inte om initierings-SQL manuellt mot en befintlig databas utan att först kontrollera om tabeller och data redan finns.
 
 ### Databasschema vid ny version
 
-En ny Docker-image uppdaterar inte automatiskt en redan initierad PostgreSQL-
+En ny Docker-avbild uppdaterar inte automatiskt en redan initierad PostgreSQL-
 databas. `finalfs/initdb/060.origo.sql` används framför allt när databasen
 skapas första gången. Om en ny version innehåller nya tabeller, kolumner, index,
 constraints eller grunddata i den filen måste databasschemat därför kontrolleras
@@ -291,12 +318,12 @@ databasen, `/www/maps` och `/www/adm/constants` före uppgradering. Kontrollera
 även ändringar i initierings-SQL och databasschema innan en ny version tas i
 drift.
 
-Med Docker rekommenderas normalt den publicerade imagen. Hämta den nya
-image-versionen med `docker pull` och skapa om containern med samma bind mounts.
+Med Docker rekommenderas normalt den publicerade avbilden. Hämta den nya
+avbildsversionen med `docker pull` och skapa om containern med samma bind mounts.
 Den senaste utvecklarversionen finns som
 `ghcr.io/kristianstad/origo:with_php`.
 
-Stoppa därefter den gamla containern och starta den nya imagen med samma
+Stoppa därefter den gamla containern och starta den nya avbilden med samma
 miljövariabler, portar och bind mounts. Ta inte bort hostkatalogerna.
 
 Utan Docker uppdateras en befintlig checkout i stället för en container:
