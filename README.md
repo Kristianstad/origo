@@ -39,6 +39,35 @@ docker run --name origo -d -p 8080:8080 ghcr.io/kristianstad/origo:2.10.0-adm
 ## Capabilities
 Can drop all but CHOWN, SETPCAP, SETGID and SETUID.
 
+---
+
+Ovanstående är en kortfattad engelsk beskrivning av avbilden. Nedan följer en
+mer utförlig installationsguide på svenska för administrationsverktyget.
+
+## Innehållsförteckning
+
+- [Ställningstaganden inför installation](#ställningstaganden-inför-installation)
+  - [Windows eller Linux](#windows-eller-linux)
+  - [Docker eller installation helt utan Docker](#docker-eller-installation-helt-utan-docker)
+  - [Inbyggd Origo eller separat Origo (vid dockerinstallation)](#inbyggd-origo-eller-separat-origo-vid-dockerinstallation)
+  - [Inbyggd PostgreSQL eller separat PostgreSQL (vid dockerinstallation)](#inbyggd-postgresql-eller-separat-postgresql-vid-dockerinstallation)
+  - [Lokala admininstallationer med gemensam lagring](#lokala-admininstallationer-med-gemensam-lagring)
+- [Installation med Docker](#installation-med-docker)
+  - [Förutsättningar](#förutsättningar)
+  - [Starta publicerad avbild (Linux-exempel)](#starta-publicerad-avbild-linux-exempel)
+  - [Hostkataloger och fileshare](#hostkataloger-och-fileshare)
+  - [Kontrollera container och loggar](#kontrollera-container-och-loggar)
+  - [Port och reverse proxy](#port-och-reverse-proxy)
+- [Installation utan Docker](#installation-utan-docker)
+- [Origo-konfiguration och kartor](#origo-konfiguration-och-kartor)
+- [Konfiguration och miljövariabler](#konfiguration-och-miljövariabler)
+  - [Inställningar i `constants`](#inställningar-i-constants)
+- [Backup och uppgradering](#backup-och-uppgradering)
+  - [Databasschema vid ny version](#databasschema-vid-ny-version)
+  - [Uppgradera administrationsverktyget från GitHub](#uppgradera-administrationsverktyget-från-github)
+- [Felsökning](#felsökning)
+- [Säkerhetschecklista före produktion](#säkerhetschecklista-före-produktion)
+
 # Installation av administrationsverktyg för Origo
 
 Detta repository innehåller Kristianstads kommuns PHP-baserade administrationsverktyg för Origo. Verktyget hanterar bland annat kartor, lager, grupper, metadata, behörighetsklassning och publicering av Origo-konfiguration.
@@ -67,19 +96,6 @@ Installation helt utan Docker ger mer kontroll men kräver egen installation och
 samordning av webbserver, PHP, PHP-tillägg, Composer, PostgreSQL,
 autentisering, filrättigheter och initierings-SQL.
 
-### Lokala admininstallationer med gemensam lagring
-
-Om man vill slippa exponera och säkra adminverktyget på ett gemensamt nätverk,
-och organisationen har få administratörer, kan varje administratör köra en egen
-lokal installation. Installationerna kan ansluta till samma PostgreSQL-databas
-och använda gemensamma `constants`- och `maps`-kataloger. Då behöver endast de
-lokala installationerna vara åtkomliga för respektive administratör.
-
-Den gemensamma databasen och fillagringen måste ändå skyddas och säkerhetskopieras.
-Säkerställ också att alla installationer använder kompatibla versioner av
-adminverktyget och att samtidig redigering av samma karta hanteras enligt
-organisationens rutiner.
-
 ### Inbyggd Origo eller separat Origo (vid dockerinstallation)
 
 Inbyggd Origo är enklast. Adminverktyg, kartor och preview körs med samma avbild och på samma värd. Det passar särskilt bra för utveckling, test och mindre installationer.
@@ -95,6 +111,19 @@ Inbyggd PostgreSQL är standard i `-adm`-avbilden och passar utveckling, test oc
 Installation av en separat PostgreSQL-databasserver kräver en hel del arbete, men om man redan har tillgång till en sådan databasserver är en separat databas ofta att föredra. Bland annat blir uppgraderingar smidigare.
 
 **Rekommendation:** inbyggd PostgreSQL för utveckling/test och separat PostgreSQL för produktion med högre driftkrav.
+
+### Lokala admininstallationer med gemensam lagring
+
+Om man vill slippa exponera och säkra adminverktyget på ett gemensamt nätverk,
+och organisationen har få administratörer, kan varje administratör köra en egen
+lokal installation. Installationerna kan ansluta till samma PostgreSQL-databas
+och använda gemensamma `constants`- och `maps`-kataloger. Då behöver endast de
+lokala installationerna vara åtkomliga för respektive administratör.
+
+Den gemensamma databasen och fillagringen måste ändå skyddas och säkerhetskopieras.
+Säkerställ också att alla installationer använder kompatibla versioner av
+adminverktyget och att samtidig redigering av samma karta hanteras enligt
+organisationens rutiner.
 
 ## Installation med Docker
 
@@ -261,10 +290,16 @@ Viktiga Docker-variabler:
 |---|---|
 | `VAR_ADMUSER` | Användarnamn för adminautentisering |
 | `VAR_ADMPASSWORD` | Lösenord för adminautentisering |
+| `VAR_LINUX_USER` | Användare som kör huvudprocessen (`VAR_FINAL_COMMAND`) |
+| `VAR_ORIGO_CONFIG_DIR` | Katalog med konfigurationsfiler för Origo |
+| `VAR_CONFIG_DIR` | Katalog med konfigurationsfiler för nginx |
 | `VAR_LOG_LEVEL` | Nginx-loggnivå |
-| `VAR_LINUX_USER` | Användare för huvudprocessen |
-| `VAR_phpini_*` | PHP-konfiguration |
-| `VAR_wwwconf_*` | PHP-FPM-konfiguration |
+| `VAR_FINAL_COMMAND` | Kommandot som körs som `VAR_LINUX_USER` vid uppstart |
+| `VAR_phpini_<parameter>` | Parameter i php.ini (dubbelt understreck `__` representerar en punkt i namnet) |
+| `VAR_wwwconf_<parameter>` | Parameter i PHP-FPM:s www.conf |
+| `VAR_ldapconf_<parameter>` | Parameter i /etc/ldap/ldap.conf |
+
+Avbilden bygger på [Kristianstad/nginx](https://github.com/Kristianstad/nginx/pkgs/container/nginx), som har egna miljövariabler för webbserverinställningar. Se det repositoryt för en fullständig lista.
 
 Verifiera alltid variabler mot den valda avbildsversionen. Lägg inte känsliga värden i Git, publika kommandon eller shellhistorik.
 
