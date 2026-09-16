@@ -1,15 +1,11 @@
 <?php
 
 /**
- * Create or replace a symlink. Returns false when an existing directory blocks the link.
+ * Create or replace a symlink, including over an existing directory.
  */
 function createSymlinkIfNotExists(string $target, string $link): bool
 {
-    if (is_link($link) || is_file($link)) {
-        if (!unlink($link)) {
-            return false;
-        }
-    } elseif (file_exists($link)) {
+    if ((file_exists($link) || is_link($link)) && !removePath($link)) {
         return false;
     }
 
