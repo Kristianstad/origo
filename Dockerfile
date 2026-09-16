@@ -12,9 +12,9 @@ ARG IMAGETYPE="application"
 ARG BASEIMAGE="ghcr.io/kristianstad/origo:$ORIGO_VERSION"
 ARG BUILDDEPS="composer"
 ARG BUILDCMDS=\
-"   mkdir composerdir "\
-"&& cd composerdir "\
-"&& composer require --ignore-platform-reqs adldap2/adldap2 "\
+'   mkdir composerdir '\
+'&& cd composerdir '\
+'&& composer require --ignore-platform-reqs adldap2/adldap2 '\
 '&& mkdir -p "$DESTDIR/composer" '\
 '&& mv ./vendor "$DESTDIR/composer/adldap2" '\
 '&& rm -rf * '\
@@ -51,7 +51,10 @@ ARG FINALCMDS=\
 "&& ln -s /www/demokarta/index.json /www/demokarta.json "\
 "&& ln -s /www/demokarta/index.html /www/demokarta.html "\
 "&& ln -s /www/preview/index.json /www/preview.json "\
-"&& ln -s /www/preview/index.html /www/preview.html "
+"&& ln -s /www/preview/index.html /www/preview.html "\
+"&& mkdir -p /etc/origo-adm "\
+"&& cp -a /www/adm/constants /etc/origo-adm/constants-defaults "\
+"&& cp -a /www/maps /etc/origo-adm/maps-defaults "
 ARG REMOVEFILES="/etc/php$PHP_VERSION/php-fpm.d/www.conf"
 ARG STARTUPEXECUTABLES="/usr/sbin/php-fpm$PHP_VERSION /usr/libexec/postgresql$POSTGRESQL_VERSION/postgres"
 ARG LINUXUSEROWNED="/var/log/php$PHP_VERSION /www/demokarta /www/demokarta/index.json /www/demokarta/index.html /www/preview /www/preview/index.json /www/preview/index.html"
@@ -96,7 +99,7 @@ ENV VAR_PHP_VERSION="$PHP_VERSION" \
     VAR_wwwconf_pm__min_spare_servers="1" \
     VAR_wwwconf_pm__max_spare_servers="3" \
     VAR_LINUX_USER="postgres" \
-    VAR_INIT_CAPS="cap_chown" \
+    VAR_INIT_CAPS="cap_chown,cap_dac_override" \
     VAR_POSTGRES_CONFIG_DIR="$POSTGRES_CONFIG_DIR" \
     VAR_POSTGRES_CONFIG_FILE="$POSTGRES_CONFIG_DIR/postgresql.conf" \
     VAR_LOCALE="en_US.UTF-8" \
