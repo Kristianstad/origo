@@ -530,9 +530,29 @@ catch (Throwable $exception)
 	importError('Importen misslyckades. Inga ändringar sparades.');
 }
 
-echo "Import lyckades!";
-echo '<form action="manage.php">';
-echo   '<input type="hidden" name="view" value="Origo" />';
-echo   '<input type="submit" value="Till konfigurationsverktyget" />';
-echo '</form>';
+$dbh=dbh();
+$currentSkin=currentSkin(all_from_table($dbh, $configSchema, 'skins'));
+pg_close($dbh);
+
+echo <<<HTML
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<title>Importera Origo-konfiguration</title>
+<style>
+HTML;
+
+printSkinVariables($currentSkin);
+require("./styles/read_json.css");
+
+echo <<<HTML
+</style>
+</head>
+<body>
+<div class="importSuccessMessage">Import lyckades!</div>
+<button class="updateButton" type="button" onclick="window.parent.postMessage({ action: 'close' }, window.location.origin);">Stäng</button>
+</body>
+</html>
+HTML;
 ?>
