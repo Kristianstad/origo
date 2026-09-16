@@ -2,7 +2,7 @@
 
 /**
  * Publish map files with uncompressed and compressed variants,
- * and create public symlinks in the web root directory.
+ * and create public symlinks in the maps directory and web root.
  *
  * @param string $filepathWithoutSuffix Base path without extension (e.g. /storage/maps/123)
  * @param string $html                 HTML content
@@ -46,7 +46,7 @@ function publishMapFiles(
         saveFile($jsonFile . '.gz', $jsonGz);
     }
 
-    // 4. Create public symlinks
+    // 4. Create symlinks in /www/maps
     $base = rtrim($webRoot, '/') . '/maps/';
 
     createSymlinkIfNotExists($htmlFile, $base . $mapId . '.html');
@@ -64,5 +64,30 @@ function publishMapFiles(
     }
     if ($jsonGz !== null) {
         createSymlinkIfNotExists($jsonFile . '.gz', $base . $mapId . '.json.gz');
+    }
+
+    // 5. Copy the map directory and create matching symlinks in /www
+    $mapDirectory = dirname($filepathWithoutSuffix);
+    $publicMapDirectory = rtrim($webRoot, '/') . '/' . basename($mapDirectory);
+    copyDirectoryContents($mapDirectory, $publicMapDirectory);
+
+    $publicHtmlFile = $publicMapDirectory . '/' . basename($htmlFile);
+    $publicJsonFile = $publicMapDirectory . '/' . basename($jsonFile);
+    $publicBase = rtrim($webRoot, '/') . '/';
+
+    createSymlinkIfNotExists($publicHtmlFile, $publicBase . $mapId . '.html');
+    createSymlinkIfNotExists($publicJsonFile, $publicBase . $mapId . '.json');
+
+    if ($htmlBr !== null) {
+        createSymlinkIfNotExists($publicHtmlFile . '.br', $publicBase . $mapId . '.html.br');
+    }
+    if ($jsonBr !== null) {
+        createSymlinkIfNotExists($publicJsonFile . '.br', $publicBase . $mapId . '.json.br');
+    }
+    if ($htmlGz !== null) {
+        createSymlinkIfNotExists($publicHtmlFile . '.gz', $publicBase . $mapId . '.html.gz');
+    }
+    if ($jsonGz !== null) {
+        createSymlinkIfNotExists($publicJsonFile . '.gz', $publicBase . $mapId . '.json.gz');
     }
 }

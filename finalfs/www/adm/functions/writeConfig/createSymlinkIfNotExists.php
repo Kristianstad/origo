@@ -1,14 +1,16 @@
 <?php
 
 /**
- * Create a symlink only if the link does not already exist as a file or symlink.
- * Returns true if symlink was created or already exists, false on error.
+ * Create or replace a symlink. Returns false when an existing directory blocks the link.
  */
 function createSymlinkIfNotExists(string $target, string $link): bool
 {
-    // GROK: här är varför detta behövs – undviker race condition och onödiga fel
-    if (file_exists($link) || is_link($link)) {
-        return true; // Already present in the desired state
+    if (is_link($link) || is_file($link)) {
+        if (!unlink($link)) {
+            return false;
+        }
+    } elseif (file_exists($link)) {
+        return false;
     }
 
     return symlink($target, $link);
