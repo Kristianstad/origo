@@ -66,10 +66,10 @@ function publishMapFiles(
         createSymlinkIfNotExists($jsonFile . '.gz', $base . $mapId . '.json.gz');
     }
 
-    // 5. Copy the map directory and create matching symlinks in /www
+    // 5. Link the map directory and create matching symlinks in /www
     $mapDirectory = dirname($filepathWithoutSuffix);
     $publicMapDirectory = rtrim($webRoot, '/') . '/' . basename($mapDirectory);
-    copyDirectoryContents($mapDirectory, $publicMapDirectory);
+    createSymlinkIfNotExists($mapDirectory, $publicMapDirectory);
 
     $publicHtmlFile = $publicMapDirectory . '/' . basename($htmlFile);
     $publicJsonFile = $publicMapDirectory . '/' . basename($jsonFile);
