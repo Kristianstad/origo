@@ -336,7 +336,7 @@ och behåll en säkerhetskopia före uppgradering.
   bind-användare, lösenord, port, SSL/TLS, protokollversion, timeout och
   referral-hantering.
 - `adDomain.php` anger den fullständiga Active Directory-domänen.
-- `adGroupFilter.php` innehåller grupper som ska döljas från vyer i
+- `adGroupFilter.php` innehåller AD-grupper som ska döljas från vyer i
   adminverktyget.
 - `forwardauthSessionConfig.php` styr sessionens grundlivslängd, förlängning
   vid aktivitet och absoluta maxlivslängd.
@@ -414,16 +414,16 @@ git diff OLD_VERSION..NEW_VERSION -- finalfs/initdb/060.origo.sql
 Testa schemaändringen på en återställd kopia av produktionsdatabasen. Kontrollera
 bland annat att befintliga data passar nya `NOT NULL`-kolumner, att nya index och
 constraints kan skapas och att eventuella nya standardrader inte krockar med
-lokalt ändrade rader. Kör sedan endast de nödvändiga `CREATE TABLE`, `ALTER
-TABLE`, `CREATE INDEX` eller `INSERT`-satserna i en kontrollerad SQL-migrering,
-helst i en transaktion när PostgreSQL tillåter det.
+lokalt ändrade rader. `060.origo.sql` kan köras om mot ett kompatibelt befintligt
+schema: tabeller skapas bara om de saknas och seed-rader med befintlig
+primärnyckel lämnas orörda.
 
-Kör inte hela `060.origo.sql` mot en befintlig produktionsdatabas. Filen
-innehåller bland annat tabellskapande och initiala `INSERT`-satser som kan ge
-fel eller duplicera data. Ta en ny backup efter migreringen och verifiera att
-adminverktyget kan läsa och skriva alla berörda tabeller innan den nya versionen
-öppnas för användare. Samma schemaarbete krävs oavsett om adminverktyget körs
-med eller utan Docker.
+Detta gör inte filen till en fullständig databas-migrering. Nya kolumner,
+datatyper, constraints och ändringar av befintliga tabeller måste fortfarande
+hanteras med separata, kontrollerade `ALTER TABLE`- eller andra
+migrationssatser. Ta en ny backup och verifiera att adminverktyget kan läsa och
+skriva alla berörda tabeller innan den nya versionen öppnas för användare.
+Samma schemaarbete krävs oavsett om adminverktyget körs med eller utan Docker.
 
 ### Uppgradera administrationsverktyget från GitHub
 
