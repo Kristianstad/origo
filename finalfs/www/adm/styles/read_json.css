@@ -7,12 +7,14 @@
 		.textareaMedium	{ width:13.5em }
 		.textareaSmall	{ width:4.5em }
 		.textareaXSmall	{ width:2.5em; resize:none }
-		input[type='checkbox'] { accent-color:var(--skin-primary, #455a64); margin-right:0.3em }
+		input[type='checkbox'] { accent-color:var(--skin-primary, #455a64); margin-top:0; margin-bottom:0; margin-right:0.3em; vertical-align:middle }
 		form			{ margin:0; margin-block-end:0 }
 		.printXFormDiv	{ float:left; line-height:2.1; margin-top:0.2em; margin-bottom:2.5em }
 		.optionSpan		{ white-space:nowrap }
 		.readJsonButtonDiv { display:flex; position:relative; left:0; line-height:1.5; margin-top:0.5em; justify-content:flex-start }
 		.readJsonButtonDiv .updateButton { margin-right:0.2em }
+		.smallHelpButton { margin-left:0.1em; margin-right:0.1em; padding:0.1em 0.3em; height:unset; border-style:none; vertical-align:middle }
+		.importHelpTooltip { position:absolute; z-index:1000; width:min(36em, calc(100vw - 1em)); max-height:70vh; overflow:auto; box-sizing:border-box; padding:0.5em; line-height:1.4; background:var(--skin-surface, #FFFFFF); color:var(--skin-text, #212121); border:0.0625em solid var(--skin-border, #BDBDBD); border-radius:var(--skin-radius, 0.25em); box-shadow:0 0.2em 0.5em var(--skin-shadow, #c1c1c1) }
 		.importSuccessMessage { color:var(--skin-primary, #455a64); padding:0.4em 0.6em; margin-bottom:0.5em }
 		button, .btn	{ height:1.7em; font-family:inherit; font-size:inherit; border:none; padding:0.3em; position:relative; margin-left:0.1em; white-space:nowrap; background-color:var(--skin-primary, #455a64); color:var(--skin-button-text, #FFFFFF); border-radius:var(--skin-radius, 0.25em); cursor:pointer; transition:background-color 0.3s ease; vertical-align:middle }
 		button:hover, .btn:hover { background-color:var(--skin-hover, #0097a7) }

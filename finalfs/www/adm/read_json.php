@@ -43,6 +43,19 @@ $post=$_POST;
 if (empty($post['json'])) {
     $importid = uniqid();
 	$csrfToken=generateCsrfToken();
+	$helpJson=topFormHelpButton('read_json:json');
+	$helpImportId=topFormHelpButton('read_json:importid');
+	$helpLayers=topFormHelpButton('read_json:layers');
+	$helpGroups=topFormHelpButton('read_json:groups');
+	$helpMap=topFormHelpButton('read_json:map');
+	$helpMapId=topFormHelpButton('read_json:mapid');
+	$helpControls=topFormHelpButton('read_json:controls');
+	$helpFooters=topFormHelpButton('read_json:footers');
+	$helpProj4defs=topFormHelpButton('read_json:proj4defs');
+	$helpSources=topFormHelpButton('read_json:sources');
+	$helpTilegrids=topFormHelpButton('read_json:tilegrids');
+	$helpStyles=topFormHelpButton('read_json:styles');
+	$helpServices=topFormHelpButton('read_json:services');
 	$dbh=dbh();
 	$currentSkin=currentSkin(all_from_table($dbh, $configSchema, 'skins'));
 	pg_close($dbh);
@@ -75,30 +88,30 @@ HTML;
 		>
 	<div class="printXFormDiv">
 		<input type="hidden" name="csrf_token" value="{$csrfToken}">
-		<span class="optionSpan"><label for="json">Json:</label><textarea rows="1" class="textareaXLarge" id="json" name="json"></textarea></span><wbr>
+		<span class="optionSpan"><label title="read_json:json" for="json">Json:</label> <textarea rows="1" class="textareaXLarge" id="json" name="json"></textarea>{$helpJson}</span><wbr>
 
-		<span class="optionSpan"><label for="importid">Unikt import-id:</label><textarea rows="1" class="textareaMedium" id="importid" name="importid">{$importid}</textarea></span><wbr>
+		<span class="optionSpan"><label title="read_json:importid" for="importid">Unikt import-id:</label> <textarea rows="1" class="textareaMedium" id="importid" name="importid">{$importid}</textarea>{$helpImportId}</span><wbr>
 
-		<span class="optionSpan"><label for="layers">Lager:</label><input type="checkbox" id="layers" name="layers" value="yes" checked></span><wbr>
+		<span class="optionSpan"><label title="read_json:layers" for="layers">Lager:</label> <input type="checkbox" id="layers" name="layers" value="yes" checked>{$helpLayers}</span><wbr>
 
-		<span class="optionSpan"><label for="groups">Grupper:</label><input type="checkbox" id="groups" name="groups" value="yes" checked></span><wbr>
+		<span class="optionSpan"><label title="read_json:groups" for="groups">Grupper:</label> <input type="checkbox" id="groups" name="groups" value="yes" checked>{$helpGroups}</span><wbr>
 
-		<span class="optionSpan"><label for="map">Karta:</label><input type="checkbox" id="map" name="map" value="yes" checked></span>
-		<span class="optionSpan"><label for="mapid">Namn:</label><textarea rows="1" class="textareaMedium" id="mapid" name="mapid">map#{$importid}</textarea></span><wbr>
+		<span class="optionSpan"><label title="read_json:map" for="map">Karta:</label> <input type="checkbox" id="map" name="map" value="yes" checked>{$helpMap}</span>
+		<span class="optionSpan"><label title="read_json:mapid" for="mapid">Namn:</label> <textarea rows="1" class="textareaMedium" id="mapid" name="mapid">map#{$importid}</textarea>{$helpMapId}</span><wbr>
 
-		<span class="optionSpan"><label for="controls">Kontroller:</label><input type="checkbox" id="controls" name="controls" value="yes" checked></span><wbr>
+		<span class="optionSpan"><label title="read_json:controls" for="controls">Kontroller:</label> <input type="checkbox" id="controls" name="controls" value="yes" checked>{$helpControls}</span><wbr>
 
-		<span class="optionSpan"><label for="footers">Sidfötter:</label><input type="checkbox" id="footers" name="footers" value="yes" checked></span><wbr>
+		<span class="optionSpan"><label title="read_json:footers" for="footers">Sidfötter:</label> <input type="checkbox" id="footers" name="footers" value="yes" checked>{$helpFooters}</span><wbr>
 
-		<span class="optionSpan"><label for="proj4defs">proj4defs:</label><input type="checkbox" id="proj4defs" name="proj4defs" value="yes" checked></span><wbr>
+		<span class="optionSpan"><label title="read_json:proj4defs" for="proj4defs">proj4defs:</label> <input type="checkbox" id="proj4defs" name="proj4defs" value="yes" checked>{$helpProj4defs}</span><wbr>
 
-		<span class="optionSpan"><label for="sources">Källor:</label><input type="checkbox" id="sources" name="sources" value="yes" checked></span><wbr>
+		<span class="optionSpan"><label title="read_json:sources" for="sources">Källor:</label> <input type="checkbox" id="sources" name="sources" value="yes" checked>{$helpSources}</span><wbr>
 
-		<span class="optionSpan"><label for="tilegrids">Tilegrids:</label><input type="checkbox" id="tilegrids" name="tilegrids" value="yes" checked></span><wbr>
+		<span class="optionSpan"><label title="read_json:tilegrids" for="tilegrids">Tilegrids:</label> <input type="checkbox" id="tilegrids" name="tilegrids" value="yes" checked>{$helpTilegrids}</span><wbr>
 
-		<span class="optionSpan"><label for="styles">Stilar:</label><input type="checkbox" id="styles" name="styles" value="yes" checked></span><wbr>
+		<span class="optionSpan"><label title="read_json:styles" for="styles">Stilar:</label> <input type="checkbox" id="styles" name="styles" value="yes" checked>{$helpStyles}</span><wbr>
 
-		<span class="optionSpan"><label for="services">Tjänster:</label><input type="checkbox" id="services" name="services" value="yes" checked></span><wbr>
+		<span class="optionSpan"><label title="read_json:services" for="services">Tjänster:</label> <input type="checkbox" id="services" name="services" value="yes" checked>{$helpServices}</span><wbr>
 
 	<div class="readJsonButtonDiv">
 		<button class="updateButton" type="submit" name="submit" value="submit">Importera</button>

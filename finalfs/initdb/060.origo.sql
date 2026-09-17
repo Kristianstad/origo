@@ -537,6 +537,22 @@ CREATE TABLE IF NOT EXISTS map_configs.helps
     CONSTRAINT helps_pkey PRIMARY KEY (help_id)
 );
 
+  INSERT INTO map_configs.helps(help_id,abstract) VALUES ('read_json:json','<b>JSON</b><br>Klistra in en komplett Origo-konfiguration som JSON. JSON kan hämtas från writeConfig.php med parametern getJson=y.') ON CONFLICT DO NOTHING;
+  INSERT INTO map_configs.helps(help_id,abstract) VALUES ('read_json:importid','<b>Unikt import-id</b><br>Suffix som läggs till på importerade id:n för att minska risken för krockar med befintlig konfiguration. Använd bokstäver, siffror, bindestreck och understreck.') ON CONFLICT DO NOTHING;
+  INSERT INTO map_configs.helps(help_id,abstract) VALUES ('read_json:layers','<b>Lager</b><br>Importera lagerdefinitionerna från JSON-konfigurationen.') ON CONFLICT DO NOTHING;
+  INSERT INTO map_configs.helps(help_id,abstract) VALUES ('read_json:groups','<b>Grupper</b><br>Importera lagergrupper och deras hierarki från JSON-konfigurationen.') ON CONFLICT DO NOTHING;
+  INSERT INTO map_configs.helps(help_id,abstract) VALUES ('read_json:map','<b>Karta</b><br>Importera själva kartposten med kartans inställningar, lager, grupper och kontroller.') ON CONFLICT DO NOTHING;
+  INSERT INTO map_configs.helps(help_id,abstract) VALUES ('read_json:mapid','<b>Kartans namn</b><br>Id som används för den importerade kartan. Import-id:t används normalt som suffix på relaterade poster.') ON CONFLICT DO NOTHING;
+  INSERT INTO map_configs.helps(help_id,abstract) VALUES ('read_json:controls','<b>Kontroller</b><br>Importera kartans kontrollkonfigurationer.') ON CONFLICT DO NOTHING;
+  INSERT INTO map_configs.helps(help_id,abstract) VALUES ('read_json:footers','<b>Sidfötter</b><br>Importera sidfotskonfigurationer som används av kartan.') ON CONFLICT DO NOTHING;
+  INSERT INTO map_configs.helps(help_id,abstract) VALUES ('read_json:proj4defs','<b>Proj4-definitioner</b><br>Importera koordinatsystem och projektionsdefinitioner från JSON-konfigurationen.') ON CONFLICT DO NOTHING;
+  INSERT INTO map_configs.helps(help_id,abstract) VALUES ('read_json:sources','<b>Källor</b><br>Importera kartans datakällor och deras kopplingar till tjänster.') ON CONFLICT DO NOTHING;
+  INSERT INTO map_configs.helps(help_id,abstract) VALUES ('read_json:tilegrids','<b>Tilegrids</b><br>Importera tilegrid-inställningar som används av kartans bakgrunds- och datalager.') ON CONFLICT DO NOTHING;
+  INSERT INTO map_configs.helps(help_id,abstract) VALUES ('read_json:styles','<b>Stilar</b><br>Importera lagerstilar och stilrelaterade inställningar från JSON-konfigurationen.') ON CONFLICT DO NOTHING;
+  INSERT INTO map_configs.helps(help_id,abstract) VALUES ('read_json:services','<b>Tjänster</b><br>Importera tjänster som kartans källor använder.') ON CONFLICT DO NOTHING;
+  INSERT INTO map_configs.helps(help_id,abstract) VALUES ('sql_import:sql','<b>SQL-text</b><br>SQL som körs direkt mot admin-databasen. Kontrollera alltid innehållet och använd BEGIN/COMMIT/ROLLBACK vid flera beroende satser.') ON CONFLICT DO NOTHING;
+  INSERT INTO map_configs.helps(help_id,abstract) VALUES ('sql_import:sql_file','<b>SQL-fil</b><br>Välj en SQL-fil som ska köras mot admin-databasen. Filen får vara högst 10 MB.') ON CONFLICT DO NOTHING;
+
 CREATE TABLE IF NOT EXISTS map_configs.exttools
 (
   exttool_id character varying COLLATE pg_catalog."default" NOT NULL,

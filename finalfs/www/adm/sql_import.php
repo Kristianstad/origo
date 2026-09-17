@@ -15,6 +15,8 @@ pg_close($dbh);
 if ($_SERVER['REQUEST_METHOD'] !== 'POST')
 {
     $csrfToken=generateCsrfToken();
+    $helpSql=topFormHelpButton('sql_import:sql');
+	$helpSqlFile=topFormHelpButton('sql_import:sql_file');
     echo <<<HTML
 <!DOCTYPE html>
 <html lang="sv">
@@ -40,10 +42,8 @@ HTML;
       onsubmit="return confirm('SQL kommer att köras direkt mot admin-databasen. Säkerhetskopiera databasen och kontrollera SQL-filen först. Vill du fortsätta?');">
 	<input type="hidden" name="csrf_token" value="$csrfToken">
 	<div class="sqlImportForm">
-		<label for="sql">SQL-text:</label><br>
-		<textarea class="textareaXLarge" id="sql" name="sql" rows="1"></textarea><br>
-		<label for="sql_file">Eller välj en SQL-fil:</label>
-		<input class="sqlImportFile" type="file" id="sql_file" name="sql_file" accept=".sql,text/plain"><br>
+        <span class="optionSpan"><label title="sql_import:sql" for="sql">SQL-text:</label> <textarea class="textareaXLarge" id="sql" name="sql" rows="1"></textarea>{$helpSql}</span><wbr>
+        <span class="optionSpan sqlFileOption"><label title="sql_import:sql_file" for="sql_file">SQL-fil:</label>{$helpSqlFile}<input class="sqlImportFile" type="file" id="sql_file" name="sql_file" accept=".sql,text/plain"></span><wbr>
 		<div class="readJsonButtonDiv">
 			<button class="updateButton" type="submit">Kör SQL</button>
 			<button class="updateButton" type="button" onclick="window.parent.postMessage({ action: 'close' }, window.location.origin);">Stäng</button>
