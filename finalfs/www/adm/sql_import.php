@@ -41,7 +41,7 @@ HTML;
 	<input type="hidden" name="csrf_token" value="$csrfToken">
 	<div class="sqlImportForm">
 		<label for="sql">SQL-text:</label><br>
-		<textarea class="sqlImportTextarea" id="sql" name="sql" rows="20"></textarea><br>
+        <textarea class="textareaXLarge sqlImportTextarea" id="sql" name="sql" rows="20"></textarea><br>
 		<label for="sql_file">Eller välj en SQL-fil:</label>
 		<input class="sqlImportFile" type="file" id="sql_file" name="sql_file" accept=".sql,text/plain"><br>
 		<div class="readJsonButtonDiv">
@@ -81,12 +81,34 @@ if (trim($sql) === '')
 }
 
 $dbh=dbh();
+$existingMapIds=array();
+$existingMapsResult=pg_query($dbh, "SELECT map_id FROM {$configSchema}.maps");
+if ($existingMapsResult === false)
+{
+    $error=pg_last_error($dbh);
+    pg_close($dbh);
+    sqlImportError('SQL-importen kunde inte förberedas: '.$error);
+}
+while ($row=pg_fetch_assoc($existingMapsResult))
+{
+    $existingMapIds[$row['map_id']]=true;
+}
 $result=pg_query($dbh, $sql);
 if ($result === false)
 {
     $error=pg_last_error($dbh);
     pg_close($dbh);
     sqlImportError('SQL-importen misslyckades: '.$error);
+}
+try
+{
+    markNewMapsChanged($dbh, $configSchema, $existingMapIds);
+}
+catch (Throwable $exception)
+{
+    $error=$exception->getMessage();
+    pg_close($dbh);
+    sqlImportError('SQL-importen lyckades, men nya kartor kunde inte markeras som ändrade: '.$error);
 }
 pg_close($dbh);
 

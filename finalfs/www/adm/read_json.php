@@ -480,7 +480,7 @@ if (importRequested($post, 'map'))
 			$tilegridCount++;
 		}
 	}
-	$mapColumns='map_id, mapgrid, projectioncode, featureinfooptions, extent, enablerotation, constrainresolution, resolutions, controls, groups, layers, proj4defs, footer, tilegrid';
+	$mapColumns='map_id, mapgrid, projectioncode, featureinfooptions, extent, enablerotation, constrainresolution, resolutions, controls, groups, layers, proj4defs, footer, tilegrid, changed';
 	$mapParams=array(
 		trim((string) ($post['mapid'] ?? '')),
 		var_export($jsonMapGrid['visible'] ?? false, true),
@@ -495,7 +495,8 @@ if (importRequested($post, 'map'))
 		toPgArrayLiteral($mapLayers),
 		toPgArrayLiteral($mapProj4Defs),
 		$mapFooter ?? null,
-		$tilegridId ?? null
+		$tilegridId ?? null,
+		't'
 	);
 	if (!empty($jsonCenter))
 	{
