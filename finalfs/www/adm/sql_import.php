@@ -1,0 +1,94 @@
+<?php
+/* Kör uppladdad eller inklistrad SQL mot Origos konfigurationsdatabas. */
+
+header("Cache-Control: must-revalidate, max-age=0, s-maxage=0, no-cache, no-store");
+
+require_once("./functions/includeDirectory.php");
+includeDirectory("./functions/common");
+includeDirectory("./functions/sql_import");
+require("./constants/configSchema.php");
+
+$dbh=dbh();
+$currentSkin=currentSkin(all_from_table($dbh, $configSchema, 'skins'));
+pg_close($dbh);
+
+if ($_SERVER['REQUEST_METHOD'] !== 'POST')
+{
+    $csrfToken=generateCsrfToken();
+    echo <<<HTML
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<title>SQL-import</title>
+<style>
+HTML;
+    printSkinVariables($currentSkin);
+    require("./styles/sql_import.css");
+    echo <<<HTML
+</style>
+<script>
+	window.onload = function() {
+		if (window.parent !== window) {
+			window.parent.postMessage({ action: 'resize' }, window.location.origin);
+		}
+	};
+</script>
+</head>
+<body>
+<form method="post" enctype="multipart/form-data"
+      onsubmit="return confirm('SQL kommer att köras direkt mot admin-databasen. Säkerhetskopiera databasen och kontrollera SQL-filen först. Vill du fortsätta?');">
+	<input type="hidden" name="csrf_token" value="$csrfToken">
+	<div class="sqlImportForm">
+		<label for="sql">SQL-text:</label><br>
+		<textarea class="sqlImportTextarea" id="sql" name="sql" rows="20"></textarea><br>
+		<label for="sql_file">Eller välj en SQL-fil:</label>
+		<input class="sqlImportFile" type="file" id="sql_file" name="sql_file" accept=".sql,text/plain"><br>
+		<div class="readJsonButtonDiv">
+			<button class="updateButton" type="submit">Kör SQL</button>
+			<button class="updateButton" type="button" onclick="window.parent.postMessage({ action: 'close' }, window.location.origin);">Stäng</button>
+		</div>
+	</div>
+</form>
+</body>
+</html>
+HTML;
+    exit;
+}
+
+if (!validateCsrfToken($_POST['csrf_token'] ?? null))
+{
+    sqlImportError('Ogiltig eller saknad säkerhetstoken. Ladda om formuläret och försök igen.');
+}
+
+$sql=(string) ($_POST['sql'] ?? '');
+if (isset($_FILES['sql_file']) && $_FILES['sql_file']['error'] !== UPLOAD_ERR_NO_FILE)
+{
+    if ($_FILES['sql_file']['error'] !== UPLOAD_ERR_OK)
+    {
+        sqlImportError('SQL-filen kunde inte laddas upp.');
+    }
+    if ($_FILES['sql_file']['size'] > 10 * 1024 * 1024)
+    {
+        sqlImportError('SQL-filen får vara högst 10 MB.');
+    }
+    $sql=(string) file_get_contents($_FILES['sql_file']['tmp_name']);
+}
+
+if (trim($sql) === '')
+{
+    sqlImportError('Ange SQL-text eller välj en SQL-fil.');
+}
+
+$dbh=dbh();
+$result=pg_query($dbh, $sql);
+if ($result === false)
+{
+    $error=pg_last_error($dbh);
+    pg_close($dbh);
+    sqlImportError('SQL-importen misslyckades: '.$error);
+}
+pg_close($dbh);
+
+sqlImportPage($currentSkin, 'SQL-import lyckades!', true);
+?>

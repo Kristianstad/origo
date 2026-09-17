@@ -282,6 +282,13 @@ som JSON. JSON-filerna kan därefter granskas, versionshanteras och kopieras til
 den Origo-installation där kartorna ska publiceras. Detta passar när Origo inte
 ska ha direkt åtkomst till adminverktygets databas eller gemensamma filkatalog.
 
+### SQL-import
+
+Under **Verktyg > Importera SQL** kan en SQL-text klistras in eller en `.sql`-
+fil laddas upp och köras mot admin-databasen. Kontrollera alltid SQL-filen och
+ta backup först; verktyget kör SQL direkt med den databasanslutning som anges i
+`dbhConnectionString.php`.
+
 ## Konfiguration och miljövariabler
 
 Viktiga Docker-variabler:

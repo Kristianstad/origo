@@ -431,6 +431,9 @@ if ($view === 'Verktyg')
     <form action="read_json.php" target="topFrame">
         <button title="Importera konfiguration från JSON-fil" class="topButton" onclick="toggleTopFrame('read_json');" type="submit">Importera JSON</button>
     </form>
+    <form action="sql_import.php" target="topFrame">
+        <button title="Kör SQL mot admin-databasen" class="topButton" onclick="toggleTopFrame('sql_import');" type="submit">Importera SQL</button>
+    </form>
 HTML;
 }
 
