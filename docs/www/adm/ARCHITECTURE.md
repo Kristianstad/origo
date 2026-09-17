@@ -111,6 +111,10 @@ organisationsspecifik och ingår inte i det publika GitHub-repot.
 
 `writeConfig.php` genererar JSON + HTML och skriver till disk via
 `publishMapFiles()` (okomprimerat + Brotli + gzip + publika symlänkar).
+Den fysiska kartkatalogen ligger under `<webRoot>/maps/<kartnamn>`.
+`<webRoot>/<kartnamn>` är en symlink till samma katalog, så webbroten och
+`maps` använder en enda uppsättning filer. Befintliga mål ersätts rekursivt
+innan symlänken skapas.
 Samma fil skriver även `constants/RESTRICTEDLAYERS.php`
 (`defineFileConstant()`), vilket är den bekräftade källan till
 konstanten `restrictedLayer.php` läser.
@@ -120,6 +124,16 @@ som påverkar en publicerad karta ändras; `writeConfig.php`
 (`markMapUnchanged()`) nollställer flaggan efter lyckad publicering.
 Detta ger sannolikt underlag för en "osparade ändringar"-indikator i
 manage-gränssnittet.
+
+## SQL-importverktyget
+
+`sql_import.php` nås via **Verktyg > Importera SQL**. Verktyget laddar
+`functions/sql_import/*.php`, använder samma skinvariabler som övriga
+iframe-verktyg och accepterar antingen SQL-text eller en uppladdad `.sql`-fil.
+SQL körs direkt mot admin-databasen; transaktionsgränser måste därför anges i
+SQL-filen när flera satser ska köras som en enhet. CSRF-token och filstorleks-
+begränsning används, men åtkomsten ska fortfarande begränsas till betrodda
+administratörer.
 
 ## Den dedikerade "preview"-kartan
 

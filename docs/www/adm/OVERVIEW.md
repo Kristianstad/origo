@@ -13,6 +13,7 @@ funktioner/konstanter.
 | manage | `manage.php` | Den centrala CRUD-motorn för all konfiguration: kartor, lager, grupper, källor, tjänster, m.fl. (78 funktionsfiler, se manage.md) |
 | writeConfig | `writeConfig.php` | Genererar Origo-JSON + publicerad HTML-sida från databasen. "Kompileringssteget" |
 | read_json | `read_json.php` (**aktiv, ej avstängd**) | Motsatsen till writeConfig: importerar Origo-JSON till databasen. Körs i produktion — känd teknisk skuld (strängbyggd SQL, skör regex-parsning) är alltså en reell risk, inte bara vilande kod |
+| sql_import | `sql_import.php` | Kör inklistrad SQL eller uppladdad `.sql`-fil mot admin-databasen via Verktyg-vyn |
 | news | `news.php` | Nyheter/meddelanden för inloggade användare |
 | mapstate | `mapstate.php` | Stateless JSON-API för att spara/hämta karttillstånd (delbara länkar) |
 | info | `info.php` | Detaljvy för ett objekt + "Används av"-lista (iframe-popup) |

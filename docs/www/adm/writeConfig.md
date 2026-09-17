@@ -1,7 +1,7 @@
 # Write config-modul (writeConfig)
 
 **Entry point:** `adm/writeConfig.php`
-**Funktionsfiler:** `adm/functions/writeConfig/*.php` (26 filer)
+**Funktionsfiler:** `adm/functions/writeConfig/*.php`
 
 ## Syfte
 Den centrala "publiceringsfunktionen" i systemet: läser en kartas
@@ -47,8 +47,7 @@ Anropas troligen från en "Publicera"/"Spara"-knapp i `manage.php` (se
 **Konstanter:**
 - `constants/webRoot.php` → `$webRoot`
 - `constants/proxyRoot.php`, `constants/previewBase.php`
-- `constants/searchEngineMeta.php` → geo/publisher-metadata för
-  strukturerad data
+- `constants/searchEngineMeta.php` → geo/publisher-metadata för strukturerad data
 
 **Externt bibliotek:** `matthiasmullie/minify` (composer,
 `../../composer/minify/autoload.php`) för CSS/JS-minifiering.
@@ -57,8 +56,9 @@ Anropas troligen från en "Publicera"/"Spara"-knapp i `manage.php` (se
 skriver `maps.changed = 'f'` (via `markMapUnchanged`).
 
 **Filsystem:** skriver till `<webRoot>/maps/<mapNamn>/index[nummer].html`,
-`structured-data[nummer].json`, `sitemap.xml` (troligen via
-`publishMapFiles()`, ej sedd ännu). Skapar mappen om den inte finns.
+`structured-data[nummer].json` och `sitemap.xml`. `publishMapFiles()` skapar
+även Brotli- och gzip-varianter, symlänkar i `<webRoot>/maps` och en symlink
+`<webRoot>/<mapNamn>` till samma fysiska kartkatalog.
 
 ## Filer och funktioner
 
@@ -75,7 +75,7 @@ skriver `maps.changed = 'f'` (via `markMapUnchanged`).
 | `array_move.php` | `array_move(&$a, $oldpos, $newpos)` | Generisk hjälpfunktion: flyttar ett element i en array från ett index till ett annat |
 | `compressBrotli.php` | `compressBrotli(string $data): ?string` | Komprimerar med Brotli om PHP-tillägget finns, annars `null` |
 | `compressGzip.php` | `compressGzip(string $data): ?string` | Komprimerar med gzip (nivå 9) |
-| `createSymlinkIfNotExists.php` | `createSymlinkIfNotExists(string $target, string $link): bool` | Skapar en symlänk om den inte redan finns (undviker fel vid upprepad publicering) |
+| `createSymlinkIfNotExists.php` | `createSymlinkIfNotExists(string $target, string $link): bool` | Skapar eller ersätter en symlänk; befintliga filer och kataloger på länkmålet tas bort |
 | `fetchResourceContent.php` | `fetchResourceContent(string $resource): string\|false` | Hämtar innehåll från en lokal fil eller URL, med tillfälligt katalogbyte för att lösa relativa sökvägar. Används sannolikt för att bädda in externa CSS/JS-resurser i den publicerade HTML-sidan |
 | `fixDuplicateDeclarations.php` | `fixDuplicateDeclarations($jsCode): string` | Textbaserad JS-transformation: hittar dubbeldeklarerade variabler (`const`/`let`/`var` med samma namn i samma "rot-scope") i administratörsskriven onload-JS, och skriver om dem till giltig JS (undviker `SyntaxError: Identifier has already been declared`). Se flaggning nedan – detta är en betydande mängd egen parsning |
 | `getArrayValuesRecursively.php` | `getArrayValuesRecursively(array $array): array` | Plattar ut en nästlad array till en enkel lista med alla "löv"-värden |
@@ -88,7 +88,8 @@ skriver `maps.changed = 'f'` (via `markMapUnchanged`).
 | `pgBoolToText.php` | `pgBoolToText($pgBool)` | Konverterar Postgres bool-representation (`'t'`/`'f'`) till JS-litteralerna `"true"`/`"false"`. Returnerar värdet oförändrat om det inte är `'t'`/`'f'` |
 | `pgBoxToText.php` | `pgBoxToText($pgBox): string` | Konverterar Postgres box-syntax (`(x2,y2),(x1,y1)`) till en kommaseparerad koordinatlista, och sorterar hörnen så att den mindre x-koordinaten kommer först |
 | `pgCoordsToText.php` | `pgCoordsToText($pgCoords): string` | Konverterar Postgres punkt-syntax (`(x,y)`) till kommaseparerad text utan parenteser |
-| `publishMapFiles.php` | `publishMapFiles($filepathWithoutSuffix, $html, $json, $mapId): void` | Skriver den genererade HTML- och JSON-filen till disk, skapar Brotli- och gzip-komprimerade varianter av båda (om stöd finns), och skapar publika symlänkar i webbroten som pekar på de faktiska filerna |
+| `publishMapFiles.php` | `publishMapFiles($filepathWithoutSuffix, $html, $json, $mapId): void` | Skriver HTML/JSON och komprimerade varianter, skapar symlänkar i `/www/maps` och länkar `/www/<kartnamn>` till samma fysiska kartkatalog |
+| `removePath.php` | `removePath(string $path): bool` | Tar bort filer, symlänkar och katalogträd innan ett länkmål ersätts |
 | `renderCssTags.php` | `renderCssTags(array $items): string` | Bygger HTML för CSS-inkludering: `include(sökväg)`-syntax läses in och minifieras som inline `<style>`, annars renderas som vanlig `<link rel="stylesheet">` |
 | `renderJavaScriptTags.php` | `renderJavaScriptTags(array $items): string` | Bygger HTML för JS-inkludering: stödjer `include(...)`/`include_minify(...)` (minifieras) och `include_nominify(...)` (lämnas oförändrad, för redan minifierade bundles), annars renderas som vanlig `<script src="...">` |
 | `saveFile.php` | `saveFile(string $path, string $content): bool` | Enkel, defensiv wrapper runt `file_put_contents()` |
@@ -111,9 +112,12 @@ writeConfig.php
 ├─ saveFile() → sparar okomprimerad .html och .json
 ├─ compressBrotli() → sparar .html.br / .json.br (om tillägget finns)
 ├─ compressGzip() → sparar .html.gz / .json.gz
-└─ createSymlinkIfNotExists() → skapar publika symlänkar i
-<webRoot>/maps/<mapId>.html[.br|.gz] och .json[.br|.gz]
-som pekar på de faktiska filerna under $filepathWithoutSuffix
+├─ createSymlinkIfNotExists() → skapar publika symlänkar i
+│  <webRoot>/maps/<mapId>.html[.br|.gz] och .json[.br|.gz]
+├─ createSymlinkIfNotExists() → länkar <webRoot>/<kartnamn> till
+│  <webRoot>/maps/<kartnamn>
+└─ createSymlinkIfNotExists() → skapar root-länkar i <webRoot> som pekar
+  via kartkatalogens symlink till samma fysiska filer
 
 Anledningen till att både okomprimerade och förkomprimerade varianter
 sparas är sannolikt att webbservern (nginx/Apache) är konfigurerad att
