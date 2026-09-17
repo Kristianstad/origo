@@ -41,7 +41,7 @@ HTML;
 	<input type="hidden" name="csrf_token" value="$csrfToken">
 	<div class="sqlImportForm">
 		<label for="sql">SQL-text:</label><br>
-        <textarea class="textareaXLarge sqlImportTextarea" id="sql" name="sql" rows="20"></textarea><br>
+		<textarea class="textareaXLarge" id="sql" name="sql" rows="1"></textarea><br>
 		<label for="sql_file">Eller välj en SQL-fil:</label>
 		<input class="sqlImportFile" type="file" id="sql_file" name="sql_file" accept=".sql,text/plain"><br>
 		<div class="readJsonButtonDiv">

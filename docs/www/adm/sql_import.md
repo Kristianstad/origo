@@ -22,9 +22,12 @@ ett publikt API. SQL körs med den anslutning som anges i
    anges används filens innehåll.
 4. Uppladdade filer begränsas till 10 MB.
 5. SQL körs med `pg_query()` mot admin-databasen.
-6. Vid fel visas ett skinat felmeddelande och PostgreSQL-felet exponeras i
+6. Nya kartor som tillkommit genom SQL-importen markeras med
+  `maps.changed = TRUE`, så att **Skriv kartkonfiguration**-knappen aktiveras.
+  Befintliga kartors `changed`-värde lämnas oförändrat.
+7. Vid fel visas ett skinat felmeddelande och PostgreSQL-felet exponeras i
    svaret.
-7. Vid lyckad körning visas ett skinat lyckat-resultat och en **Stäng**-knapp
+8. Vid lyckad körning visas ett skinat lyckat-resultat och en **Stäng**-knapp
    som stänger iframe-vyn.
 
 ## Säkerhet och drift
@@ -45,4 +48,5 @@ ett publikt API. SQL körs med den anslutning som anges i
 |---|---|---|
 | `sqlImportError.php` | `sqlImportError(string $message): void` | Returnerar ett fel och avslutar requesten |
 | `sqlImportPage.php` | `sqlImportPage(array $skin, string $message, bool $success): void` | Renderar skinat resultat och stängknapp |
+| `markNewMapsChanged.php` | `markNewMapsChanged($dbh, string $configSchema, array $existingMapIds): void` | Markerar nya kartor som ändrade efter SQL-körningen |
 

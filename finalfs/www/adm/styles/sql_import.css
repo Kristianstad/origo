@@ -2,7 +2,8 @@ html { width:100%; height:100%; scrollbar-color:var(--skin-primary, #455a64) var
 body { line-height:2; font-family:var(--skin-font, 'Roboto', sans-serif); font-size:clamp(7px, 0.9vw, 12px); background-color:var(--skin-bg, #cfd8dc); color:var(--skin-text, #212121); margin:0; padding:0.1em 0.5em 0.5em 0.5em }
 form { margin:0; margin-block-end:0 }
 .sqlImportForm { margin-top:0.2em; margin-bottom:2.5em }
-.sqlImportTextarea { font-family:monospace; font-size:0.9em; box-sizing:border-box; padding:0.5em; border:0.0625em solid var(--skin-border, #BDBDBD); border-radius:var(--skin-radius, 0.25em); background-color:var(--skin-surface, #FFFFFF); color:var(--skin-text, #212121) }
+textarea { font-family:inherit; font-size:inherit; box-sizing:border-box; padding:0.2em 0.5em; position:relative; line-height:1.4; border:0.0625em solid var(--skin-border, #BDBDBD); vertical-align:middle; border-radius:var(--skin-radius, 0.25em); background-color:var(--skin-surface, #FFFFFF); scrollbar-color:var(--skin-primary, #455a64) var(--skin-surface, #FFFFFF); scrollbar-width:thin; color:var(--skin-text, #212121) }
+.textareaXLarge { width:66.5em }
 .sqlImportFile { margin:0.5em 0; color:var(--skin-text, #212121) }
 .readJsonButtonDiv { display:flex; position:relative; left:0; line-height:1.5; margin-top:0.5em; justify-content:flex-start }
 .readJsonButtonDiv .updateButton { margin-right:0.2em }

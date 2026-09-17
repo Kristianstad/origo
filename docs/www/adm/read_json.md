@@ -33,8 +33,10 @@ GET till `read_json.php` visar importformuläret. POST-formuläret använder:
    `pg_query_params()` via `executeImportQuery()`.
 5. Vid fel görs rollback och klienten får ett generiskt felmeddelande.
    Detaljer loggas server-side, inte till webbläsaren.
-6. Vid lyckad import görs commit och användaren får ett skinat
-   lyckatmeddelande med en **Stäng**-knapp som stänger iframe-vyn.
+6. Vid lyckad import görs commit. Den nya kartan skapas med
+   `maps.changed = 't'`, så att **Skriv kartkonfiguration**-knappen aktiveras.
+   Användaren får därefter ett skinat lyckatmeddelande med en **Stäng**-knapp
+   som stänger iframe-vyn.
 
 Rå JSON-regex används inte längre. Källor, resolutionslistor och
 `tileGridOptions` läses från den avkodade PHP-arrayen.
