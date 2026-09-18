@@ -28,13 +28,19 @@ HTML;
     printSkinVariables($currentSkin);
     require("./styles/sql_import.css");
     echo <<<HTML
-</style>
-<script>
+    </style>
+    <script>
 	window.onload = function() {
 		if (window.parent !== window) {
 			window.parent.postMessage({ action: 'resize' }, window.location.origin);
 		}
 	};
+        function updateSqlInputState(fileInput) {
+            const sqlInput=document.getElementById('sql');
+            const hasFile=fileInput.files && fileInput.files.length > 0;
+            sqlInput.value=hasFile ? '' : sqlInput.value;
+            sqlInput.disabled=hasFile;
+        }
 </script>
 </head>
 <body>
@@ -43,7 +49,7 @@ HTML;
 	<input type="hidden" name="csrf_token" value="$csrfToken">
 	<div class="sqlImportForm">
         <span class="optionSpan"><label title="sql_import:sql" for="sql">SQL-text:</label> <textarea class="textareaXLarge" id="sql" name="sql" rows="1"></textarea>{$helpSql}</span><wbr>
-        <span class="optionSpan sqlFileOption"><label title="sql_import:sql_file" for="sql_file">SQL-fil:</label>{$helpSqlFile}<input class="sqlImportFile" type="file" id="sql_file" name="sql_file" accept=".sql,text/plain"></span><wbr>
+        <span class="optionSpan sqlFileOption"><label title="sql_import:sql_file" for="sql_file">SQL-fil:</label>{$helpSqlFile}<input class="sqlImportFile" type="file" id="sql_file" name="sql_file" accept=".sql,text/plain" onchange="updateSqlInputState(this)"></span><wbr>
 		<div class="readJsonButtonDiv">
 			<button class="updateButton" type="submit">Kör SQL</button>
 			<button class="updateButton" type="button" onclick="window.parent.postMessage({ action: 'close' }, window.location.origin);">Stäng</button>
