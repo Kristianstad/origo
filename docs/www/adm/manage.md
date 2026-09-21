@@ -64,8 +64,9 @@ sqlForUpdate($fullTarget, $updatePosts)
 → resultat: `array('sql' => ..., 'params' => ...)` för given target
 
 sqlForOperation($operation, $child, $parent)
-→ läser förälderns nuvarande array-kolumn (t.ex. maps.layers),
-lägger till/tar bort barnets id, skriver tillbaka som ny Postgres-array
+→ tar en basic child target och en full parent target, läser förälderns
+array-kolumn (t.ex. maps.layers), lägger till/tar bort barnets id och
+skriver tillbaka som en ny Postgres-array
 → resultat: `array('sql' => ..., 'params' => ...)` för att koppla/koppla loss två objekt
 
 ## Mönster: enkla entitetsformulär (printKeywordForm, printAduserForm, m.fl.)

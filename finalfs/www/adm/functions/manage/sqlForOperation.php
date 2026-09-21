@@ -1,27 +1,34 @@
 <?php
 
-	// Uses common functions: pgArrayToPhp, pkColumnOfTable
+	// Uses common functions: isTarget, pgArrayToPhp, targetType
 
-	// Takes an operation ('add' or 'remove'), a basic child target (array), and a parent (array) as parameters.
+	// Uses manage functions: isFullTarget, targetConfig, targetId, targetIdColumn, targetTable
+
+	// Takes an operation ('add' or 'remove'), a basic child target (array), and a full parent target (array) as parameters.
 	// Returns a sql-query string that updates the database by adding or removing the child from the appropriate field of the given parent 
 	function sqlForOperation($operation, $child, $parent)
 	{
 		require("./constants/configSchema.php");
-		$sql="";
-		$parentColumn=key($child).'s';
-		$parentColumnArray=pgArrayToPhp(current($parent)[$parentColumn]);
-		$parentTable=key($parent);
-		$parentPkColumn=pkColumnOfTable($parentTable);
-		$parentId=current($parent)[$parentPkColumn];
+		if (!isTarget($child) || isFullTarget($child) || !isFullTarget($parent))
+		{
+			die("sqlForOperation($operation, $child, $parent) failed!");
+		}
+		$parentColumn=targetType($child).'s';
+		$parentConfig=targetConfig($parent);
+		$parentColumnArray=pgArrayToPhp($parentConfig[$parentColumn]);
+		$parentTable=targetTable($parent);
+		$parentPkColumn=targetIdColumn($parent);
+		$parentId=targetId($parent);
+		$childId=targetId($child);
 		if (!isset($parentColumnArray[0]))
 		{
 			$parentColumnArray=array();
 		}
-		if ($operation == 'add' && !in_array(current($child), $parentColumnArray))
+		if ($operation == 'add' && !in_array($childId, $parentColumnArray))
 		{
-			$parentColumnArray[]=current($child);
+			$parentColumnArray[]=$childId;
 		}
-		elseif ($operation == 'remove' && ($key = array_search(current($child), $parentColumnArray)) !== false)
+		elseif ($operation == 'remove' && ($key = array_search($childId, $parentColumnArray)) !== false)
 		{
 			unset($parentColumnArray[$key]);
 		}

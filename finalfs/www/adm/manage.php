@@ -180,7 +180,7 @@ if (isset($postButton)) {
     elseif ($command == 'delete' && !empty($post[$type . 'IdDel'])) {
         $id = $post[$type . 'IdDel'];
         if (!isIdUniqueInTable($id, $typeTablePkColumn, $typeTable)) {
-            $child = array($type => $id);
+            $child = makeBasicTarget($type, $id);
             $allParents = findAllParents($dbh, $child);
             if (empty(assoc_array_values($allParents))) {
                 $sqlStatements[] = deleteIdSql($id, $typeTableName);
@@ -194,8 +194,9 @@ if (isset($postButton)) {
 
     elseif (isset($post[$type . 'Id'])) {
 
-        // The id of the given item (of type $type) is read from $post and is exposed as $id (string)
-        $id = $post[$type . 'Id'];
+        // The selected item is exposed as a basic target.
+        $target = makeBasicTarget($type, $post[$type . 'Id']);
+        $id = targetId($target);
 
         if ($command == 'update' || $command == 'copy') {
 
@@ -210,7 +211,8 @@ if (isset($postButton)) {
             // Makes sure posted configuration fields are valid before continueing database update, or else aborts and gives an alert
             validateUpdate($updatePosts, $configTables, $updateValid);
             if ($updateValid) {
-                $config = array_column_search($id, $typeTablePkColumn, $typeTable);
+                $fullTarget = makeTargetFull($target, $configTables);
+                $config = targetConfig($fullTarget);
 
                 // If $type is 'layer' or 'source' and is originating from Qgis Server, then $post is updated with information gathered from corresponding Qgis project file
                 if ($type == 'layer' || $type == 'source') {
@@ -244,7 +246,7 @@ if (isset($postButton)) {
 
                 // If $command is 'copy' then use the new $copyId in the update operation
                 if ($command == 'copy') {
-                    $config[$typeTablePkColumn] = $copyId;
+                    setTargetConfigParam($fullTarget, $typeTablePkColumn, $copyId);
                     $updatePosts['update' . ucfirst($typeTablePkColumn)] = $copyId;
 					if ($typeTableName === 'maps')
 					{
@@ -252,8 +254,8 @@ if (isset($postButton)) {
 					}
                 }
 
-                $sqlStatements[] = sqlForUpdate(makeFullTarget($type, $config), $updatePosts);
-                unset($config);
+                $sqlStatements[] = sqlForUpdate($fullTarget, $updatePosts);
+                unset($config, $fullTarget);
             } else {
                 $failedUpdate['type'] = $type;
                 $failedUpdate['id'] = $id;
@@ -288,12 +290,9 @@ if (isset($postButton)) {
                 }
 
                 if (isset($operation)) {
-                    $parentPkColumnKey = pkColumnOfTable($parentKey . 's');
-                    $parentOperationColumnKey = $type . 's';
-                    $parentOperationColumnValue = array_column_search($parentPkColumnValue, $parentPkColumnKey, $configTables[$parentKey . 's'])[$parentOperationColumnKey];
-                    $operationParent = array($parentKey . 's' => array($parentPkColumnKey => $parentPkColumnValue, $parentOperationColumnKey => $parentOperationColumnValue));
-                    $sqlStatements[] = sqlForOperation($operation, makeBasicTarget($type, $id), $operationParent);
-                    unset($operation, $parentPkColumnValue, $parentPkColumnKey, $parentOperationColumnKey, $parentOperationColumnValue, $operationParent);
+                    $operationParent = makeTargetFull(makeBasicTarget($parentKey, $parentPkColumnValue), $configTables);
+                    $sqlStatements[] = sqlForOperation($operation, $target, $operationParent);
+                    unset($operation, $parentPkColumnValue, $operationParent);
                 }
                 unset($parentKey);
             }
@@ -302,7 +301,8 @@ if (isset($postButton)) {
 
     // if statements have been set, then perform database operations and re-read data
     if (!empty($sqlStatements)) {
-        $usedInMapsOld = usedInMaps($dbh, array($type => $id));
+        $changedTarget = isset($target) ? $target : makeBasicTarget($type, $id);
+        $usedInMapsOld = usedInMaps($dbh, $changedTarget);
         $allOk = pg_query($dbh, "BEGIN") !== false;
         $result = false;
         if ($allOk) {
@@ -339,7 +339,7 @@ if (isset($postButton)) {
                 $categoriesByTable[$typeTableName] = categories($configTables[$typeTableName], $typeTablePkColumn);
             }
             if ($command == 'update' || $command == 'operation') {
-                $usedInMapsNew = usedInMaps($dbh, array($type => $id));
+                $usedInMapsNew = usedInMaps($dbh, $changedTarget);
                 $usedInMaps = array_unique(array_merge($usedInMapsOld, $usedInMapsNew));
                 if (!empty($usedInMaps)) {
                     markMapsChanged($dbh, $usedInMaps);
@@ -348,9 +348,9 @@ if (isset($postButton)) {
                 unset($usedInMapsNew, $usedInMaps);
             }
         }
-        unset($usedInMapsOld, $result);
+        unset($usedInMapsOld, $changedTarget, $result);
     }
-    unset($updatePosts, $copyId, $id, $type, $typeTableName, $typeTablePkColumn, $typeTable, $command, $sqlStatements);
+    unset($updatePosts, $copyId, $id, $target, $type, $typeTableName, $typeTablePkColumn, $typeTable, $command, $sqlStatements);
 }
 pg_close($dbh);
 
@@ -506,10 +506,10 @@ if (isset($post['mapId'])) {
     // Expose selected map target as $map (array).
     // If a failed update occured then show those values, else show the stored values.
     if (isset($failedUpdate) && $failedUpdate['type'] == 'map') {
-        $map = array('map' => $failedUpdate['values']);
+        $map = makeFullTarget('map', $failedUpdate['values']);
         $formChangedGlobal = true;
     } else {
-        $map = array('map' => array_column_search($post['mapId'], 'map_id', $configTables['maps']));
+        $map = makeFullTarget('map', array_column_search($post['mapId'], 'map_id', $configTables['maps']));
     }
     if (!empty(current($map))) {
         // Map selectable items (footers, tilegrids) are exposed as $selectables (array)
@@ -553,10 +553,10 @@ elseif (isset($post['databaseId'])) {
     // Expose selected database target as $database (array).
     // If a failed update occured then show those values, else show the stored values.
     if (isset($failedUpdate) && $failedUpdate['type'] == 'database') {
-        $database = array('database' => $failedUpdate['values']);
+        $database = makeFullTarget('database', $failedUpdate['values']);
         $formChangedGlobal = true;
     } else {
-        $database = array('database' => array_column_search($post['databaseId'], 'database_id', $configTables['databases']));
+        $database = makeFullTarget('database', array_column_search($post['databaseId'], 'database_id', $configTables['databases']));
     }
     if (!empty(current($database))) {
         // Print the form for the selected database
@@ -566,7 +566,7 @@ elseif (isset($post['databaseId'])) {
         $databaseSchemas = preg_grep("/^" . $post['databaseId'] . "[.]/", array_column($configTables['schemas'], 'schema_id'));
 
         // Add $databaseSchemas to $database
-        $database['database']['schemas'] = '{' . implode(',', $databaseSchemas) . '}';
+        setTargetConfigParam($database, 'schemas', '{' . implode(',', $databaseSchemas) . '}');
 
         // Print child select dialog for schemas if any exists for selected database
         echo '<hr class="childSelectHr"><table><tr>';
@@ -585,10 +585,10 @@ if (isset($post['schemaId'])) {
     // Expose selected schema target as $schema (array).
     // If a failed update occured then show those values, else show the stored values.
     if (isset($failedUpdate) && $failedUpdate['type'] == 'schema') {
-        $schema = array('schema' => $failedUpdate['values']);
+        $schema = makeFullTarget('schema', $failedUpdate['values']);
         $formChangedGlobal = true;
     } else {
-        $schema = array('schema' => array_column_search($post['schemaId'], 'schema_id', $configTables['schemas']));
+        $schema = makeFullTarget('schema', array_column_search($post['schemaId'], 'schema_id', $configTables['schemas']));
     }
     if (!empty(current($schema))) {
         // Schema selectable items (contacts, origins, updates) are exposed as $selectables (array)
@@ -605,7 +605,7 @@ if (isset($post['schemaId'])) {
         $schemaTables = preg_grep("/^" . $post['schemaId'] . "[.]/", array_column($configTables['tables'], 'table_id'));
 
         // Add $schemaTables to $schema
-        $schema['schema']['tables'] = '{' . implode(',', $schemaTables) . '}';
+        setTargetConfigParam($schema, 'tables', '{' . implode(',', $schemaTables) . '}');
 
         // Print child select dialog for tables if any exists for selected schema
         echo '<hr class="childSelectHr"><table><tr>';
@@ -621,10 +621,10 @@ if (isset($post['schemaId'])) {
 if (isset($post['classeId'])) {
     $viewDepthGlobal++;
     if (isset($failedUpdate) && $failedUpdate['type'] == 'classe') {
-        $classe = array('classe' => $failedUpdate['values']);
+        $classe = makeFullTarget('classe', $failedUpdate['values']);
         $formChangedGlobal = true;
     } else {
-        $classe = array('classe' => array_column_search($post['classeId'], 'classe_id', $configTables['classes']));
+        $classe = makeFullTarget('classe', array_column_search($post['classeId'], 'classe_id', $configTables['classes']));
     }
     if (!empty(current($classe))) {
         $operationTables = array();
@@ -650,10 +650,10 @@ $infogroupLevel = 1;
 foreach ($infogroupIdsArray as $infogroupId) {
     $viewDepthGlobal++;
     if (isset($failedUpdate) && $failedUpdate['type'] == 'infogroup' && $failedUpdate['id'] == $infogroupId) {
-        $infogroup = array('infogroup' => $failedUpdate['values']);
+        $infogroup = makeFullTarget('infogroup', $failedUpdate['values']);
         $formChangedGlobal = true;
     } else {
-        $infogroup = array('infogroup' => array_column_search($infogroupId, 'infogroup_id', $configTables['infogroups']));
+        $infogroup = makeFullTarget('infogroup', array_column_search($infogroupId, 'infogroup_id', $configTables['infogroups']));
     }
     $inheritPosts['infogroupId'] = $infogroupId;
     if (!empty(current($infogroup))) {
@@ -696,10 +696,10 @@ foreach ($groupIdsArray as $groupId) {
     // Expose current loop group target as $group (array).
     // If a failed update occured and was current loop group then show those values, else show the stored values.
     if (isset($failedUpdate) && $failedUpdate['type'] == 'group' && $failedUpdate['id'] == $groupId) {
-        $group = array('group' => $failedUpdate['values']);
+        $group = makeFullTarget('group', $failedUpdate['values']);
         $formChangedGlobal = true;
     } else {
-        $group = array('group' => array_column_search($groupId, 'group_id', $configTables['groups']));
+        $group = makeFullTarget('group', array_column_search($groupId, 'group_id', $configTables['groups']));
     }
 
     $inheritPosts['groupId'] = $groupId;
@@ -821,7 +821,8 @@ if (!empty($idPosts)) {
         );
 
         // The id of the database where the table is stored is exposed as $databaseId (string)
-        $databaseId = substr($childFullTarget['table']['table_id'], 0, strpos($childFullTarget['table']['table_id'], '.'));
+        $tableId = targetConfigParam($childFullTarget, 'table_id');
+        $databaseId = substr($tableId, 0, strpos($tableId, '.'));
 
         // The connection string for $databaseId is exposed as $connectionString (string)
         $connectionString = array_column_search($databaseId, 'database_id', $configTables['databases'])['connectionstring'];
@@ -836,7 +837,7 @@ if (!empty($idPosts)) {
         }
         printTableForm($childFullTarget, $connectionString, $selectables, $operationTables, $inheritPosts, $typeHelps);
         unset($operationTables);
-        unset($selectables, $databaseId, $connectionString);
+        unset($selectables, $tableId, $databaseId, $connectionString);
     }
 
     // Else, if a searchtable is selected
