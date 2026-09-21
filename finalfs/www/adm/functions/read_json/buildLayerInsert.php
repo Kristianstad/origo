@@ -75,5 +75,3 @@ function buildLayerInsert(string $configSchema, array $layer, string $importId, 
 	$sql="INSERT INTO {$configSchema}.layers($columns) VALUES (".implode(',', $placeholders).")";
 	return array($sql, $layerParams);
 }
-
-?>

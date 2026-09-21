@@ -9,5 +9,3 @@ function generateCsrfToken(): string
 	}
 	return $_SESSION['csrf_token'];
 }
-
-?>

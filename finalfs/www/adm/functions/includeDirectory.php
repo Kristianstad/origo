@@ -9,5 +9,3 @@
 			include_once("$directory/$file");
 		}
 	}
-	
-?>

@@ -13,5 +13,3 @@ function currentSkin(array $skins): array
 	}
 	return array();
 }
-
-?>

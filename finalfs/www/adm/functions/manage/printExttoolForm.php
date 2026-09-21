@@ -17,5 +17,3 @@ function printExttoolForm($exttool, $inheritPosts, $helps=array())
 		'deleteConfirm'=>function ($target) { return "Är du säker på att du vill radera det externa verktyget ".targetId($target)."?"; }
 	));
 }
-
-?>

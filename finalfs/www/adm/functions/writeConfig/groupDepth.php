@@ -1,7 +1,5 @@
 <?php
 
-	// Uses common functions: pgArrayToPhp, array_column_search
-
 	function groupDepth($groupIds, $layerIds=array())
 	{
 		GLOBAL $groups;
@@ -28,5 +26,3 @@
 		}
 		return $layerIds;
 	}
-
-?>

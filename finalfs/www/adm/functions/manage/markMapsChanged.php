@@ -15,5 +15,3 @@
 			die("Error in SQL query: " . pg_last_error());
 		}
 	}
-
-?>

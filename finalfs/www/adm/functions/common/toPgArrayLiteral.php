@@ -10,5 +10,3 @@ function toPgArrayLiteral(array $items): string
 	}
 	return '{'.implode(',', $escaped).'}';
 }
-
-?>

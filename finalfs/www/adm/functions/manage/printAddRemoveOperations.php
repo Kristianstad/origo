@@ -2,7 +2,7 @@
 
 function printAddRemoveOperations($target, $operationTables, $inheritPosts, $labels=array())
 {
-	require_once('./constants/exclusiveOperationGroups.php');
+	require('./constants/exclusiveOperationGroups.php');
 	foreach ($operationTables as $table => $parents)
 	{
 		$parentType=rtrim($table, 's');
@@ -32,5 +32,3 @@ function printAddRemoveOperations($target, $operationTables, $inheritPosts, $lab
 		printRemoveOperation($target, array($table => $parents), $removeLabel, $inheritPosts);
 	}
 }
-
-?>

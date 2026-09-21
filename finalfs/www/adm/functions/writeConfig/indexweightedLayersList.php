@@ -1,7 +1,5 @@
 <?php
 
-	// Uses common functions: array_column_search
-	
 	// Uses writeConfig functions: array_move
 
 	function indexweightedLayersList($layersList)
@@ -29,5 +27,3 @@
 		}
 		return $layersList;
 	}
-
-?>

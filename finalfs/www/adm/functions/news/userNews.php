@@ -1,7 +1,5 @@
 <?php
 
-	// Uses common functions: pgArrayToPhp
-
 	function userNews($username, $pgNewsArray)
 	{
 		$userNews=array();
@@ -15,5 +13,3 @@
 		}
 		return $userNews;
 	}
-
-?>

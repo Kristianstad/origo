@@ -32,5 +32,3 @@ function printSkinForm($skin, $inheritPosts, $helps=array())
 		'deleteConfirm'=>function ($target) { return "Är du säker på att du vill radera utseendet ".targetId($target)."?"; }
 	));
 }
-
-?>

@@ -4,5 +4,3 @@
 	$tableAliases=array(
 		'exports'	=>'layers'
 	);
-
-?>

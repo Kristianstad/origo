@@ -1,9 +1,5 @@
 <?php
 
-	// Uses common functions: toSwedish
-	
-	// Uses manage functions: printHeadForm
-
 	// Takes view (string), configTables (array), focusTable (string) and inheritPosts (array) as parameters.
 	// Prints a html code with a div containing a table of selection forms. 
 	// Which forms that are displayed depends on the given view. The given focusTable is placed first and its heading is in bold.

@@ -1,8 +1,5 @@
 <?php
 
-	// Uses manage functions: isFullTarget, sizePosts, printTextarea, printHiddenInputs, printUpdateButton, printInfoButton, printReadSchemaTablesButton, printDeleteButton, 
-	// targetId.php");
-
 	// Takes a full schema target (array), schema selectables (array), inheritPosts (array), and helps (array).
 	// Prints form fields and buttons that are used to view and edit the configuration for the given schema.
 	function printSchemaForm($schema, $selectables, $inheritPosts, $helps=array())
@@ -21,5 +18,3 @@
 			'deleteConfirm'=>function ($target) { return "Är du säker att du vill radera all metadata för schemat ".targetId($target)."? Metadata för ingående tabeller hanteras separat."; }
 		));
 	}
-
-?>

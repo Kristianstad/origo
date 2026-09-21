@@ -1,7 +1,5 @@
 <?php
 
-	// Uses common functions: isTarget
-
 	// Takes a target array and returns its type (string)
 	function targetType($target)
 	{
@@ -14,5 +12,3 @@
 			die("targetType($target) failed!");
 		}
 	}
-
-?>

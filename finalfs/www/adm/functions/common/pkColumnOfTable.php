@@ -12,5 +12,3 @@
 			return rtrim($tableName, 's').'_id';
 		}
 	}
-
-?>

@@ -23,5 +23,3 @@
 		}
 		return array_merge($widthPosts, $heightPosts, $scrollPosts);
 	}
-
-?>

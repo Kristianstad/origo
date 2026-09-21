@@ -4,5 +4,3 @@
 	{
 		return str_replace('(', '', str_replace(')', '', $pgCoords));
 	}
-
-?>

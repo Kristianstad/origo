@@ -119,4 +119,3 @@ catch (Throwable $exception)
 pg_close($dbh);
 
 sqlImportPage($currentSkin, 'SQL-import lyckades!', true);
-?>

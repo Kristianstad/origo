@@ -10,5 +10,3 @@
 		'Infoförv' => array('classes', 'infogroups'),
 		'Verktyg' => array('helps', 'exttools', 'skins')
 	);
-
-?>

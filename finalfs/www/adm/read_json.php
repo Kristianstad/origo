@@ -6,7 +6,7 @@ header("Cache-Control: must-revalidate, max-age=0, s-maxage=0, no-cache, no-stor
 require_once("./functions/includeDirectory.php");
 includeDirectory("./functions/common");
 includeDirectory("./functions/read_json");
-require_once("./constants/configSchema.php");
+require("./constants/configSchema.php");
 
 function importRequested(array $post, string $name): bool
 {
@@ -569,4 +569,3 @@ echo <<<HTML
 </body>
 </html>
 HTML;
-?>

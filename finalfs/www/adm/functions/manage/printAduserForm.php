@@ -1,7 +1,5 @@
 <?php
 
-	// Uses manage functions: isFullTarget, sizePosts, printTextarea, printHiddenInputs, printUpdateButton, printInfoButton, printDeleteButton, targetId
-
 	// Takes a full aduser target (array), inheritPosts (array), and helps (array).
 	// Prints form fields and buttons that are used to view and edit the configuration for the given aduser.
 	function printAduserForm($aduser, $inheritPosts, $helps=array())
@@ -21,5 +19,3 @@
 			'deleteConfirm'=>function ($target) { return "Är du säker att du vill radera AD-användaren ".targetId($target)."? Referenser till AD-användaren hanteras separat."; }
 		));
 	}
-
-?>

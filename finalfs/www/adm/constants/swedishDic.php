@@ -47,5 +47,3 @@
 		'aduser'	=>'AD-användare',
 		'adusers'	=>'AD-användare'
 	);
-
-?>

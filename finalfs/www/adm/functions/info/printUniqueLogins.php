@@ -93,5 +93,3 @@
 
 		echo 'Sedan '.$oneYearAgo->format('Y-m-d').': '.count($oneYearLogins).'<br>';
 	}
-	
-?>

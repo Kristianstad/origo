@@ -6,5 +6,3 @@
 	{
 		return !in_array($id, array_column($table, $tablePkColumn));
 	}
-
-?>

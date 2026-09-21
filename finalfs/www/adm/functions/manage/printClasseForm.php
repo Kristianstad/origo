@@ -16,5 +16,3 @@ function printClasseForm($classe, $operationTables, $inheritPosts, $helps=array(
 		}
 	));
 }
-
-?>

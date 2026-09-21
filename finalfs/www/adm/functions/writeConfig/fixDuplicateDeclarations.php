@@ -236,5 +236,3 @@ JS;
 $fixedCode = fixDuplicateDeclarations($jsCode);
 echo $fixedCode;
 */
-
-?>

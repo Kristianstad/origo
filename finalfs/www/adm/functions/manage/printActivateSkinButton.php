@@ -8,5 +8,3 @@ function printActivateSkinButton(string $skinId): void
 		<button title="Byt till detta utseende" type="button" onclick="document.cookie='origo_admin_skin='+encodeURIComponent({$skinIdJson})+';path=/;max-age=31536000;samesite=lax';location.reload();">Byt till detta utseende</button>
 HTML;
 }
-
-?>

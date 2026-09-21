@@ -17,5 +17,3 @@
 			return array_intersect($keywordCategorized, $views[$view]);
 		}
 	}
-
-?>

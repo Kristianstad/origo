@@ -1,8 +1,5 @@
 <?php
 
-	// Uses manage functions: isFullTarget, sizePosts, printTextarea, printHiddenInputs, printUpdateButton, printInfoButton, printDeleteButton, printAddOperation, 
-	// printRemoveOperation, targetId
-
 	// Takes a full control target (array), maps (array), inheritPosts (array), and helps (array).
 	// Prints form fields and buttons that are used to view and edit the configuration for the given control.
 	function printControlForm($control, $maps, $inheritPosts, $helps=array())
@@ -24,5 +21,3 @@
 			}
 		));
 	}
-
-?>

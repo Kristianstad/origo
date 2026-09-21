@@ -1,7 +1,5 @@
 <?php
 
-	// Uses common functions: pgArrayToPhp, array_column_search
-
 	function addControlsToJson($mapControls=null, &$mapCss='', &$mapJs='', &$mapOnload='')
 	{
 		GLOBAL $map, $controls;
@@ -35,5 +33,3 @@
 		}
 		return $controlsJson;
 	}
-
-?>

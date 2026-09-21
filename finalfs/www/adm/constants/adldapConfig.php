@@ -13,5 +13,3 @@
 		'timeout'			=> 5,
 		'follow_referrals'	=> false,
 	];
-
-?>

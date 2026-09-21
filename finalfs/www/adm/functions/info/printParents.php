@@ -1,7 +1,5 @@
 <?php
 
-	// Uses common functions: assoc_array_values, toSwedish
-
 	function printParents($allParents)
 	{
 		if (empty(assoc_array_values($allParents)))
@@ -43,5 +41,3 @@
 			}
 		}
 	}
-
-?>

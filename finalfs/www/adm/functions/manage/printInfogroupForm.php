@@ -16,5 +16,3 @@ function printInfogroupForm($infogroup, $operationTables, $inheritPosts, $helps=
 		}
 	));
 }
-
-?>

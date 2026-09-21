@@ -37,5 +37,3 @@ function recursiveGroups($dbh, array $groupsArr, string $importId, array $groups
 	}
 	return $parentGroups;
 }
-
-?>

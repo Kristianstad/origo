@@ -4,5 +4,3 @@
 	{
 		include "./tmp/$key.php";
 	}
-
-?>

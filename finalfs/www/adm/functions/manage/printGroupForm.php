@@ -1,8 +1,5 @@
 <?php
 
-	// Uses manage functions: isFullTarget, sizePosts, printTextarea, printUpdateSelect, printHiddenInputs, printUpdateButton, printInfoButton, printDeleteButton, 
-	// printAddOperation, printRemoveOperation, targetId
-
 	// Takes a full group target (array), group operationtables (array), inheritPosts (array), and helps (array).
 	// Prints form fields and buttons that are used to:
 	// 1. View and edit the configuration for the given group.
@@ -31,5 +28,3 @@
 			}
 		));
 	}
-
-?>

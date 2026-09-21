@@ -1,7 +1,5 @@
 <?php
 
-	// Uses manage functions: isFullTarget, sizePosts, printTextarea, printHiddenInputs, printUpdateButton, printInfoButton, printReadDbSchemasButton, printDeleteButton, targetId
-
 	// Takes a full database target (array), inheritPosts (array), and helps (array).
 	// Prints form fields and buttons that are used to view and edit the configuration for the given database.
 	function printDatabaseForm($database, $inheritPosts, $helps=array())
@@ -16,5 +14,3 @@
 			'deleteConfirm'=>function ($target) { return "Är du säker att du vill radera all metadata för databasen ".targetId($target)."? Metadata för ingående scheman och tabeller hanteras separat."; }
 		));
 	}
-
-?>

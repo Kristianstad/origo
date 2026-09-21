@@ -1,7 +1,5 @@
 <?php
 
-	// Uses common functions: pkColumnOfTable
-
 	// Takes an id and a table name as parameters.
 	// Returns a sql-query string for deleting the row in the table that has given id as primary key
 	function deleteIdSql($id, $tableName)
@@ -13,5 +11,3 @@
 			'params' => array($id)
 		);
 	}
-
-?>

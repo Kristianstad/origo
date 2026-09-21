@@ -9,5 +9,3 @@ function executeImportQuery($dbh, string $sql, array $params=array())
 	}
 	return $result;
 }
-
-?>

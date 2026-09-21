@@ -1,7 +1,5 @@
 <?php
 
-	// Uses manage functions: isFullTarget, sizePosts, printTextarea, printHiddenInputs, printUpdateButton, printInfoButton, printDeleteButton, targetId
-
 	// Takes a full footer target (array), inheritPosts (array), and helps (array).
 	// Prints form fields and buttons that are used to view and edit the configuration for the given footer.
 	function printFooterForm($footer, $inheritPosts, $helps=array())
@@ -17,5 +15,3 @@
 			'deleteConfirm'=>function ($target) { return "Är du säker att du vill radera sidfoten ".targetId($target)."? Referenser till sidfoten hanteras separat."; }
 		));
 	}
-
-?>

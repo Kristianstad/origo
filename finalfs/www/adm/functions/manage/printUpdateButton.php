@@ -15,5 +15,3 @@
 		}
 		echo '<button title="Skriv ändringar till databas" class="updateButton'.$changeClass.'" type="submit" name="'.$type.'Button" value="update">Uppdatera</button>';
 	}
-
-?>

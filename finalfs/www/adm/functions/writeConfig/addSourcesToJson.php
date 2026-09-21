@@ -1,7 +1,5 @@
 <?php
 
-	// Uses common functions: pgArrayToPhp, array_column_search
-	
 	// Uses writeConfig functions: pgBoolToText, pgArrayToText, pgBoxToText
 
 	function addSourcesToJson()

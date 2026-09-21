@@ -1,7 +1,5 @@
 <?php
 
-	// Uses common functions: all_from_table
-
 	function tableConfigs($table, $configTablesOrDbh)
 	{
 		if (is_resource($configTablesOrDbh))
@@ -18,5 +16,3 @@
 			exit(1);
 		}
 	}
-
-?>

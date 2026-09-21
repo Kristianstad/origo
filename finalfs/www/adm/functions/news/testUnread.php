@@ -13,5 +13,3 @@
 		}
 		echo $result;
 	}
-
-?>

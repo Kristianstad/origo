@@ -1,7 +1,5 @@
 <?php
 
-	// Uses manage functions: hasStringKeys
-
 	function printSelectOptions($optionValues, $selectedValue=null)
 	{
 		$isAssociativeArray=hasStringKeys($optionValues);
@@ -27,5 +25,3 @@
 			echo $selectOption;
 		}
 	}
-
-?>

@@ -1,7 +1,5 @@
 <?php
 
-	// Uses manage functions: isFullTarget, sizePosts, printTextarea, printHiddenInputs, printUpdateButton, printInfoButton, printDeleteButton, targetId
-
 	// Takes a full update target (array), inheritPosts (array), and helps (array).
 	// Prints form fields and buttons that are used to view and edit the configuration for the given update.
 	function printUpdateForm($update, $inheritPosts, $helps=array())
@@ -28,5 +26,3 @@
 		printDeleteButton($update, $deleteConfirmStr, $inheritPosts);
 		echo '</div></form></div></div>';
 	}
-
-?>

@@ -45,5 +45,3 @@ function printSimpleEntityForm($target, $type, $fields, $inheritPosts, $helps=ar
 		echo '</div>';
 	}
 }
-
-?>

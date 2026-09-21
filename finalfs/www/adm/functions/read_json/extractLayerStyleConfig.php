@@ -57,5 +57,3 @@ function extractLayerStyleConfig(array $layerStyle): array
 	}
 	return $result;
 }
-
-?>

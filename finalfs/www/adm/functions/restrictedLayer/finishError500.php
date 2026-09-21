@@ -8,5 +8,3 @@
 		ignore_user_abort(false);
 		exit(1);
 	}
-
-?>

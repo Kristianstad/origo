@@ -1,7 +1,5 @@
 <?php
 
-	// Uses common functions: tableNamesFromSchema, all_from_table
-
 	// Takes a pg_connect database handle as parameter, reads a schema name from constant configSchema.php, 
 	// and returns an associative array with all tables in the database schema. The array keys holds the table 
 	// names while the associated values holds the "configurations"
@@ -15,5 +13,3 @@
 		}
 		return $configTables;
 	}
-
-?>

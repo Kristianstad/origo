@@ -23,5 +23,3 @@
 		}
 		return array('sql' => $sql, 'params' => $params);
 	}
-
-?>

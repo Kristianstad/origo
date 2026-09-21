@@ -24,5 +24,3 @@ function flattenGroupLayers(array $jsonLayers): array
 	}
 	return $allLayers;
 }
-
-?>

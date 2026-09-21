@@ -1,7 +1,5 @@
 <?php
 
-	// Uses common functions: pkColumnOfTable
-
 	// Takes an id and a table name as parameters.
 	// Returns a sql-query string for creating a new row in the table with given id as primary key
 	function insertIdSql($id, $tableName)
@@ -20,5 +18,3 @@
 			'params' => array($id)
 		);
 	}
-
-?>

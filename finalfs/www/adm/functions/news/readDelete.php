@@ -18,5 +18,3 @@
 			header('Location: ?action=subjects');
 		}
 	}
-
-?>

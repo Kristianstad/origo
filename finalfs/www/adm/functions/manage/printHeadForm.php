@@ -1,9 +1,5 @@
 <?php
 
-	// Uses common functions: pkColumnOfTable, toSwedish
-	
-	// Uses manage functions: printSelectOptions, printHiddenInputs
-
 	function printHeadForm($tableConfig, $inheritPosts)
 	{
 		require("./constants/keywordCategorized.php");
@@ -77,5 +73,3 @@
 			</div>
 		HERE;
 	}
-
-?>

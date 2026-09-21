@@ -1,8 +1,5 @@
 <?php
 
-	// Uses manage functions: isFullTarget, sizePosts, printTextarea, printUpdateSelect, printHiddenInputs, printUpdateButton, printInfoButton, 
-	// printDeleteButton, targetId
-
 	// Takes a full searchtable target (array), searchtable selectables (array), inheritPosts (array), and helps (array).
 	// Prints form fields and buttons that are used to view and edit the configuration for the given searchtable.
 	function printSearchtableForm($searchtable, $selectables, $inheritPosts, $helps=array())

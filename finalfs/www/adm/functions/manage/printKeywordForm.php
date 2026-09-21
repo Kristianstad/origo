@@ -1,7 +1,5 @@
 <?php
 
-	// Uses manage functions: isFullTarget, sizePosts, printTextarea, printHiddenInputs, printUpdateButton, printInfoButton, printDeleteButton, targetId
-
 	// Takes a full keyword target (array), inheritPosts (array), and helps (array).
 	// Prints form fields and buttons that are used to view and edit the configuration for the given keyword.
 	function printKeywordForm($keyword, $inheritPosts, $helps=array())
@@ -14,5 +12,3 @@
 			'deleteConfirm'=>function ($target) { return "Är du säker att du vill radera nyckelordet ".targetId($target)."? Referenser till nyckelordet hanteras separat."; }
 		));
 	}
-
-?>

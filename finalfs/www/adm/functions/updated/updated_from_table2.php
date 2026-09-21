@@ -9,5 +9,3 @@
 		}
 		return pg_fetch_row($result);
 	}
-
-?>

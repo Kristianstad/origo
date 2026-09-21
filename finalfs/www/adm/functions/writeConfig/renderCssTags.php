@@ -21,7 +21,7 @@ function renderCssTags(array $items): string
             $content  = fetchResourceContent($resource);
 
             if ($content === false) {
-                require_once "./constants/proxyRoot.php";
+                require "./constants/proxyRoot.php";
                 $escaped = htmlspecialchars($resource, ENT_QUOTES, 'UTF-8');
                 $url     = $proxyRoot . $_SERVER["REQUEST_URI"] . (str_contains($_SERVER["REQUEST_URI"], '?') ? '&' : '?') . 'badJson=y';
                 echo '<script>';

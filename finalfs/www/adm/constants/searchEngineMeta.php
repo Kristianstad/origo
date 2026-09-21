@@ -8,5 +8,3 @@
 	$contentLocationAddressCountry = 'SE';
 	$publisherName = 'Kristianstads kommun';
 	$publisherUrl = 'https://www.kristianstad.se/';
-
-?>

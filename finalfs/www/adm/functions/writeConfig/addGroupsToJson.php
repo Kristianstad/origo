@@ -1,7 +1,5 @@
 <?php
 
-	// Uses common functions: pgArrayToPhp, array_column_search
-
 	function addGroupsToJson($mapGroups)
 	{
 		GLOBAL $groups, $mapLayers;
@@ -35,5 +33,3 @@
 		}
 		return $groupsJson;
 	}
-
-?>

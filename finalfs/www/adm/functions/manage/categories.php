@@ -1,7 +1,5 @@
 <?php
 
-	// Uses common functions: pgArrayToPhp
-
 	// Takes an Origo table configuration and the primary key- (id-) column name for the same table. 
 	// Returns an associative array with the keyword categories for the specific table. 
 	// The array keys are keywords and the values are arrays of item ids that has the corresponding keyword set in their config
@@ -23,5 +21,3 @@
 		$categories=array_merge(array("Alla" => array_column($config, $catParam)), $categories);
 		return $categories;
 	}
-
-?>

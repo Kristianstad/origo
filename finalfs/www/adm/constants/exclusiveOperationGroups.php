@@ -3,5 +3,3 @@
 	$exclusiveOperationGroups=array(
 		['classes', 'infogroups']
 	);
-
-?>

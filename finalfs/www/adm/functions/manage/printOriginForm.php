@@ -1,7 +1,5 @@
 <?php
 
-	// Uses manage functions: isFullTarget, sizePosts, printTextarea, printHiddenInputs, printUpdateButton, printInfoButton, printDeleteButton, targetId
-
 	// Takes a full origin target (array), inheritPosts (array), and helps (array).
 	// Prints form fields and buttons that are used to view and edit the configuration for the given origin.
 	function printOriginForm($origin, $inheritPosts, $helps=array())
@@ -17,5 +15,3 @@
 			'deleteConfirm'=>function ($target) { return "Är du säker att du vill radera ursprungskällan ".targetId($target)."? Referenser till ursprungskällan hanteras separat."; }
 		));
 	}
-
-?>

@@ -1,7 +1,5 @@
 <?php
 
-	// Uses manage functions: isFullTarget, sizePosts, printTextarea, printHiddenInputs, printUpdateButton, printInfoButton, printDeleteButton, targetId
-
 	// Takes a full proj4def target (array), inheritPosts (array), and helps (array).
 	// Prints form fields and buttons that are used to view and edit the configuration for the given proj4def.
 	function printProj4defForm($proj4def, $inheritPosts, $helps=array())
@@ -17,5 +15,3 @@
 			'deleteConfirm'=>function ($target) { return "Är du säker att du vill radera proj4def ".targetId($target)."? Referenser till aktuell proj4def hanteras separat."; }
 		));
 	}
-
-?>

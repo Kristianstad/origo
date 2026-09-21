@@ -16,7 +16,7 @@ require_once __DIR__ . '/functions/includeDirectory.php';
 includeDirectory(__DIR__ . '/functions/common');
 includeDirectory(__DIR__ . '/functions/mapstate');
 
-require_once __DIR__ . '/constants/mapstateMaxUnused.php';
+require __DIR__ . '/constants/mapstateMaxUnused.php';
 
 $dbh = dbh();
 

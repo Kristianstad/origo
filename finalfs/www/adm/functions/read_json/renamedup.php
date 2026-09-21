@@ -12,5 +12,3 @@ function renamedup(string $name, array &$uniqueLayers): string
 	$uniqueLayers[]=$newname;
 	return $newname;
 }
-
-?>

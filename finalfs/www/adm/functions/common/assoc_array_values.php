@@ -8,5 +8,3 @@
 		}, $values=array());
 		return $values;
 	}
-
-?>

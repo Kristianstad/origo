@@ -36,5 +36,3 @@ function printSkinVariables(array $skin): void
 	}
 	echo "\t\t}\n";
 }
-
-?>
