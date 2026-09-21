@@ -1,9 +1,5 @@
 <?php
 
-	// Uses common functions: pkColumnOfTable, toSwedish
-	
-	// Uses manage functions: printSelectOptions, printHiddenInputs
-
 	// takes a full target of a type that can have children (array), a child table name (string), a css class name for th-elements (string),
 	// a heading (string), inheritPosts (array), groupLevel (optional, integer), and selectedValue (optional, string).
 	// Prints a child selection form for the given target. The type of the child depends on the second parameter. Style and heading is 
@@ -11,16 +7,18 @@
 	// (groups within groups) to keep track of the current depth level and parent.
 	function printChildSelect($target, $column, &$thClass, $heading, $inheritPosts, $groupLevel=1, $selectedValue=null)
 	{
-		$targetColumnValue=trim(current($target)[$column], '{}');
+		$targetType=targetType($target);
+		$targetConfig=targetConfig($target);
+		$targetColumnValue=trim(targetConfigParam($target, $column), '{}');
 		if (!empty($targetColumnValue))
 		{
 			$groupIdsArray=array();
 			$columnType=rtrim($column, 's');
 			$sName=$columnType.'Id';
 			$columnArr=explode(',', $targetColumnValue);
-			if ((key($target) == 'group' && ($column == 'groups' || $column == 'layers')) || (key($target) == 'infogroup' && $column == 'infogroups'))
+			if (($targetType == 'group' && ($column == 'groups' || $column == 'layers')) || ($targetType == 'infogroup' && $column == 'infogroups'))
 			{
-				$hierarchyKey=key($target) == 'group' ? 'group' : 'infogroup';
+				$hierarchyKey=$targetType == 'group' ? 'group' : 'infogroup';
 				if (isset($inheritPosts[$hierarchyKey.'Ids']))
 				{
 					$groupIdsArray=explode(',', $inheritPosts[$hierarchyKey.'Ids']);
@@ -56,13 +54,13 @@
 			{
 				$edith3Class='h3Lightgray';
 			}
-			$targetId=current($target)[pkColumnOfTable(key($target).'s')];
+			$targetId=targetId($target);
 			$ucColumn=ucfirst($column);
 			$hiddenInputs=array();
 			if ($column == 'schemas')
 			{
 				$hiddenInputs['databaseId']=$inheritPosts['databaseId'];
-				$optionLabels = array_merge(array(""), preg_filter('/^'.current($target)['database_id'].'[.]/', '', $options));
+				$optionLabels = array_merge(array(""), preg_filter('/^'.targetConfigParam($target, 'database_id').'[.]/', '', $options));
 				$options=array_combine($options, $optionLabels);
 			}
 			elseif ($column == 'tables')
@@ -72,7 +70,7 @@
 					$hiddenInputs['databaseId']=$inheritPosts['databaseId'];
 				}
 				$hiddenInputs['schemaId']=$inheritPosts['schemaId'];
-				$optionLabels = array_merge(array(""), preg_filter('/^'.current($target)['schema_id'].'[.]/', '', $options));
+				$optionLabels = array_merge(array(""), preg_filter('/^'.targetConfigParam($target, 'schema_id').'[.]/', '', $options));
 				$options=array_combine($options, $optionLabels);
 			}
 			else
@@ -116,5 +114,3 @@
 			$thClass='thNext';
 		}
 	}
-
-?>

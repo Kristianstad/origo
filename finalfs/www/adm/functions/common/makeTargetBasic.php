@@ -1,7 +1,5 @@
 <?php
 
-	// Uses common functions: isTarget, isBasicTarget, targetType, typeTableName, pkColumnOfTable
-
 	// Takes a target array and returns it as a basic target array.
 	function makeTargetBasic($target)
 	{
@@ -10,9 +8,7 @@
 			if (!isBasicTarget($target))
 			{
 				$targetType=targetType($target);
-				$targetTableName=typeTableName($targetType);
-				$targetIdColumn=pkColumnOfTable($targetTableName);
-				$target[$targetType]=$target[$targetType][$targetIdColumn];
+				$target[$targetType]=targetId($target);
 			}
 			return $target;
 		}
@@ -21,5 +17,3 @@
 			die("makeTargetBasic($target) failed!");
 		}
 	}
-
-?>

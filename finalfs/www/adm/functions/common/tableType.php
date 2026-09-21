@@ -5,5 +5,3 @@
 	{
 		return rtrim($table,'s');
 	}
-
-?>

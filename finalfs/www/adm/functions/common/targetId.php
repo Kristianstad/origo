@@ -1,9 +1,5 @@
 <?php
 
-	// Uses common functions: pkColumnOfTable
-	
-	// Uses manage functions: isFullTarget, targetTable
-
 	function targetId($target)
 	{
 		if (isFullTarget($target))
@@ -18,5 +14,3 @@
 		}
 		return $targetId;
 	}
-
-?>

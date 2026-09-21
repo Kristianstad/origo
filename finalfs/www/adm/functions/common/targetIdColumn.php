@@ -1,9 +1,5 @@
 <?php
 
-	// Uses common functions: isTarget, targetType
-	
-	// Uses manage functions: targetTable
-
 	function targetIdColumn($target)
 	{
 		if (isTarget($target))
@@ -23,5 +19,3 @@
 			die("targetIdColumn($target) failed!");
 		}
 	}
-
-?>

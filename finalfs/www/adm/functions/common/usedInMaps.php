@@ -1,18 +1,8 @@
 <?php
 
-	// Uses common functions: isTarget, makeTargetBasic, findAllParents, assoc_array_values, tableType
-
 	// Takes a database handle and a target, and returns an array of maps that uses this target.
 	function usedInMaps(&$dbh, $target, $checkedTargets=array(), $usedInMaps=array())
 	{
-		if (in_array($target, $checkedTargets))
-		{
-			return $usedInMaps;
-		}
-		else
-		{
-			$checkedTargets[]=$target;
-		}
 		if (isTarget($target))
 		{
 			$target=makeTargetBasic($target);
@@ -21,8 +11,16 @@
 		{
 			die("usedInMaps(\$dbh, $target) failed! Child not a target.");
 		}
-		$targetType=key($target);
-		$targetId=current($target);
+		if (in_array($target, $checkedTargets))
+		{
+			return $usedInMaps;
+		}
+		else
+		{
+			$checkedTargets[]=$target;
+		}
+		$targetType=targetType($target);
+		$targetId=targetId($target);
 		if ($targetType == 'map')
 		{
 			$usedInMaps[]=$targetId;
@@ -41,12 +39,10 @@
 				{
 					foreach ($parentIds as $parentId)
 					{
-						$usedInMaps=usedInMaps($dbh, array(tableType($parentsTable)=>$parentId), $checkedTargets, $usedInMaps);
+						$usedInMaps=usedInMaps($dbh, makeTargetBasic(array(tableType($parentsTable)=>$parentId)), $checkedTargets, $usedInMaps);
 					}
 				}
 			}
 		}
 		return array_unique($usedInMaps);
 	}
-
-?>

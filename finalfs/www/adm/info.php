@@ -7,10 +7,12 @@ info.php
  ├─ toSwedish($childType)                          [common] → svensk översättning av typnamnet
  ├─ all_from_table($dbh, $configSchema, ...)        [common] → hämtar alla rader av given typ
  ├─ array_column_search(...)                        [common] → hittar EN rad baserat på kolumnvärde
- ├─ pkColumnOfTable(...)                             [common] → tar reda på primärnyckelkolumn för en tabell
+ ├─ makeBasicTarget()/makeFullTarget()               [common] → bygger basic/full target för objektet
+ ├─ targetTable()/targetIdColumn()                   [common] → läser targetens tabell och id-kolumn
+ ├─ targetConfigParam()                              [common] → läser targetens fält
  ├─ (om $childType == 'source' och QGIS) läser .qgs-fil direkt från disk
  ├─ (om $childType == 'aduser') printUniqueLogins(...)  [info] → inloggningsstatistik
- ├─ findAllParents($dbh, $child)                     [common] → hittar alla objekt som refererar till detta
+ ├─ findAllParents($dbh, $child)                     [common] → hittar alla objekt som refererar till detta target
  └─ printParents($allParents)                        [info] → skriver ut länkad lista av föräldrar
      └─ använder internt: assoc_array_values, toSwedish  [common]
 */
@@ -63,30 +65,34 @@ if (!empty($childId)) {
 	echo "<div>";
 	echo "<h2>$childId</h2> ($childTypeSv)</br>";
 
-	$allOfChildType = all_from_table($dbh, $configSchema, $childType . 's');
-	$child = array($childType => $childId);
-	$childFull = array_column_search($childId, pkColumnOfTable($childType . 's'), $allOfChildType);
-
-	if (!empty($childFull['name'])) {
-		echo "<b>Namn: </b>" . $childFull['name'] . "</br>";
+	$child = makeBasicTarget($childType, $childId);
+	$childId = targetId($child);
+	$allOfChildType = all_from_table($dbh, $configSchema, targetTable($child));
+	$childFullTarget = makeFullTarget($childType, array_column_search($childId, targetIdColumn($child), $allOfChildType));
+	if (!empty(targetConfigParam($childFullTarget, 'name'))) {
+		echo "<b>Namn: </b>" . targetConfigParam($childFullTarget, 'name') . "</br>";
 	}
-	if (!empty($childFull['alias'])) {
-		echo "<b>Alias: </b>" . $childFull['alias'] . "</br>";
+	if (!empty(targetConfigParam($childFullTarget, 'alias'))) {
+		echo "<b>Alias: </b>" . targetConfigParam($childFullTarget, 'alias') . "</br>";
 	}
-	if (!empty($childFull['info'])) {
-		echo $childFull['info'] . "</br>";
+	if (!empty(targetConfigParam($childFullTarget, 'info'))) {
+		echo targetConfigParam($childFullTarget, 'info') . "</br>";
 	}
 
 	if ($childType == 'source') {
 		$services = all_from_table($dbh, $configSchema, 'services');
-		$serviceType = array_column_search($childFull['service'], pkColumnOfTable('services'), $services)['type'];
+		$serviceTarget = makeBasicTarget('service', targetConfigParam($childFullTarget, 'service'));
+		$serviceConfig = array_column_search(targetId($serviceTarget), targetIdColumn($serviceTarget), $services);
+		$serviceFullTarget = makeFullTarget('service', $serviceConfig);
+		$serviceType = targetConfigParam($serviceFullTarget, 'type');
 		if (strtolower($serviceType) == 'qgis') {
-			$qgsXml = simplexml_load_file('/services/' . $childFull['service'] . '/' . explode('#', $childId)[0] . '.qgs');
+			$qgsXml = simplexml_load_file('/services/' . targetConfigParam($childFullTarget, 'service') . '/' . explode('#', $childId)[0] . '.qgs');
 			if (!empty($qgsXml)) {
 				echo "<b>Qgis-version: </b>" . $qgsXml['version'] . "<br>";
 				echo "<b>Senast uppdaterad: </b>" . $qgsXml['saveDateTime'] . ", " . $qgsXml['saveUserFull'] . "<br>";
 			}
 		}
+		unset($serviceTarget, $serviceConfig, $serviceFullTarget);
 	}
 
 	if ($childType == 'aduser') {

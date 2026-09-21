@@ -1,7 +1,5 @@
 <?php
 
-	// Uses manage functions: isFullTarget, sizePosts, printTextarea, printHiddenInputs, printUpdateButton, printInfoButton, printDeleteButton, targetId, setTargetConfigParam
-
 	// Takes a full table target (array), pg_connect connection string, table selectables (array), inheritPosts (array), and helps (array).
 	// Prints form fields and buttons that are used to view and edit the configuration for the given table.
 	function printTableForm($table, $dbhConnectionString, $selectables, $operationTables, $inheritPosts, $helps=array())
@@ -38,5 +36,3 @@
 		printAddRemoveOperations($table, $operationTables, $inheritPosts);
 		echo '</div>';
 	}
-
-?>

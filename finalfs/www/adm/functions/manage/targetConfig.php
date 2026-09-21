@@ -1,9 +1,5 @@
 <?php
 
-	// Uses common functions: array_column_search, isTarget
-	
-	// Uses manage functions: isFullTarget, targetId, targetIdColumn, targetTable, tableConfigs
-
 	function targetConfig($target, $configTablesOrDbh=null)
 	{
 		if (isTarget($target))
@@ -27,5 +23,3 @@
 			die("targetConfig($target, $configTablesOrDbh=null) failed!");
 		}
 	}
-
-?>

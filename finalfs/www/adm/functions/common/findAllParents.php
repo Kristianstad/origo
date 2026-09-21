@@ -1,7 +1,5 @@
 <?php
 
-	// Uses common functions: isTarget, makeTargetBasic, all_from_table, findParents
-
 	// Takes a database handle and a target, and returns an array of all direct parents.
 	function findAllParents(&$dbh, $target)
 	{
@@ -15,7 +13,7 @@
 		}
 		
 		require("./constants/configSchema.php");
-		$targetType=key($target);
+		$targetType=targetType($target);
 		$allParents=array();
 		if ($targetType != 'map')
 		{
@@ -33,7 +31,7 @@
 			}
 			if ($targetType == 'layer')
 			{
-				$allParents['layers']['exports']=findParents(array('layers'=>all_from_table($dbh, $configSchema, 'layers')), array('export'=>current($target)));
+				$allParents['layers']['exports']=findParents(array('layers'=>all_from_table($dbh, $configSchema, 'layers')), makeTargetBasic(array('export'=>targetId($target))));
 			}
 			if ($targetType == 'contact' || $targetType == 'keyword')
 			{
@@ -47,5 +45,3 @@
 		}
 		return $allParents;
 	}
-
-?>

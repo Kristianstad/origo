@@ -13,5 +13,3 @@
 			die("makeBasicTarget($type, $id) failed!");
 		}
 	}
-
-?>

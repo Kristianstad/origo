@@ -12,8 +12,8 @@ efter att nya lager lagts till, för att slippa manuellt ange vilka
 tabeller varje QGIS-lager bygger på – informationen härleds istället
 direkt ur QGIS-projektfilen.
 
-Filen har en koppling till `functions/manage/` — den delar
-`tablesFromQgsXml()` med manage-modulen (se "Beror på" nedan).
+Filen delar den gemensamma QGIS-helpern `tablesFromQgsXml()` med
+manage-modulen (se "Beror på" nedan).
 Resultatet (`layers.tables`) används sannolikt av manage-modulen
 (t.ex. vid visning av "vilka tabeller påverkas av detta lager", jämför
 `info.php`s "Används av"-funktion).
@@ -29,13 +29,11 @@ ut, sedan tyst bearbetning).
 **Common-funktioner:**
 - `dbh()`, `all_from_table()`, `array_column_search()`, `pkColumnOfTable()`
 
-**Manage-funktion (ej common):**
+**Common-funktion:**
 - `tablesFromQgsXml($qgsXml, $layerName)` – ligger i
-  `functions/manage/`, inte `functions/common/`. Tolkar en
+  `functions/common/`. Tolkar en
   QGIS-projektfils XML för att hitta vilka databastabeller ett givet
-  lager bygger på. Delas alltså mellan manage och
-  writeTablesForAllLayers trots att den fysiskt bor i manage-modulens
-  funktionsmapp.
+  lager bygger på. Delas av manage och writeTablesForAllLayers.
 
 **Konstanter:** `constants/configSchema.php` → `$configSchema`
 

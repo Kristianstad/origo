@@ -1,9 +1,5 @@
 <?php
 
-	// Uses common functions: toSwedish
-	
-	// Uses manage functions: printHiddenInputs
-
 	// Takes a basic target array, a confirmation string, and inheritPosts (array).
 	// Prints a form with a button labeled "Radera" as only visible element. 
 	// The button lauches a confirmation popup with the given confirmation string. 
@@ -13,8 +9,8 @@
 		GLOBAL $viewDepthGlobal;
 		if ($viewDepthGlobal == 1)
 		{
-			$targetType=key($target);
-			$targetId=current($target);
+			$targetType=targetType($target);
+			$targetId=targetId($target);
 			/*
 			if ($targetType == 'map')
 			{
@@ -55,5 +51,3 @@
 			echo '</form>';
 		}
 	}
-
-?>

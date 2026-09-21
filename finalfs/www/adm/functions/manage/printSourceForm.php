@@ -1,8 +1,5 @@
 <?php
 
-	// Uses manage functions: isFullTarget, sizePosts, targetConfigParam, printTextarea, printUpdateSelect, printHiddenInputs, printUpdateButton, printInfoButton, 
-	// printDeleteButton, targetId
-
 	// Takes a full source target (array), source selectables (array), inheritPosts (array), and helps (array).
 	// Prints form fields and buttons that are used to view and edit the configuration for the given source.
 	function printSourceForm($source, $selectables, $inheritPosts, $helps=array())
@@ -72,5 +69,3 @@
 		printDeleteButton($source, $deleteConfirmStr, $inheritPosts);
 		echo '</div></form></div></div>';
 	}
-
-?>

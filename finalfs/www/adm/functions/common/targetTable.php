@@ -1,7 +1,5 @@
 <?php
 
-	// Uses common functions: isTarget, targetType, typeTableName
-
 	function targetTable($target)
 	{
 		if (isTarget($target))
@@ -13,5 +11,3 @@
 			die("targetTable($target) failed!");
 		}
 	}
-
-?>

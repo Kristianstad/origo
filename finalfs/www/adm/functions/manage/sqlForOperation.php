@@ -1,9 +1,5 @@
 <?php
 
-	// Uses common functions: isTarget, pgArrayToPhp, targetType
-
-	// Uses manage functions: isFullTarget, targetConfig, targetId, targetIdColumn, targetTable
-
 	// Takes an operation ('add' or 'remove'), a basic child target (array), and a full parent target (array) as parameters.
 	// Returns a sql-query string that updates the database by adding or removing the child from the appropriate field of the given parent 
 	function sqlForOperation($operation, $child, $parent)
@@ -36,5 +32,3 @@
 		$sql="UPDATE $configSchema.$parentTable SET $parentColumn = $1 WHERE $parentPkColumn = $2";
 		return array('sql' => $sql, 'params' => array($parentColumnNewValue, $parentId));
 	}
-
-?>

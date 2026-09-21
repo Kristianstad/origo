@@ -1,7 +1,5 @@
 <?php
 
-	// Uses manage functions: isFullTarget, sizePosts, printTextarea, targetConfigParam, printHiddenInputs, printUpdateButton, printInfoButton, printDeleteButton, targetId
-
 	// Takes a full service target (array), inheritPosts (array), and helps (array).
 	// Prints form fields and buttons that are used to view and edit the configuration for the given service.
 	function printServiceForm($service, $inheritPosts, $helps=array())
@@ -45,5 +43,3 @@
 		printDeleteButton($service, $deleteConfirmStr, $inheritPosts);
 		echo '</div></form></div></div>';
 	}
-
-?>

@@ -5,8 +5,8 @@
 	// The type and id of the given target is posted (method=get) to info.php
 	function printInfoButton($basicTarget)
 	{
-		$type=key($basicTarget);
-		$id=current($basicTarget);
+		$type=targetType($basicTarget);
+		$id=targetId($basicTarget);
 		echo <<<HERE
 			<form></form>
 			<form action="info.php" method="get" target="topFrame">
@@ -17,5 +17,3 @@
 			</form>
 		HERE;
 	}
-
-?>

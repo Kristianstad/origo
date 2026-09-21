@@ -1,9 +1,5 @@
 <?php
 
-	// Uses common functions: findParents, targetType, toSwedish
-	
-	// Uses manage functions: printSelectOptions, printHiddenInputs
-
 	function printRemoveOperation($targetToRemove, $tableToRemoveFrom, $buttontext, $inheritPosts)
 	{
 		$tableToRemoveFromType=rtrim(key($tableToRemoveFrom), 's');
@@ -16,11 +12,10 @@
 			printSelectOptions(array_merge(array(""), $parents));
 			echo '</select>&nbsp;';
 			printHiddenInputs($inheritPosts);
-			$targetToRemoveTypeSwe=toSwedish(targetType($targetToRemove));
+			$targetToRemoveType=targetType($targetToRemove);
+			$targetToRemoveTypeSwe=toSwedish($targetToRemoveType);
 			$tableToRemoveFromTypeSwe=toSwedish($tableToRemoveFromType);
-			echo '<button title="Ta bort '.$targetToRemoveTypeSwe.' från '.$tableToRemoveFromTypeSwe.'" type="submit" name="'.key($targetToRemove).'Button" value="operation">'.$buttontext.'</button>';
+			echo '<button title="Ta bort '.$targetToRemoveTypeSwe.' från '.$tableToRemoveFromTypeSwe.'" type="submit" name="'.$targetToRemoveType.'Button" value="operation">'.$buttontext.'</button>';
 			echo '</form>';
 		}
 	}
-
-?>

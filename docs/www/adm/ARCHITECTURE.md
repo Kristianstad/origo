@@ -152,6 +152,18 @@ Ett centralt begrepp i manage-modulen: en enhetlig representation av
 - **Full:** `[$type => $config]`, t.ex.
   `['layer' => ['layer_id' => 'vagar#1', 'title' => 'Vägar', ...]]`
 
-Gör att samma kod (SQL-generering, formulärrendering) kan hantera alla
-entitetstyper (map/layer/group/source/...) generiskt utan att skriva om
-samma logik för varje typ. Fullständig beskrivning i `manage.md`.
+Gör att samma kod (SQL-generering, formulärrendering, parent-traversering
+och info-vyn) kan hantera alla entitetstyper (map/layer/group/source/...)
+generiskt utan att skriva om samma logik för varje typ. `manage.php` och
+`info.php` delar därför basic/full target-kontraktet, medan
+`writeConfig.php` medvetet behåller kartans konfigurationsrad som en lokal
+JSON-arbetsstruktur.
+
+Target-kärnans rena representationer och accessorer ligger i
+`functions/common/`: `isTarget()`, `isBasicTarget()`, `isFullTarget()`,
+`targetType()`, `targetId()`, `targetTable()`, `targetIdColumn()`,
+`typeTableName()`, `makeBasicTarget()`, `makeFullTarget()`,
+`makeTargetBasic()`, `targetConfigParam()` och
+`setTargetConfigParam()`. Manage-lagret behåller de config-/databasberoende
+funktionerna `targetConfig()`, `makeTargetFull()`, `tableConfigs()` och
+`updatedFullTarget()`. Fullständig beskrivning finns i `manage.md`.

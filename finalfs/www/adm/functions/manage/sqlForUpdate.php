@@ -1,7 +1,5 @@
 <?php
 
-	// Uses manage functions: isFullTarget, targetTable, targetId, updatedFullTarget, appendUpdatedColumnsToSql, targetConfig, targetIdColumn
-
 	// Takes a full target-array and an updatePosts-array and returns a sql-query string that updates
 	// the database configuration (table) for the given target with values from the updatePosts
 	function sqlForUpdate($fullTarget, $updatePosts)
@@ -26,5 +24,3 @@
 			die("sqlForUpdate($fullTarget, $updatePosts) failed!");
 		}
 	}
-
-?>

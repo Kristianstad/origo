@@ -25,6 +25,11 @@ gör sidan rekursivt navigerbar mellan relaterade objekt.
 
 Inget REST/JSON-API – ren HTML-sida.
 
+När sidan laddas byggs först en basic target från `type` och `id`. Den slås
+sedan upp till en full target innan objektets fält och specialfall läses.
+Samma basic target skickas vidare till `findAllParents()`, så info-vyn och
+manage-vyn använder samma target-kontrakt för objektidentitet.
+
 **Specialfall per typ:**
 - `type=source`: om källans tjänst är av typ `qgis`, läses en `.qgs`-fil
   direkt från disk (`/services/<service>/<id-utan-suffix>.qgs`) för att visa
@@ -43,6 +48,9 @@ Inget REST/JSON-API – ren HTML-sida.
   en given tabell
 - `findAllParents($dbh, $child)` – hittar (rekursivt) alla objekt som
   refererar till ett givet objekt
+- `makeTargetBasic($target)`, `makeBasicTarget()`, `makeFullTarget()`,
+  `targetType()`, `targetId()`, `targetTable()`, `targetIdColumn()` och
+  `targetConfigParam()` – bygger och läser objekt-targets
 - `assoc_array_values($array)` – (används i `printParents`, sannolikt för
   att kontrollera om en nästlad array har några faktiska värden)
 

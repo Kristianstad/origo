@@ -1,8 +1,5 @@
 <?php
 
-	// Uses manage functions: isFullTarget, sizePosts, printTextarea, printUpdateSelect, targetConfigParam, printHiddenInputs, printUpdateButton, printInfoButton, 
-	// printDeleteButton, printAddOperation, printRemoveOperation, targetId
-
 	// Takes a full layer target (array), layer selectables (array), layer operationtables (array), layer sources (array), inheritPosts (array), and helps (array).
 	// Prints form fields and buttons that are used to:
 	// 1. View and edit the configuration for the given layer.
@@ -29,7 +26,7 @@
 		}
 		printUpdateSelect($layer, array('type'=>$selectables['formats']), 'miniSelect', 'Typ:', in_array('type', $helps), null, 'document.getElementById("typeSet").style.display="none";');
 		
-		if (empty(targetConfigParam($layer, 'type')) || !in_array($layer['layer']['type'], $selectables['formats']))
+		if (empty(targetConfigParam($layer, 'type')) || !in_array(targetConfigParam($layer, 'type'), $selectables['formats']))
 		{
 			$spanStyle="display:none";
 		}
@@ -213,5 +210,3 @@
 		printAddRemoveOperations($layer, $operationTables, $inheritPosts, array('add'=>array('maps'=>'Lägg till i karta', 'groups'=>'Lägg till i grupp'), 'remove'=>array('maps'=>'Ta bort från karta', 'groups'=>'Ta bort från grupp')));
 		echo '</div>';
 	}
-
-?>

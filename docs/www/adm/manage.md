@@ -2,7 +2,7 @@
 
 **Entry point:** `adm/manage.php` (32K, den enskilt största och mest
 centrala filen i systemet)
-**Funktionsfiler:** `adm/functions/manage/*.php` (78 filer)
+**Funktionsfiler:** `adm/functions/manage/*.php` (target-primitiverna ligger i `adm/functions/common/`)
 **JS-filer:** `adm/js-functions/manage/*.js` (6 filer)
 **Stilmall:** `adm/styles/manage.css`
 
@@ -68,6 +68,18 @@ sqlForOperation($operation, $child, $parent)
 array-kolumn (t.ex. maps.layers), lägger till/tar bort barnets id och
 skriver tillbaka som en ny Postgres-array
 → resultat: `array('sql' => ..., 'params' => ...)` för att koppla/koppla loss två objekt
+
+Target-API:t används också av parent-traverseringen och renderingshjälparna:
+`usedInMaps()`, `findParents()` och `findAllParents()` normaliserar inkommande
+targets med `makeTargetBasic()` och läser typ med `targetType()`, medan
+`printChildSelect()`, `printInfoButton()`, `printDeleteButton()` och
+add/remove-operationerna använder `targetType()`, `targetId()`,
+`targetConfig()` och `targetConfigParam()` i stället för att läsa targetens
+nyckel och värde direkt.
+
+`writeConfig.php` använder däremot kartans konfigurationsrad som en lokal
+arbetsstruktur för JSON-genereringen. Den är medvetet inte omskriven till
+targets, eftersom target-abstraktionen där inte skulle minska komplexiteten.
 
 ## Mönster: enkla entitetsformulär (printKeywordForm, printAduserForm, m.fl.)
 
@@ -158,7 +170,7 @@ betydande typspecifik villkorslogik:
 **Common-funktioner** (`adm/functions/common/`):
 - `dbh()`, `configTables($dbh)`
 - `pkColumnOfTable()`, `array_column_search()`, `pgArrayToPhp()`,
-  `assoc_array_values()`, `findAllParents()`, `tablesFromQgsXml()`
+  `assoc_array_values()`, `findAllParents()`
 
 ## Filer och funktioner (target-hantering och POST-tolkning)
 
@@ -175,9 +187,6 @@ betydande typspecifik villkorslogik:
 | `hasStringKeys.php` | `hasStringKeys(array $array): bool` | Kontrollerar om en array har minst en textnyckel (dvs. är associativ snarare än numeriskt indexerad). **Ingen användning observerad** – se flaggning |
 | `idPosts.php` | `idPosts($post): array` | Filtrerar `$post` till fält vars namn slutar på `Id`, med undantag för operationernas `from/to`-fält för map, group, classe och infogroup |
 | `isArrayColumn.php` | `isArrayColumn($column): bool` | Kontrollerar om en given kolumn är en Postgres-array-kolumn, genom att slå upp den mot listan i `constants/arrayColumns.php`. Avslutar programmet (`die()`) om `$column` inte är en icke-tom sträng |
-| `isFullTarget.php` | `isFullTarget($target): bool` | Avgör om en target är "full" (innehåller hela konfigurationen) snarare än "basic" (bara ett id) – se förklaring av target-konceptet ovan |
-| `makeBasicTarget.php` | `makeBasicTarget($type, $id): array` | Skapar en basic target `[$type => $id]`. Avslutar programmet vid ogiltiga argument |
-| `makeFullTarget.php` | `makeFullTarget($type, $config): array` | Skapar en full target `[$type => $config]` direkt från en redan känd konfigurationsrad. Avslutar programmet vid ogiltiga argument |
 | `makeTargetFull.php` | `makeTargetFull($target, $configTablesOrDbh): array` | Tar en basic (eller full) target och returnerar en full target, genom att slå upp konfigurationen via `targetConfig()` om den saknas. Avslutar programmet om indata inte är en giltig target |
 | `markMapsChanged.php` | `markMapsChanged(&$dbh, $mapIds): void` | Sätter `maps.changed = 't'` för samtliga angivna kartor i en enda batch-SQL (flera `UPDATE`-satser konkatenerade med `; `). **Bekräftar tidigare hypotes:** detta är motparten till `markMapUnchanged()` i writeConfig-modulen – manage-modulen flaggar en karta som "ändrad, behöver publiceras om" varje gång något som påverkar den redigeras, och writeConfig-modulen nollställer flaggan efter lyckad publicering |
 | `postButton.php` | `postButton($post): string\|null` | Hittar namnet på den POST-parameter vars namn slutar på `Button` – det är detta namn (`<typ>Button`) som `manage.php` sedan bryter isär för att få fram `$type` |
@@ -199,20 +208,12 @@ betydande typspecifik villkorslogik:
 | `printRemoveOperation.php` | (samma mönster som `printAddOperation.php`, se ovan) | Motsatsen till `printAddOperation()` – kräver dessutom `findParents()` [common] för att bara visa de föräldrar objektet faktiskt tillhör (kan inte tas bort från en förälder det inte är kopplat till) |
 | `printSelectOptions.php` | `printSelectOptions($optionValues, $selectedValue=null)` | Skriver ut `<option>`-element för en `<select>`. Sorterar alfabetiskt om arrayen är associativ (id→namn). **Ovanligt val-etikettmönster**, se flaggning |
 | `printTextarea.php` | `printTextarea($fullTarget, $configParam, $class, $label, $help=false, $sizePosts=array(), $readonly=false)` | Den mest centrala byggstenen i hela manage-modulen – skriver ut ett enskilt redigerbart fält som ett `<textarea>`. Städar Postgres-arraysyntax för visning, bevarar användarens tidigare valda storlek/scrollposition (via `$sizePosts`, kopplat till `sizePosts.js`-liknande dolda fält), visar en hjälpknapp om hjälptext finns, och visar en multiselect-knapp om fältet är konfigurerat som "multiselectable" |
-| `setTargetConfigParam.php` | `setTargetConfigParam(&$fullTarget, $configParam, $value)` | Skriver ett värde direkt i en full targets konfigurationsarray, in-memory (påverkar inte databasen) |
 | `sizePosts.php` | `sizePosts($post): array` | Filtrerar `$post` till bredd-/höjd-/scrollrelaterade fält, och normaliserar `new*`-prefixade nycklar (från senaste formulärinskicket) till samma nyckelformat som de ursprungliga (`width*`/`height*`/`scroll*`) – nyare värden skriver över äldre i sammanslagningen |
 | `sqlForOperation.php` | `sqlForOperation($operation, $child, $parent): array` | Bygger en parameteriserad UPDATE-sats som lägger till/tar bort ett barn-id ur förälderns array-kolumn; returnerar SQL och parametrar |
 | `sqlForUpdate.php` | `sqlForUpdate($fullTarget, $updatePosts): array` | Bygger en parameteriserad fullständig UPDATE-sats för en target baserat på postat formulärdata; returnerar SQL och parametrar |
 | `tableConfigs.php` | `tableConfigs($table, $configTablesOrDbh)` | Hämtar konfigurationen för en tabell antingen från en databaskoppling (färsk fråga) eller från en redan inläst `configTables`-array (cachat) – avgörs via `is_resource()` |
-| `tablesFromQgsXml.php` | `tablesFromQgsXml($qgsXml=null, $layerName=null, $tables=[], $subtree=null): array` | Rekursiv XML-genomgång av ett QGIS-projekts (`.qgs`) lagerträd (`layer-tree-layer`/`layer-tree-group`): hittar samtliga (eller, om `$layerName` anges, ett specifikt) PostGIS-lager och extraherar deras käll-databas+tabell ur QGIS `source`-strängen (nyckel/värde-par separerade med mellanslag, t.ex. `dbname='x' table="y"`). Returnerar en lista av `databas.tabell`-strängar. De sista tre parametrarna är enbart för den interna rekursionen, anropas normalt bara med `$qgsXml`/`$layerName`. **Delas med `writeTablesForAllLayers.php`**, se writeTablesForAllLayers.md |
-| `tableType.php` | `tableType($table): string` | Den omvända operationen: tar bort ett avslutande `s` ur ett tabellnamn för att få fram typen (`layers` → `layer`). Enkel `rtrim($table, 's')` – fungerar för samtliga nuvarande tabellnamn men skulle ge fel resultat för en typ vars namn redan slutar på flera `s` i följd (inget sådant fall finns idag) |
 | `targetConfig.php` | `targetConfig($target, $configTablesOrDbh=null)` | Slår upp/returnerar hela konfigurationen för en target, oavsett om den redan är "full" eller bara "basic" |
-| `targetConfigParam.php` | `targetConfigParam($fullTarget, $configParam)` | Läser ett enskilt konfigurationsvärde ur en full target |
-| `targetId.php` | `targetId($target)` | Returnerar targetens id-värde, oavsett om den är full eller basic |
-| `targetIdColumn.php` | `targetIdColumn($target): string` | Returnerar namnet på primärnyckelkolumnen för targetens typ. Specialfall: `proj4defs` använder `code` istället för `<typ>_id` |
-| `targetTable.php` | `targetTable($target): string` | Returnerar tabellnamnet för targetens typ |
 | `typeHelps.php` | `typeHelps($type, $helps): array` | Filtrerar den globala listan av hjälptext-id:n (`help_id`, format `<typ>:<fält>`) till de som gäller en specifik typ, och returnerar bara fältdelen. Detta är mekaniken bakom `in_array($fältnamn, $helps)`-kontrollerna vi sett i varje `print*Form`-funktion – `$helps` som skickas till de funktionerna är redan filtrerat via denna funktion i `manage.php`s entry point |
-| `typeTableName.php` | `typeTableName($type): string` | Returnerar tabellnamnet för en given typ genom att lägga till ett `s` (`layer` → `layers`). Den enkla, framåtriktade motsvarigheten till `tableType()` ovan; `targetTable()` bygger sannolikt på denna |
 | `updatedFullTarget.php` | `updatedFullTarget($fullTarget, $updatePosts): array` | Bygger en ny full target där varje kolumns värde ersätts med motsvarande `update<Kolumn>`-fält från `$updatePosts` (eller tom sträng om inget postades för den kolumnen). Array-kolumner (enligt `isArrayColumn()`/`constants/arrayColumns.php`) omsluts automatiskt med Postgres-array-syntax `{...}`. Detta är steget som förvandlar "vad användaren skrev i formuläret" till "vad som ska stå i databasen", och används av `sqlForUpdate()` innan `appendUpdatedColumnsToSql()` bygger själva SQL-strängen |
 | `updated_from_table.php` | `updated_from_table($dbh, $tableWithSchema): array` | Systerfunktion till `updated_from_table2()` (updated-modulen) – hämtar senaste `pg_xact_commit_timestamp` för en tabell, men returnerar **bara tidsstämpeln**, inte `xmin` som `updated_from_table2()` gör. Används av `printTableForm.php` för att visa senast-ändrad-datum direkt i formuläret (till skillnad från `updated.php`-modulens fristående JSON-endpoint) |
 | `updatePosts.php` | `updatePosts($post): array` | Filtrerar `$post` till fält vars namn börjar med `update` – detta är alla postade formulärfältvärden redo att skrivas till databasen |

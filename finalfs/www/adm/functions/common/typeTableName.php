@@ -5,5 +5,3 @@
 	{
 		return $type.'s';
 	}
-
-?>

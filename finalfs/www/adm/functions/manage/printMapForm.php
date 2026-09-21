@@ -1,8 +1,5 @@
 <?php
 
-	// Uses manage functions: isFullTarget, sizePosts, printTextarea, printUpdateSelect, printHiddenInputs, printUpdateButton, printInfoButton, printWriteConfigButton, 
-	// printExportJsonButton, printDeleteButton, targetConfigParam, targetId
-
 	// Takes a full map target (array), map selectables (array), inheritPosts (array), and helps (array).
 	// Prints form fields and buttons that are used to view and edit the configuration for the given map.
 	function printMapForm($map, $selectables, $inheritPosts, $helps=array())

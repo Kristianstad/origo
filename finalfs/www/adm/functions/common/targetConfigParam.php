@@ -1,19 +1,15 @@
 <?php
 
-	// Uses manage functions: isFullTarget
-
 	// Takes a full target array and an Origo configuration parameter name (string).
 	// Returns the value for the given configuration parameter for the given target
 	function targetConfigParam($fullTarget, $configParam)
 	{
 		if (isFullTarget($fullTarget))
 		{
-			return current($fullTarget)[$configParam];
+			return current($fullTarget)[$configParam] ?? null;
 		}
 		else
 		{
 			die("targetConfigParam($fullTarget, $configParam) failed!");
 		}
 	}
-
-?>
