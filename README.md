@@ -1,4 +1,10 @@
-# origo
+# NOTE! WE HAVE MOVED THE ORIGO ADMIN TOOL TO A NEW, SEPARATE REPOSITORY: https://github.com/Kristianstad/origo-admin
+#
+#
+#
+#
+#
+
 https://github.com/Kristianstad/origo/pkgs/container/origo
 
 Docker-avbild av Origo (https://github.com/origo-map). Avbilden bygger på https://github.com/Kristianstad/nginx/pkgs/container/nginx (se repositoryt för webbserverinställningar). Lyssnar internt på port 8080. Filer och kataloger i Origos konfigurationskatalog läggs till i Origos webbkatalog vid uppstart. Det finns även ett valfritt administrationsverktyg för Origo och metadata i `-adm`-taggen. (Sökvägen till administrationsverktyget är `adm/manage.php` och standardinloggningen är origo, origo. Varje skapad karta får en egen HTML-fil. Källkoden till administrationsverktyget finns i branchen `with_php`.)
