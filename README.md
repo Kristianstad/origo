@@ -1,24 +1,10 @@
 # origo
 https://github.com/Kristianstad/origo/pkgs/container/origo
 
-Docker image of Origo (https://github.com/origo-map). The image is built on https://github.com/Kristianstad/nginx/pkgs/container/nginx (check out for webserver settings). Listens on port 8080 internally. Files and directories in the Origo config directory are added to the Origo web directory at startup. There is also an optional management tool for Origo and metadata included in the -adm tag. (Path to manage tool is adm/manage.php and default login is origo, origo. Each created map gets their own html-file. Source code for the management tool is available in the with_php branch.)
-
-Try out the image in [Iximiuz Labs](https://labs.iximiuz.com/playgrounds):
-```
-1. Start a Docker playground.
-2. Run the following command at the command prompt:
-   docker run -p 8080:8080 ghcr.io/kristianstad/origo:2.10.0-adm
-3. Klick Expose ports in the menu and make port 8080 exposed publicly, then click on the url.
-4. To access the admin tool add "/adm/" to the url and login with origo, origo.
-```
-
-A swedish tutorial of the management tool is available [Here](https://raw.githubusercontent.com/Kristianstad/origo/refs/heads/with_php/finalfs/www/Origo_admin_tutorial_swedish.pdf).
+Docker image of Origo (https://github.com/origo-map). The image is built on https://github.com/Kristianstad/nginx/pkgs/container/nginx (check out for webserver settings). Listens on port 8080 internally. Files and directories in the Origo config directory are added to the Origo web directory at startup. Origo with admin-tool is available here: https://github.com/Kristianstad/origo-admin
 
 ## Docker run examples
-### If you just need Origo
 docker run --name origo -d -p 8080:8080 ghcr.io/kristianstad/origo:2.10.0
-### If you also want Kristianstad's management tool for Origo and metadata
-docker run --name origo -d -p 8080:8080 ghcr.io/kristianstad/origo:2.10.0-adm
 
 ## Environment variables
 ### Runtime variables with default value
@@ -26,8 +12,6 @@ docker run --name origo -d -p 8080:8080 ghcr.io/kristianstad/origo:2.10.0-adm
 * VAR_ORIGO_CONFIG_DIR="/etc/origo" (Directory containing configuration files for Origo)
 * VAR_CONFIG_DIR="/etc/nginx" (Directory containing configuration files for Nginx)
 * VAR_LOG_LEVEL="info"
-* VAR_ADMUSER="origo" (Only for management tool)
-* VAR_ADMPASSWORD="origo" (Only for management tool)
 * VAR_FINAL_COMMAND="nginx -g 'daemon off; error_log stderr \$VAR_LOG_LEVEL;'" (Command run by VAR_LINUX_USER)
 
 ### Format of runtime configuration variables (mainly used by the with_php tag)
