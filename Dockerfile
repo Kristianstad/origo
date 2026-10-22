@@ -18,6 +18,11 @@ ARG BUILDCMDS=\
 #"   cd origo-$ORIGO_VERSION "\
 "   cd origo "\
 "&& rm -rf node_modules package-lock.json "\
+"&& if grep -q '\"node-sass\"' package.json; then "\
+"     npm pkg delete devDependencies.node-sass dependencies.node-sass "\
+"  && npm pkg set devDependencies.sass-embedded=1.106.1 "\
+"  && sed -i 's/node-sass/sass/g; s/--include-path/--load-path . --load-path/g' package.json; "\
+"   fi "\
 "&& npm install "\
 #"&& npm --depth 8 update "\
 "&& npm run prebuild-sass "\
