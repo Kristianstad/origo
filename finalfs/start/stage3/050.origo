@@ -12,6 +12,14 @@ then
     chmod g+rw "$VAR_ORIGO_CONFIG_DIR/index.html" "$VAR_ORIGO_CONFIG_DIR/index.json"
 
     if [ -d /www/maps ]; then
+        if ! find /www/maps/ -type d -exec chmod g+wx {} +; then
+            printf 'Failed to update permissions for directories in /www/maps\n' >&2
+        fi
+
+        if ! find /www/maps/ ! -type d ! -type l -exec chmod g+w {} +; then
+            printf 'Failed to update group write permissions for entries in /www/maps\n' >&2
+        fi
+
         (
             set +f
 
@@ -20,12 +28,12 @@ then
                 link="/www/${dir##*/}"
 
                 if [ -e "$link" ] || [ -L "$link" ]; then
-                    printf 'Finns redan: %s\n' "$link" >&2
+                    printf 'Already exists: %s\n' "$link" >&2
                     continue
                 fi
 
                 if ! ln -s "$dir" /www/; then
-                    printf 'Kunde inte skapa länk: %s\n' "$link" >&2
+                    printf 'Failed to create symlink: %s\n' "$link" >&2
                 fi
             done
 
@@ -38,12 +46,12 @@ then
                     link="/www/${dir##*/}${name#index}"
 
                     if [ -e "$link" ] || [ -L "$link" ]; then
-                        printf 'Finns redan: %s\n' "$link" >&2
+                        printf 'Already exists: %s\n' "$link" >&2
                         continue
                     fi
 
                     if ! ln -s "$file" "$link"; then
-                        printf 'Kunde inte skapa länk: %s\n' "$link" >&2
+                        printf 'Failed to create symlink: %s\n' "$link" >&2
                     fi
                 done
             done
