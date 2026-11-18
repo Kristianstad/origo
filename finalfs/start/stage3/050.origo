@@ -19,43 +19,45 @@ then
         if ! find /www/maps/ ! -type d ! -type l -exec chmod g+w {} +; then
             printf 'Failed to update group write permissions for entries in /www/maps\n' >&2
         fi
-
-        (
-            set +f
-
-            for dir in /www/maps/* /www/maps/.[!.]* /www/maps/..?*; do
-                [ -d "$dir" ] || continue
-                link="/www/${dir##*/}"
-
-                if [ -e "$link" ] || [ -L "$link" ]; then
-                    printf 'Already exists: %s\n' "$link" >&2
-                    continue
-                fi
-
-                if ! ln -s "$dir" /www/; then
-                    printf 'Failed to create symlink: %s\n' "$link" >&2
-                fi
-            done
-
-            for dir in /www/maps/* /www/maps/.[!.]* /www/maps/..?*; do
-                [ -d "$dir" ] || continue
-
-                for file in "$dir"/index.*; do
-                    [ -f "$file" ] || continue
-                    name=${file##*/}
-                    link="/www/${dir##*/}${name#index}"
-
+        if [ "$VAR_SYMLINK_MAPS" == "yes" ]
+        then
+            (
+                set +f
+    
+                for dir in /www/maps/* /www/maps/.[!.]* /www/maps/..?*; do
+                    [ -d "$dir" ] || continue
+                    link="/www/${dir##*/}"
+    
                     if [ -e "$link" ] || [ -L "$link" ]; then
                         printf 'Already exists: %s\n' "$link" >&2
                         continue
                     fi
-
-                    if ! ln -s "$file" "$link"; then
+    
+                    if ! ln -s "$dir" /www/; then
                         printf 'Failed to create symlink: %s\n' "$link" >&2
                     fi
                 done
-            done
-        )
+    
+                for dir in /www/maps/* /www/maps/.[!.]* /www/maps/..?*; do
+                    [ -d "$dir" ] || continue
+    
+                    for file in "$dir"/index.*; do
+                        [ -f "$file" ] || continue
+                        name=${file##*/}
+                        link="/www/${dir##*/}${name#index}"
+    
+                        if [ -e "$link" ] || [ -L "$link" ]; then
+                            printf 'Already exists: %s\n' "$link" >&2
+                            continue
+                        fi
+    
+                        if ! ln -s "$file" "$link"; then
+                            printf 'Failed to create symlink: %s\n' "$link" >&2
+                        fi
+                    done
+                done
+            )
+        fi
     fi
 fi
 
