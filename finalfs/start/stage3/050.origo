@@ -5,7 +5,7 @@
 # VAR_*
 # All functions in /start/functions
 
-if [ "$isFirstRun" == "true" ]
+if [ "$isFirstRun" = "true" ]
 then
     replaceFileWithLink "/www/index.html" "$VAR_ORIGO_CONFIG_DIR/index.html"
     replaceFileWithLink "/www/index.json" "$VAR_ORIGO_CONFIG_DIR/index.json"
@@ -19,7 +19,7 @@ then
         if ! find /www/maps/ ! -type d ! -type l -exec chmod g+w {} +; then
             printf 'Failed to update group write permissions for entries in /www/maps\n' >&2
         fi
-        if [ "$VAR_SYMLINK_MAPS" == "yes" ]
+        if [ "$VAR_SYMLINK_MAPS" = "yes" ]
         then
             (
                 set +f
