@@ -7,10 +7,50 @@
 
 if [ "$isFirstRun" == "true" ]
 then
-	replaceFileWithLink "/www/index.html" "$VAR_ORIGO_CONFIG_DIR/index.html"
-	replaceFileWithLink "/www/index.json" "$VAR_ORIGO_CONFIG_DIR/index.json"
-	chmod g+rw "$VAR_ORIGO_CONFIG_DIR/index.html" "$VAR_ORIGO_CONFIG_DIR/index.json"
+    replaceFileWithLink "/www/index.html" "$VAR_ORIGO_CONFIG_DIR/index.html"
+    replaceFileWithLink "/www/index.json" "$VAR_ORIGO_CONFIG_DIR/index.json"
+    chmod g+rw "$VAR_ORIGO_CONFIG_DIR/index.html" "$VAR_ORIGO_CONFIG_DIR/index.json"
+
+    if [ -d /www/maps ]; then
+        (
+            set +f
+
+            for dir in /www/maps/* /www/maps/.[!.]* /www/maps/..?*; do
+                [ -d "$dir" ] || continue
+                link="/www/${dir##*/}"
+
+                if [ -e "$link" ] || [ -L "$link" ]; then
+                    printf 'Finns redan: %s\n' "$link" >&2
+                    continue
+                fi
+
+                if ! ln -s "$dir" /www/; then
+                    printf 'Kunde inte skapa länk: %s\n' "$link" >&2
+                fi
+            done
+
+            for dir in /www/maps/* /www/maps/.[!.]* /www/maps/..?*; do
+                [ -d "$dir" ] || continue
+
+                for file in "$dir"/index.*; do
+                    [ -f "$file" ] || continue
+                    name=${file##*/}
+                    link="/www/${dir##*/}${name#index}"
+
+                    if [ -e "$link" ] || [ -L "$link" ]; then
+                        printf 'Finns redan: %s\n' "$link" >&2
+                        continue
+                    fi
+
+                    if ! ln -s "$file" "$link"; then
+                        printf 'Kunde inte skapa länk: %s\n' "$link" >&2
+                    fi
+                done
+            done
+        )
+    fi
 fi
+
 cd "$VAR_ORIGO_CONFIG_DIR"
-find * -type d -exec mkdir -p "/www/{}" \;
-find * -type f -exec ln -sf "$VAR_ORIGO_CONFIG_DIR/{}" "/www/{}" \;
+find . -type d -exec mkdir -p "/www/{}" \;
+find . -type f -exec ln -sf "$VAR_ORIGO_CONFIG_DIR/{}" "/www/{}" \;
