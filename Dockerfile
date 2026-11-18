@@ -61,7 +61,8 @@ ARG ORIGO_VERSION
 ARG NGINX_VERSION
 
 ENV VAR_ORIGO_CONFIG_DIR="/etc/origo" \
-    VAR_SYMLINK_MAPS="yes"
+    VAR_SYMLINK_MAPS_DIRS="yes" \
+    VAR_SYMLINK_MAPS_FILES="yes"
 
 # Generic template (don't edit) <BEGIN>
 USER starter
