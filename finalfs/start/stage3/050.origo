@@ -19,11 +19,11 @@ then
         if ! find /www/maps/ ! -type d ! -type l -exec chmod g+w {} +; then
             printf 'Failed to update group write permissions for entries in /www/maps\n' >&2
         fi
-        if [ "$VAR_SYMLINK_MAPS" = "yes" ]
-        then
-            (
-                set +f
-    
+        (
+            set +f
+
+            if [ "$VAR_SYMLINK_MAPS_DIRS" = "yes" ]
+            then
                 for dir in /www/maps/* /www/maps/.[!.]* /www/maps/..?*; do
                     [ -d "$dir" ] || continue
                     link="/www/${dir##*/}"
@@ -37,7 +37,10 @@ then
                         printf 'Failed to create symlink: %s\n' "$link" >&2
                     fi
                 done
-    
+            fi
+
+            if [ "$VAR_SYMLINK_MAPS_FILES" = "yes" ]
+            then
                 for dir in /www/maps/* /www/maps/.[!.]* /www/maps/..?*; do
                     [ -d "$dir" ] || continue
     
@@ -56,8 +59,8 @@ then
                         fi
                     done
                 done
-            )
-        fi
+            fi
+        )
     fi
 fi
 
