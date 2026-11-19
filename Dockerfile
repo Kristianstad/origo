@@ -17,8 +17,8 @@ ARG BUILDDEPS="python3 py3-libsass"
 ARG BUILDCMDS=\
 #"   cd origo-$ORIGO_VERSION "\
 "   cd origo "\
-"&& sed -i \"/^import layerType from '\.\/src\/layer\/layertype';$/a import OLCesium from 'olcs/OLCesium';\" origo.js "\
-"&& sed -i \"/^const Origo = function Origo(configPath, options = {}) {$/a window.OLCesium = OLCesium;\" origo.js "\
+#"&& sed -i \"/^import layerType from '\.\/src\/layer\/layertype';$/a import OLCesium from 'olcs/OLCesium';\" origo.js "\
+#"&& sed -i \"/^const Origo = function Origo(configPath, options = {}) {$/a window.OLCesium = OLCesium;\" origo.js "\
 "&& rm -rf node_modules package-lock.json "\
 "&& if grep -q '\"node-sass\"' package.json; then "\
 "     npm pkg delete devDependencies.node-sass dependencies.node-sass "\
@@ -26,7 +26,7 @@ ARG BUILDCMDS=\
 "  && sed -i 's/node-sass/sass/g; s/--include-path/--load-path . --load-path/g' package.json; "\
 "   fi "\
 "&& npm install "\
-"&& npm install olcs "\
+#"&& npm install olcs "\
 #"&& npm --depth 8 update "\
 "&& npm run prebuild-sass "\
 "&& npm run build "\
